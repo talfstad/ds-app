@@ -1,0 +1,13 @@
+{
+  "name": "MoonLander",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "express": "4.13.3",
+    "hbs": "~2.4.0",
+    "morgan": "^1.5.2",
+    "multer": "^0.1.8",
+    "method-override": "^2.3.0",
+    "body-parser": "^1.9.2"
+  }
+}
