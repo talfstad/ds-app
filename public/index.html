@@ -188,7 +188,7 @@
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
                 <input type="radio" id="date-added" name="radioExample">
-                <label class="ml5" for="date-added">Date Added</label>
+                <label class="ml5" for="date-added">Last Deployed</label>
               </a>
             </li>
             <li>
@@ -224,10 +224,10 @@
         <div class="topbar-right hidden-xs hidden-sm">
           <div class="btn-group" data-toggle="buttons">
             <label data-action="collapse-all" class="btn btn-default btn-sm light fw600 active">
-              <input type="radio" name="options" id="option1" autocomplete="off" checked="">Collapse All
+              <input type="radio" name="options" id="collapse-all" autocomplete="off">Collapse All
             </label>
             <label data-action="expand-all" class="btn btn-default btn-sm light fw600">
-              <input type="radio" name="options" id="option2" autocomplete="off">Expand All
+              <input type="radio" name="options" id="expand-all" autocomplete="off">Expand All
             </label>
           </div>
 
@@ -244,20 +244,28 @@
       <section id="content">
         <!-- Demo Content: Center Column Text -->
         <div class="ph10">
-          <div id="domains-list">
             <ol class="domain-list">
               <li class="domain-item">
+              <a data-toggle="collapse" href="#domainsList" aria-expanded="false" aria-controls="domainsList">
                 <div class="domain-title">
-                 <a data-toggle="collapse" href="#domainsList" aria-expanded="false" aria-controls="domainsList"><span class="fa fa-plus"></span></a> extremefitness.org
-                 <span class="domain-notification-label fs11 fw600 pull-right label label-xs label-success ml5">Deployed</span>
+                  <span class="collapse-icon fa fa-plus"></span> extremefitness.org
+                  <span class="domain-controls">
+                    <span class="domain-notification-label fs11 fw600 pull-right label label-xs label-success ml5">Deployed</span>
+                  </span>
+                  <small class="pull-right fs10 mr15">Last Deployed 8/26/15 at 2:34pm</small>
                 </div>
-                
+                </a>
                 <div id="domainsList" class="collapse">
                   <ol class="campaign-list pb15">
                     <li class="campaign-item">
-                      <div class="campaign-title">
-                        <a data-toggle="collapse" href="#campaignsList" aria-expanded="false" aria-controls="campaignsList"><span class="fa fa-plus"></span></a>Campaign 1
-                      </div>
+                      <a data-toggle="collapse" href="#campaignsList" aria-expanded="false" aria-controls="campaignsList">
+                        <div class="campaign-title">
+                          <span class="collapse-icon fa fa-plus"></span>Campaign 1
+                          <span class="campaign-controls">
+                            <i class="campaign-notification-label fa fa-circle text-success pull-right fs12 pr5"></i>
+                          </span>
+                        </div>
+                      </a>
                       <div id="campaignsList" class="collapse">
                         <ol class="lander-list pb15">
                           <li class="lander-item">
@@ -272,17 +280,26 @@
                 </div>
               </li>
               <li class="domain-item">
-                <div class="domain-title">
-                 <a data-toggle="collapse" href="#domainsList1" aria-expanded="false" aria-controls="domainsList1"><span class="fa fa-plus"></span></a> hardbodiesandboners.com
-                 <span class="domain-notification-label fs11 fw600 pull-right label label-xs label-warning ml5">Deploying...</span>
-                </div>
+                <a data-toggle="collapse" href="#domainsList1" aria-expanded="false" aria-controls="domainsList1">
+                  <div class="domain-title">
+                    <span class="collapse-icon fa fa-plus"></span> hardbodiesandboners.com
+                    <span class="domain-controls">
+                      <span class="domain-notification-label fs11 fw600 pull-right label label-xs label-warning ml5">Deploying...</span>
+                    </span>
+                    <small class="pull-right fs10 mr15">Last Deployed 8/26/15 at 2:34pm</small>
+                  </div>
+                </a>
                 <div id="domainsList1" class="collapse">
                   <ol class="campaign-list pb15">
                     <li class="campaign-item">
-                      <div class="campaign-title">
-                        <a data-toggle="collapse" href="#campaignsList2" aria-expanded="false" aria-controls="campaignsList2"><span class="fa fa-plus"></span></a>Adult2 US camp
-                        <i class="pull-right fa fa-exclamation-circle text-warning fa-lg pr10"></i>
-                      </div>
+                      <a data-toggle="collapse" href="#campaignsList2" aria-expanded="false" aria-controls="campaignsList2">
+                        <div class="campaign-title">
+                          <span class="collapse-icon fa fa-plus"></span>Adult2 US camp
+                          <span class="campaign-controls">
+                            <i class="campaign-notification-label fa fa-circle text-success pull-right fs12 pr5"></i>
+                          </span>
+                        </div>
+                      </a>
                       <div id="campaignsList2" class="collapse">
                         <ol class="lander-list pb15">
                           <li class="lander-item">
@@ -294,9 +311,14 @@
                       </div>
                     </li>
                     <li class="campaign-item">
-                      <div class="campaign-title">
-                        <a data-toggle="collapse" href="#campaignsList1" aria-expanded="false" aria-controls="campaignsList1"><span class="fa fa-plus"></span></a>Bone Dawg Camp3
-                      </div>
+                      <a data-toggle="collapse" href="#campaignsList1" aria-expanded="false" aria-controls="campaignsList1">
+                        <div class="campaign-title">
+                          <span class="collapse-icon fa fa-plus"></span>Bone Dawg Camp3
+                          <span class="campaign-controls">
+                            <i class="campaign-notification-label fa fa-circle text-warning pull-right fs12 pr5"></i>
+                          </span>
+                        </div>
+                      </a>
                       <div id="campaignsList1" class="collapse">
                         <ol class="lander-list pb15">
                           <li class="lander-item">
@@ -391,47 +413,47 @@
 
     // temp js to show usage.
     $('#domainsList').on('show.bs.collapse', function() {
-      $('a[href="#domainsList"] span').addClass('fa-minus').removeClass('fa-plus');
+      $('a[href="#domainsList"] span:first').addClass('fa-minus').removeClass('fa-plus');
     });
 
     $('#domainsList').on('hidden.bs.collapse', function() {
       if(!(($("#domainsList").attr("aria-expanded")  === "true"))) {
-        $('a[href="#domainsList"] span').addClass('fa-plus').removeClass('fa-minus');
+        $('a[href="#domainsList"] span:first').addClass('fa-plus').removeClass('fa-minus');
       }
     });
 
     $('#campaignsList').on('shown.bs.collapse', function() {
-      $('a[href="#campaignsList"] span').addClass('fa-minus').removeClass('fa-plus');
+      $('a[href="#campaignsList"] span:first').addClass('fa-minus').removeClass('fa-plus');
     });
 
     $('#campaignsList').on('hidden.bs.collapse', function() {
-      $('a[href="#campaignsList"] span').addClass('fa-plus').removeClass('fa-minus');
+      $('a[href="#campaignsList"] span:first').addClass('fa-plus').removeClass('fa-minus');
     });
 
      $('#domainsList1').on('show.bs.collapse', function() {
-      $('a[href="#domainsList1"] span').addClass('fa-minus').removeClass('fa-plus');
+      $('a[href="#domainsList1"] span:first').addClass('fa-minus').removeClass('fa-plus');
     });
 
     $('#domainsList1').on('hidden.bs.collapse', function() {
       if(!(($("#domainsList1").attr("aria-expanded")  === "true"))) {
-        $('a[href="#domainsList1"] span').addClass('fa-plus').removeClass('fa-minus');
+        $('a[href="#domainsList1"] span:first').addClass('fa-plus').removeClass('fa-minus');
       }
     });
 
     $('#campaignsList1').on('shown.bs.collapse', function() {
-      $('a[href="#campaignsList1"] span').addClass('fa-minus').removeClass('fa-plus');
+      $('a[href="#campaignsList1"] span:first').addClass('fa-minus').removeClass('fa-plus');
     });
 
     $('#campaignsList1').on('hidden.bs.collapse', function() {
-      $('a[href="#campaignsList1"] span').addClass('fa-plus').removeClass('fa-minus');
+      $('a[href="#campaignsList1"] span:first').addClass('fa-plus').removeClass('fa-minus');
     });
 
     $('#campaignsList2').on('shown.bs.collapse', function() {
-      $('a[href="#campaignsList2"] span').addClass('fa-minus').removeClass('fa-plus');
+      $('a[href="#campaignsList2"] span:first').addClass('fa-minus').removeClass('fa-plus');
     });
 
     $('#campaignsList2').on('hidden.bs.collapse', function() {
-      $('a[href="#campaignsList2"] span').addClass('fa-plus').removeClass('fa-minus');
+      $('a[href="#campaignsList2"] span:first').addClass('fa-plus').removeClass('fa-minus');
     });
 
     $("label[data-action='expand-all']").click(function(){
