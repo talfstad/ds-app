@@ -168,19 +168,6 @@
             <li class="crumb-trail">Manage your domains, campaigns, and landers</li>
           </ol>
         </div>
-      <!--   <div class="topbar-right">
-          
-        </div> -->
-
-        <div class="topbar-right hidden-xs hidden-sm">
-          <!-- <a href="#" class="btn btn-default btn-sm light fw600 ml10">
-            <span class="fa fa-plus pr5"></span> Collapse All </a>
-          <a href="#" class="btn btn-default btn-sm light fw600 ml10">
-            <span class="fa fa-check pr5"></span> Open All </a> -->
-          
-          
-        </div>
-
       </header>
 
       <header id="topbar" class="ph10" data-spy="affix" data-offset-top="60">
@@ -194,14 +181,20 @@
 
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
-                <input type="radio" id="radioExample3" name="radioExample">
-                <label class="ml5" for="radioExample3">Domain</label>
+                <input type="radio" id="domain" name="radioExample">
+                <label class="ml5" for="domain">Domain</label>
               </a>
             </li>
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
-                <input type="radio" id="radioExample2" name="radioExample">
-                <label class="ml5" for="radioExample2">Date Added</label>
+                <input type="radio" id="date-added" name="radioExample">
+                <label class="ml5" for="date-added">Date Added</label>
+              </a>
+            </li>
+            <li>
+              <a class="pl5 radio-custom radio-primary" href="#">
+                <input type="radio" id="domain-status" name="radioExample">
+                <label class="ml5" for="domain-status">Domain Status</label>
               </a>
             </li>
             <li class="divider">
@@ -229,9 +222,18 @@
 
 
         <div class="topbar-right hidden-xs hidden-sm">
-           <a href="#" class="toggle_sidemenu_r btn btn-default btn-sm light fw600 ml10">
-            <span class="fa fa-plus pr5"></span> Add Domain </a>
+          <div class="btn-group" data-toggle="buttons">
+            <label data-action="collapse-all" class="btn btn-default btn-sm light fw600 active">
+              <input type="radio" name="options" id="option1" autocomplete="off" checked="">Collapse All
+            </label>
+            <label data-action="expand-all" class="btn btn-default btn-sm light fw600">
+              <input type="radio" name="options" id="option2" autocomplete="off">Expand All
+            </label>
+          </div>
 
+          <a href="#" class="toggle_sidemenu_r btn btn-default btn-sm light fw600 ml10">
+            <span class="fa fa-plus pr5"></span> Add Domain 
+          </a>
         </div>
       </header>
       <!-- End: Topbar -->
@@ -247,8 +249,9 @@
               <li class="domain-item">
                 <div class="domain-title">
                  <a data-toggle="collapse" href="#domainsList" aria-expanded="false" aria-controls="domainsList"><span class="fa fa-plus"></span></a> extremefitness.org
-                  <span class="pull-right fs11 fw600">Approved</span>
+                 <span class="domain-notification-label fs11 fw600 pull-right label label-xs label-success ml5">Deployed</span>
                 </div>
+                
                 <div id="domainsList" class="collapse">
                   <ol class="campaign-list pb15">
                     <li class="campaign-item">
@@ -271,13 +274,14 @@
               <li class="domain-item">
                 <div class="domain-title">
                  <a data-toggle="collapse" href="#domainsList1" aria-expanded="false" aria-controls="domainsList1"><span class="fa fa-plus"></span></a> hardbodiesandboners.com
-                  <span class="pull-right fs11 fw600">Approved</span>
+                 <span class="domain-notification-label fs11 fw600 pull-right label label-xs label-warning ml5">Deploying...</span>
                 </div>
                 <div id="domainsList1" class="collapse">
                   <ol class="campaign-list pb15">
                     <li class="campaign-item">
                       <div class="campaign-title">
                         <a data-toggle="collapse" href="#campaignsList2" aria-expanded="false" aria-controls="campaignsList2"><span class="fa fa-plus"></span></a>Adult2 US camp
+                        <i class="pull-right fa fa-exclamation-circle text-warning fa-lg pr10"></i>
                       </div>
                       <div id="campaignsList2" class="collapse">
                         <ol class="lander-list pb15">
@@ -428,6 +432,19 @@
 
     $('#campaignsList2').on('hidden.bs.collapse', function() {
       $('a[href="#campaignsList2"] span').addClass('fa-plus').removeClass('fa-minus');
+    });
+
+    $("label[data-action='expand-all']").click(function(){
+      $(".collapse").collapse('show');
+    });
+
+    $("label[data-action='collapse-all']").click(function(){
+      $(".collapse").collapse('hide');
+    });
+
+    //needed to init correctly. avoids initial toggle on button click (expand/collapse all)
+    $(".collapse").collapse({
+      toggle: false
     });
 
     

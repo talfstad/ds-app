@@ -93,6 +93,14 @@ body.sb-l-o #topbar.affix,
 	padding-left: 0;
 }
 
+.domain-list > li:first-child {
+    margin-top: 0px;
+}
+
+.domain-list > li {
+    margin-top: 10px;
+}
+
 
 .domain-title {
 	display: block;
@@ -108,7 +116,6 @@ body.sb-l-o #topbar.affix,
     border-radius: 2px;
     font-size: 13px;
     line-height: 20px;
-
     color: #FFF;
     background-color: #4a89dc !important;
     border-color: #4a89dc !important;
@@ -183,7 +190,11 @@ body.sb-l-o #topbar.affix,
     border-radius: 2px;
 }
 
-/*.collapsing {
-    -webkit-transition: none;
-    transition: none;
-}*/
+#sidebar_left {
+    background-color: #333;
+}
+
+
+.domain-notification-label {
+    line-height: inherit;
+}
