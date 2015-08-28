@@ -77,6 +77,22 @@ var Core = function(options) {
          triggerResize();
       };
 
+      var sidebarRightOpen = function() {
+
+         // If sidebar is set to Horizontal we return
+         if ($('body.sb-top').length) { return; }
+
+         // toggle sidebar state(open/close)
+         // if (options.siblingRope === true && !Body.hasClass('mobile-view') && Body.hasClass('sb-r-o')) {
+         //    Body.toggleClass('sb-r-o sb-r-c').toggleClass(options.collapse);
+         // }
+         if(!Body.hasClass('sb-r-o')) {
+            Body.addClass('sb-r-o').removeClass("sb-r-c");
+            triggerResize();
+         }
+         
+      };
+
       // SideBar Left Toggle Function
       var sidebarTopToggle = function() {
          
@@ -202,6 +218,7 @@ var Core = function(options) {
       $("#toggle_sidemenu_t").on('click', sidebarTopToggle);
       $("#toggle_sidemenu_l").on('click', sidebarLeftToggle);
       $(".toggle_sidemenu_r").on('click', sidebarRightToggle);
+      $(".open_sidemenu_r").on('click', sidebarRightOpen);
 
       // Attach debounced resize handler
       var rescale = function() {
@@ -700,7 +717,7 @@ var Core = function(options) {
 
          // Set Default Options
          var defaults = {
-            sbl: "sb-l-o", // sidebar left open onload 
+            // sbl: "sb-l-o", // sidebar left open onload 
             sbr: "sb-r-c", // sidebar right closed onload
             sbState: "save", //Enable localstorage for sidebar states
 

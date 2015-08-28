@@ -22,8 +22,12 @@ app.engine('html', hbs.__express);
 
 app.use(express.static(__dirname + '/../public'));
 
-module.exports = app;
+app.get("*", function(req, res) {
+    res.render('index'/*, { csrfToken: req.csrfToken() }*/);
+});
 
 http.createServer(app).listen(config.port, function(){
     console.log('Express server listening on port ' + config.port);
 });
+
+module.exports = app;

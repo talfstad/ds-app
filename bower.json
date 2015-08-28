@@ -1,0 +1,21 @@
+{
+  "name": "MoonLander",
+  "version": "1.0.0",
+  "authors": [
+    "Troy Jaeger",
+    "Trevor Alfstad"
+  ],
+  "homepage": "www.buildcave.com",
+  "dependencies": {
+    "bootstrap": "3.3.5",
+    "jquery": "2.1.4",
+    "jquery-ui": "1.11.4",
+    "underscore": "1.8.3",
+    "backbone": "1.2.1",
+    "backbone.marionette": "2.4.2",
+    "requirejs": "2.1.20",
+    "requirejs-text": "2.0.14",
+    "requirejs-underscore-tpl": "824a9c4e9e",
+    "json2": "c98948ae19"
+  }
+}

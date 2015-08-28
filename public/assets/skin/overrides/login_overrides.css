@@ -1,0 +1,7 @@
+.heading-border {
+	padding: 10px 10px 0 !important;
+}
+
+body.external-page #main {
+	background: url("../../img/login/buildcave_bg.png") no-repeat bottom 30px right 30px #232323 !important;
+}
