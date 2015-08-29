@@ -1,7 +1,8 @@
 define(["app", 
-  "assets/js/apps/moonlander/entry_point/entry_controller.js"], 
+  "assets/js/apps/moonlander/entry_point/entry_controller.js",
+  "assets/js/apps/user/session/session_helpers.js"], 
 
-  function(Moonlander, EntryController){
+  function(Moonlander, EntryController, SessionHelpers){
 
   Moonlander.module("EntryApp", function(EntryApp, Moonlander, Backbone, Marionette, $, _){
     EntryApp.startWithParent = false;
@@ -18,8 +19,12 @@ define(["app",
     });
 
     var executeControllerAction = function(action, arg){
-      Moonlander.startSubApp("EntryApp");
-      action(arg);
+      if(SessionHelpers.isLoggedIn()){
+        Moonlander.startSubApp("EntryApp");
+        action(arg);
+      } else{
+        Moonlander.UserApp.app.execute("show:login");
+      }
     };
     
     var entryAppAPI = {

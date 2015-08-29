@@ -1,4 +1,4 @@
-define(["app"], function(Moonlander){
+define(["app", "assets/js/apps/user/login/login_controller.js"], function(Moonlander, LoginController){
   Moonlander.module("UserApp", function(UserApp, Moonlander, Backbone, Marionette, $, _){
     UserApp.startWithParent = false;
   });
@@ -6,7 +6,7 @@ define(["app"], function(Moonlander){
   Moonlander.module("Routers.UserApp", function(UserApp, Moonlander, Backbone, Marionette, $, _){
     UserApp.Router = Marionette.AppRouter.extend({
       appRoutes: {
-        "login": "login",
+        "login": "showLogin",
         "logout": "logout"
       }
     });
@@ -17,22 +17,18 @@ define(["app"], function(Moonlander){
     };
 
     var userAppAPI = {
-      login: function(criterion){
-      
+      showLogin: function(){
+        Moonlander.navigate("login");
+        executeControllerAction(LoginController.showLogin);
       },
 
-      logout: function(criterion){
+      logout: function(){
       
       }
     };
 
-    Moonlander.on("user:show:login", function(callback){
-      Moonlander.navigate("login");
-      UserAppAPI.login();
-    });
-
-    Moonlander.on("user:logout", function(callback){
-      checkAuth(API.logout);
+    Moonlander.commands.setHandler("show:login", function(){
+      userAppAPI.showLogin();
     });
 
     Moonlander.addInitializer(function(){
