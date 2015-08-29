@@ -10,9 +10,25 @@ requirejs.config({
     text: "/vendor/bower_installed/requirejs-text/text",
     tpl: "/vendor/bower_installed/requirejs-underscore-tpl/underscore-tpl",
     underscore: "/vendor/bower_installed/underscore/underscore",
-    json2: "/vendor/bower_installed/json2/json2"
+    json2: "/vendor/bower_installed/json2/json2",
+    canvasbg: "/vendor/plugins/canvasbg/canvasbg", // CanvasBG Plugin(creates mousehover effect)
+    "theme-utility": "/assets/js/utility/utility",
+    "theme-demo": "/assets/js/demo/demo",
+    "theme-main": "/assets/js/main"
   },
   shim: {
+    "theme-utility": {
+      deps: ['jquery', 'jquery-ui']
+    },
+    "theme-demo": {
+      deps: ['jquery', 'jquery-ui']
+    },
+    "theme-main": {
+      deps: ['jquery', 'jquery-ui']
+    },
+    canvasbg: {
+      deps: ['jquery']
+    },
     bootstrap: {
       deps: ['jquery']
     },
@@ -28,7 +44,7 @@ requirejs.config({
       exports: "Marionette"
     },
     "jquery-ui": ["jquery"],
-    tpl: ["text"]
+    tpl: ["text", "underscore"]
   }
 });
 

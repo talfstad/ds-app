@@ -14,7 +14,8 @@ define(["app",
         "": "domains",
         "domains": "domains",
         "campaigns": "campaigns",
-        "landers": "landers"
+        "landers": "landers",
+        "*notFound": "domains"
       }
     });
 
@@ -49,5 +50,3 @@ define(["app",
 
   return Moonlander.EntryApp;
 });
-
-
