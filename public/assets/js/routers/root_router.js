@@ -4,7 +4,7 @@
 
 define(["app", "/assets/js/routers/moonlander_router.js", 
         "/assets/js/routers/login_router.js",
-        "/assets/js/user/session_helpers.js"],
+        "/assets/js/apps/user/session/session_helpers.js"],
   function(Moonlander, MoonlanderRouter, LoginRouter, SessionHelpers){
 
   Moonlander.module("Routers", function(Routers, Moonlander, Backbone, Marionette, $, _){

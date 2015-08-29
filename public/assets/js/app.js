@@ -1,4 +1,7 @@
-define(["marionette", "assets/js/user/session_model.js"], function(Marionette, SessionModel){
+define(["marionette", 
+        "assets/js/apps/user/session/session_model.js"], 
+function(Marionette, SessionModel){
+
   var Moonlander = new Marionette.Application();
 
   Moonlander.session = new SessionModel({});
@@ -31,9 +34,11 @@ define(["marionette", "assets/js/user/session_model.js"], function(Marionette, S
   };
 
   Moonlander.on("start", function(){
-    if(Backbone.history){
-      require(["/assets/js/routers/root_router.js"], function () {
-        
+    
+    require(["assets/js/apps/user/user_app.js", 
+             "assets/js/apps/moonlander/entry_point/entry_app.js"], 
+    function () {
+      if(Backbone.history){
         if(history.pushState) {
           Backbone.history.start({
             pushState: true
@@ -55,8 +60,8 @@ define(["marionette", "assets/js/user/session_model.js"], function(Marionette, S
             return jqXHR.setRequestHeader('X-CSRF-Token', token);
           }
         });
-      });
-    }
+      }
+    });
   });
 
   return Moonlander;
