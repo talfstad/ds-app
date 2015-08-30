@@ -1,10 +1,8 @@
 var passport;
 
-module.exports = function(app) {
-
+exports.initialize = function(app, db) {
   passport = require('passport');
   var Strategy = require('passport-local').Strategy;
-
 
   // Configure the local strategy for use by Passport.
   //
@@ -54,10 +52,11 @@ module.exports = function(app) {
   // session.
   app.use(passport.initialize());
   app.use(passport.session());
-}
+};
 
 exports.authenticate = function() {
-  passport.authenticate('local', {
-    failureRedirect: '/login'
+  return passport.authenticate('local', {
+    failureRedirect: '/login',
+    failureFlash: true
   })
-}
+};
