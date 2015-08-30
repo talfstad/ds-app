@@ -1,15 +1,25 @@
 define(["app",
         "tpl!/assets/js/apps/user/login/templates/login_view.tpl",
         "canvasbg",
-        "theme-utility",
-        "theme-demo",
-        "theme-main"],
+        "theme.utility",
+        "theme.demo",
+        "theme.main",
+        "backbone.validation"],
 function(Moonlander, loginViewTpl){
   Moonlander.module("UserApp.Login", function(Login, Moonlander, Backbone, Marionette, $, _){
     
     Login.showLogin = Marionette.ItemView.extend({
       id: "login-container",
       template: loginViewTpl,
+
+      events: {
+        'click #sign-in-button': 'submitLoginForm',
+      },
+
+      submitLoginForm: function(e){
+        e.preventDefault();
+        this.trigger("login:form:submit");
+      },
 
       onDomRefresh: function(){
         "use strict";

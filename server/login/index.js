@@ -1,4 +1,5 @@
 var passport;
+var ensure = require('connect-ensure-login');
 
 exports.initialize = function(app, db) {
   passport = require('passport');
@@ -55,8 +56,49 @@ exports.initialize = function(app, db) {
 };
 
 exports.authenticate = function() {
-  return passport.authenticate('local', {
-    failureRedirect: '/login',
-    failureFlash: true
-  })
-};
+
+  return function(req, res, next) {
+    req.moonlander = {};
+    passport.authenticate('local', function(err, user, info) {
+      if (!user) {
+        res.json({
+          logged_in: {
+            status: user
+          }
+        });
+        return;
+      }
+
+      if (err) {
+        res.json({
+          logged_in: {
+            status: err
+          }
+        });
+        return;
+      }
+
+      //if we're here we're authenticated
+      req.logIn(user, function(err) {
+        if (err) {
+          res.json({
+            logged_in: {
+              status: err
+            }
+          });
+          return;
+        }
+        req.moonlander.login = {
+          status: true,
+          username: user
+        };
+        return next();
+      });
+    })(req, res, next);
+  }
+
+}
+
+exports.ensureLoggedIn = function() {
+  return ensure.ensureLoggedIn();
+}

@@ -19,7 +19,7 @@
 
             <div class="col-xs-6 va-m pln">
               <a href="dashboard.html" title="Return to Dashboard">
-                <img src="assets/img/logos/logo_white.png" title="AdminDesigns Logo" class="img-responsive w250">
+                <img src="assets/img/logos/moonlanderlogo.png" title="AdminDesigns Logo" class="img-responsive w250">
               </a>
             </div>
 
@@ -40,7 +40,7 @@
             <div class="panel-heading heading-border"></div>
 
             <!-- end .form-header section -->
-            <form method="post" action="/" id="contact">
+            <form id="login-form">
               <div class="panel-body bg-light p30">
                 <div class="row">
                   <div class="col-sm-7 pr30">
@@ -83,7 +83,7 @@
               </div>
               <!-- end .form-body section -->
               <div class="panel-footer clearfix p10 ph15">
-                <button type="submit" class="button btn-primary mr10 pull-right">Sign In</button>
+                <button id="sign-in-button" type="submit" class="button btn-primary mr10 pull-right">Sign In</button>
                 <label class="switch ib switch-primary pull-left input-align mt10">
                   <input type="checkbox" name="remember" id="remember" checked>
                   <label for="remember" data-on="YES" data-off="NO"></label>
