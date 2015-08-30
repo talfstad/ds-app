@@ -39,5 +39,3 @@ function(Moonlander, loginViewTpl){
 
   return Moonlander.UserApp.Login;
 });
-
-

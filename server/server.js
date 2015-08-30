@@ -9,10 +9,15 @@ var methodOverride = require('method-override');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 
+//user defined dependencies
 var config = require("./config");
+var db = require("./db_api");
+var login = require("./login")(app);
 
 app.use(methodOverride());
-app.use(bodyParser.json({limit: '20mb'}));   
+app.use(require('cookie-parser')());
+app.use(bodyParser.json({limit: '20mb'}));
+app.use(require('express-session')({ secret: config.cookieSecret, resave: false, saveUninitialized: false }));
 app.use(bodyParser.urlencoded({limit: '20mb', extended: true }));  // parse application/x-www-form-urlencoded
 app.use(multer());
 
