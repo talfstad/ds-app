@@ -13,8 +13,13 @@ function(Moonlander, LoginView, LoginModel){
 
           loginView.on("login:form:submit", function(){
             var successLoginCallback = function(model, message, other) {
-               Moonlander.navigate('domains');
-               
+
+
+              // TODO: Moonlander.login.fetch() <- this calls out to get whether or not we're logged in from the server!!!
+              // need to implement it on domains:list which needs to be started
+
+
+              Moonlander.trigger("domains:list");
             };
             var errorLoginCallback = function(model, message, other) {
               //something happened on submit that is out of our control

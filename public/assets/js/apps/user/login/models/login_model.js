@@ -1,6 +1,6 @@
 define(["app"], function(Moonlander){
 var LoginModel = Backbone.Model.extend({
-      urlRoot: "/login",
+      urlRoot: "/api/login",
 
       defaults: {
         username: "",

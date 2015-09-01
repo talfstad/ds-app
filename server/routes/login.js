@@ -1,6 +1,6 @@
 exports.initialize = function(app, db, login) {
 
-  app.post("/login", login.authenticate(), function(req, res) {
+  app.post("/api/login", login.authenticate(), function(req, res) {
     //this is only executed if login succeeded
     if (req.body.remember) {
       req.session.cookie.maxAge = 1000 * 60 * 3;
@@ -12,12 +12,7 @@ exports.initialize = function(app, db, login) {
     });
   });
 
-  app.get('/logout', function(req, res) {
-    req.logout();
-    res.redirect('/');
-  });
-
-  app.get('/login/check', function(req, res){
+  app.get('/api/login', function(req, res){
     if (req.user) {
         // logged in
         res.json({logged_in: true});
@@ -27,7 +22,12 @@ exports.initialize = function(app, db, login) {
     }
   });
 
-  app.post("/login/signup", function(req, res) {
+  app.get('/api/logout', function(req, res) {
+    req.logout();
+    res.redirect('/');
+  });
+
+  app.post("/api/login/signup", function(req, res) {
     db.users.addUser(req, res);
   });
 
