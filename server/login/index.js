@@ -15,14 +15,11 @@ exports.initialize = function(app, db) {
   // will be set at `req.user` in route handlers after authentication.
   passport.use(new Strategy(
     function(username, password, cb) {
-      db.users.findByUsername(username, function(err, user) {
+      db.users.findByUsername(username, password, function(err, user) {
         if (err) {
           return cb(err);
         }
         if (!user) {
-          return cb(null, false);
-        }
-        if (user.password != password) {
           return cb(null, false);
         }
         return cb(null, user);
@@ -43,7 +40,6 @@ exports.initialize = function(app, db) {
 
   passport.deserializeUser(function(id, cb) {
     db.users.findById(id, function(err, user) {
-
       if (err) {
         return cb(err);
       }

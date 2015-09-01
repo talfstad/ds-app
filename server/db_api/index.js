@@ -6,4 +6,4 @@ var db = mysql.createConnection(config.dbConnectionInfo);
 db.connect();
 
 
-exports.users = require('./users');
+exports.users = require('./users')(db);

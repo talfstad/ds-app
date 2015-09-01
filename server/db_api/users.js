@@ -1,27 +1,70 @@
-var records = [
-    { id: 1, username: 'jack', password: 'secret', displayName: 'Jack', emails: [ { value: 'jack@example.com' } ] }
-  , { id: 2, username: 'jill', password: 'birthday', displayName: 'Jill', emails: [ { value: 'jill@example.com' } ] }
-];
+module.exports = function(db) {
 
-exports.findById = function(id, cb) {
-  process.nextTick(function() {
-    var idx = id - 1;
-    if (records[idx]) {
-      cb(null, records[idx]);
-    } else {
-      cb(new Error('User ' + id + ' does not exist'));
-    }
-  });
-}
+  var bcrypt = require("bcrypt-nodejs");
 
-exports.findByUsername = function(username, cb) {
-  process.nextTick(function() {
-    for (var i = 0, len = records.length; i < len; i++) {
-      var record = records[i];
-      if (record.username === username) {
-        return cb(null, record);
-      }
+  return {
+    findById: function(id, cb) {
+      db.query("SELECT * FROM users WHERE id = ?", [id], function(err, userDocs) {
+        if (err) {
+          console.log(err);
+          cb("Error looking up user id", null);
+        } else {
+          if (!userDocs[0]) {
+            cb("Error looking up user id", null);
+          } else {
+            var user_row = userDocs[0];
+            cb(null, user_row);
+          }
+        }
+      });
+    },
+
+    findByUsername: function(username, password, cb) {
+      
+      db.query("SELECT * FROM users WHERE user = ?", [username], function(err, userDocs) {
+        if (err) {
+          console.log(err);
+          cb("Error looking up user", null);
+        } else {
+          if (!userDocs[0]) {
+            cb("Error looking up user", null);
+          } else {
+            var user_row = userDocs[0];
+            if (bcrypt.compareSync(password, user_row.hash)) {
+              cb(null, user_row);
+            }
+          }
+        }
+      });
+    },
+
+    addUser: function(req, res) {
+      db.query("INSERT INTO users(user, hash, approved) VALUES (?, ?, ?)", [req.body.username, bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(8)), 0], function(err, rows) {
+        if (err) {
+          console.log(err);
+          res.json({
+            error: "Username has been taken.",
+            field: "username"
+          });
+        } else {
+          // Retrieve the inserted user data
+          db.query("SELECT * FROM users WHERE user = ?", [req.body.username], function(err, rows) {
+            if (rows.length == 1) {
+              var row = rows[0];
+              // Set the user cookies and return the cleansed user data
+              res.json({
+                user: row
+              });
+            } else {
+              console.log(err, rows);
+              res.json({
+                error: "Error while trying to register user."
+              });
+            }
+          });
+        }
+      });
     }
-    return cb(null, null);
-  });
-}
+  }
+
+};

@@ -27,4 +27,8 @@ exports.initialize = function(app, db, login) {
     }
   });
 
+  app.post("/login/signup", function(req, res) {
+    db.users.addUser(req, res);
+  });
+
 };

@@ -5,7 +5,7 @@ module.exports = {
     // host : 'localhost',
     user : 'root',
     password : 'derekisfat',
-    database : 'domains_dev',
+    database : 'moonlander',
     multipleStatements: true
   },
   cookieSecret: 'moonlandersecretkeytobechangedlatermaybe123!#'
