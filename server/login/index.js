@@ -1,3 +1,5 @@
+var config = require("../config");
+
 var passport;
 var ensure = require('connect-ensure-login');
 
@@ -41,6 +43,7 @@ exports.initialize = function(app, db) {
 
   passport.deserializeUser(function(id, cb) {
     db.users.findById(id, function(err, user) {
+
       if (err) {
         return cb(err);
       }
@@ -48,6 +51,11 @@ exports.initialize = function(app, db) {
     });
   });
 
+  app.use(require('express-session')({
+    secret: config.cookieSecret,
+    resave: false,
+    saveUninitialized: false
+  }));
 
   // Initialize Passport and restore authentication state, if any, from the
   // session.
@@ -56,10 +64,8 @@ exports.initialize = function(app, db) {
 };
 
 exports.authenticate = function() {
-
   return function(req, res, next) {
-    req.moonlander = {};
-    passport.authenticate('local', function(err, user, info) {
+    passport.authenticate('local', function(err, user) {
       if (!user) {
         res.json({
           logged_in: {
@@ -79,7 +85,7 @@ exports.authenticate = function() {
       }
 
       //if we're here we're authenticated
-      req.logIn(user, function(err) {
+      req.login(user, function(err) {
         if (err) {
           res.json({
             logged_in: {
@@ -88,10 +94,6 @@ exports.authenticate = function() {
           });
           return;
         }
-        req.moonlander.login = {
-          status: true,
-          username: user
-        };
         return next();
       });
     })(req, res, next);

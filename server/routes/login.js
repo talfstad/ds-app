@@ -16,4 +16,15 @@ exports.initialize = function(app, db, login) {
     req.logout();
     res.redirect('/');
   });
+
+  app.get('/login/check', function(req, res){
+    if (req.user) {
+        // logged in
+        res.json({logged_in: true});
+    } else {
+        // not logged in
+        res.json({logged_in: false});
+    }
+  });
+
 };

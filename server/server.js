@@ -11,6 +11,9 @@ var multer = require('multer');
 
 var config = require("./config");
 var db = require("./db_api");
+
+
+
 var login = require("./login");
 login.initialize(app, db);
 
@@ -21,11 +24,7 @@ app.use(bodyParser.json({
   limit: '20mb'
 }));
 
-app.use(require('express-session')({
-  secret: config.cookieSecret,
-  resave: false,
-  saveUninitialized: false
-}));
+
 
 app.use(bodyParser.urlencoded({
   limit: '20mb',

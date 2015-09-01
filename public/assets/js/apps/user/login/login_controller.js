@@ -6,7 +6,9 @@ function(Moonlander, LoginView, LoginModel){
     Login.Controller = {
       
       showLogin: function(id){
-          var loginView = new LoginView.showLogin({model: new LoginModel});
+          Moonlander.login = new LoginModel();
+          
+          var loginView = new LoginView.showLogin({model: Moonlander.login});
           Moonlander.rootRegion.show(loginView);
 
           loginView.on("login:form:submit", function(){

@@ -1,10 +1,7 @@
-define(["marionette", 
-        "assets/js/apps/user/session/session_model.js"], 
-function(Marionette, SessionModel){
+define(["marionette"], 
+function(Marionette){
 
   var Moonlander = new Marionette.Application();
-
-  Moonlander.session = new SessionModel({});
 
   Moonlander.addRegions({
     rootRegion: "#root-region"
