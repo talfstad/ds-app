@@ -17,7 +17,7 @@ exports.initialize = function(app, db) {
     function(username, password, cb) {
       db.users.findByUsername(username, password, function(err, user) {
         if (err) {
-          return cb(err);
+          return cb(false);
         }
         if (!user) {
           return cb(null, false);
@@ -64,18 +64,14 @@ exports.authenticate = function() {
     passport.authenticate('local', function(err, user) {
       if (!user) {
         res.json({
-          logged_in: {
-            status: user
-          }
+          logged_in: user
         });
         return;
       }
 
       if (err) {
         res.json({
-          logged_in: {
-            status: err
-          }
+          logged_in: err
         });
         return;
       }
@@ -84,9 +80,7 @@ exports.authenticate = function() {
       req.login(user, function(err) {
         if (err) {
           res.json({
-            logged_in: {
-              status: err
-            }
+            logged_in: err
           });
           return;
         }

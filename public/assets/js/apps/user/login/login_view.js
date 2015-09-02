@@ -1,16 +1,21 @@
 define(["app",
         "tpl!/assets/js/apps/user/login/templates/login_view.tpl",
+        "/assets/js/common/validation.js",
+        "/assets/js/common/notification.js",
         "canvasbg",
         "theme.utility",
         "theme.demo",
-        "theme.main",
-        "backbone.validation"],
-function(Moonlander, loginViewTpl){
+        "theme.main"],
+function(Moonlander, LoginViewTpl, Validation, Notification){
   Moonlander.module("UserApp.Login", function(Login, Moonlander, Backbone, Marionette, $, _){
     
     Login.showLogin = Marionette.ItemView.extend({
       id: "login-container",
-      template: loginViewTpl,
+      template: LoginViewTpl,
+
+      initialize: function(){
+        Validation.bindView(this);
+      },
 
       events: {
         'click #sign-in-button': 'submitLoginForm',
@@ -19,6 +24,17 @@ function(Moonlander, loginViewTpl){
       submitLoginForm: function(e){
         e.preventDefault();
         this.trigger("login:form:submit");
+      },
+
+      showInvalidUserPassError: function(){
+        $(".admin-form").removeClass("theme-info").addClass("theme-danger");
+        $(".panel").removeClass("panel-info").addClass("panel-danger");
+        Notification("Username/Password", "Please try again", "danger", "stack_top_right");
+      },
+
+      hideInvalidUserPassError: function(){
+        $(".theme-info").removeClass("theme-danger").addClass("theme-info");
+        $(".theme-panel").removeClass("panel-danger").addClass("panel-info");
       },
 
       onDomRefresh: function(){

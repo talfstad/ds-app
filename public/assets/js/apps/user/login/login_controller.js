@@ -13,13 +13,16 @@ function(Moonlander, LoginView, LoginModel){
 
           loginView.on("login:form:submit", function(){
             var successLoginCallback = function(model, message, other) {
-
-
-              // TODO: Moonlander.login.fetch() <- this calls out to get whether or not we're logged in from the server!!!
-              // need to implement it on domains:list which needs to be started
-
-
-              Moonlander.trigger("domains:list");
+              if(model.get("logged_in")) {
+                // TODO: Moonlander.login.fetch() <- this calls out to get whether or not we're logged in from the server!!!
+                // need to implement it on domains:list which needs to be started
+                
+                //call domains:list from here mate!
+                Moonlander.trigger("domains:list");
+              } else {
+                //show invalid login error
+                loginView.showInvalidUserPassError();
+              }
             };
             var errorLoginCallback = function(model, message, other) {
               //something happened on submit that is out of our control

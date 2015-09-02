@@ -9,3 +9,19 @@ body.external-page #main {
 #root-region, #login-container {
 	height: inherit;
 }
+
+span.help-block {
+	display: inline;
+}
+
+.has-error .field-label {
+	color: #df5640 !important;
+}
+
+.has-error input {
+	border-color: #e67d6c !important;
+}
+
+.has-error .field-icon i {
+	color: #df5640 !important;
+}

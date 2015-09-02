@@ -25,11 +25,11 @@
 
             <div class="col-xs-6 text-right va-b pr5">
               <div class="login-links">
-                <a href="pages_login.html" class="active" title="Sign In">Sign In</a>
+                <a href="#" class="notification active" title="Sign In">Sign In</a>
                 <span class="text-white"> | </span>
                 <a href="pages_register.html" class="" title="Register">Register</a>
                 <span class="text-white"> | </span>
-                <a href="pages_register.html" class="" title="Recover Password">Recover Password</a>
+                <a href="pages_register.html" class="" title="Recover Password">Forgot Password</a>
               </div>
 
             </div>
@@ -45,8 +45,8 @@
                 <div class="row">
                   <div class="col-sm-7 pr30">
 
-                    <div class="section">
-                      <label for="username" class="field-label text-muted fs18 mb10">Username</label>
+                    <div class="section form-group">
+                      <label for="username" class="field-label text-muted fs18 mb10">Username <span class="help-block"></span></label>
                       <label for="username" class="field prepend-icon">
                         <input type="text" name="username" id="username" class="gui-input" placeholder="Enter username">
                         <label for="username" class="field-icon">
@@ -56,8 +56,8 @@
                     </div>
                     <!-- end section -->
 
-                    <div class="section">
-                      <label for="username" class="field-label text-muted fs18 mb10">Password</label>
+                    <div class="section form-group">
+                      <label for="password" class="field-label text-muted fs18 mb10">Password <span class="help-block"></span></label>
                       <label for="password" class="field prepend-icon">
                         <input type="password" name="password" id="password" class="gui-input" placeholder="Enter password">
                         <label for="password" class="field-icon">

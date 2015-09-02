@@ -16,7 +16,8 @@ requirejs.config({
     canvasbg: "/vendor/plugins/canvasbg/canvasbg", // CanvasBG Plugin(creates mousehover effect)
     "theme.utility": "/assets/js/utility/utility",
     "theme.demo": "/assets/js/demo/demo",
-    "theme.main": "/assets/js/main"
+    "theme.main": "/assets/js/main",
+    pnotify: "/vendor/plugins/pnotify/pnotify"
   },
   shim: {
     "theme.utility": {

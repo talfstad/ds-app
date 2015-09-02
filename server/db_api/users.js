@@ -27,7 +27,7 @@ module.exports = function(db) {
           cb("Error looking up user", null);
         } else {
           if (!userDocs[0]) {
-            cb("Error looking up user", null);
+            cb("Invalid user or password", null);
           } else {
             var user_row = userDocs[0];
             if (bcrypt.compareSync(password, user_row.hash)) {

@@ -1,24 +1,21 @@
 define(["app"], function(Moonlander){
 var LoginModel = Backbone.Model.extend({
-      urlRoot: "/api/login",
+  urlRoot: "/api/login",
 
-      defaults: {
-        username: "",
-        password: ""
+  defaults: {
+    username: "",
+    password: ""
+  },
+  validation: {
+      username: {
+        required: true,
+        msg: "is Required"
       },
-
-      validate: function(attrs, options) {
-        var errors = {}
-        if (! attrs.username) {
-          errors.user = "can't be blank";
-        }
-        if (! attrs.password) {
-          errors.user = "can't be blank";
-        }
-        if( ! _.isEmpty(errors)){
-          return errors;
-        }
+      password: {
+        required: true,
+        msg: "is Required"
       }
-    });
-    return LoginModel;
+    }
+  });
+  return LoginModel;
 });
