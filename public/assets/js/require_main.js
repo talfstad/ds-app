@@ -17,7 +17,8 @@ requirejs.config({
     "theme.utility": "/assets/js/utility/utility",
     "theme.demo": "/assets/js/demo/demo",
     "theme.main": "/assets/js/main",
-    pnotify: "/vendor/plugins/pnotify/pnotify"
+    pnotify: '/vendor/plugins/pnotify/pnotify',
+    "pnotify.buttons": '/vendor/plugins/pnotify/pnotify'
   },
   shim: {
     "theme.utility": {

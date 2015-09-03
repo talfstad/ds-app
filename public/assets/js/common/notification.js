@@ -1,4 +1,4 @@
-define(["app", "pnotify"], function(Moonlander, pnotify){
+define(["app", "pnotify", "pnotify.buttons"], function(Moonlander, PNotify){
   Moonlander.notification = {};
 
   Moonlander.notification = function(title, message, type, location){
@@ -79,13 +79,15 @@ define(["app", "pnotify"], function(Moonlander, pnotify){
       }
 
       // Create new Notification
-      new pnotify({
+      new PNotify({
         title: 'Bootstrap Themed',
         text: 'Look at my beautiful styling! ^_^',
         shadow: noteShadow,
+        mouse_reset: false,
         opacity: noteOpacity,
         addclass: noteStack,
         type: noteStyle,
+        hide: true,
         buttons: {
           closer_hover: true,
           sticker: false
