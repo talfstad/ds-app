@@ -1,4 +1,4 @@
-.heading-border {
+.heading-border.no-border {
 	padding: 10px 10px 0 !important;
 }
 
@@ -14,14 +14,14 @@ span.help-block {
 	display: inline;
 }
 
-.has-error .field-label {
-	color: #df5640 !important;
-}
-
 .has-error input {
 	border-color: #e67d6c !important;
 }
 
 .has-error .field-icon i {
 	color: #df5640 !important;
+}
+
+#reset-password-login {
+	margin-top: 10% !important;
 }

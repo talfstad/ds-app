@@ -1,7 +1,6 @@
 var config = require("../config");
 
 var passport;
-var ensure = require('connect-ensure-login');
 
 exports.initialize = function(app, db) {
   passport = require('passport');

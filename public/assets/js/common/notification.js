@@ -1,7 +1,7 @@
 define(["app", "pnotify", "pnotify.buttons"], function(Moonlander, PNotify){
   Moonlander.notification = {};
 
-  Moonlander.notification = function(title, message, type, location){
+  Moonlander.notification = function(title, message, style, location){
     // A "stack" controls the direction and position
     // of a notification. Here we create an array w
     // with several custom stacks that we use later
@@ -56,14 +56,14 @@ define(["app", "pnotify", "pnotify.buttons"], function(Moonlander, PNotify){
 
 
       // PNotify Plugin Event Init
-      var noteStyle = "danger";
+      var noteStyle = style;
       var noteShadow = true;
       // var noteOpacity = $(this).data('note-opacity');
-      // var noteStack = $(this).data('note-stack');
+      var noteStack = location;
       var width = "290px";
 
       // If notification stack or opacity is not defined set a default
-      var noteStack = noteStack ? noteStack : "stack_bar_top";
+      var noteStack = noteStack ? noteStack : "stack_top_right";
       var noteOpacity = noteOpacity ? noteOpacity : "1";
 
       // We modify the width option if the selected stack is a fullwidth style
@@ -80,8 +80,8 @@ define(["app", "pnotify", "pnotify.buttons"], function(Moonlander, PNotify){
 
       // Create new Notification
       new PNotify({
-        title: 'Bootstrap Themed',
-        text: 'Look at my beautiful styling! ^_^',
+        title: title,
+        text: message,
         shadow: noteShadow,
         mouse_reset: false,
         opacity: noteOpacity,
@@ -94,7 +94,7 @@ define(["app", "pnotify", "pnotify.buttons"], function(Moonlander, PNotify){
         },
         stack: Stacks[noteStack],
         width: findWidth(),
-        delay: 1400
+        delay: 2400
       });
 
 
