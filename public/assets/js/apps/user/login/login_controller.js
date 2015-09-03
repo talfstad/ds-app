@@ -1,8 +1,8 @@
-define(["app", "assets/js/apps/user/login/login_view.js",
-    "assets/js/apps/user/login/login_layout.js",
-    "assets/js/apps/user/login/reset_password_view.js",
-    "assets/js/apps/user/login/models/reset_password_model.js",
-    "assets/js/apps/user/login/models/login_model.js",
+define(["app", "/assets/js/apps/user/login/login_view.js",
+    "/assets/js/apps/user/login/login_layout.js",
+    "/assets/js/apps/user/login/reset_password_view.js",
+    "/assets/js/apps/user/login/models/reset_password_model.js",
+    "/assets/js/apps/user/login/models/login_model.js",
     "syphon"], 
 function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordModel, LoginModel){
   Moonlander.module("UserApp.Login", function(Login, Moonlander, Backbone, Marionette, $, _){

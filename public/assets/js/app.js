@@ -32,8 +32,8 @@ function(Marionette){
 
   Moonlander.on("start", function(){
     
-    require(["assets/js/apps/user/user_app.js", 
-             "assets/js/apps/moonlander/entry_point/entry_app.js"], 
+    require(["/assets/js/apps/user/user_app.js", 
+             "/assets/js/apps/moonlander/entry_point/entry_app.js"], 
     function () {
       if(Backbone.history){
         if(history.pushState) {

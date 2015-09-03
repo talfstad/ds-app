@@ -1,5 +1,5 @@
 define(["app", 
-  "assets/js/apps/moonlander/entry_point/entry_controller.js"], 
+  "/assets/js/apps/moonlander/entry_point/entry_controller.js"], 
 
   function(Moonlander, EntryController){
 

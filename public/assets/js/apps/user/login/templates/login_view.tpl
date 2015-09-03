@@ -12,7 +12,7 @@
           <span class="text-white"> | </span>
           <a href="pages_register.html" class="" title="Register">Register</a>
           <span class="text-white"> | </span>
-          <a href="/reset" title="Forgot Password">Forgot Password</a>
+          <a href="login/reset" title="Forgot Password">Forgot Password</a>
         </div>
 
       </div>

@@ -1,4 +1,4 @@
-define(["app", "assets/js/apps/user/login/login_controller.js"], function(Moonlander, LoginController){
+define(["app", "/assets/js/apps/user/login/login_controller.js"], function(Moonlander, LoginController){
   Moonlander.module("UserApp", function(UserApp, Moonlander, Backbone, Marionette, $, _){
     UserApp.startWithParent = false;
   });
@@ -8,7 +8,7 @@ define(["app", "assets/js/apps/user/login/login_controller.js"], function(Moonla
       appRoutes: {
         "login": "showLogin",
         "logout": "logout",
-        "reset": "showResetPassword"
+        "login/reset": "showResetPassword"
       }
     });
 
@@ -24,7 +24,7 @@ define(["app", "assets/js/apps/user/login/login_controller.js"], function(Moonla
       },
 
       showResetPassword: function(){
-        Moonlander.navigate("reset");
+        Moonlander.navigate("login/reset");
         executeControllerAction(LoginController.showResetPassword);
       },
 
