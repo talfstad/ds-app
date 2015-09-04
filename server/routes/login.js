@@ -3,7 +3,8 @@ exports.initialize = function(app, db, login) {
   app.post("/api/login", login.authenticate(), function(req, res) {
     //this is only executed if login succeeded
     if (req.body.remember) {
-      req.session.cookie.maxAge = 1000 * 60 * 3;
+      //1 year lifespan babayy
+      req.session.cookie.maxAge = 365 * 24 * 60 * 60 * 1000;
     } else {
       req.session.cookie.expires = false;
     }
@@ -24,7 +25,7 @@ exports.initialize = function(app, db, login) {
 
   app.get('/api/logout', function(req, res) {
     req.logout();
-    res.redirect('/');
+    res.json({logged_in: false});
   });
 
   app.post("/api/login/signup", function(req, res) {

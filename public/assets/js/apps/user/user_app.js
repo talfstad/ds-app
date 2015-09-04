@@ -1,4 +1,5 @@
-define(["app", "/assets/js/apps/user/login/login_controller.js"], function(Moonlander, LoginController){
+define(["app", "/assets/js/apps/user/login/login_controller.js",
+  "/assets/js/common/login/common_login.js"], function(Moonlander, LoginController, LoginCheck){
   Moonlander.module("UserApp", function(UserApp, Moonlander, Backbone, Marionette, $, _){
     UserApp.startWithParent = false;
   });
@@ -6,19 +7,27 @@ define(["app", "/assets/js/apps/user/login/login_controller.js"], function(Moonl
   Moonlander.module("Routers.UserApp", function(UserApp, Moonlander, Backbone, Marionette, $, _){
     UserApp.Router = Marionette.AppRouter.extend({
       appRoutes: {
+        "login/reset": "showResetPassword",
         "login": "showLogin",
-        "logout": "logout",
-        "login/reset": "showResetPassword"
+        "logout": "logout"
       }
     });
 
     var executeControllerAction = function(action, arg){
-      Moonlander.startSubApp("UserApp");
-      action(arg);
+      LoginCheck(function(login){
+        if(login.get("logged_in")){
+          //logged in
+          Moonlander.trigger("start:moonlander");
+        } else{
+          //not logged in
+          Moonlander.startSubApp("UserApp");
+          action(arg);
+        }
+      });
     };
 
     var userAppAPI = {
-      showLogin: function(){
+      showLogin: function(d){
         Moonlander.navigate("login");
         executeControllerAction(LoginController.showLogin);
       },
@@ -30,7 +39,7 @@ define(["app", "/assets/js/apps/user/login/login_controller.js"], function(Moonl
 
       logout: function(){
         Moonlander.navigate("logout");
-        executeControllerAction(LoginController.logout);
+        LoginController.logout();
       }
     };
 

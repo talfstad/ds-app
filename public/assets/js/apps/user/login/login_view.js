@@ -19,7 +19,7 @@ function(Moonlander, LoginViewTpl, Validation, Notification){
       },
 
       events: {
-        'click #sign-in-button': 'submitLoginForm',
+        'click #sign-in-button': 'submitLoginForm'
       },
 
       submitLoginForm: function(e){

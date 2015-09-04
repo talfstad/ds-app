@@ -3,8 +3,9 @@ define(["app", "/assets/js/apps/user/login/login_view.js",
     "/assets/js/apps/user/login/reset_password_view.js",
     "/assets/js/apps/user/login/models/reset_password_model.js",
     "/assets/js/apps/user/login/models/login_model.js",
+    "/assets/js/common/logout/common_logout.js",
     "syphon"], 
-function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordModel, LoginModel){
+function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordModel, LoginModel, Logout){
   Moonlander.module("UserApp.Login", function(Login, Moonlander, Backbone, Marionette, $, _){
 
     Login.Controller = {
@@ -72,8 +73,17 @@ function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordMod
             this.model.save({}, {success: successLoginCallback, error: errorLoginCallback});
           }
         });
+      },
 
-
+      logout: function(){
+        //fetch logout and on success redirect to login
+        Logout(function(login){
+          if(!login.get("logged_in")){
+            Moonlander.execute("show:login");
+          } else {
+            //error
+          }
+        })
       }
 
     }
