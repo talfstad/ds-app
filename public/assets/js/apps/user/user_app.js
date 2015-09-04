@@ -1,5 +1,6 @@
 define(["app", "/assets/js/apps/user/login/login_controller.js",
-  "/assets/js/common/login/common_login.js"], function(Moonlander, LoginController, LoginCheck){
+  "/assets/js/common/login/common_login.js",
+  "/assets/js/apps/user/login/models/login_model.js"], function(Moonlander, LoginController, CommonLogin, LoginModel){
   Moonlander.module("UserApp", function(UserApp, Moonlander, Backbone, Marionette, $, _){
     UserApp.startWithParent = false;
   });
@@ -14,7 +15,7 @@ define(["app", "/assets/js/apps/user/login/login_controller.js",
     });
 
     var executeControllerAction = function(action, arg){
-      LoginCheck(function(login){
+      CommonLogin.Check(function(login){
         if(login.get("logged_in")){
           //logged in
           Moonlander.trigger("start:moonlander");
@@ -48,6 +49,7 @@ define(["app", "/assets/js/apps/user/login/login_controller.js",
     });
 
     Moonlander.addInitializer(function(){
+      Moonlander.loginModel = new LoginModel();
       
       LoginController.showLayout();
 

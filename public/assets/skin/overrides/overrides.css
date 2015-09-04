@@ -34,10 +34,12 @@
 .sb-l-o #content_wrapper,
 .sb-r-c #content_wrapper,
 body.sb-l-o #topbar.affix,
+#content_wrapper,
 #topbar.affix
  {
 	margin-left: 230px;
 }
+
 .sb-l-c #content_wrapper {
 	margin-left: 0;
 }

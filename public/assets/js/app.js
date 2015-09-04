@@ -1,5 +1,5 @@
 define(["marionette"], 
-function(Marionette){
+function(Marionette, LoginModel){
 
   var Moonlander = new Marionette.Application();
 

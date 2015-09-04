@@ -1,8 +1,9 @@
 define(["app", 
   "/assets/js/apps/moonlander/entry_point/entry_controller.js",
-  "/assets/js/common/login/common_login.js"], 
+  "/assets/js/common/login/common_login.js",
+  "/assets/js/apps/moonlander/domains/domains_app.js"], 
 
-  function(Moonlander, EntryController, LoginCheck){
+  function(Moonlander, EntryController, CommonLogin){
 
   Moonlander.module("EntryApp", function(EntryApp, Moonlander, Backbone, Marionette, $, _){
     EntryApp.startWithParent = false;
@@ -11,7 +12,7 @@ define(["app",
   Moonlander.module("Routers.EntryApp", function(EntryApp, Moonlander, Backbone, Marionette, $, _){
 
     var loginCheck = function(cb, arg){
-       LoginCheck(function(login){
+       CommonLogin.Check(function(login){
         if(login.get("logged_in")){
           //logged in
           cb(arg);
@@ -31,7 +32,7 @@ define(["app",
      */
     var startMoonlander = function() {
       EntryController.loadAnchorLayout();
-      Moonlander.startSubApp("domains")
+      Moonlander.startSubApp("DomainsApp");
 
 
       Moonlander.trigger("domains:list");

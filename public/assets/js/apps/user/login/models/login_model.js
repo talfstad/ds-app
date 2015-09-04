@@ -4,7 +4,8 @@ var LoginModel = Backbone.Model.extend({
 
   defaults: {
     username: "",
-    password: ""
+    password: "",
+    logged_in: false
   },
   validation: {
       username: {
