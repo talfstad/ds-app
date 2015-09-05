@@ -1,11 +1,8 @@
 define(["app", "/assets/js/apps/user/login/login_controller.js",
   "/assets/js/common/login/common_login.js",
   "/assets/js/apps/user/login/models/login_model.js"], function(Moonlander, LoginController, CommonLogin, LoginModel){
-  Moonlander.module("UserApp", function(UserApp, Moonlander, Backbone, Marionette, $, _){
-    UserApp.startWithParent = false;
-  });
 
-  Moonlander.module("Routers.UserApp", function(UserApp, Moonlander, Backbone, Marionette, $, _){
+  Moonlander.module("UserApp", function(UserApp, Moonlander, Backbone, Marionette, $, _){
     UserApp.Router = Marionette.AppRouter.extend({
       appRoutes: {
         "login/reset": "showResetPassword",
@@ -14,14 +11,12 @@ define(["app", "/assets/js/apps/user/login/login_controller.js",
       }
     });
 
-    var executeControllerAction = function(action, arg){
-      CommonLogin.Check(function(login){
+    var showIfNotLoggedIn = function(action, arg){
+      CommonLogin.CheckAndReturnModel(function(login){
         if(login.get("logged_in")){
-          //logged in
           Moonlander.trigger("start:moonlander");
         } else{
           //not logged in
-          Moonlander.startSubApp("UserApp");
           action(arg);
         }
       });
@@ -30,12 +25,12 @@ define(["app", "/assets/js/apps/user/login/login_controller.js",
     var userAppAPI = {
       showLogin: function(d){
         Moonlander.navigate("login");
-        executeControllerAction(LoginController.showLogin);
+        showIfNotLoggedIn(LoginController.showLogin);
       },
 
       showResetPassword: function(){
         Moonlander.navigate("login/reset");
-        executeControllerAction(LoginController.showResetPassword);
+        showIfNotLoggedIn(LoginController.showResetPassword);
       },
 
       logout: function(){
