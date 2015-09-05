@@ -6,6 +6,7 @@ define(["app", "/assets/js/apps/user/login/login_controller.js",
     UserApp.Router = Marionette.AppRouter.extend({
       appRoutes: {
         "login/reset": "showResetPassword",
+        "login/reset/:code": "showResetPasswordStep2",
         "login": "showLogin",
         "logout": "logout"
       }
@@ -33,6 +34,11 @@ define(["app", "/assets/js/apps/user/login/login_controller.js",
         showIfNotLoggedIn(LoginController.showResetPassword);
       },
 
+      showResetPasswordStep2: function(code){
+        Moonlander.navigate("login/reset/new");
+        showIfNotLoggedIn(LoginController.showResetPasswordStep2, code);
+      },
+
       logout: function(){
         Moonlander.navigate("logout");
         LoginController.logout();
@@ -41,6 +47,10 @@ define(["app", "/assets/js/apps/user/login/login_controller.js",
 
     Moonlander.commands.setHandler("show:login", function(){
       userAppAPI.showLogin();
+    });
+    
+    Moonlander.commands.setHandler("show:resetPassword", function(){
+      userAppAPI.showResetPassword();
     });
 
     Moonlander.addInitializer(function(){

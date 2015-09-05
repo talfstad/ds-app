@@ -13,38 +13,44 @@
       <div class="login-links text-right">
           <a href="/login" title="Sign In">Sign In</a>
           <span class="text-white"> | </span>
-          <a href="/reset" class="notification active" title="Forgot Password">Forgot Password</a>
+          <a href="/reset" class="notification active" title="Forgot Password">Create New Password</a>
         </div>
     </div>
 
   </div>
 
   <div class="panel panel-info heading-border br-n">
-
     <form class="form-group">
       <div class="panel-body p15 pt25">
-
         <div class="alert alert-micro alert-border-left alert-info pastel alert-dismissable mn">
           <!-- <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button> -->
-          <i class="fa fa-info pr10"></i> Enter your
-          <b>Email</b> and instructions will be sent to you!
+          <i class="fa fa-info pr10"></i> Please choose a new password
         </div>
-
       </div>
       <!-- end .form-body section -->
-      <div class="panel-footer p25 pv15">
+      <div class="panel-footer clearfix p25 pv15">
 
-        <div class="section mn">
+        <div class="form-group section mn">
 
-          <div class="smart-widget sm-right smr-80">
-            <label for="email" class="field prepend-icon">
-              <input type="text" name="email" id="email" class="gui-input" placeholder="Your Email Address">
-              <label for="email" class="field-icon">
-                <i class="fa fa-envelope-o"></i>
-              </label>
-            </label>
-            <label for="email" class="button">Reset</label>
+          <div class="form-group">
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-key"></i>
+              </span>
+              <input id="password" name="password" class="form-control" type="password" placeholder="Password">
+            </div>
           </div>
+          <div class="form-group">
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-key"></i>
+              </span>
+              <input id="confirm_password" name="confirm_password" class="form-control" type="password" placeholder="Confirm Password">
+            </div>
+          </div>
+
+          <button id="password-reset-button" type="submit" class="button btn-primary pull-right">Reset Password</button>
+          
           <!-- end .smart-widget section -->
 
         </div>

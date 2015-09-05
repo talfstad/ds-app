@@ -18,14 +18,6 @@ define(["app",
       }
     };
 
-    /*
-     * Will load ALL SubApps (ONLY MOONLANDER ONES)! 
-     * This initializes all routes and triggers for 
-     * the app! IMPORTANT SHIT!
-     *
-     * Also launches the entry point to the app
-     */
-
     Moonlander.on("start:moonlander", function(){
       moonlanderRoutes.showDomains();
     });

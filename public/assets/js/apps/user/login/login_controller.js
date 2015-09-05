@@ -47,15 +47,15 @@ function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordMod
       },
 
       showResetPassword: function(){
-        Moonlander.resetPasswordModel = new ResetPasswordModel();
+        var resetPasswordModel = new ResetPasswordModel.ResetPasswordModel();
 
-        var resetPasswordView = new ResetPasswordView.showForgotPassword({model: Moonlander.resetPasswordModel});
+        var resetPasswordView = new ResetPasswordView.showForgotPassword({model: resetPasswordModel});
         Moonlander.loginLayout.content.show(resetPasswordView);
 
 
         resetPasswordView.on("reset:form:submit", function(){
           var successResetCallback = function(model, message, other) {
-            resetPasswordView.showInvalidUserPassError();
+            resetPasswordView.showCheckEmailMessage();
           };
           var errorResetCallback = function(model, message, other) {
             //something happened on submit that is out of our control
@@ -66,9 +66,50 @@ function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordMod
           this.model.set(loginFormData);
                 
           if(this.model.isValid(true)) {
-            this.model.save({}, {success: successLoginCallback, error: errorLoginCallback});
+            this.model.save({}, {success: successResetCallback, error: errorResetCallback});
           }
         });
+      },
+
+      showResetPasswordStep2: function(code){
+        var checkCodeModel = new ResetPasswordModel.Check();
+
+        //validate code
+        checkCodeModel.save({code: ""}, {
+          success:codeValid, 
+          error: codeInvalid
+        });
+
+        var codeValid = function(){
+          var resetPasswordModel = new ResetPasswordModel.ResetPasswordModelStep2({
+            code: code
+          });
+
+          var resetPasswordViewStep2 = new ResetPasswordView.showForgotPasswordStep2({model: resetPasswordModel});
+          Moonlander.loginLayout.content.show(resetPasswordViewStep2);
+
+
+          resetPasswordViewStep2.on("reset:form:submit", function(){
+            var successResetCallback = function(model, message, other) {
+              resetPasswordViewStep2.showSuccessfulReset();
+            };
+            var errorResetCallback = function(model, message, other) {
+              //something happened on submit that is out of our control
+              //TODO: growl here or something to let the user know
+            };
+
+            var loginFormData = Backbone.Syphon.serialize(this);
+            this.model.set(loginFormData);
+                  
+            if(this.model.isValid(true)) {
+              this.model.save({}, {success: successResetCallback, error: errorResetCallback});
+            }
+          });
+        };
+
+        var codeInvalid = function(){
+          Moonlander.execute("show:resetPassword");
+        }
       },
 
       logout: function(){
