@@ -67,11 +67,12 @@ exports.initialize = function(app, db, login) {
     });
 
     app.post("/api/login/request/reset", function(req, res) {
-        var username = req.body.username;
+        var username = req.body.email;
 
         db.users.requestResetPassword(username, function(error, code) {
             if (error) {
                 res.json({
+                    emailSent: false,
                     error: error
                 });
             } else {
@@ -80,11 +81,14 @@ exports.initialize = function(app, db, login) {
 
                 utils.sendEmail(config.adminEmail, config.adminEmailPassword, username, subject, message, function(error){
                     if(error) {
-                        console.log("Error sending validation email");
+                        res.json({
+                            emailSent: false,
+                            error: "Error sending email to: " + username
+                        });
                     }
                     else {
                         res.json({
-                            success: "Reset password e-mail sent to: " + username
+                            emailSent: true
                         });
                     }
                 });

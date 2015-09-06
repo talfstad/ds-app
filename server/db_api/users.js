@@ -3,6 +3,7 @@ module.exports = function(db) {
   var utils = require('../utils/utils.js')();
   var uuid = require('uuid');
   var config = require("../config");
+  var bcrypt = require("bcrypt-nodejs");
 
   return {
     findById: function(id, cb) {
@@ -67,12 +68,23 @@ module.exports = function(db) {
 
     requestResetPassword: function(user, callback) {
         var code = uuid.v4();
-        db.query("CALL request_reset_password(?, ?);", [user, code], function(err, docs) {
+        db.query("SELECT request_reset_password(?, ?) AS value;", [user, code], function(err, docs) {
             if (err) {
                 console.log(err);
                 callback("Unable to reset pw for user: " + user, code);
-            } else {
-                callback(err, code);
+            } 
+            else if(docs != undefined && docs[0] != undefined) {
+                var response_string = docs[0].value;
+                if(response_string == "SUCCESS") {
+                    callback(err, code);
+                }
+                else {
+                    console.log("User not found: " + user);
+                    callback("User not found; please register on the signup page.");
+                }
+            }
+            else {
+                callback("Something went wrong.");
             }
         });
     },
