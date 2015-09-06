@@ -9,6 +9,10 @@ function(Moonlander, anchorTpl){
         headerRegion: "#top-navbar",
         leftNavRegion: "#left-navbar",
         rightSidebarRegion: "#right-sidebar"
+      },
+    
+      onDomRefresh: function(){
+        $("body").removeClass("sb-r-o sb-l-c").addClass("sb-r-c external-page sb-l-o onload-check");
       }
     });
 

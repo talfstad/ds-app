@@ -8,8 +8,6 @@ function(Moonlander){
       showDomains: function(){
         // var loginView = new LoginView.showLogin({model: Moonlander.loginModel});
         // Moonlander.loginLayout.content.show(loginView);
-        
-        console.log("showing domains");
       }
     }
   });

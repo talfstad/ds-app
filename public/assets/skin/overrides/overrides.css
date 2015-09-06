@@ -265,3 +265,11 @@ body.sb-l-o #topbar.affix,
     font-size: 10px;
     margin-right: 10px;
 }
+
+.w170 {
+    width: 170px !important;
+}
+
+.mt7 {
+    margin-top: 7px !important;
+}

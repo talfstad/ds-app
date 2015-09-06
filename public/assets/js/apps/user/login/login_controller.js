@@ -3,6 +3,7 @@ define(["app", "/assets/js/apps/user/login/login_view.js",
     "/assets/js/apps/user/login/reset_password_view.js",
     "/assets/js/apps/user/login/models/reset_password_model.js",
     "/assets/js/common/logout/common_logout.js",
+    "/assets/js/apps/moonlander/entry_point/entry_app.js",
     "syphon"], 
 function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordModel, Logout){
   Moonlander.module("UserApp.Login", function(Login, Moonlander, Backbone, Marionette, $, _){
@@ -27,7 +28,7 @@ function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordMod
               // need to implement it on domains:list which needs to be started
               
               //call domains:list from here mate!
-              Moonlander.trigger("domains:list");
+              Moonlander.trigger("start:moonlander");
             } else {
               //show invalid login error
               loginView.showInvalidUserPassError();
@@ -111,8 +112,13 @@ function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordMod
 
         //validate code
         checkCodeModel.save({code: code}, {
-          success:codeValid, 
-          error: codeInvalid
+          success:function(data){
+            if(data.attributes.isValid){
+              codeValid();
+            } else {
+              codeInvalid();
+            }
+          }
         });
         
       },
