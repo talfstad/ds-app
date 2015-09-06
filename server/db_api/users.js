@@ -36,6 +36,9 @@ module.exports = function(db) {
             if (bcrypt.compareSync(password, user_row.hash)) {
               cb(null, user_row);
             }
+            else {
+              cb("Invalid user or password", null); 
+            }
           }
         }
       });
