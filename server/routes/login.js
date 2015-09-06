@@ -99,11 +99,13 @@ exports.initialize = function(app, db, login) {
         db.users.checkPasswordResetCode(code, resetCodeLifespanMinutes, function(error, isValid) {
             if (!isValid) {
                 res.json({
-                    error: error
+                    error: error, 
+                    isValid: false
                 });
             } else {
                 res.json({
-                    success: "Code is valid."
+                    success: "Code is valid.",
+                    isValid: true
                 });
             }
         });
