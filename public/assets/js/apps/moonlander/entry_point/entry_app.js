@@ -9,8 +9,8 @@ define(["app",
 
     Moonlander.Router = Marionette.AppRouter.extend({
       appRoutes: {
-        "": "showDomains",
-        "domains": "showDomains"
+        "domains": "showDomains",
+        "*notFound": "showDomains",
       }
     });
 
