@@ -1,4 +1,6 @@
-define(["app", "apps/header/list/list_controller"], function(Moonlander, ListController){
+define(["app", 
+        "/assets/js/apps/moonlander/header/list/list_controller.js"], 
+function(Moonlander, ListController){
   Moonlander.module("HeaderApp", function(Header, Moonlander, Backbone, Marionette, $, _){
 
     var headerAPI = {

@@ -20,7 +20,7 @@
   </div>
 
   <div class="panel panel-info heading-border br-n">
-    <form class="form-group">
+    <form class="form-group" onsubmit="return false">
       <div class="panel-body p15 pt25">
         <div class="alert alert-micro alert-border-left alert-info pastel alert-dismissable mn">
           <!-- <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button> -->

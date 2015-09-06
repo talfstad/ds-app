@@ -1,6 +1,5 @@
-define(["app",
-        "tpl!apps/header/list/templates/list.tpl", "slimscroll"],
-        function(Moonlander, listTpl, listItemTpl){
+define(["app", "tpl!/assets/js/apps/moonlander/header/list/templates/header_list.tpl"],
+function(Moonlander, listTpl){
 
   Moonlander.module("HeaderApp.List.View", function(ListView, Moonlander, Backbone, Marionette, $, _){
 

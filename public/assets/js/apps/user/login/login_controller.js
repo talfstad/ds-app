@@ -55,7 +55,7 @@ function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordMod
 
         resetPasswordView.on("reset:form:submit", function(){
           var successResetCallback = function(model, message, other) {
-            resetPasswordView.showCheckEmailMessage();
+            resetPasswordView.showCheckEmailMessage(model.attributes);
           };
           var errorResetCallback = function(model, message, other) {
             //something happened on submit that is out of our control

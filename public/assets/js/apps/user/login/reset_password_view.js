@@ -28,8 +28,12 @@ function(Moonlander, ResetPasswordTpl, ResetPasswordStep2Tpl, Validation, Notifi
         this.trigger("reset:form:submit");
       },
 
-      showCheckEmailMessage: function(){
-        Notification("An email has been sent to you", "Thanks. We've emailed you a password reset link", "danger", "stack_bar_top");
+      showCheckEmailMessage: function(msg){
+        if(msg.emailSent){
+          Notification("We could not send you an email", msg.success, "success", "stack_bar_top");
+        } else {
+          Notification("An email has been sent to you", msg.error, "danger", "stack_bar_top");
+        }
       },
 
       // hideInvalidUserPassError: function(){
