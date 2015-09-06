@@ -30,9 +30,9 @@ function(Moonlander, ResetPasswordTpl, ResetPasswordStep2Tpl, Validation, Notifi
 
       showCheckEmailMessage: function(msg){
         if(msg.emailSent){
-          Notification("We could not send you an email", msg.success, "success", "stack_bar_top");
+          Notification("An email has been sent to you", "Click the link in the email we sent you to reset your password", "success", "stack_bar_top");
         } else {
-          Notification("An email has been sent to you", msg.error, "danger", "stack_bar_top");
+          Notification("We could not send you an email", msg.error, "danger", "stack_bar_top");
         }
       },
 

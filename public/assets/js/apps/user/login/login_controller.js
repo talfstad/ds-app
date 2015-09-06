@@ -72,13 +72,7 @@ function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordMod
       },
 
       showResetPasswordStep2: function(code){
-        var checkCodeModel = new ResetPasswordModel.Check();
-
-        //validate code
-        checkCodeModel.save({code: ""}, {
-          success:codeValid, 
-          error: codeInvalid
-        });
+        
 
         var codeValid = function(){
           var resetPasswordModel = new ResetPasswordModel.ResetPasswordModelStep2({
@@ -110,6 +104,15 @@ function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordMod
         var codeInvalid = function(){
           Moonlander.execute("show:resetPassword");
         }
+
+        var checkCodeModel = new ResetPasswordModel.Check();
+
+        //validate code
+        checkCodeModel.save({code: code}, {
+          success:codeValid, 
+          error: codeInvalid
+        });
+        
       },
 
       logout: function(){

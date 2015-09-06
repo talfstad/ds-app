@@ -63,14 +63,14 @@ exports.authenticate = function() {
     passport.authenticate('local', function(err, user) {
       if (!user) {
         res.json({
-          logged_in: user
+          logged_in: false
         });
         return;
       }
 
       if (err) {
         res.json({
-          logged_in: err
+          logged_in: false
         });
         return;
       }
@@ -79,7 +79,7 @@ exports.authenticate = function() {
       req.login(user, function(err) {
         if (err) {
           res.json({
-            logged_in: err
+            logged_in: false
           });
           return;
         }
