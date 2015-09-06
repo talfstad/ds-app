@@ -8,5 +8,8 @@ module.exports = {
     database : 'moonlander',
     multipleStatements: true
   },
-  cookieSecret: 'moonlandersecretkeytobechangedlatermaybe123!#'
+  cookieSecret: 'moonlandersecretkeytobechangedlatermaybe123!#',
+  adminEmail: 'trevor@buildcave.com',
+  adminEmailPassword: 'stackedandjacked',
+  resetCodeLifespanMinutes: 240
 };

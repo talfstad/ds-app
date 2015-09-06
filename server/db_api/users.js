@@ -1,10 +1,12 @@
 module.exports = function(db) {
 
-  var bcrypt = require("bcrypt-nodejs");
+  var utils = require('../utils/utils.js')();
+  var uuid = require('uuid');
+  var config = require("../config");
 
   return {
     findById: function(id, cb) {
-      db.query("SELECT * FROM users WHERE id = ?", [id], function(err, userDocs) {
+      db.query("SELECT * FROM users WHERE id = ?;", [id], function(err, userDocs) {
         if (err) {
           console.log(err);
           cb("Error looking up user id", null);
@@ -21,7 +23,7 @@ module.exports = function(db) {
 
     findByUsername: function(username, password, cb) {
       
-      db.query("SELECT * FROM users WHERE user = ?", [username], function(err, userDocs) {
+      db.query("SELECT * FROM users WHERE user = ?;", [username], function(err, userDocs) {
         if (err) {
           console.log(err);
           cb("Error looking up user", null);
@@ -38,33 +40,81 @@ module.exports = function(db) {
       });
     },
 
-    addUser: function(req, res) {
-      db.query("INSERT INTO users(user, hash, approved) VALUES (?, ?, ?)", [req.body.username, bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(8)), 0], function(err, rows) {
+    addUser: function(username, hash, uid, callback) {
+      var error;
+      db.query("INSERT INTO users(user, hash, approved, uid) VALUES (?, ?, ?, ?);", [username, hash, 0, uid], function(err, docs) {
         if (err) {
           console.log(err);
-          res.json({
-            error: "Username has been taken.",
-            field: "username"
-          });
+          error = "Username invalid or already taken";
+          callback(error)
         } else {
-          // Retrieve the inserted user data
-          db.query("SELECT * FROM users WHERE user = ?", [req.body.username], function(err, rows) {
-            if (rows.length == 1) {
-              var row = rows[0];
-              // Set the user cookies and return the cleansed user data
-              res.json({
-                user: row
-              });
-            } else {
-              console.log(err, rows);
-              res.json({
-                error: "Error while trying to register user."
-              });
-            }
-          });
+          
         }
       });
+    },
+
+    addAmazonAPIKeys: function(access_key_id, secret_access_key, user, callback) {
+        db.query("CALL update_api_key(?, ?, ?);", [user, access_key_id, secret_access_key], function(err, docs) {
+            if (err) {
+                console.log(err);
+                callback("Cannot update Amazon access key ID and secret_access_key for user: " + user);
+            } else {
+                //TODO: validate credentials
+                callback(err);
+            }
+        });
+    },
+
+    requestResetPassword: function(user, callback) {
+        var code = uuid.v4();
+        db.query("CALL request_reset_password(?, ?);", [user, code], function(err, docs) {
+            if (err) {
+                console.log(err);
+                callback("Unable to reset pw for user: " + user, code);
+            } else {
+                callback(err, code);
+            }
+        });
+    },
+
+    checkPasswordResetCode: function(code, minutes, callback) {
+        db.query("SELECT check_password_reset_code(?, ?) AS value;", [code, minutes], function(err, docs) {
+            if (err) {
+                console.log(err);
+                callback("Error checking password reset code", false);
+            } 
+            else if(docs != undefined && docs[0] != undefined) {
+                var response_string = docs[0].value;
+                if(response_string == "VALID") {
+                    callback({}, true);
+                }
+                else if(response_string == "INVALID") {
+                    callback("Reset password code is invalid.", false);
+                }
+                else if(response_string == "EXPIRED") {
+                    callback("Reset password code has expired. Each code expires after " + (config.resetCodeLifespanMinutes / 60) + " hours.", false);
+                }
+                else {
+                    callback("Reset password code is invalid.", false);
+                }
+            }
+            else {
+                callback(err, false);
+            }
+        });
+    },
+
+    resetPassword: function(code, hash, callback) {
+        db.query("CALL reset_password(?, ?);", [code, hash], function(err, docs) {
+            if (err) {
+                console.log(err);
+                callback("Unable to reset pw for user: " + user);
+            } else {
+                callback(err);
+            }
+        });
     }
+
   }
 
 };
