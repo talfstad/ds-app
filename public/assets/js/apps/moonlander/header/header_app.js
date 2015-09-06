@@ -1,11 +1,12 @@
 define(["app", 
-        "/assets/js/apps/moonlander/header/list/list_controller.js"], 
-function(Moonlander, ListController){
+        "/assets/js/apps/moonlander/header/list/list_controller.js",
+        "/assets/js/common/login/common_login.js"], 
+function(Moonlander, ListController, CommonLogin){
   Moonlander.module("HeaderApp", function(Header, Moonlander, Backbone, Marionette, $, _){
 
     var headerAPI = {
       listHeader: function(){
-        ListController.listHeader();
+        CommonLogin.Check(ListController.listHeader);
       }
     };
 

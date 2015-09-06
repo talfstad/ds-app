@@ -6,9 +6,9 @@ function(Moonlander, anchorTpl){
       id: "moonlander-app",
       template: anchorTpl,
       regions: {
-        topbar: "#top-navbar",
-        leftSidebar: "#left-navbar",
-        rightSidebar: "#right-sidebar"
+        headerRegion: "#top-navbar",
+        leftNavRegion: "#left-navbar",
+        rightSidebarRegion: "#right-sidebar"
       }
     });
 

@@ -15,6 +15,7 @@ exports.initialize = function(app, db, login) {
       req.session.cookie.expires = false;
     }
     res.json({
+      username: req.user.user,
       logged_in: true
     });
   });
@@ -23,12 +24,13 @@ exports.initialize = function(app, db, login) {
     if (req.user) {
       // logged in
       res.json({
+        username: req.user.user,
         logged_in: true
       });
     } else {
       // not logged in
       res.json({
-        logged_in: false
+        logged_in: false,
       });
     }
   });

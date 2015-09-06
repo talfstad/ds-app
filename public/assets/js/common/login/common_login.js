@@ -1,17 +1,19 @@
 define(["app",
-  "/assets/js/common/login/login_check_model.js"], function(Moonlander, LoginCheckModel){
+  "/assets/js/common/login/login_check_model.js"], 
+function(Moonlander, LoginCheckModel){
   Moonlander.CommonLogin = {};
 
   Moonlander.CommonLogin.Check = function(cb, args){
     var loginCheckModel = new LoginCheckModel();
 
     if(Moonlander.loginModel.get("logged_in")) {
-      loginCheckModel.set({logged_in: true});
       return cb(args);
     } else {
       loginCheckModel.fetch({
-        success: function(data){
-          if(data.get("logged_in")) {
+        success: function(userObject){
+
+          if(userObject.get("logged_in")) {
+            Moonlander.loginModel.set(userObject.attributes);
             cb(args);
           } else {
             Moonlander.execute("show:login");

@@ -1,6 +1,6 @@
 <!-- Start: Header -->
 <div class="navbar-branding">
-  <a class="navbar-brand" href="dashboard.html">
+  <a class="navbar-brand" href="/domains">
     <b>Absolute</b>Admin
   </a>
   <span id="toggle_sidemenu_l" class="ad ad-lines"></span>
@@ -12,7 +12,7 @@
 
     <a href="#" class="dropdown-toggle fw600" data-toggle="dropdown">
     	<i class="glyphicon glyphicon-user"></i>
-      <span class="hidden-xs pl5"> Michael .R </span>
+      <span class="hidden-xs pl5"> <%= username %> </span>
       <span class="caret caret-tp hidden-xs"></span>
     </a>
     <ul class="dropdown-menu list-group dropdown-persist w250" role="menu">

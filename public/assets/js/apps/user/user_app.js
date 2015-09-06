@@ -1,6 +1,7 @@
 define(["app", "/assets/js/apps/user/login/login_controller.js",
   "/assets/js/common/login/common_login.js",
-  "/assets/js/apps/user/login/models/login_model.js"], function(Moonlander, LoginController, CommonLogin, LoginModel){
+  "/assets/js/apps/user/login/models/login_model.js"], 
+function(Moonlander, LoginController, CommonLogin, LoginModel){
 
   Moonlander.module("UserApp", function(UserApp, Moonlander, Backbone, Marionette, $, _){
     UserApp.Router = Marionette.AppRouter.extend({
@@ -55,9 +56,6 @@ define(["app", "/assets/js/apps/user/login/login_controller.js",
 
     Moonlander.addInitializer(function(){
       Moonlander.loginModel = new LoginModel();
-      
-      LoginController.showLayout();
-
       new UserApp.Router({
         controller: userAppAPI
       });

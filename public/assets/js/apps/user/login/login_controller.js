@@ -16,6 +16,7 @@ function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordMod
       },
       
       showLogin: function(){
+        Moonlander.UserApp.Login.Controller.showLayout();
         var loginView = new LoginView.showLogin({model: Moonlander.loginModel});
         Moonlander.loginLayout.content.show(loginView);
         
@@ -47,6 +48,7 @@ function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordMod
       },
 
       showResetPassword: function(){
+        Moonlander.UserApp.Login.Controller.showLayout();
         var resetPasswordModel = new ResetPasswordModel.ResetPasswordModel();
 
         var resetPasswordView = new ResetPasswordView.showForgotPassword({model: resetPasswordModel});
@@ -72,7 +74,7 @@ function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordMod
       },
 
       showResetPasswordStep2: function(code){
-        
+        Moonlander.UserApp.Login.Controller.showLayout();
 
         var codeValid = function(){
           var resetPasswordModel = new ResetPasswordModel.ResetPasswordModelStep2({

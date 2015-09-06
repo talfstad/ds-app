@@ -1,9 +1,9 @@
 define(["app", "tpl!/assets/js/apps/moonlander/header/list/templates/header_list.tpl"],
 function(Moonlander, listTpl){
 
-  Moonlander.module("HeaderApp.List.View", function(ListView, Moonlander, Backbone, Marionette, $, _){
+  Moonlander.module("HeaderApp", function(HeaderApp, Moonlander, Backbone, Marionette, $, _){
 
-    ListView.Header = Marionette.ItemView.extend({
+    HeaderApp.Header = Marionette.ItemView.extend({
       template: listTpl,
       tagName: "header",
       className: "navbar navbar-fixed-top navbar-shadow",
@@ -28,6 +28,6 @@ function(Moonlander, listTpl){
     });
 
     
-    return Moonlander.HeaderApp.List.ListView;
   });
+  return Moonlander.HeaderApp;
 });

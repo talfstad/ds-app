@@ -3,16 +3,15 @@ define(["app", "/assets/js/apps/moonlander/header/list/list_view.js"], function(
     List.Controller = {
       listHeader: function(){
 
-          // var header = new ListView.Header({
-          //   model: Moonlander.session
-          // });
+          var header = new ListView.Header({
+            model: Moonlander.loginModel
+          });
 
           // header.on("logout:clicked", function(){
           //   Moonlander.trigger("authentication:logout");
           // });
 
-          // Moonlander.headerRegion.show(header);
-      
+          Moonlander.rootRegion.currentView.headerRegion.show(header);
       }
     };
   });
