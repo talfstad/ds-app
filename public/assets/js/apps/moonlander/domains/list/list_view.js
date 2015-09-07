@@ -1,6 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/domains/list/templates/domains_list.tpl",
-    "bootstrap"
+    "tpl!/assets/js/apps/moonlander/domains/list/templates/domains_list.tpl"
   ],
   function(Moonlander, domainsListTpl) {
 
@@ -13,7 +12,6 @@ define(["app",
         id: "content_wrapper",
 
         onDomRefresh: function() {
-
           // temp js to show usage.
           $('#domainsList').on('show.bs.collapse', function() {
             $('a[href="#domainsList"] span:first').addClass('fa-minus').removeClass('fa-plus');
