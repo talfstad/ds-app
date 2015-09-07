@@ -3,11 +3,12 @@ function(Moonlander, anchorTpl){
 
   Moonlander.module("EntryApp.AnchorView", function(AnchorView, Moonlander, Backbone, Marionette, $, _){
     AnchorView.Layout = Marionette.LayoutView.extend({
-      id: "moonlander-app",
+      id: "main",
       template: anchorTpl,
       regions: {
         headerRegion: "#top-navbar",
         leftNavRegion: "#left-navbar",
+        mainContentRegion: "#main-content",
         rightSidebarRegion: "#right-sidebar"
       },
     

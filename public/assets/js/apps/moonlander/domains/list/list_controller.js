@@ -1,13 +1,15 @@
 define(["app",
-    "syphon"], 
-function(Moonlander){
+        "/assets/js/apps/moonlander/domains/list/list_view.js"], 
+function(Moonlander, ListView){
   Moonlander.module("DomainsApp.List", function(List, Moonlander, Backbone, Marionette, $, _){
 
     List.Controller = {
 
       showDomains: function(){
-        // var loginView = new LoginView.showLogin({model: Moonlander.loginModel});
-        // Moonlander.loginLayout.content.show(loginView);
+
+        var listView = new ListView();
+        Moonlander.rootRegion.currentView.mainContentRegion.show(listView);
+
       }
     }
   });

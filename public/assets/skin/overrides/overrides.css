@@ -273,3 +273,7 @@ body.sb-l-o #topbar.affix,
 .mtn16 {
     margin-top: -15px !important;
 }
+
+#sidebar_left, #content_wrapper {
+  padding-top: 60px;
+}
