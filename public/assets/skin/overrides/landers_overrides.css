@@ -1,27 +1,36 @@
 .landers-list-items .panel-heading {
-	line-height: 40px !important;
-	height: auto !important;
+    line-height: 40px !important;
+    height: auto !important;
 }
 
 .landers-list-items .panel-tabs > li > a {
     border-bottom: 1px solid rgba(0, 0, 0, 0) !important;
-	padding: 6px 5px 5px 5px !important;
+    border-top: 1px solid rgba(0, 0, 0, 0) !important;
+    padding: 4px 5px 5px 5px !important;
 }
+
 .landers-list-items .panel-tabs > li > a:hover {
     border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
 }
+
 .landers-list-items .panel-tabs > li.active > a:hover {
     border-bottom: 1px solid rgba(0, 0, 0, 0) !important;
+    border-top: 1px solid rgba(0, 0, 0, 0) !important;
 }
 
 .landers-list-items .panel-tabs {
-	/*width: 200px;*/
-	background: rgba(0, 0, 0, 0.01);
+    background: rgba(0, 0, 0, 0.01);
     border-left: 1px solid rgba(0, 0, 0, 0.06);
 }
 
+.landers-list-items .panel-tabs li a {
+    width: 105px;
+    border-left: none;
+}
+
 .landers-list-items .lander-controls {
-	/*float: right;*/
+    /*float: right;*/
     /*position: relative;*/
     display: block;
     width: 215px;
@@ -32,3 +41,68 @@
     background: rgba(0, 0, 0, 0.098);
     border-left: 1px solid rgba(0, 0, 0, 0.06);
 }
+
+.landers-list-items .accordion-toggle.active {
+    color: #222 !important;
+}
+
+.landers-list-items .fancytree-container {
+    border: none !important;
+}
+
+.landers-list-items .panel-body {
+    padding: 0 0 5px 0;
+}
+
+.landers-list-items .panel-menu {
+    border-top: none;
+    background-color: #fff;
+    padding: 5px;
+}
+
+.panel-menu-title {
+    position: relative;
+    height: 52px;
+    letter-spacing: 0.2px;
+    color: #999999;
+    font-size: 15px;
+    font-weight: 400;
+    padding: 0 8px;
+    background: #fafafa;
+}
+
+.domain-campaign-notification {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-right: 110px;
+}
+
+.landers-list-items .label {
+    display: block;
+    padding: 0;
+    line-height: 30px;
+}
+span.fancytree-icon {
+    background-image: none !important;
+    background-position: 0 0;
+}
+
+/*span.fancytree-node.fancytree-active, span.fancytree-node.fancytree-selected {
+    background: none;
+    border: none;
+}
+
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active {
+    background: none;
+    border: none;
+}*/
+
+
+.fancytree-title a.trash-link {
+    position: absolute;
+    right: 0;
+    margin-right: 15px;
+}
+    
+

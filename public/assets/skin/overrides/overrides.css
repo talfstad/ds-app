@@ -277,3 +277,10 @@ body.sb-l-o #topbar.affix,
 #sidebar_left, #content_wrapper {
   padding-top: 60px;
 }
+
+.ml14 {
+    margin-left: 14px !important;
+}
+.mt3 {
+    margin-top: 3px !important;
+}
