@@ -12,6 +12,8 @@ define(["app",
         id: "content_wrapper",
 
         onDomRefresh: function() {
+          $('.dropdown-menu').click(function(e){e.stopPropagation() });
+          
           // temp js to show usage.
           $('#domainsList').on('show.bs.collapse', function() {
             $('a[href="#domainsList"] span:first').addClass('fa-minus').removeClass('fa-plus');

@@ -113,12 +113,12 @@ var Demo = function() {
       });
 
       // Show code btn on hover
-      bsElement.hover(function() {
-        $(this).append(codeBtn);
-        codeBtn.show();
-      }, function() {
-        codeBtn.hide();
-      });
+      // bsElement.hover(function() {
+      //   $(this).append(codeBtn);
+      //   codeBtn.show();
+      // }, function() {
+      //   codeBtn.hide();
+      // });
 
       // Show code modal on click
       var cleanSource = function(html) {

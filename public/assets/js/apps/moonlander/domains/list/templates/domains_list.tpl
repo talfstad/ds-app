@@ -19,8 +19,6 @@
           </a>
 
           <ul class="topbar dropdown-menu dropdown-menu-left animated animated-short flipInX pt5" role="menu">
-            
-
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
                 <input type="radio" id="domain" name="radioExample">
@@ -49,20 +47,15 @@
             </div>
           </ul>
         </div>
+
         <ul class="nav nav-list nav-list-topbar pull-left">
-          
-         
           <form class="navbar-form navbar-search pull-left mtn mbn" role="search">
             <div class=" mt10 form-group">
               <input type="text" class="form-control" placeholder="Search..." value="">
             </div>
           </form>
-
-
         </ul>
        
-
-
         <div class="topbar-right hidden-xs hidden-sm">
           <div class="btn-group" data-toggle="buttons">
             <label data-action="collapse-all" class="btn btn-default btn-sm light fw600 active">
