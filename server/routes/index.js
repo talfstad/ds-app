@@ -3,7 +3,7 @@ module.exports = function(app, passport) {
 
     var csrf = require('csurf');
 
-    //app.use(csrf({cookie: true}));
+    app.use(csrf({cookie: true}));
 
     require('./login')(app, passport);
     require('./landers')(app, passport);
