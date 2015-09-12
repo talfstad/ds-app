@@ -9,6 +9,8 @@ module.exports = {
     multipleStatements: true
   },
   cookieSecret: 'moonlandersecretkeytobechangedlatermaybe123!#',
+  sessionSecret: 'moonlandersecretkeytobechangedlatermaybe123!#',
+  cookieMaxAge: (1000 * 60 * 60 * 24 * 365),
   adminEmail: 'trevor@buildcave.com',
   adminEmailPassword: 'stackedandjacked',
   resetCodeLifespanMinutes: 240

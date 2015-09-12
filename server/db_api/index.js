@@ -7,3 +7,4 @@ db.connect();
 
 
 exports.users = require('./users')(db);
+exports.landers = require('./landers')(db);

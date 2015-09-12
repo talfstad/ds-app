@@ -1,17 +1,18 @@
-exports.initialize = function(app, db, login) {
+module.exports = function(app, passport) {
+    var module = {};
 
-  var csrf = require('csurf');
+    var csrf = require('csurf');
 
-  app.use(csrf({
-    cookie: true
-  }));
+    //app.use(csrf({cookie: true}));
 
-  var login_routes = require('./login');
-  login_routes.initialize(app, db, login);
+    require('./login')(app, passport);
+    require('./landers')(app, passport);
 
-  app.get("*", function(req, res) {
-    res.render('index', {
-      csrfToken: req.csrfToken()
+    app.get("*", function(req, res) {
+        res.render('index', {
+            csrfToken: req.csrfToken()
+        });
     });
-  });
+
+    return module;
 }
