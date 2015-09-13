@@ -153,6 +153,10 @@ span.fancytree-node.fancytree-active, span.fancytree-node.fancytree-selected {
 
 }
 
+.fancytree-domain .fancytree-title {
+    margin-left: 5px !important;
+}
+
 .domain-endpoint-select:hover {
     /*color: #1d6fa5;
     text-decoration: underline;*/
