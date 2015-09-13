@@ -150,9 +150,9 @@ var Core = function(options) {
          else { Body.removeClass('sb-l-disable-animation'); }
 
          // If window is < 1080px wide collapse both sidebars and add ".mobile-view" class
-         if ($(window).width() < 1080) {
-            Body.removeClass('sb-r-o').addClass('mobile-view sb-l-m sb-r-c');
-         }
+         // if ($(window).width() < 1080) {
+         //    Body.removeClass('sb-r-o').addClass('mobile-view sb-l-m sb-r-c');
+         // }
 
          resizeBody();
       };
@@ -550,6 +550,7 @@ var Core = function(options) {
          if ($(window).width() < 1000) { Body.addClass('tray-rescale'); }
          else { Body.removeClass('tray-rescale tray-rescale-left tray-rescale-right'); }
       }
+      
       var lazyLayout = _.debounce(rescale, 300);
 
       if (!Body.hasClass('disable-tray-rescale')) {

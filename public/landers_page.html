@@ -221,7 +221,7 @@
                  
                   <div class="widget-menu domain-campaign-notification">
                      <span class="fs11 text-muted" title="Currently deployed on 2 domains"><i class="fa fa-circle text-alert fs12 pr5"></i> 2 Domains</span>
-                    <span class="fs11 text-muted ml10" title="Currently in 2 campaigns"><i class="fa fa-circle text-system fs12 pr5"></i> 2 Campaigns</span>
+                   <!--  <span class="fs11 text-muted ml10" title="Currently in 2 campaigns"><i class="fa fa-circle text-system fs12 pr5"></i> 2 Campaigns</span> -->
                   </div>
                    </a>
                   <ul class="nav panel-tabs">
@@ -237,7 +237,7 @@
                   <div class="panel-menu clearfix">
                     <div class="row">
                       <div class="col-md-8">
-                        <div class="alert alert-micro alert-border-left alert-info pastel alert-dismissable mn">
+                        <div class="alert alert-micro alert-border-left alert-success pastel alert-dismissable mn">
                           <i class="fa fa-info pr10"></i> This lander is <b>currently deployed</b> on the domains listed below.
                         </div>
                       </div>
@@ -262,12 +262,23 @@
                               <ul>
                                 <li id="5.81" data-hey="true">
                                   <span>
-                                    targeted Camp 1 &mdash; <a target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">www.hardbodiesandboners.org/sexsexsex/extreme</a>
+                                    targeted Camp 1 &mdash; <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">hardbodiesandboners.org/sexsexsex/extreme/</a> 
+                                    <select class="domain-endpoint-select form-control">
+                                      <option>index.html</option>
+                                      <option>index3.html</option>
+                                      <option>otherlander/safe_page.html</option>
+                                    </select>
+
                                     <a class="trash-link" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
                                   </span></li>
                                 <li id="5.83">
                                   <span>
-                                    RON camp test &mdash; <a target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">www.hardbodiesandboners.org/creamy/extreme</a>
+                                    RON camp test &mdash; <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">hardbodiesandboners.org/creamy/extreme/</a> 
+                                    <select class="domain-endpoint-select form-control">
+                                      <option>index.html</option>
+                                      <option>index3.html</option>
+                                      <option>otherlander/safe_page.html</option>
+                                    </select>
                                     <a class="trash-link" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
                                   </span>
                                 </li>
@@ -277,12 +288,22 @@
                               <ul>
                                 <li id="5.81" data-hey="true">
                                   <span>
-                                    Jim RON camp &mdash; <a target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">www.hardbodiesandboners.org/hottest/extreme</a>
+                                    Jim RON camp &mdash; <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">hardbodiesandboners.org/hottest/extreme/</a> 
+                                    <select class="domain-endpoint-select form-control">
+                                      <option>index.html</option>
+                                      <option>index3.html</option>
+                                      <option>otherlander/safe_page.html</option>
+                                    </select>
                                     <a class="trash-link" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
                                   </span></li>
                                 <li id="5.83">
                                   <span>
-                                    Jim's targeted on ZP &mdash; <a target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">www.hardbodiesandboners.org/hot/extreme</a>
+                                    Jim's targeted on ZP &mdash; <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">hardbodiesandboners.org/hot/extreme/</a> 
+                                    <select class="domain-endpoint-select form-control">
+                                      <option>index.html</option>
+                                      <option>index3.html</option>
+                                      <option>otherlander/safe_page.html</option>
+                                    </select>
                                     <a class="trash-link" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
                                   </span>
                                 </li>
@@ -306,7 +327,7 @@
                  
                   <div class="widget-menu domain-campaign-notification">
                     <span class="fs11 text-muted" title="Currently deployed on 0 domains"><i class="fa fa-circle text-alert fs12 pr5"></i> 0 Domains</span>
-                    <span class="fs11 text-muted ml10" title="Currently in 0 campaigns"><i class="fa fa-circle text-system fs12 pr5"></i> 0 Campaigns</span>
+                    <!-- <span class="fs11 text-muted ml10" title="Currently in 0 campaigns"><i class="fa fa-circle text-system fs12 pr5"></i> 0 Campaigns</span> -->
                   </div>
                    </a>
                   <ul class="nav panel-tabs">
@@ -364,7 +385,7 @@
             </div>
           </div>
           <div class="panel-body pn pb25">
-            <h5 class="title-divider text-muted mt30 mb10">Name</h5>
+            <h5 class="title-divider text-muted mt20 mb10">Name</h5>
             <div class="bs-component">
               <input type="text" id="inputStandard" class="form-control" value="Extreme Muscle lander 2">
             </div>
@@ -414,7 +435,6 @@
               <button type="button" class="pull-right btn btn-default pt0 pl5 pr5 pb0 btn-gradient dark"><span class="fa fa-trash-o"></span></button>
               <button type="button" class="pull-right btn btn-default pt0 pl5 mr5 pr5 pb0 btn-gradient dark"><span class="fa fa-pencil"></span></button>
             </div>
-
             <br>
             <br>
             <br>
@@ -579,6 +599,39 @@
 
         }
       });
+
+
+      $(".domain-link").hover(function(e){
+        //get next select
+        var domainEndpointSelect = $(e.currentTarget).parent().find("select");
+
+        //underline it or undo underline if already applied
+        if(domainEndpointSelect.hasClass("domain-link-hover")) {
+          domainEndpointSelect.removeClass("domain-link-hover");
+        } else {
+          domainEndpointSelect.addClass("domain-link-hover");
+        }
+      });
+
+      $(".domain-link").click(function(e){
+        //get the val from select box
+        var domainEndpointSelectValue = $(e.currentTarget).parent().find("select").val();
+        var domainLinkHref = $(e.currentTarget).text();
+        //go to the full page
+        $(e.currentTarget).attr("href", "http://" + domainLinkHref + domainEndpointSelectValue);
+      });
+
+      $(".domain-endpoint-select").hover(function(e){
+        //get domain-link
+        // var domainLink = $(e.currentTarget).parent().find(".domain-link");
+        // //underline it or undo underline if already applied
+        // if(domainLink.hasClass("domain-link-hover")) {
+        //   domainLink.removeClass("domain-link-hover");
+        // } else {
+        //   domainLink.addClass("domain-link-hover");
+        // }
+      });
+
 
 
     });

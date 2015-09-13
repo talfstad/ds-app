@@ -115,3 +115,55 @@ span.fancytree-icon {
     margin: 0 auto;
     display: block;
 }
+
+span.fancytree-node {
+    padding: 5px 0 5px 0;
+}
+
+span.fancytree-node:hover {
+    background-color: inherit;
+    border-color: transparent;
+}
+
+span.fancytree-title {
+    cursor: inherit;
+}
+
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active, 
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected, 
+span.fancytree-node.fancytree-active:hover, 
+span.fancytree-node.fancytree-selected:hover {
+    background-color: inherit;
+    border-color: transparent;
+    cursor: inherit;
+}
+
+span.fancytree-node.fancytree-active, span.fancytree-node.fancytree-selected {
+    background-color: inherit;
+    border-color: transparent;   
+}
+
+
+.domain-endpoint-select {
+    display: inherit;
+    background: transparent;
+    width: inherit;
+    color: #3498db;
+    height: inherit;
+
+}
+
+.domain-endpoint-select:hover {
+    /*color: #1d6fa5;
+    text-decoration: underline;*/
+    cursor: pointer;
+}
+
+.domain-endpoint-select:focus {
+    border-color: #ddd;
+}
+
+.domain-link-hover {
+    color: #1d6fa5;
+    text-decoration: underline;
+}
