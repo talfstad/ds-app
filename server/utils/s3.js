@@ -40,19 +40,18 @@ module.exports = function(access_key_id, secret_access_key){
     });
 
     module.archiveLander = function(bucket_name, bucket_path, file_path, file_name, callback) {
-
         var error;
 
         bucket_path = string(bucket_path).chompLeft('/').chompRight('/').s;
 
-        var download_url = "https://s3.amazonaws.com/" + bucket_name + "/" + bucket_path + "/" + file_name;
+        var bucket_key = bucket_path + "/" + file_name;
 
         var bucket_params = {
           localFile: file_path,
 
           s3Params: {
             Bucket: bucket_name,
-            Key: bucket_path + "/" + file_name,
+            Key: bucket_key,
             ACL: "public-read"
             // other options supported by putObject, except Body and ContentLength.
             // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property
@@ -66,7 +65,7 @@ module.exports = function(access_key_id, secret_access_key){
 
         uploader.on('error', function(err) {
             error = "Unable to upload:" + err.stack;
-            callback(download_url, error)
+            callback(error, download_url)
             return;
         });
 
@@ -76,7 +75,8 @@ module.exports = function(access_key_id, secret_access_key){
 
         uploader.on('end', function() {
           console.log("Done uploading.");
-          callback(download_url, error);
+          var download_url = s3.getPublicUrlHttp(bucket_name, bucket_key);
+          callback(error, download_url);
           return;
         });
         
@@ -97,7 +97,7 @@ module.exports = function(access_key_id, secret_access_key){
                 console.log(err);
                 error = "Server error making staging directory."
             }
-            callback(created_path, error);
+            callback(error, created_path);
         });
     };
 
@@ -147,12 +147,12 @@ module.exports = function(access_key_id, secret_access_key){
                 //         callback('', error)
                 //     }
                 // });
-                callback(outdir, error);
+                callback(error, outdir);
             }
             else {
                 error = "Error unziping file";
                 cleanUpStaging(zip_path);
-                callback(outdir, error);
+                callback(error, outdir);
             }
         });
     };

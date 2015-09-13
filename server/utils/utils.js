@@ -33,8 +33,11 @@ module.exports = function() {
     //booleanName is the key of the boolean value in the response
     //if error => responseObject.booleanName = false
     //if booleanOverride is present => responseObject.booleanName = booleanOverride
-    module.sendResponse = function(res, error, booleanName, booleanOverride) {
-        var responseObject = {};
+    module.sendResponse = function(res, error, booleanName, booleanOverride, responseObject) {
+        if(!responseObject) {
+            responseObject = {};
+        }
+
         if(error) {
            responseObject.error = error;
            responseObject[booleanName] = false; 

@@ -23,17 +23,29 @@ module.exports = function(app, db, passport){
 
         var s3 = require('../utils/s3')(access_key_id, secret_access_key);
 
-        s3.archiveLander(bucket_name, bucket_path, zip_full_path, zip_name, function(download_url, error) {
+        s3.archiveLander(bucket_name, bucket_path, zip_full_path, zip_name, function(error, download_url) {
             if(error) {
                 utils.sendResponse(res, error, "landerUploaded");
             }
             else {
-                db.landers.add(lander_name, download_url, user, function(download_url, error) {
+                db.landers.add(lander_name, download_url, user, function(error) {
                     utils.sendResponse(res, error, "landerAdded");
                 });
             }
-
         });
+
+    });
+
+    app.get('/landers', function(req,res) {
+        var user = req.user;
+        db.landers.get(user, function(error, rows) {
+            var responseObject = {rows : rows};
+            utils.sendResponse(res, error, "landersFound", true, responseObject);
+        });
+    });
+
+    app.get('/lander', function(req,res) {
+        
     });
 
     app.put('/lander', function(req, res) {

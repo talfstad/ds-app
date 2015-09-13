@@ -34,6 +34,19 @@ module.exports = function(db) {
                     callback();
                 }
             });
+        },
+
+        get: function(user, callback) {
+            db.query("CALL get_lander_info_all(?);", [user], function(err, docs) {
+                if (err) {
+                    console.log(err);
+                    callback("Error updating lander with id: " + id);
+                } else {
+                    if(docs && docs[0]) {
+                        callback(null, docs[0]);
+                    }
+                }
+            });
         }
 
     }
