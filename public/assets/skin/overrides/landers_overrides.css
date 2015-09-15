@@ -202,3 +202,15 @@ span.fancytree-node.fancytree-active, span.fancytree-node.fancytree-selected {
 .landers-nav-item.active {
     content:url("/assets/img/logos/landers_icon_active.png");
 }
+
+#demo-canvas{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    opacity: 0.1;
+}
+#demo-canvas.login {
+    opacity: .5 !important;
+}

@@ -4,7 +4,7 @@
 <head>
   <!-- Meta, title, CSS, favicons, etc. -->
   <meta charset="utf-8">
-  <title>MoonLander - Landers</title>
+  <title>Lander | DS &mdash; Landers</title>
   <meta name="keywords" content="MoonLander, Affiliate Tools, Deployment Tool" />
   <meta name="description" content="MoonLander - A revolutionary change to the way you work">
   <meta name="author" content="MoonLander">
@@ -37,7 +37,7 @@
     <header class="navbar navbar-fixed-top navbar-shadow">
       <div class="navbar-branding">
         <a class="navbar-brand" href="dashboard.html">
-          <img src="/assets/img/logos/moonlanderlogo_black.png" title="Moonlander Logo" class="mtn16 w170">
+          <img src="/assets/img/logos/landerds_logo_black1.png" title="Moonlander Logo" class="mt5 w170">
         </a>
         <span id="toggle_sidemenu_l" class="ad ad-lines"></span>
       </div>
@@ -104,6 +104,11 @@
       <div class="sidebar-left-content nano-content">
         <!-- Start: Sidebar Header -->
         <header class="sidebar-header">
+        <!-- begin canvas animation bg -->
+      <div id="canvas-wrapper">
+        <canvas id="demo-canvas"></canvas>
+      </div>
+       
           <!-- Start: Sidebar Menu -->
           <ul class="nav sidebar-menu">
             <li class="sidebar-label pt20">Menu</li>
@@ -146,7 +151,7 @@
             <li class="crumb-active">
               <a href="dashboard.html">Landing Pages</a>
             </li>
-            <li class="crumb-trail">Manage and deploy all of your landing pages</li>
+            <li class="crumb-trail">Manage deploy and optimize all of your landing pages</li>
           </ol>
         </div>
       </header>
@@ -210,6 +215,8 @@
       <!-- End: Topbar -->
       <!-- Begin: Content -->
       <section id="content">
+      
+
         <!-- Demo Content: Center Column Text -->
         <div class="ph10 landers-list-items" id="accordion">
           <div class="bs-component">
@@ -262,24 +269,24 @@
                               <ul>
                                 <li id="5.81" data-hey="true">
                                   <span>
-                                    targeted Camp 1 &mdash; <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">hardbodiesandboners.org/sexsexsex/extreme/</a> 
+                                    targeted Camp 1:  <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">hardbodiesandboners.org/sexsexsex/extreme/</a> 
                                     <select class="domain-endpoint-select form-control">
                                       <option>index.html</option>
                                       <option>index3.html</option>
                                       <option>otherlander/safe_page.html</option>
                                     </select>
 
-                                    <a class="trash-link" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
+                                    <a class="trash-link" title="Undeploy" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
                                   </span></li>
                                 <li id="5.83">
                                   <span>
-                                    RON camp test &mdash; <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">hardbodiesandboners.org/creamy/extreme/</a> 
+                                    RON camp test: <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">hardbodiesandboners.org/creamy/extreme/</a> 
                                     <select class="domain-endpoint-select form-control">
                                       <option>index.html</option>
                                       <option>index3.html</option>
                                       <option>otherlander/safe_page.html</option>
                                     </select>
-                                    <a class="trash-link" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
+                                    <a class="trash-link" title="Undeploy" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
                                   </span>
                                 </li>
                               </ul>
@@ -288,23 +295,23 @@
                               <ul>
                                 <li id="5.81" data-hey="true">
                                   <span>
-                                    Jim RON camp &mdash; <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">hardbodiesandboners.org/hottest/extreme/</a> 
+                                    Jim RON camp: <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">hardbodiesandboners.org/hottest/extreme/</a> 
                                     <select class="domain-endpoint-select form-control">
                                       <option>index.html</option>
                                       <option>index3.html</option>
                                       <option>otherlander/safe_page.html</option>
                                     </select>
-                                    <a class="trash-link" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
+                                    <a class="trash-link" title="Undeploy" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
                                   </span></li>
                                 <li id="5.83">
                                   <span>
-                                    Jim's targeted on ZP &mdash; <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">hardbodiesandboners.org/hot/extreme/</a> 
+                                    Jim's targeted on ZP: <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">hardbodiesandboners.org/hot/extreme/</a> 
                                     <select class="domain-endpoint-select form-control">
                                       <option>index.html</option>
                                       <option>index3.html</option>
                                       <option>otherlander/safe_page.html</option>
                                     </select>
-                                    <a class="trash-link" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
+                                    <a class="trash-link" title="Undeploy" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
                                   </span>
                                 </li>
                               </ul>
@@ -382,7 +389,7 @@
             <div class="btn-group">
               <button type="button" style="width: 85px" class="btn btn-default btn-gradient dark">Duplicate</button>
               <button type="button" style="width: 85px" class="btn btn-default btn-gradient dark">Edit</button>
-              <button type="button" style="width: 85px" class="btn btn-default btn-gradient dark">Save</button>
+              <button type="button" style="width: 85px" class="btn btn-default btn-gradient disabled dark">Save</button>
             </div>
           </div>
           <div class="panel-body pn pb25">
@@ -506,6 +513,7 @@
     <script src="assets/js/utility/utility.js"></script>
     <script src="assets/js/demo/demo.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="/vendor/plugins/canvasbg/canvasbg.js"></script>
     <!-- Plugin JS -->
     <script src="vendor/plugins/nestable/jquery.nestable.js"></script>
     <script type="text/javascript">
@@ -699,7 +707,13 @@
         // }
       });
 
-
+      // Init CanvasBG and pass target starting location
+        CanvasBG.init({
+          Loc: {
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 3.3
+          },
+        }); 
 
     });
     </script>

@@ -5,7 +5,7 @@
 
     <!-- begin canvas animation bg -->
     <div id="canvas-wrapper">
-      <canvas id="demo-canvas"></canvas>
+      <canvas id="demo-canvas" class="login"></canvas>
     </div>
 
     <!-- Begin: Content Region -->

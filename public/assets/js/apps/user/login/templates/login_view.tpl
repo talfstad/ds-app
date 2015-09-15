@@ -2,7 +2,7 @@
 
       <div class="col-xs-6 va-m pln">
         <a href="#" title="Return to Dashboard">
-          <img src="/assets/img/logos/moonlanderlogo.png" title="Moonlander Logo" class="img-responsive w250">
+          <img src="/assets/img/logos/landerds_logo_white.png" title="Lander DS Logo" class="img-responsive w200">
         </a>
       </div>
 
