@@ -107,22 +107,22 @@
           <!-- Start: Sidebar Menu -->
           <ul class="nav sidebar-menu">
             <li class="sidebar-label pt20">Menu</li>
-            <li>
-              <a href="pages_calendar.html">
-                <img style="margin-left: 15px; width: 20px" src="/assets/img/logos/domains_icon_white.png"/>
+            <li class="domains">
+              <a href="">
+                <img class="domains-nav-item" style="margin-left: 15px; width: 20px" src="/assets/img/logos/domains_icon_white.png"/>
                 <span class="sidebar-title">Domains</span>
               </a>
             </li>
             <li>
-              <a href="../README/index.html">
+              <a href="">
                 <span style="font-size: 18px" class="fa fa-crosshairs"></span>
                 <span  class="sidebar-title">Campaigns</span>
               </a>
             </li>
             <li class="active">
               <a href="dashboard.html">
-                <img style="margin-left: 15px; width: 20px" src="/assets/img/logos/landers_icon_white.png"/>
-                <span class="sidebar-title">Landers</span>
+                <img class="landers-nav-item active" style="margin-left: 15px; width: 20px" src="/assets/img/logos/landers_icon_white.png"/>
+                <span class="sidebar-title">Landing Pages</span>
               </a>
             </li>
             <li>
@@ -144,9 +144,9 @@
         <div class="topbar-left">
           <ol class="breadcrumb">
             <li class="crumb-active">
-              <a href="dashboard.html">Landers</a>
+              <a href="dashboard.html">Landing Pages</a>
             </li>
-            <li class="crumb-trail">Manage and deploy landers</li>
+            <li class="crumb-trail">Manage and deploy all of your landing pages</li>
           </ol>
         </div>
       </header>
@@ -156,7 +156,7 @@
             <span class="fa fa-caret-down pr5"></span> Sort By
           </a> -->
           <button data-toggle="dropdown" role="button" aria-expanded="false" type="button" class="ml10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
-            <span class="fa fa-caret-down pr5"></span>Sort By
+            <span class="fa fa-caret-down pr5"></span>Sort Landers By
           </button>
           <ul class="topbar dropdown-menu dropdown-menu-left animated animated-short flipInX pt5" role="menu">
             <li>
@@ -220,7 +220,7 @@
                     Extreme Muscle Lander 2 
                  
                   <div class="widget-menu domain-campaign-notification">
-                     <span class="fs11 text-muted" title="Currently deployed on 2 domains"><img style="width: 20px" src="/assets/img/logos/domains_icon_purple.png"/> 2 Domains</span>
+                     <span class="fs11 text-muted" title="Currently deployed on 2 domains">Deployed on 2 Domains</span>
                    <!--  <span class="fs11 text-muted ml10" title="Currently in 2 campaigns"><i class="fa fa-circle text-system fs12 pr5"></i> 2 Campaigns</span> -->
                   </div>
                    </a>
@@ -326,7 +326,8 @@
                     Weight Loss Lander version 1
                  
                   <div class="widget-menu domain-campaign-notification">
-                    <span class="fs11 text-muted" title="Currently deployed on 0 domains"><img style="width: 20px" src="/assets/img/logos/domains_icon_purple.png"/> 0 Domains</span>
+                    <span class="fs11 text-muted" title="Currently deployed on 0 domains">
+                    Not Deployed</span>
                     <!-- <span class="fs11 text-muted ml10" title="Currently in 0 campaigns"><i class="fa fa-circle text-system fs12 pr5"></i> 0 Campaigns</span> -->
                   </div>
                    </a>
@@ -385,11 +386,19 @@
             </div>
           </div>
           <div class="panel-body pn pb25">
-            <h5 class="title-divider text-muted mt20 mb10">Name</h5>
+            <h5 class="title-divider text-muted mt20 mb10">Name
+             <a style="float: right" href="#">
+                <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pr5"></i>
+              </a>
+            </h5>
             <div class="bs-component">
               <input type="text" id="inputStandard" class="form-control" value="Extreme Muscle lander 2">
             </div>
-            <h5 class="title-divider text-muted mt30 mb10">Deployment Optimizations</h5>
+            <h5 class="title-divider text-muted mt30 mb10">Deployment Optimizations 
+              <a style="float: right" href="#">
+                <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pr5"></i>
+              </a>
+            </h5>
             <div class="bs-component">
               <div class="checkbox-custom checkbox-success mb5">
                 <input type="checkbox" checked="" id="checkboxDefault3">
@@ -421,24 +430,53 @@
               </div>
             </div>
             <h5 class="title-divider text-muted mt30 mb10">
-                Javascript Snippets 
-                <button type="button" class="pull-right btn btn-default pt0 pl5 mrn5 pr5 pb0 btn-gradient dark"><span class="fa fa-plus"></span> Add</button>
-
+              Active Javascript Page Snippets 
+              <a style="float: right" href="#">
+                <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pr5"></i>
+              </a>
             </h5>
-            <div class="bs-component">
-              <label class="ml5">JS Cloaker</label>
-              <button type="button" class="pull-right btn btn-default pt0 pl5 pr5 pb0 btn-gradient dark"><span class="fa fa-trash-o"></span></button>
-              <button type="button" class="pull-right btn btn-default pt0 pl5 mr5 pr5 pb0 btn-gradient dark"><span class="fa fa-pencil"></span></button>
+         
+
+
+
+            <div id="jssnippets-tree" class="fancytree-radio">
+              <ul id="treeData" style="display: none;" class="ui-fancytree-source ui-helper-hidden">
+                <li id="5.7" class="fancytree-page expanded">safepage.html
+                  <ul>
+                    <li id="5.81" data-hey="true">
+                      <span>
+                        JS Cloaker
+                        <a class="trash-link" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
+                        <a class="edit-link" href="#"><i class="pull-right ml15 mt3 fa fa-pencil-square-o"></i></a>
+                      </span></li>
+                    <li id="5.83">
+                      <span>
+                        JS No-referrer
+                        <a class="trash-link" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
+                        <a class="edit-link" href="#"><i class="pull-right ml15 mt3 fa fa-pencil-square-o"></i></a>
+                      </span>
+                    </li>
+                  </ul>
+                </li>
+                <li id="5.7" class="fancytree-page expanded">index1.html
+                  <ul>
+                    <li id="5.81" data-hey="true">
+                      <span>
+                        JS Cloaker
+                        <a class="trash-link" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
+                        <a class="edit-link" href="#"><i class="pull-right ml15 mt3 fa fa-pencil-square-o"></i></a>
+                      </span></li>
+                    <li id="5.83">
+                      <span>
+                        JS No-referrer
+                        <a class="trash-link" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
+                        <a class="edit-link" href="#"><i class="pull-right ml15 mt3 fa fa-pencil-square-o"></i></a>
+                      </span>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
             </div>
-            <div class="bs-component">
-              <label class="ml5">JS No-Referrer</label>
-              <button type="button" class="pull-right btn btn-default pt0 pl5 pr5 pb0 btn-gradient dark"><span class="fa fa-trash-o"></span></button>
-              <button type="button" class="pull-right btn btn-default pt0 pl5 mr5 pr5 pb0 btn-gradient dark"><span class="fa fa-pencil"></span></button>
-            </div>
-            <br>
-            <br>
-            <br>
-            <br>
           </div>
           <div class="panel-footer">
             <button type="button" class="delete-lander btn btn-danger btn-gradient dark">Delete Lander</button>
@@ -595,6 +633,35 @@
             $span.find("> span.fancytree-icon").html('<img style="width: 20px;" src="/assets/img/logos/domains_icon_purple.png"/>');
           } else {
             $span.find("> span.fancytree-icon").html('<i style="font-size: 18px !important" class="fa fa-crosshairs text-system fs12 pr5"></i>');
+          }
+
+        }
+      });
+
+      $("#jssnippets-tree").fancytree({
+        click: function(event, data) {
+          var tree = $("#jssnippets-tree").fancytree("getActiveNode");
+          // A node is about to be selected: prevent this, for folder-nodes:
+          if (data.node.isFolder()) {
+            return false;
+          }
+        },
+        // extensions: ["childcounter"],
+        // childcounter: {
+        //   deep: false,
+        //   hideZeros: true,
+        //   hideExpanded: true
+        // },
+        renderNode: function(event, data) {
+          // Optionally tweak data.node.span
+          var node = data.node;
+          var $span = $(node.span);
+
+
+          if ($span.hasClass("fancytree-page")) {
+            $span.find("> span.fancytree-icon").html('<i style="font-size: 18px !important" class="fa fa-file fs12 pr5"></i>');
+          } else {
+            $span.find("> span.fancytree-icon").html('<i style="font-size: 18px !important" class="fa fa-file-code-o text-success fs12 pr5"></i>');
           }
 
         }

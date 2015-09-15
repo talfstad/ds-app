@@ -46,8 +46,12 @@
     color: #222 !important;
 }
 
-.landers-list-items .fancytree-container {
+.fancytree-container {
     border: none !important;
+}
+
+ul.fancytree-container {
+    padding: 0;
 }
 
 .landers-list-items .panel-body {
@@ -78,6 +82,12 @@
     margin-right: 110px;
 }
 
+
+.accordion-toggle.active .domain-campaign-notification span {
+    color: #000 !important;
+}
+
+
 .landers-list-items .label {
     display: block;
     padding: 0;
@@ -104,7 +114,12 @@ span.fancytree-icon {
     right: 0;
     margin-right: 15px;
 }
-    
+ 
+.fancytree-title a.edit-link {
+    position: absolute;
+    right: 0;
+    margin-right: 35px;
+}   
 
 .sidebar-right-content .panel-body {
     padding-left: 5px !important;
@@ -170,4 +185,20 @@ span.fancytree-node.fancytree-active, span.fancytree-node.fancytree-selected {
 .domain-link-hover {
     color: #1d6fa5;
     text-decoration: underline;
+}
+
+.domains-nav-item {
+    content:url("/assets/img/logos/domains_icon_white.png");
+}
+
+.domains-nav-item.active {
+    content:url("/assets/img/logos/domains_icon_active.png");
+}
+
+.landers-nav-item {
+    content:url("/assets/img/logos/landers_icon_white.png");
+}
+
+.landers-nav-item.active {
+    content:url("/assets/img/logos/landers_icon_active.png");
 }
