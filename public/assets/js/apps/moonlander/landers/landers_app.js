@@ -7,8 +7,10 @@ function(Moonlander, ListController, CommonLogin){
     var landersAppAPI = {
       showLanders: function(d){
         Moonlander.navigate("landers");
-        Moonlander.trigger("left_nav:active", "landers");
-        CommonLogin.Check(ListController.showLanders);
+        CommonLogin.Check(function(){
+          ListController.showLanders(); 
+          Moonlander.trigger("left_nav:active", "landers");
+        });
       }
     };
 

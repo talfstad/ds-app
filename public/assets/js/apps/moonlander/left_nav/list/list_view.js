@@ -38,6 +38,7 @@ define(["app",
 
         setActiveItem: function(item){
           $(".sidebar-left-content li").removeClass("active");
+          $(".sidebar-left-content li img").removeClass("active");
           $("#"+item+"-left-nav").addClass("active");
           $("#"+item+"-left-nav img").addClass("active");
         }
