@@ -6,12 +6,20 @@ define(["app",
     var leftNavAPI = {
       showLeftNav: function(){
         ListController.showLeftNav();
+      },
+      setActiveItem: function(item){
+        ListController.setActiveItem(item);
       }
     };
 
     Moonlander.on("left_nav:list", function() {
       CommonLogin.Check(leftNavAPI.showLeftNav);
     });
+
+    Moonlander.on("left_nav:active", function(item) {
+      leftNavAPI.setActiveItem(item);
+    });
+    
   });
 
   return Moonlander.LeftNavApp;

@@ -1,15 +1,15 @@
 module.exports = function(app, db, credentials, checkAuth){
     var module = {};
 
-    app.post('/campaign', checkAuth, function(req, res) {
+    app.post('/api/campaign', checkAuth, function(req, res) {
      
     });
 
-    app.put('/campaign', checkAuth, function(req, res) {
+    app.put('/api/campaign', checkAuth, function(req, res) {
      
     });
 
-    app.delete('/campaign', checkAuth, function(req, res) {
+    app.delete('/api/campaign', checkAuth, function(req, res) {
      
     });
 

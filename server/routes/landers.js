@@ -6,7 +6,7 @@ module.exports = function(app, db, passport){
     var utils = require('../utils/utils.js')();
     var db = require("../db_api");
 
-    app.post('/lander', function(req, res) {
+    app.post('/api/lander', function(req, res) {
         var lander_name = req.body.lander_name;
         var zip_full_path = req.files.myFile.path;
         var zip_name=req.files.myFile.originalname;
@@ -36,7 +36,7 @@ module.exports = function(app, db, passport){
 
     });
 
-    app.get('/landers', function(req,res) {
+    app.get('/api/landers', function(req,res) {
         var user = req.user;
         db.landers.get(user, function(error, rows) {
             var responseObject = {rows : rows};
@@ -44,15 +44,15 @@ module.exports = function(app, db, passport){
         });
     });
 
-    app.get('/lander', function(req,res) {
+    app.get('/api/lander', function(req,res) {
         
     });
 
-    app.put('/lander', function(req, res) {
+    app.put('/api/lander', function(req, res) {
      
     });
 
-    app.delete('/lander', function(req, res) {
+    app.delete('/api/lander', function(req, res) {
      
     });
 

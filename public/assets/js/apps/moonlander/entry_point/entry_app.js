@@ -2,7 +2,8 @@ define(["app",
   "/assets/js/apps/moonlander/entry_point/entry_controller.js",
   "/assets/js/apps/moonlander/header/header_app.js",
   "/assets/js/apps/moonlander/left_nav/left_nav_app.js",
-  "/assets/js/apps/moonlander/domains/domains_app.js"], 
+  "/assets/js/apps/moonlander/domains/domains_app.js",
+  "/assets/js/apps/moonlander/landers/landers_app.js"], 
   function(Moonlander, EntryController){
 
   Moonlander.module("EntryApp", function(EntryApp, Moonlander, Backbone, Marionette, $, _){
@@ -10,6 +11,7 @@ define(["app",
     Moonlander.Router = Marionette.AppRouter.extend({
       appRoutes: {
         "domains": "showDomains",
+        "landers": "showLanders",
         "*notFound": "showDomains",
       }
     });
@@ -27,6 +29,10 @@ define(["app",
       showDomains: function(){
         loadCommonStuff();
         Moonlander.trigger("domains:list");
+      },
+      showLanders: function(){
+        loadCommonStuff();
+        Moonlander.trigger("landers:list");
       }
     };
 

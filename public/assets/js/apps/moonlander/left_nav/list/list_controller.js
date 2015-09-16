@@ -1,5 +1,7 @@
 define(["app", 
         "/assets/js/apps/moonlander/left_nav/list/list_view.js",
+        "/assets/js/apps/moonlander/domains/domains_app.js",
+        "/assets/js/apps/moonlander/landers/landers_app.js",
         "/assets/js/apps/moonlander/entry_point/entry_app.js"], 
 function(Moonlander, LeftNavView){
   Moonlander.module("LeftNavApp", function(LeftNavApp, Moonlander, Backbone, Marionette, $, _){
@@ -7,42 +9,25 @@ function(Moonlander, LeftNavView){
       
       showLeftNav: function(){
         
-        var leftNavView = new LeftNavView();
+        Moonlander.leftNavView = new LeftNavView();
 
         
-        leftNavView.on("childview:navigate", function(childView, model, child) {
-          if(child){
-            children = model.get("children");
-            var childModel = children[child];
-            RipManager.trigger(childModel.navigationTrigger);
-          } else {
-            // var trigger = model.get("navigationTrigger");
-            var url = model.get("url");
-            me.setActiveLeftNav(url);
-            RipManager.navigate(url, {trigger: true});
-          }
+        Moonlander.leftNavView.on("showDomains", function(childView, model, child) {
+          Moonlander.trigger("domains:list");
         });
 
-        //show it here TODO
-        Moonlander.rootRegion.currentView.leftNavRegion.show(leftNavView);
-      
-      }
+        Moonlander.leftNavView.on("showLanders", function(childView, model, child) {
+          Moonlander.trigger("landers:list");
+        });
 
-      
-      // setActiveLeftNav: function(url){
-      //   var links = RipManager.request("leftNav:links"); // get collection for links
-        
-      //   //iterate through all links turn
-      //   links.each(function(link){
-      //     if(link.get("url") === url) {
-      //       link.attributes.active = true;
-      //     } else {
-      //       link.attributes.active = false;
-      //     }
-      //   });
-      //   links.trigger("reset");
-      //   // this.leftNavView.onDomRefresh();
-      // }
+        Moonlander.rootRegion.currentView.leftNavRegion.show(Moonlander.leftNavView);      
+      },
+
+      setActiveItem: function(item){
+        if(Moonlander.leftNavView) {
+          Moonlander.leftNavView.setActiveItem(item);
+        }
+      }
     };
  
   });

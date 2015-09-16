@@ -12,14 +12,35 @@ define(["app",
         className: "nano nano-light affix",
 
         events: {
-          'click a': "navigate"
+          'click #landers-left-nav a': 'goLanders',
+          'click #domains-left-nav a': 'goDomains'
         },
 
-        navigate: function(e) {
+        goDomains: function(e) {
+          e.preventDefault();
+          
+          $(".sidebar-left-content li").removeClass("active");
+          $("#domains-left-nav").addClass("active");
 
-          // this.trigger("navigate", this.model, child);
+          this.trigger("showDomains", this.model);
+        },
+
+        goLanders: function(e) {
+          e.preventDefault();
+          
+          $(".sidebar-left-content li").removeClass("active");
+          $("#landers-left-nav img").addClass("active");
+
+          this.trigger("showLanders", this.model);
+        },
+
+
+
+        setActiveItem: function(item){
+          $(".sidebar-left-content li").removeClass("active");
+          $("#"+item+"-left-nav").addClass("active");
+          $("#"+item+"-left-nav img").addClass("active");
         }
-
 
       });
 

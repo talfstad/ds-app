@@ -8,25 +8,25 @@
     <!-- Start: Sidebar Menu -->
     <ul class="nav sidebar-menu">
       <li class="sidebar-label pt20">Menu</li>
-      <li class="domains">
-        <a href="">
+      <li id="domains-left-nav">
+        <a href="/domains">
           <img class="domains-nav-item" style="margin-left: 15px; width: 20px" src="/assets/img/logos/domains_icon_white.png"/>
           <span class="sidebar-title">Domains</span>
         </a>
       </li>
-      <li>
-        <a href="">
+      <li id="campaigns-left-nav">
+        <a href="/campaigns">
           <span style="font-size: 18px" class="fa fa-crosshairs"></span>
           <span  class="sidebar-title">Campaigns</span>
         </a>
       </li>
-      <li class="active">
-        <a href="">
-          <img class="landers-nav-item active" style="margin-left: 15px; width: 20px" src="/assets/img/logos/landers_icon_white.png"/>
+      <li id="landers-left-nav">
+        <a href="/landers">
+          <img class="landers-nav-item" style="margin-left: 15px; width: 20px" src="/assets/img/logos/landers_icon_white.png"/>
           <span class="sidebar-title">Landing Pages</span>
         </a>
       </li>
-      <li>
+      <li id="performance-left-nav">
         <a href="">
           <span style="font-size: 18px" class="fa fa-bolt"></span>
           <span class="sidebar-title">Performance</span>

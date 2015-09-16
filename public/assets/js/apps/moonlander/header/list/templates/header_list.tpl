@@ -1,7 +1,7 @@
 <!-- Start: Header -->
 <div class="navbar-branding">
   <a class="navbar-brand" href="dashboard.html">
-          <img src="/assets/img/logos/landerds_logo_black.png" title="LanderDS Logo" class="mt5 w170">
+          <img src="/assets/img/logos/landerds_logo_black1.png" title="LanderDS Logo" class="mt5 w170">
         </a>
   <span id="toggle_sidemenu_l" class="ad ad-lines"></span>
 </div>
