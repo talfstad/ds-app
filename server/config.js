@@ -1,10 +1,10 @@
 module.exports = {
   port: 3000,
   dbConnectionInfo: {
-    host : '54.187.184.91',
+    host : '52.88.173.62',
     // host : 'localhost',
     user : 'root',
-    password : 'derekisfat',
+    password : 'wewillwinintheend123!@#',
     database : 'moonlander',
     multipleStatements: true
   },

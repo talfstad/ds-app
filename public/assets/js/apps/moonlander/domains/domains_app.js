@@ -8,6 +8,7 @@ function(Moonlander, ListController, CommonLogin){
     var domainsAppAPI = {
       showDomains: function(d){
         Moonlander.navigate("domains");
+
         CommonLogin.Check(function(){
           ListController.showDomains();
           Moonlander.trigger("left_nav:active", "domains");

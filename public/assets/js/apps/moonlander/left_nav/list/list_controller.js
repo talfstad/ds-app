@@ -20,7 +20,14 @@ function(Moonlander, LeftNavView){
           Moonlander.trigger("landers:list");
         });
 
-        Moonlander.rootRegion.currentView.leftNavRegion.show(Moonlander.leftNavView);      
+        Moonlander.rootRegion.currentView.leftNavRegion.show(Moonlander.leftNavView);
+
+        
+        //set active item
+        if(Moonlander.leftNavView) {
+          Moonlander.leftNavView.setActiveItem(Backbone.history.getFragment());
+        }
+
       },
 
       setActiveItem: function(item){

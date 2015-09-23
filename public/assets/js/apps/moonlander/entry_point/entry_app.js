@@ -22,7 +22,7 @@ define(["app",
       //load the header here
       Moonlander.trigger("header:list");
       //load the left nav here
-      Moonlander.trigger("left_nav:list")
+      Moonlander.trigger("left_nav:list");
     }
 
     var moonlanderRoutes = {
