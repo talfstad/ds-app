@@ -24,6 +24,10 @@
     border-left: 1px solid rgba(0, 0, 0, 0.06);
 }
 
+.landers-list-items .panel-group {
+    margin-bottom: -1px;
+}
+
 .landers-list-items .panel-tabs li a {
     width: 105px;
     border-left: none;
@@ -214,3 +218,4 @@ span.fancytree-node.fancytree-active, span.fancytree-node.fancytree-selected {
 #demo-canvas.login {
     opacity: .5 !important;
 }
+

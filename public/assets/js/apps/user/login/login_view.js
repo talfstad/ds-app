@@ -3,9 +3,11 @@ define(["app",
         "/assets/js/common/validation.js",
         "/assets/js/common/notification.js",
         "canvasbg",
-        "theme.utility",
-        "theme.demo",
-        "theme.main"],
+        "bootstrap"
+        // "theme.utility",
+        // "theme.demo",
+        // "theme.main"
+        ],
 function(Moonlander, LoginViewTpl, Validation, Notification){
   Moonlander.module("UserApp.Login", function(Login, Moonlander, Backbone, Marionette, $, _){
     
@@ -39,13 +41,6 @@ function(Moonlander, LoginViewTpl, Validation, Notification){
       },
 
       onDomRefresh: function(){
-        "use strict";
-
-        // Init Theme Core      
-        Core.init();
-
-        // Init Demo JS
-        Demo.init();
 
         // Init CanvasBG and pass target starting location
         CanvasBG.init({
@@ -58,8 +53,6 @@ function(Moonlander, LoginViewTpl, Validation, Notification){
         $("body").addClass("external-page sb-l-c sb-r-c onload-check");
 
       }
-
-
 
     });
   });

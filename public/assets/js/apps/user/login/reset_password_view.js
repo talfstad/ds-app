@@ -3,10 +3,11 @@ define(["app",
         "tpl!/assets/js/apps/user/login/templates/reset_password_step2.tpl",
         "/assets/js/common/validation.js",
         "/assets/js/common/notification.js",
-        "canvasbg",
-        "theme.utility",
-        "theme.demo",
-        "theme.main"],
+        "canvasbg"
+        // "theme.utility",
+        // "theme.demo",
+        // "theme.main"
+        ],
 function(Moonlander, ResetPasswordTpl, ResetPasswordStep2Tpl, Validation, Notification){
   Moonlander.module("UserApp.Login", function(Login, Moonlander, Backbone, Marionette, $, _){
     
@@ -42,14 +43,7 @@ function(Moonlander, ResetPasswordTpl, ResetPasswordStep2Tpl, Validation, Notifi
       // },
 
       onDomRefresh: function(){
-        "use strict";
-
-        // Init Theme Core      
-        Core.init();
-
-        // Init Demo JS
-        Demo.init();
-
+        
         // Init CanvasBG and pass target starting location
         CanvasBG.init({
           Loc: {
