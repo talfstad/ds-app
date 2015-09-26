@@ -1,9 +1,11 @@
+<% if(true) { %>
+
 <div class="bs-component">
   <div class="panel-group accordion">
     <div class="panel">
       <div class="panel-heading">
-        <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#accordion" href="#accord1">
-          Extreme Muscle Lander 2 
+        <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#accordion" href="#accord<%= id %>">
+          <%= name %>
        
         <div class="widget-menu domain-campaign-notification">
            <span class="fs11 text-muted" title="Currently deployed on 2 domains">Deployed on 2 Domains</span>
@@ -12,14 +14,14 @@
          </a>
         <ul class="nav panel-tabs">
           <li>
-            <a href="#domains-tab-id1" data-toggle="tab">
+            <a href="#domains-tab-id<%= id %>" data-toggle="tab">
               <span class="open_sidemenu_r label bg-success">
                 Deployed
               </span></a>
           </li>
         </ul>
       </div>
-      <div id="accord1" class="panel-collapse collapse" style="height: auto;">
+      <div id="accord<%= id %>" class="panel-collapse collapse" style="height: auto;">
         <div class="panel-menu clearfix">
           <div class="row">
             <div class="col-md-8">
@@ -41,8 +43,8 @@
         </div>
         <div class="panel-body">
           <div class="tab-content">
-            <div id="domains-tab-id1" class="tab-pane active">
-              <div id="tree5" class="fancytree-radio">
+            <div id="domains-tab-id<%= id %>" class="tab-pane active">
+              <div id="tree<%= id %>" class="fancytree-radio">
                 <ul id="treeData" style="display: none;" class="ui-fancytree-source ui-helper-hidden">
                   <li id="5.7" class="fancytree-domain expanded">hardbodiesandboners.org
                     <ul>
@@ -104,11 +106,16 @@
     </div>
   </div>
 </div>
+
+
+<% } else { %>
+
+
 <div class="bs-component">
   <div class="panel-group accordion">
     <div class="panel">
       <div class="panel-heading">
-        <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#accordion" href="#accord2">
+        <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#accordion" href="#accord<%= id %>">
           Weight Loss Lander version 1
        
         <div class="widget-menu domain-campaign-notification">
@@ -119,7 +126,7 @@
          </a>
         <ul class="nav panel-tabs">
           <li>
-            <a href="#domains-tab-id1" data-toggle="tab">
+            <a href="#domains-tab-id<%= id %>" data-toggle="tab">
               <span class="open_sidemenu_r label bg-warning">
                                        <span style="margin-left: 5px; font-size: 12px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Deploying
               </span>
@@ -127,7 +134,7 @@
           </li>
         </ul>
       </div>
-      <div id="accord2" class="panel-collapse collapse" style="height: auto;">
+      <div id="accord<%= id %>" class="panel-collapse collapse" style="height: auto;">
         <div class="panel-menu clearfix">
           <div class="row">
             <div class="col-md-8">
@@ -151,3 +158,5 @@
     </div>
   </div>
 </div>
+
+<% } %>

@@ -8,15 +8,13 @@ define(["app",
   function(Moonlander, landersListItemView, landersEmptyView, landersListContainerTemplate) {
 
     Moonlander.module("LandersApp.List", function(List, Moonlander, Backbone, Marionette, $, _) {
-     
+
       List.View = Marionette.CompositeView.extend({
-        id: "landers-table",
-        tagName: "table",
-        // className: "display dataTable",
+        id: "landers-collection",
         template: landersListContainerTemplate,
         emptyView: landersEmptyView,
         childView: landersListItemView,
-        childViewContainer: "tbody",
+        childViewContainer: "div",
 
 
         initialize: function() {
@@ -25,14 +23,23 @@ define(["app",
 
 
         onRenderCollection: function() {
-          this.attachHtml = function(collectionView, childView, index) {
-            collectionView.$el.prepend(childView.el);
-          }
+          // this.attachHtml = function(collectionView, childView, index) {
+          //   collectionView.$el.prepend(childView.el);
+          // }
         },
 
 
 
         onDomRefresh: function() {
+
+          //needed to init correctly. avoids initial toggle on button click (expand/collapse all)
+          $(".collapse").collapse({
+            toggle: false
+          });
+
+          
+
+
 
         }
       });

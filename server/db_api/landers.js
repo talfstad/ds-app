@@ -37,15 +37,116 @@ module.exports = function(db) {
     },
 
     getAll: function(user, callback) {
+      var mockData = [{
+        "id": 1,
+        "name": "test lander 1",
+        "user": "trevor@buildcave.com",
+        "deployed": true,
+        "deployedLocations": {
+          "hardbodiesandboners.org": [{
+            "id": 1,
+            "name": "target camp"
+          }, {
+            "id": 2,
+            "name": "RON Camp Test"
+          }],
+          "weightlosskey.com": [{
+            "id": 3,
+            "name": "aargete camp 1"
+          }, {
+            "id": 4,
+            "name": "RON2Camp Test 2"
+          }]
+        },
+        "urlEndpoints": [
+          "index.html",
+          "index1.html",
+          "where/here.html",
+          "subfolder1/html/bob1.html"
+        ],
+        "optimizations": {
+          "gzip": true,
+          "compressJs": false,
+          "singleFileJs": true,
+          "compressCss": true,
+          "singleFileCss": true,
+          "compressImg": true,
+        },
+        "activeJsSnippets": {
+          "safepage.html": [{
+            "id": 1,
+            "name": "JS Cloaker"
+          }, {
+            "id": 2,
+            "name": "JS No-referrer"
+          }],
+          "index1.html": [{
+            "id": 2,
+            "name": "JS No-referrer"
+          }]
+        }
+      },
+      {
+        "id": 2,
+        "name": "test lander 234",
+        "user": "trevor@buildcave.com",
+        "deployed": true,
+        "deployedLocations": {
+          "hardbodiesandboners.org": [{
+            "id": 1,
+            "name": "target camp"
+          }, {
+            "id": 2,
+            "name": "RON Camp Test"
+          }],
+          "weightlosskey.com": [{
+            "id": 3,
+            "name": "aargete camp 1"
+          }, {
+            "id": 4,
+            "name": "RON2Camp Test 2"
+          }]
+        },
+        "urlEndpoints": [
+          "index.html",
+          "index1.html",
+          "where/here.html",
+          "subfolder1/html/bob1.html"
+        ],
+        "optimizations": {
+          "gzip": true,
+          "compressJs": false,
+          "singleFileJs": true,
+          "compressCss": true,
+          "singleFileCss": true,
+          "compressImg": true,
+        },
+        "activeJsSnippets": {
+          "safepage.html": [{
+            "id": 1,
+            "name": "JS Cloaker"
+          }, {
+            "id": 2,
+            "name": "JS No-referrer"
+          }],
+          "index1.html": [{
+            "id": 2,
+            "name": "JS No-referrer"
+          }]
+        }
+        
+      }];
+
       var user = user.user;
       db.query("CALL get_lander_info_all(?);", [user], function(err, docs) {
         if (err) {
           console.log(err);
           callback("Error updating lander with id: " + id);
         } else {
-            console.log("got lander docs: " + JSON.stringify(docs));
+          // console.log("got lander docs: " + JSON.stringify(docs));
           if (docs && docs[0]) {
-            callback(null, docs[0]);
+            callback(null, mockData);
+            // callback(null, docs[0]);
           }
         }
       });

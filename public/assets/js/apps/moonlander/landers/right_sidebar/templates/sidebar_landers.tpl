@@ -19,7 +19,7 @@
               </a>
             </h5>
             <div class="bs-component">
-              <input type="text" id="inputStandard" class="form-control" value="Extreme Muscle lander 2">
+              <input type="text" id="inputStandard" class="form-control" value="<%= name %>">
             </div>
             <h5 class="title-divider text-muted mt30 mb10">Deployment Optimizations 
               <a style="float: right" href="#">

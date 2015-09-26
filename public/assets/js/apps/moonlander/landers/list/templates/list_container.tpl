@@ -1,4 +1,1 @@
-<table>
-<tbody>
-</tbody>
-</table>
+<div id="landers-collection-items"></div>

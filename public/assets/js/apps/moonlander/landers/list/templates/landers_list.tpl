@@ -58,7 +58,7 @@
       
 
         <!-- Demo Content: Center Column Text -->
-        <div id="landers-collection" class="ph10 landers-list-items">
+        <div id="landers-region" class="ph10 landers-list-items">
           
         </div>
       </section>

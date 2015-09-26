@@ -12,12 +12,17 @@ define(["app",
         template: sidebarLanders,
         tagName: "aside",
         id: "sidebar_right",
-       
+        
+        modelEvents: {
+          "change": "render"
+        },
+
         onDomRefresh: function() {
+          var me = this;
           $("body").removeClass("external-page");
 
           $(".close-right-sidebar").click(function(e) {
-            closeRightSidebar();
+            me.closeSidebar();
             $(".collapse").collapse('hide');
           });
 
@@ -46,6 +51,11 @@ define(["app",
         },
 
         openSidebar: function(model){
+          //if we have a model we are showing completely new lander info
+          if(model){
+            this.model.set(model.attributes);
+          }
+
           var Body = $("body");
           // If sidebar is set to Horizontal we return
           if ($('body.sb-top').length) {
