@@ -114,11 +114,11 @@ module.exports = function(db) {
           "subfolder1/html/bob1.html"
         ],
         "optimizations": {
-          "gzip": true,
+          "gzip": false,
           "compressJs": false,
-          "singleFileJs": true,
-          "compressCss": true,
-          "singleFileCss": true,
+          "singleFileJs": false,
+          "compressCss": false,
+          "singleFileCss": false,
           "compressImg": true,
         },
         "activeJsSnippets": {
@@ -137,6 +137,58 @@ module.exports = function(db) {
         
       }];
 
+for(i=3 ; i<20 ; i++) {
+      var newDataItem = {
+        "id": i,
+        "name": "test lander " + i,
+        "user": "trevor@buildcave.com",
+        "deployed": true,
+        "deployedLocations": {
+          "hardbodiesandboners.org": [{
+            "id": 1,
+            "name": "target camp"
+          }, {
+            "id": 2,
+            "name": "RON Camp Test"
+          }],
+          "weightlosskey.com": [{
+            "id": 3,
+            "name": "aargete camp 1"
+          }, {
+            "id": 4,
+            "name": "RON2Camp Test 2"
+          }]
+        },
+        "urlEndpoints": [
+          "index.html",
+          "index1.html",
+          "where/here.html",
+          "subfolder1/html/bob1.html"
+        ],
+        "optimizations": {
+          "gzip": false,
+          "compressJs": false,
+          "singleFileJs": false,
+          "compressCss": false,
+          "singleFileCss": false,
+          "compressImg": true,
+        },
+        "activeJsSnippets": {
+          "safepage.html": [{
+            "id": 1,
+            "name": "JS Cloaker"
+          }, {
+            "id": 2,
+            "name": "JS No-referrer"
+          }],
+          "index1.html": [{
+            "id": 2,
+            "name": "JS No-referrer"
+          }]
+        }
+}
+      mockData.push(newDataItem)
+}
       var user = user.user;
       db.query("CALL get_lander_info_all(?);", [user], function(err, docs) {
         if (err) {

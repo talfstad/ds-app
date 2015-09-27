@@ -16,11 +16,13 @@ define(["app",
         childView: landersListItemView,
         childViewContainer: "div",
 
+        collectionEvents: {
+          'change': 'render'
+        },
 
         initialize: function() {
           // this.listenTo(this, "landers:edit:notify", this.notify); 
         },
-
 
         onRenderCollection: function() {
           // this.attachHtml = function(collectionView, childView, index) {
@@ -32,21 +34,9 @@ define(["app",
 
         onDomRefresh: function() {
 
-          //needed to init correctly. avoids initial toggle on button click (expand/collapse all)
-          $(".collapse").collapse({
-            toggle: false
-          });
-
-          
-
-
 
         }
       });
-
-
-
-
 
     });
     return Moonlander.LandersApp.List.View;

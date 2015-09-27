@@ -12,7 +12,7 @@ define(["app",
         template: sidebarLanders,
         tagName: "aside",
         id: "sidebar_right",
-        
+        className: "nano affix",
         modelEvents: {
           "change": "render"
         },

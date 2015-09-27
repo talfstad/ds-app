@@ -40,7 +40,7 @@
         <ul class="nav nav-list nav-list-topbar pull-left">
           <form class="navbar-form navbar-search pull-left mtn mbn" role="search">
             <div class=" mt10 form-group">
-              <input type="text" class="form-control" placeholder="Search..." value="">
+              <input type="text" class="w250 form-control" placeholder="Search Lander Name..." value="">
             </div>
           </form>
         </ul>

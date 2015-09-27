@@ -11,10 +11,10 @@ define(["app",
       template: landersListItemTpl,
 
       events: {
-        "click a.accordion-toggle": "openRightSideMenu"
+        "click a.accordion-toggle": "rightSideMenuToggles"
       },
 
-      openRightSideMenu: function(){
+      rightSideMenuToggles: function(){
         var me = this;
 
         this.$el.on('hide.bs.collapse', function(e) {
@@ -73,6 +73,11 @@ define(["app",
 
       onDomRefresh: function() {
         var me = this;
+
+        //needed to init correctly. avoids initial toggle on button click (expand/collapse all)
+        $(".collapse").collapse({
+          toggle: false
+        });
 
         $("#tree" + this.model.get("id")).fancytree({
           click: function(event, data) {

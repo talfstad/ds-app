@@ -3,7 +3,8 @@ var LanderModel = Backbone.Model.extend({
   urlRoot: "/api/lander",
 
   defaults: {
-    
+    name: "",
+    optimizations: {}
   },
 
   validation: {

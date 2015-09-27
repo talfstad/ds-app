@@ -28,32 +28,39 @@
             </h5>
             <div class="bs-component">
               <div class="checkbox-custom checkbox-success mb5">
-                <input type="checkbox" checked="" id="checkboxDefault3">
+                <input type="checkbox" <% if(optimizations.gzip){ %> checked <% } %> id="checkboxDefault3">
                 <label title="" for="checkboxDefault3">Gzip Lander</label>
               </div>
             </div>
+
             <div class="bs-component">
               <div class="checkbox-custom checkbox-success mb5">
-                <input type="checkbox" checked="" id="checkboxDefault12">
+                <input type="checkbox" <% if(optimizations.compressJs){ %> checked <% } %> id="checkboxDefault12">
                 <label for="checkboxDefault12">Compress all javascript</label>
               </div>
             </div>
             <div class="bs-component">
               <div class="checkbox-custom checkbox-success mb5">
-                <input type="checkbox" checked="" id="checkboxDefault4">
-                <label for="checkboxDefault4">Compress all CSS</label>
+                <input type="checkbox" <% if(optimizations.singleFileJs){ %> checked <% } %> id="checkboxDefault4">
+                <label for="checkboxDefault4">Combine all JS into single file</label>
               </div>
             </div>
             <div class="bs-component">
               <div class="checkbox-custom checkbox-success mb5">
-                <input type="checkbox" checked="" id="checkboxDefault5">
+                <input type="checkbox" <% if(optimizations.compressCss){ %> checked <% } %> id="checkboxDefault6">
+                <label for="checkboxDefault6">Compress all CSS</label>
+              </div>
+            </div>
+            <div class="bs-component">
+              <div class="checkbox-custom checkbox-success mb5">
+                <input type="checkbox" <% if(optimizations.singleFileCss){ %> checked <% }  %> id="checkboxDefault6">
+                <label for="checkboxDefault6">Combine all CSS into single file</label>
+              </div>
+            </div>
+            <div class="bs-component">
+              <div class="checkbox-custom checkbox-success mb5">
+                <input type="checkbox" <% if(optimizations.compressImg){ %> checked <% } %> id="checkboxDefault5">
                 <label for="checkboxDefault5">Compress all images</label>
-              </div>
-            </div>
-            <div class="bs-component">
-              <div class="checkbox-custom checkbox-success mb5">
-                <input type="checkbox" checked="" id="checkboxDefault6">
-                <label for="checkboxDefault6">Deploy as single network request</label>
               </div>
             </div>
             <h5 class="title-divider text-muted mt30 mb10">

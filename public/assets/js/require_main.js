@@ -16,9 +16,13 @@ requirejs.config({
     canvasbg: "/vendor/plugins/canvasbg/canvasbg", // CanvasBG Plugin(creates mousehover effect)
     pnotify: '/vendor/plugins/pnotify/pnotify',
     "pnotify.buttons": '/vendor/plugins/pnotify/pnotify',
-    "fancytree": '/vendor/plugins/fancytree/jquery.fancytree-all'
+    "fancytree": '/vendor/plugins/fancytree/jquery.fancytree-all',
+    "typewatch": '/vendor/bower_installed/jquery-typewatch/jquery.typewatch'
   },
   shim: {
+    "typewatch": {
+      deps: ['jquery']
+    },
     "fancytree": {
       deps: ['jquery', 'jquery.ui']
     },
