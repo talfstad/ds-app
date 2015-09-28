@@ -43,6 +43,10 @@ function(Moonlander, ListView, LanderCollection, FilteredCollection){
           landersListLayout.on("landers:filterList", function(filterVal){
             filteredLanderCollection.filter(filterVal);
           });
+
+          landersListLayout.on("landers:sort", function(){
+            landersListView.trigger("landers:sort");
+          });
           
           landersListLayout.landersCollectionRegion.show(landersListView);
 

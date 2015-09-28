@@ -21,7 +21,7 @@ define(["app",
         },
 
         initialize: function() {
-          // this.listenTo(this, "landers:edit:notify", this.notify); 
+          this.listenTo(this, "landers:sort", this.triggerSort); 
         },
 
         onRenderCollection: function() {
@@ -30,7 +30,72 @@ define(["app",
           // }
         },
 
+        triggerSort: function(){
+          var me = this;
+          
+          var sortKey = $('input[name=sort-radio]:checked').attr("data-sort-by");
+          var sortOrder = $(".btn-group-nav a.active").attr("data-sort-order");
 
+          if (sortKey === "lander-name") {
+            me.collection.comparator = function(a, b) {
+
+              var aLanderName = a.get("name"); 
+              var bLanderName = b.get("name");
+
+              if(aLanderName === bLanderName) {
+                return 0;
+              } else {
+                if(aLanderName < bLanderName) {
+                  if(sortOrder === 'asc') {
+                    return -1;
+                  } else {
+                    return 1;
+                  }
+                } else {
+                  if(sortOrder === 'asc') {
+                    return 1
+                  } else {
+                    return -1; 
+                  }
+                }
+              }
+            };
+
+            me.collection.sort();
+            me.collection.trigger('reset');
+
+          } else if (sortKey === "last-updated") {
+            
+            me.collection.comparator = function(a, b) {
+
+              var aLanderName = a.get("lastUpdated"); 
+              var bLanderName = b.get("lastUpdated");
+
+              if(aLanderName === bLanderName) {
+                return 0;
+              } else {
+                if(aLanderName < bLanderName) {
+                  if(sortOrder === 'asc') {
+                    return -1;
+                  } else {
+                    return 1;
+                  }
+                } else {
+                  if(sortOrder === 'asc') {
+                    return 1
+                  } else {
+                    return -1; 
+                  }
+                }
+              }
+            };
+
+            me.collection.sort();
+            me.collection.trigger('reset');
+
+          }
+          
+        },
 
         onDomRefresh: function() {
 

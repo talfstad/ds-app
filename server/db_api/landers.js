@@ -42,6 +42,7 @@ module.exports = function(db) {
         "name": "test lander 1",
         "user": "trevor@buildcave.com",
         "deployed": true,
+        "lastUpdated": "3-2-15",
         "deployedLocations": {
           "hardbodiesandboners.org": [{
             "id": 1,
@@ -91,6 +92,7 @@ module.exports = function(db) {
         "name": "test lander 234",
         "user": "trevor@buildcave.com",
         "deployed": true,
+        "lastUpdated": "3-1-15",
         "deployedLocations": {
           "hardbodiesandboners.org": [{
             "id": 1,
@@ -137,12 +139,13 @@ module.exports = function(db) {
         
       }];
 
-for(i=3 ; i<20 ; i++) {
+for(i=23 ; i>3 ; i--) {
       var newDataItem = {
         "id": i,
         "name": "test lander " + i,
         "user": "trevor@buildcave.com",
         "deployed": true,
+        "lastUpdated": "3-"+i+"-15",
         "deployedLocations": {
           "hardbodiesandboners.org": [{
             "id": 1,

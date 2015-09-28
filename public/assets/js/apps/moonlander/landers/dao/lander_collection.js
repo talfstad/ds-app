@@ -3,7 +3,9 @@ define(["app",
 function(Moonlander, LanderModel) {
   var LanderCollection = Backbone.Collection.extend({
     url: '/api/landers',
-    model: LanderModel
+    model: LanderModel,
+
+    comparator: 'name',
   });
 
   var API = {

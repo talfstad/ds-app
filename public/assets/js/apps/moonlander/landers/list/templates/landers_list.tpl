@@ -17,22 +17,22 @@
           <ul class="topbar dropdown-menu dropdown-menu-left animated animated-short flipInX pt5" role="menu">
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
-                <input type="radio" id="domain" name="radioExample">
-                <label class="ml5" for="domain">Lander Name</label>
+                <input data-sort-by="lander-name" type="radio" id="lander-name" name="sort-radio">
+                <label class="ml5" for="lander-name">Lander Name</label>
               </a>
             </li>
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
-                <input type="radio" id="date-added" name="radioExample">
-                <label class="ml5" for="date-added">Last Edited</label>
+                <input data-sort-by="last-updated" type="radio" id="last-updated" name="sort-radio">
+                <label class="ml5" for="last-updated">Last Edited</label>
               </a>
             </li>
             <li class="divider">
             </li>
             <div class="ptn pb5 p10">
               <div class="btn-group btn-group-justified btn-group-nav" role="tablist">
-                <a href="#nav-tab1" data-toggle="tab" class="btn btn-default btn-sm active">Asc</a>
-                <a href="#nav-tab3" data-toggle="tab" class="btn btn-default btn-sm">Desc</a>
+                <a data-toggle="tab" data-sort-order="asc" class="btn btn-default btn-sm active">Asc</a>
+                <a data-toggle="tab" data-sort-order="desc" class="btn btn-default btn-sm">Desc</a>
               </div>
             </div>
           </ul>
