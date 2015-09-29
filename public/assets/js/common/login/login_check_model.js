@@ -3,7 +3,8 @@ define(["app"], function(Moonlander){
     urlRoot: "/api/login",
 
     defaults: {
-      logged_in: false
+      logged_in: false,
+      currently_checking: false
     }
   });
   return LoginCheckModel;

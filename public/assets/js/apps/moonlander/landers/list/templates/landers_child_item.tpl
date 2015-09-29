@@ -8,7 +8,7 @@
           <%= name %>
        
         <div class="widget-menu domain-campaign-notification">
-           <span class="fs11 text-muted" title="Currently deployed on 2 domains">Deployed on 2 Domains</span>
+           <span class="fs11 text-muted" title="Currently deployed on 2 domains">last updated 3/4/15</span>
          <!--  <span class="fs11 text-muted ml10" title="Currently in 2 campaigns"><i class="fa fa-circle text-system fs12 pr5"></i> 2 Campaigns</span> -->
         </div>
          </a>

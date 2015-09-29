@@ -219,3 +219,10 @@ span.fancytree-node.fancytree-active, span.fancytree-node.fancytree-selected {
     opacity: .5 !important;
 }
 
+#topbar .nav.nav-list-topbar {
+    margin: -10px 5px;
+}
+
+input.lander-search {
+    padding: 15px !important;
+}

@@ -10,11 +10,7 @@ define(["app",
       className: "bs-component",
       template: landersListItemTpl,
 
-      events: {
-        "click a.accordion-toggle": "rightSideMenuToggles"
-      },
-
-      rightSideMenuToggles: function(){
+      onRender: function(){
         var me = this;
 
         this.$el.on('hide.bs.collapse', function(e) {
@@ -42,32 +38,17 @@ define(["app",
 
           });
 
-
-        this.$el.find(".nav.panel-tabs").click(function(e) {
+         this.$el.find(".nav.panel-tabs").click(function(e) {
             $(e.currentTarget).parent().parent().find(".panel-collapse").collapse('show');
           });
 
-          
-        $(".domain-link").hover(function(e) {
-          //get next select
-          var domainEndpointSelect = $(e.currentTarget).parent().find("select");
-
-          //underline it or undo underline if already applied
-          if (domainEndpointSelect.hasClass("domain-link-hover")) {
-            domainEndpointSelect.removeClass("domain-link-hover");
-          } else {
-            domainEndpointSelect.addClass("domain-link-hover");
-          }
-        });
-
-        this.$el.find(".domain-link").click(function(e) {
+         this.$el.find(".domain-link").click(function(e) {
           //get the val from select box
           var domainEndpointSelectValue = $(e.currentTarget).parent().find("select").val();
           var domainLinkHref = $(e.currentTarget).text();
           //go to the full page
           $(e.currentTarget).attr("href", "http://" + domainLinkHref + domainEndpointSelectValue);
         });
-
 
       },
 
@@ -77,6 +58,18 @@ define(["app",
         //needed to init correctly. avoids initial toggle on button click (expand/collapse all)
         $(".collapse").collapse({
           toggle: false
+        });
+
+         $(".domain-link").hover(function(e) {
+          //get next select
+          var domainEndpointSelect = $(e.currentTarget).parent().find("select");
+
+          //underline it or undo underline if already applied
+          if (domainEndpointSelect.hasClass("domain-link-hover")) {
+            domainEndpointSelect.removeClass("domain-link-hover");
+          } else {
+            domainEndpointSelect.addClass("domain-link-hover");
+          }
         });
 
         $("#tree" + this.model.get("id")).fancytree({

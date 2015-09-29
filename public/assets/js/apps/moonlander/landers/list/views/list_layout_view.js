@@ -29,7 +29,21 @@ define(["app",
         onDomRefresh: function() {
           var me = this;
 
+          $('input[type=radio][name=pages-radio]').change(function(e){
+            //pages changed update the button text
+            me.$el.find("button.rows-per-page span.rows-per-page-number").text($(e.currentTarget).val());
+            //call to change pagelength in collection
+          });
+
+          var updateSortbyButtonText = function(){
+            var sortbyname = me.$el.find("input[name=sort-radio]:checked").attr("data-sortby-name");
+            var sortbyorder = me.$el.find(".sort-order-button-group a.active").attr('data-sortby-order');
+            me.$el.find("button span.sortbyname").text(sortbyname);
+            me.$el.find("button span.sortbyorder").text(sortbyorder);
+          };
+
           $("ul.topbar li input").click(function(e) {
+            updateSortbyButtonText();
             Moonlander.trigger('landers:closesidebar');
             me.trigger("landers:sort");
           });
@@ -48,6 +62,10 @@ define(["app",
 
             // Remove active class from btn-group > btns and toggle tab content
             $(this).siblings('a').removeClass('active').end().addClass('active');
+
+            //set button text
+            updateSortbyButtonText();
+
             Moonlander.trigger('landers:closesidebar');
             me.trigger("landers:sort");
           });

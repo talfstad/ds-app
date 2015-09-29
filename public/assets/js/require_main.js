@@ -3,6 +3,7 @@ requirejs.config({
   paths: {
     app: "/assets/js/app",
     backbone: "/vendor/bower_installed/backbone/backbone",
+    "backbone.paginator": "/vendor/bower_installed/backbone.paginator/lib/backbone.paginator",
     syphon: "/vendor/bower_installed/backbone.syphon/lib/backbone.syphon",
     "backbone.validation": "/vendor/bower_installed/backbone.validation/dist/backbone-validation-amd",
     bootstrap: "/vendor/bower_installed/bootstrap/dist/js/bootstrap.min",
@@ -20,6 +21,9 @@ requirejs.config({
     "typewatch": '/vendor/bower_installed/jquery-typewatch/jquery.typewatch'
   },
   shim: {
+    "backbone.paginator": {
+      deps: ['backbone']
+    },
     "typewatch": {
       deps: ['jquery']
     },
