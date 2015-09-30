@@ -1,10 +1,11 @@
 define(["app",
         "/assets/js/apps/moonlander/landers/list/views/list_view.js",
         "/assets/js/apps/moonlander/landers/dao/lander_collection.js",
-        "/assets/js/common/filtered_paginated_collection.js",
+        "/assets/js/common/filtered_paginated/filtered_paginated_collection.js",
+        "/assets/js/common/filtered_paginated/paginated_button_view.js",
         "/assets/js/apps/moonlander/landers/list/views/list_layout_view.js"
 ], 
-function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection){
+function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedButtonView){
   Moonlander.module("LandersApp.List", function(List, Moonlander, Backbone, Marionette, $, _){
 
     List.Controller = {
@@ -54,6 +55,34 @@ function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection){
           });
           
           landersListLayout.landersCollectionRegion.show(landersListView);
+
+
+          var paginatedButtonView = new PaginatedButtonView({
+            model: filteredLanderCollection.state.gui
+          });
+          paginatedButtonView.on("landers:firstPage", function(page){
+            Moonlander.trigger('landers:closesidebar');
+            filteredLanderCollection.getFirstPage();
+          });
+          paginatedButtonView.on("landers:previousPage", function(page){
+            Moonlander.trigger('landers:closesidebar');
+            filteredLanderCollection.getPreviousPage();
+          });
+          paginatedButtonView.on("landers:nextPage", function(page){
+            Moonlander.trigger('landers:closesidebar');
+            filteredLanderCollection.getNextPage();
+          });
+          paginatedButtonView.on("landers:lastPage", function(page){
+            Moonlander.trigger('landers:closesidebar');
+            filteredLanderCollection.getLastPage();
+          });
+          paginatedButtonView.on("landers:gotoPage", function(page){
+            Moonlander.trigger('landers:closesidebar');
+            filteredLanderCollection.gotoPage(page);
+          });
+
+          landersListLayout.footerRegion.show(paginatedButtonView);
+
 
           filteredLanderCollection.filter("");
         });

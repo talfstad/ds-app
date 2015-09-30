@@ -1,7 +1,9 @@
 //taken from david sulc's example at: 
 //https://github.com/davidsulc/structuring-backbone-with-requirejs-and-marionette
 
-define(["app"], function(Moonlander){
+define(["app",
+        "/assets/js/common/filtered_paginated/paginated_model.js"], 
+function(Moonlander, PaginatedModel){
   Moonlander.module("Entities", function(Entities, Moonlander, Backbone, Marionette, $, _){
     Entities.FilteredPaginatedCollection = function(options){
       var original = options.collection;
@@ -13,9 +15,17 @@ define(["app"], function(Moonlander){
       filtered.state = {
         paginated: true,
         currentPage: 1,
-        pageSize: 10,
-        totalPages: 1
+        pageSize: 10
       };
+
+
+      if(filtered.state.paginated) {
+        filtered.state.gui = new PaginatedModel();
+        //init
+        filtered.state.gui.set('current_page', 1);
+        filtered.state.gui.set('num_pages', 1);
+      }
+
 
       filtered.currentFilteredCollection = [];
 
@@ -85,19 +95,24 @@ define(["app"], function(Moonlander){
       //pageination stuff starts
       /////
       filtered.paginate = function(items, pageToReturn){
+        pageToReturn = pageToReturn || 1;
 
-        var pageSize = filtered.state.pageSize;
-        filtered.state.totalPages = Math.floor(items.length / pageSize);
+        var pageSize = parseInt(filtered.state.pageSize);
+        var totalPages = Math.floor(items.length / pageSize);
         if(items.length % pageSize > 0) {
-          filtered.state.totalPages = Math.floor(items.length / pageSize) + 1;
+          totalPages = Math.floor(items.length / pageSize) + 1;
         }
-
+        
         var startingPoint = 0;
         if(pageToReturn) {
           startingPoint = (pageToReturn-1)*pageSize;
         }
         
         var currentPage = items.slice(startingPoint, startingPoint + pageSize);
+
+
+        filtered.state.gui.set('current_page', pageToReturn);
+        filtered.state.gui.set('num_pages', totalPages);
 
         return currentPage;
       };
@@ -113,11 +128,25 @@ define(["app"], function(Moonlander){
         }
       };
 
+      filtered.getFirstPage = function() {
+          var items = filtered.paginate(filtered.currentFilteredCollection);
+          filtered.state.gui.set('current_page', 1);
+          filtered.reset(items);
+          return filtered;
+      };
+
+      filtered.getLastPage = function() {
+          var items = filtered.paginate(filtered.currentFilteredCollection, filtered.state.gui.get('num_pages'));
+          filtered.state.gui.set('current_page', filtered.state.gui.get('num_pages'));
+          filtered.reset(items);
+          return filtered;
+      };
+
       filtered.getNextPage = function() {
-        
-        if(filtered.state.totalPages >= (filtered.state.currentPage + 1)) {
-          filtered.state.currentPage++;
-          var items = filtered.paginate(filtered.currentFilteredCollection, filtered.state.currentPage);
+        var nextPage = filtered.state.gui.get('current_page') + 1;
+        if(filtered.state.gui.get('num_pages') >= nextPage) {
+          filtered.state.gui.set('current_page', nextPage);
+          var items = filtered.paginate(filtered.currentFilteredCollection, nextPage);
           filtered.reset(items);
           return filtered;
 
@@ -127,9 +156,10 @@ define(["app"], function(Moonlander){
       };
 
       filtered.getPreviousPage = function() {
-        if(0 > (filtered.state.currentPage - 1)) {
-          filtered.state.currentPage--;
-          var items = filtered.paginate(filtered.currentFilteredCollection, filtered.state.currentPage);
+        var previousPage = filtered.state.gui.get('current_page') - 1;
+        if(0 < previousPage) {
+          filtered.state.gui.set('current_page', previousPage);
+          var items = filtered.paginate(filtered.currentFilteredCollection, previousPage);
           filtered.reset(items);
           return filtered;
 
@@ -138,15 +168,13 @@ define(["app"], function(Moonlander){
         }
       };
 
-      filtered.getFirstPage = function() {
-
+      filtered.gotoPage = function(page) {
+          filtered.state.gui.set('current_page', page);
+          var items = filtered.paginate(filtered.currentFilteredCollection, page);
+          filtered.reset(items);
+          return filtered;
       };
-
-      filtered.getLastPage = function() {
-
-      };
-
-
+    
       filtered.sortFiltered = function(){
         //set original data
         filtered.set(filtered.currentFilteredCollection);

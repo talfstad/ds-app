@@ -89,41 +89,15 @@
       </header>
       <!-- End: Topbar -->
       <!-- Begin: Content -->
-      <section id="content">
-      
-
-        <!-- Demo Content: Center Column Text -->
+      <section id="content" class="landers-list-content">
         <div id="landers-region" class="ph10 landers-list-items">
           
         </div>
-        
-
       </section>
 
-      <section class="footer row alt clearfix">
-        <div class="container">
-          <!-- pagination buttons -->
-          <div class="pagination footer-content">
-          <button type="button" class="mr10 pl10 w95 pt5 pb5 btn btn-default btn-gradient dark">
-            <span class="fa fa-angle-double-left pr5"></span> First
-          </button>
-          <button type="button" class="mr10 pl10 w95 pt5 pb5 btn btn-default btn-gradient dark">
-            <span class="fa fa-angle-left pr5"></span> Previous
-          </button>
-          <div id="pages-list" style="display: inline">
-            <a href="#" class="current-page">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">4</a>
-            <a href="#">5</a>
-          </div>
-          <button type="button" class="ml10 mr10 pl10 w95 pt5 pb5 btn btn-default btn-gradient dark">
-            Next <span class="fa fa-angle-right pl5"></span>
-          </button>
-          <button type="button" class="mr10 pl10 w95 pt5 pb5 btn btn-default btn-gradient dark">
-            Last <span class="fa fa-angle-double-right pl5"></span>
-          </button>
-          </div>
+      <section class="footer">
+        <div id="footer-region" class="footer-container">
+          
         </div>
       </section>
 

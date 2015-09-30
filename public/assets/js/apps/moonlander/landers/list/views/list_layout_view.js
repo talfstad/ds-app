@@ -15,6 +15,7 @@ define(["app",
 
         regions: {
           landersCollectionRegion: "#landers-region",
+          footerRegion: "#footer-region"
         },
 
         filterLanders: function(filterValue) {
