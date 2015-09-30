@@ -17,10 +17,6 @@ define(["app",
           landersCollectionRegion: "#landers-region",
         },
 
-        events: {
-          // "keyup .navbar-search input": "filterLanders"
-        },
-
         filterLanders: function(filterValue) {
           this.trigger("landers:filterList", filterValue);
           Moonlander.trigger('landers:closesidebar');
@@ -29,10 +25,14 @@ define(["app",
         onDomRefresh: function() {
           var me = this;
 
+
           $('input[type=radio][name=pages-radio]').change(function(e){
             //pages changed update the button text
-            me.$el.find("button.rows-per-page span.rows-per-page-number").text($(e.currentTarget).val());
+            var newPageSize = $(e.currentTarget).val();
+            me.$el.find("button.rows-per-page span.rows-per-page-number").text(newPageSize);
             //call to change pagelength in collection
+            me.trigger("landers:changepagesize", newPageSize); //TODO
+
           });
 
           var updateSortbyButtonText = function(){

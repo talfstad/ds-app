@@ -14,20 +14,22 @@ define(["app",
         template: landersListContainerTemplate,
         emptyView: landersEmptyView,
         childView: landersListItemView,
-        childViewContainer: "div",
+        childViewContainer: "div#landers-collection-items",
 
         collectionEvents: {
           'change': 'render'
         },
 
         initialize: function() {
-          this.listenTo(this, "landers:sort", this.triggerSort); 
+          this.listenTo(this, "landers:sort", this.triggerSort);
         },
 
         onRenderCollection: function() {
           // this.attachHtml = function(collectionView, childView, index) {
           //   collectionView.$el.prepend(childView.el);
           // }
+
+
         },
 
         triggerSort: function(){
@@ -61,7 +63,7 @@ define(["app",
               }
             };
 
-            me.collection.sort();
+            me.collection.sortFiltered();
             me.collection.trigger('reset');
 
           } else if (sortKey === "last-updated") {
@@ -90,9 +92,7 @@ define(["app",
               }
             };
 
-            me.collection.sort();
-            me.collection.trigger('reset');
-
+            me.collection.sortFiltered();
           }
           
         },

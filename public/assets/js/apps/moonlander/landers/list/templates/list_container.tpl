@@ -1,1 +1,1 @@
-<div id="landers-collection-items"></div>
+<div id="landers-collection-items" class="clearfix"></div>

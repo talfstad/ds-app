@@ -1,10 +1,10 @@
 define(["app",
         "/assets/js/apps/moonlander/landers/list/views/list_view.js",
         "/assets/js/apps/moonlander/landers/dao/lander_collection.js",
-        "/assets/js/common/filtered_collection.js",
+        "/assets/js/common/filtered_paginated_collection.js",
         "/assets/js/apps/moonlander/landers/list/views/list_layout_view.js"
 ], 
-function(Moonlander, ListView, LanderCollection, FilteredCollection){
+function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection){
   Moonlander.module("LandersApp.List", function(List, Moonlander, Backbone, Marionette, $, _){
 
     List.Controller = {
@@ -21,7 +21,7 @@ function(Moonlander, ListView, LanderCollection, FilteredCollection){
         
         $.when(deferredLandersCollection).done(function(landersCollection){
 
-          var filteredLanderCollection = FilteredCollection({
+          var filteredLanderCollection = FilteredPaginatedCollection({
             collection: landersCollection,
             filterFunction: function(filterCriterion){
               var criterion = filterCriterion.toLowerCase();
@@ -47,9 +47,15 @@ function(Moonlander, ListView, LanderCollection, FilteredCollection){
           landersListLayout.on("landers:sort", function(){
             landersListView.trigger("landers:sort");
           });
+
+          landersListLayout.on("landers:changepagesize", function(pageSize){
+            filteredLanderCollection.setPageSize(pageSize);
+
+          });
           
           landersListLayout.landersCollectionRegion.show(landersListView);
 
+          filteredLanderCollection.filter("");
         });
       }
     }
