@@ -46,8 +46,6 @@
     border-left: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-
-
 .landers-list-items .accordion-toggle.active {
     color: #222 !important;
 }
@@ -88,21 +86,21 @@ ul.fancytree-container {
     margin-right: 110px;
 }
 
-
 .accordion-toggle.active .domain-campaign-notification span {
     color: #000 !important;
 }
-
 
 .landers-list-items .label {
     display: block;
     padding: 0;
     line-height: 30px;
 }
+
 span.fancytree-icon {
     background-image: none !important;
     background-position: 0 0;
 }
+
 
 /*span.fancytree-node.fancytree-active, span.fancytree-node.fancytree-selected {
     background: none;
@@ -120,12 +118,12 @@ span.fancytree-icon {
     right: 0;
     margin-right: 15px;
 }
- 
+
 .fancytree-title a.edit-link {
     position: absolute;
     right: 0;
     margin-right: 35px;
-}   
+}
 
 .sidebar-right-content .panel-body {
     padding-left: 5px !important;
@@ -150,20 +148,20 @@ span.fancytree-title {
     cursor: inherit;
 }
 
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active, 
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected, 
-span.fancytree-node.fancytree-active:hover, 
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active,
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected,
+span.fancytree-node.fancytree-active:hover,
 span.fancytree-node.fancytree-selected:hover {
     background-color: inherit;
     border-color: transparent;
     cursor: inherit;
 }
 
-span.fancytree-node.fancytree-active, span.fancytree-node.fancytree-selected {
+span.fancytree-node.fancytree-active,
+span.fancytree-node.fancytree-selected {
     background-color: inherit;
-    border-color: transparent;   
+    border-color: transparent;
 }
-
 
 .domain-endpoint-select {
     display: inherit;
@@ -171,7 +169,6 @@ span.fancytree-node.fancytree-active, span.fancytree-node.fancytree-selected {
     width: inherit;
     color: #3498db;
     height: inherit;
-
 }
 
 .fancytree-domain .fancytree-title {
@@ -194,22 +191,22 @@ span.fancytree-node.fancytree-active, span.fancytree-node.fancytree-selected {
 }
 
 .domains-nav-item {
-    content:url("/assets/img/logos/domains_icon_white.png");
+    content: url("/assets/img/logos/domains_icon_white.png");
 }
 
 .domains-nav-item.active {
-    content:url("/assets/img/logos/domains_icon_active.png");
+    content: url("/assets/img/logos/domains_icon_active.png");
 }
 
 .landers-nav-item {
-    content:url("/assets/img/logos/landers_icon_white.png");
+    content: url("/assets/img/logos/landers_icon_white.png");
 }
 
 .landers-nav-item.active {
-    content:url("/assets/img/logos/landers_icon_active.png");
+    content: url("/assets/img/logos/landers_icon_active.png");
 }
 
-#demo-canvas{
+#demo-canvas {
     position: fixed;
     top: 0px;
     left: 0px;
@@ -217,6 +214,7 @@ span.fancytree-node.fancytree-active, span.fancytree-node.fancytree-selected {
     bottom: 0px;
     opacity: 0.1;
 }
+
 #demo-canvas.login {
     opacity: .5 !important;
 }
@@ -231,8 +229,8 @@ input.lander-search {
 
 .footer {
     margin-top: 25px;
-    position: absolute;
-    bottom: 0;
+    /*position: absolute;
+    bottom: 0;*/
     width: 100%;
     height: 100px;
     border-top: 1px solid #e2e2e2;
@@ -254,14 +252,14 @@ input.lander-search {
 
 .footer > .container > .footer-content {
     margin-top: 0;
-    padding-right: 85px; 
+    /*padding-right: 85px; */
 }
 
 .landers-region: {
     height: 100%;
 }
 
-.w95{
+.w95 {
     width: 95px !important;
 }
 

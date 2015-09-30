@@ -1,3 +1,6 @@
+body {
+    min-height: 500px;
+}
 #nestable-contextual {
 	max-width: none;
 }
@@ -43,6 +46,10 @@ body.sb-l-o #topbar.affix,
 .sb-l-c #content_wrapper {
 	margin-left: 0;
 }
+
+/*#content_wrapper {
+    position: inherit;
+}*/
 
 #first-topbar {
 	z-index: 2;
