@@ -5,8 +5,24 @@
             <li class="crumb-active">
               <a>Landing Pages</a>
             </li>
-            <li class="crumb-trail">Manage deploy and optimize all of your landing pages</li>
+            <li class="crumb-trail">Showing 1-10 of 50</li>
+            
           </ol>
+
+          <div class="right-stats"> 
+            <div>
+              <span class="badge-danger badge">3</span> Not Deployed
+            </div>
+            <div>
+              <span class="badge-warning badge">2</span> Deploying
+            </div>
+            <!-- <div>
+              <span class="badge-success badge">45</span> Deployed
+            </div> -->
+            <div>
+              <span class="badge-primary badge">45</span> Total Landers
+            </div>
+          </div>
         </div>
       </header>
       <header id="topbar" class="ph10">

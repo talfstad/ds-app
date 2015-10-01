@@ -272,3 +272,12 @@ input.lander-search {
 .landers-list-content {
     padding: 25px 20px 35px 21px !important;
 }
+
+.topbar-left .right-stats {
+    margin-top: 7px;
+    float: right;
+}
+.topbar-left .right-stats div {
+    display: inline;
+    margin-right: 10px;
+}
