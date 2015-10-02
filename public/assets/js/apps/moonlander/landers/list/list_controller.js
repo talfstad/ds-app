@@ -4,9 +4,10 @@ define(["app",
         "/assets/js/common/filtered_paginated/filtered_paginated_collection.js",
         "/assets/js/common/filtered_paginated/paginated_button_view.js",
         "/assets/js/apps/moonlander/landers/list/views/topbar_view.js",
+        "/assets/js/apps/moonlander/landers/list/views/loading_view.js",
         "/assets/js/apps/moonlander/landers/list/views/list_layout_view.js"
 ], 
-function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedButtonView, TopbarView){
+function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedButtonView, TopbarView, LoadingView){
   Moonlander.module("LandersApp.List", function(List, Moonlander, Backbone, Marionette, $, _){
 
     List.Controller = {
@@ -18,6 +19,8 @@ function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, Pa
        
         Moonlander.rootRegion.currentView.mainContentRegion.show(landersListLayout);
 
+        var loadingView = new LoadingView();
+        landersListLayout.landersCollectionRegion.show(loadingView);
 
         //request landers collection
         var deferredLandersCollection = Moonlander.request("landers:landersCollection");

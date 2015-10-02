@@ -163,11 +163,17 @@ span.fancytree-node.fancytree-selected {
     border-color: transparent;
 }
 
-.domain-endpoint-select {
+tr.success .domain-endpoint-select {
     display: inherit;
-    background: transparent;
+    color: #3f9532;
     width: inherit;
-    color: #3498db;
+    height: inherit;
+}
+
+tr.warning .domain-endpoint-select {
+    display: inherit;
+    color: #c88a0a;
+    width: inherit;
     height: inherit;
 }
 
@@ -280,4 +286,18 @@ input.lander-search {
 .topbar-left .right-stats div {
     display: inline;
     margin-right: 10px;
+}
+
+tr.success a {
+    color: #3f9532;
+}
+tr.warning a {
+    color: #c88a0a;
+}
+
+tr.success input[type=select] {
+    background: inherit;
+}
+tr.warning input[type=select] {
+    background: inherit;
 }

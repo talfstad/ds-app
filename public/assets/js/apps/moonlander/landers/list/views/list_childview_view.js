@@ -50,6 +50,18 @@ define(["app",
           $(e.currentTarget).attr("href", "http://" + domainLinkHref + domainEndpointSelectValue);
         });
 
+         this.$el.find(".domain-link").hover(function(e) {
+          //get next select
+          var domainEndpointSelect = $(e.currentTarget).parent().find("select");
+
+          //underline it or undo underline if already applied
+          if (domainEndpointSelect.hasClass("domain-link-hover")) {
+            domainEndpointSelect.removeClass("domain-link-hover");
+          } else {
+            domainEndpointSelect.addClass("domain-link-hover");
+          }
+         });
+
       },
 
       onDomRefresh: function() {
@@ -60,17 +72,7 @@ define(["app",
           toggle: false
         });
 
-         $(".domain-link").hover(function(e) {
-          //get next select
-          var domainEndpointSelect = $(e.currentTarget).parent().find("select");
-
-          //underline it or undo underline if already applied
-          if (domainEndpointSelect.hasClass("domain-link-hover")) {
-            domainEndpointSelect.removeClass("domain-link-hover");
-          } else {
-            domainEndpointSelect.addClass("domain-link-hover");
-          }
-        });
+       
 
         $("#tree" + this.model.get("id")).fancytree({
           click: function(event, data) {

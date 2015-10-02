@@ -4,7 +4,7 @@ define(["app",
  function(Moonlander, landersListEmptyItemsTpl) {
 
   Moonlander.module("LandersApp.List", function(List, Moonlander, Backbone, Marionette, $, _) {
-    List.emptyView = Marionette.ItemView.extend({
+    List.EmptyView = Marionette.ItemView.extend({
 
       template: landersListEmptyItemsTpl,
 
@@ -14,5 +14,5 @@ define(["app",
 
     });
   });
-  return Moonlander.LandersApp.List.emptyView;
+  return Moonlander.LandersApp.List.EmptyView;
 });
