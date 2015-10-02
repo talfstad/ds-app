@@ -24,9 +24,13 @@ function(Moonlander, PaginatedModel){
         //init
         filtered.state.gui.set('current_page', 1);
         filtered.state.gui.set('num_pages', 1);
+
       }
 
-
+      filtered.state.gui.set('total_not_deployed', original.collectionTotals.totalNotDeployed);
+      filtered.state.gui.set('total_deploying', original.collectionTotals.totalDeploying);
+      filtered.state.gui.set('total_landers', original.collectionTotals.totalLanders);
+     
       filtered.currentFilteredCollection = [];
 
 
@@ -73,6 +77,18 @@ function(Moonlander, PaginatedModel){
         }
       };
 
+      var updateShowing = function(low, high, total) {
+        if(total < high) {
+          high = total;
+        }
+        if(total < low) {
+          low = total;
+        }
+        filtered.state.gui.set('showing_low', low);
+        filtered.state.gui.set('showing_high', high);
+        filtered.state.gui.set('showing_total', total);
+      };
+
       filtered.filter = function(filterCriterion){
         filtered._currentFilter = "filter";
         var items = applyFilter(filterCriterion, "filter");
@@ -97,7 +113,12 @@ function(Moonlander, PaginatedModel){
       filtered.paginate = function(items, pageToReturn){
         pageToReturn = pageToReturn || 1;
 
+        filtered.state.gui.set('total_num_items', items.length);
+
         var pageSize = parseInt(filtered.state.pageSize);
+        
+        filtered.state.gui.set('page_size', pageSize);
+
         var totalPages = Math.floor(items.length / pageSize);
         if(items.length % pageSize > 0) {
           totalPages = Math.floor(items.length / pageSize) + 1;
@@ -114,6 +135,20 @@ function(Moonlander, PaginatedModel){
         filtered.state.gui.set('current_page', pageToReturn);
         filtered.state.gui.set('num_pages', totalPages);
 
+        //update topbarModel with new figures
+        var totalItemsCount = filtered.state.gui.get("total_num_items");
+        //because filtering starts at page 1 again
+        var newLowPageItemNum = 1;
+        var newHighPageItemNum = filtered.state.gui.get("page_size");
+
+        if(totalItemsCount < newHighPageItemNum) {
+          newHighPageItemNum = totalItemsCount;
+        }
+        if(totalItemsCount < 1) {
+          newLowPageItemNum = 0;
+        }
+        updateShowing(newLowPageItemNum, newHighPageItemNum, totalItemsCount);
+        
         return currentPage;
       };
 
@@ -121,6 +156,11 @@ function(Moonlander, PaginatedModel){
         if(pageSize >= 1) {
           filtered.state.pageSize = pageSize;
           var items = filtered.paginate(filtered.currentFilteredCollection);
+          
+          var totalItemsCount = filtered.state.gui.get("total_num_items");
+
+          updateShowing(1, pageSize, totalItemsCount);
+
           filtered.reset(items);
           return filtered;
         } else {
@@ -131,6 +171,11 @@ function(Moonlander, PaginatedModel){
       filtered.getFirstPage = function() {
           var items = filtered.paginate(filtered.currentFilteredCollection);
           filtered.state.gui.set('current_page', 1);
+          
+          var totalItemsCount = filtered.state.gui.get("total_num_items");
+          
+          updateShowing(1, filtered.state.gui.get('page_size'), totalItemsCount);
+
           filtered.reset(items);
           return filtered;
       };
@@ -138,6 +183,15 @@ function(Moonlander, PaginatedModel){
       filtered.getLastPage = function() {
           var items = filtered.paginate(filtered.currentFilteredCollection, filtered.state.gui.get('num_pages'));
           filtered.state.gui.set('current_page', filtered.state.gui.get('num_pages'));
+          
+          var totalItemsCount = filtered.state.gui.get("total_num_items");
+          
+          var showingLow = (parseInt(filtered.state.gui.get('current_page')) * parseInt(filtered.state.gui.get('page_size'))) - parseInt(filtered.state.gui.get('page_size')) + 1;
+
+          var totalItemsCount = filtered.state.gui.get("total_num_items");
+
+          updateShowing(showingLow, totalItemsCount, totalItemsCount);
+
           filtered.reset(items);
           return filtered;
       };
@@ -147,6 +201,13 @@ function(Moonlander, PaginatedModel){
         if(filtered.state.gui.get('num_pages') >= nextPage) {
           filtered.state.gui.set('current_page', nextPage);
           var items = filtered.paginate(filtered.currentFilteredCollection, nextPage);
+
+          var showingLow = (parseInt(filtered.state.gui.get('current_page')) * parseInt(filtered.state.gui.get('page_size'))) - parseInt(filtered.state.gui.get('page_size')) + 1;
+          var showingHigh = showingLow + parseInt(filtered.state.gui.get('page_size'));
+          var totalItemsCount = filtered.state.gui.get("total_num_items");
+
+          updateShowing(showingLow, showingHigh, totalItemsCount);
+
           filtered.reset(items);
           return filtered;
 
@@ -160,6 +221,20 @@ function(Moonlander, PaginatedModel){
         if(0 < previousPage) {
           filtered.state.gui.set('current_page', previousPage);
           var items = filtered.paginate(filtered.currentFilteredCollection, previousPage);
+          
+          var showingLow = (parseInt(filtered.state.gui.get('current_page')) * parseInt(filtered.state.gui.get('page_size'))) - parseInt(filtered.state.gui.get('page_size')) + 1;
+          if(previousPage < 2) {
+            showingLow = 1;
+          }
+
+          var showingHigh = showingLow + parseInt(filtered.state.gui.get('page_size'));
+          if(previousPage < 2) {
+            showingHigh = filtered.state.gui.get('page_size');
+          }
+          var totalItemsCount = filtered.state.gui.get("total_num_items");
+
+          updateShowing(showingLow, showingHigh, totalItemsCount);
+
           filtered.reset(items);
           return filtered;
 
@@ -171,6 +246,21 @@ function(Moonlander, PaginatedModel){
       filtered.gotoPage = function(page) {
           filtered.state.gui.set('current_page', page);
           var items = filtered.paginate(filtered.currentFilteredCollection, page);
+
+          var showingLow = (parseInt(page) * parseInt(filtered.state.gui.get('page_size'))) - parseInt(filtered.state.gui.get('page_size')) + 1;
+          if(page < 2) {
+            showingLow = 1;
+          }
+
+          var showingHigh = showingLow + parseInt(filtered.state.gui.get('page_size'));
+
+          if(page < 2) {
+            showingHigh = filtered.state.gui.get('page_size');
+          }
+          var totalItemsCount = filtered.state.gui.get("total_num_items");
+
+          updateShowing(showingLow, showingHigh, totalItemsCount);
+
           filtered.reset(items);
           return filtered;
       };

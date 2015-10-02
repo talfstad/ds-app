@@ -3,9 +3,10 @@ define(["app",
         "/assets/js/apps/moonlander/landers/dao/lander_collection.js",
         "/assets/js/common/filtered_paginated/filtered_paginated_collection.js",
         "/assets/js/common/filtered_paginated/paginated_button_view.js",
+        "/assets/js/apps/moonlander/landers/list/views/topbar_view.js",
         "/assets/js/apps/moonlander/landers/list/views/list_layout_view.js"
 ], 
-function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedButtonView){
+function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedButtonView, TopbarView){
   Moonlander.module("LandersApp.List", function(List, Moonlander, Backbone, Marionette, $, _){
 
     List.Controller = {
@@ -16,6 +17,7 @@ function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, Pa
         landersListLayout.render();
        
         Moonlander.rootRegion.currentView.mainContentRegion.show(landersListLayout);
+
 
         //request landers collection
         var deferredLandersCollection = Moonlander.request("landers:landersCollection");
@@ -43,14 +45,22 @@ function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, Pa
 
           landersListLayout.on("landers:filterList", function(filterVal){
             filteredLanderCollection.filter(filterVal);
+            
+            
+
           });
 
           landersListLayout.on("landers:sort", function(){
             landersListView.trigger("landers:sort");
+            
+            // update low and high
+
           });
 
           landersListLayout.on("landers:changepagesize", function(pageSize){
             filteredLanderCollection.setPageSize(pageSize);
+
+            //update low and high
 
           });
           
@@ -82,6 +92,13 @@ function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, Pa
           });
 
           landersListLayout.footerRegion.show(paginatedButtonView);
+
+
+          var topbarView = new TopbarView({
+            model: filteredLanderCollection.state.gui         
+          });
+
+          landersListLayout.topbarRegion.show(topbarView);
 
 
           filteredLanderCollection.filter("");

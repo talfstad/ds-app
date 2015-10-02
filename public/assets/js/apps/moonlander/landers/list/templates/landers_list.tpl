@@ -1,29 +1,6 @@
     <!-- Start: Topbar -->
       <header id="first-topbar" class="alt">
-        <div class="topbar-left">
-          <ol class="breadcrumb">
-            <li class="crumb-active">
-              <a>Landing Pages</a>
-            </li>
-            <li class="crumb-trail">Showing 1-10 of 50</li>
-            
-          </ol>
-
-          <div class="right-stats"> 
-            <div>
-              <span class="badge-danger badge">3</span> Not Deployed
-            </div>
-            <div>
-              <span class="badge-warning badge">2</span> Deploying
-            </div>
-            <!-- <div>
-              <span class="badge-success badge">45</span> Deployed
-            </div> -->
-            <div>
-              <span class="badge-primary badge">45</span> Total Landers
-            </div>
-          </div>
-        </div>
+        
       </header>
       <header id="topbar" class="ph10">
         
@@ -71,7 +48,13 @@
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
                 <input data-sortby-name="Last Edited" data-sort-by="last-updated" type="radio" id="last-updated" name="sort-radio">
-                <label class="ml5" for="last-updated">Last Edited</label>
+                <label class="ml5" for="last-updated">Last Updated</label>
+              </a>
+            </li>
+            <li>
+              <a class="pl5 radio-custom radio-primary" href="#">
+                <input data-sortby-name="Deployed" data-sort-by="deployed" type="radio" id="deployed" name="sort-radio">
+                <label class="ml5" for="deployed">Deployed</label>
               </a>
             </li>
             <li class="divider">
@@ -106,6 +89,7 @@
       <!-- End: Topbar -->
       <!-- Begin: Content -->
       <section id="content" class="landers-list-content">
+        
         <div id="landers-region" class="ph10 landers-list-items">
           
         </div>

@@ -13,12 +13,30 @@
         </div>
          </a>
         <ul class="nav panel-tabs">
+        <% if(!deploying && deployed) { %>
           <li>
             <a href="#domains-tab-id<%= id %>" data-toggle="tab">
               <span class="open_sidemenu_r label bg-success">
                 Deployed
               </span></a>
           </li>
+        <% } else if(deploying){ %>
+          <li>
+            <a href="#domains-tab-id<%= id %>" data-toggle="tab">
+              <span class="open_sidemenu_r label bg-warning">
+                 <span style="margin-left: 5px; font-size: 12px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Deploying
+              </span>
+            </a>
+          </li>
+        <% } else { %>
+          <li>
+            <a href="#domains-tab-id<%= id %>" data-toggle="tab">
+              <span class="open_sidemenu_r label bg-danger">
+                 Not Deployed
+              </span>
+            </a>
+          </li>
+        <% } %>
         </ul>
       </div>
       <div id="accord<%= id %>" class="panel-collapse collapse" style="height: auto;">

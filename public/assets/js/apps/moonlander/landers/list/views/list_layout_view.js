@@ -15,7 +15,8 @@ define(["app",
 
         regions: {
           landersCollectionRegion: "#landers-region",
-          footerRegion: "#footer-region"
+          footerRegion: "#footer-region",
+          topbarRegion: "#first-topbar"
         },
 
         filterLanders: function(filterValue) {
@@ -28,12 +29,12 @@ define(["app",
 
 
           $('input[type=radio][name=pages-radio]').change(function(e){
+            e.preventDefault();
             //pages changed update the button text
             var newPageSize = $(e.currentTarget).val();
             me.$el.find("button.rows-per-page span.rows-per-page-number").text(newPageSize);
             //call to change pagelength in collection
             me.trigger("landers:changepagesize", newPageSize); //TODO
-
           });
 
           var updateSortbyButtonText = function(){

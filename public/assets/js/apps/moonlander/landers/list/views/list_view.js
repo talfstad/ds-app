@@ -93,6 +93,31 @@ define(["app",
             };
 
             me.collection.sortFiltered();
+          } else if(sortKey === "deployed") {
+            me.collection.comparator = function(a, b) {
+
+              var aDeployed = a.get("deployed"); 
+              var bDeployed = b.get("deployed");
+
+              if(aDeployed === bDeployed) {
+                return 0;
+              } else {
+                if(aDeployed && !bDeployed) {
+                  if(sortOrder === 'asc'){
+                    return -1;
+                  } else {
+                    return 1;
+                  }
+                } else {
+                  if(sortOrder === 'asc') {
+                    return 1;
+                  } else {
+                    return -1;
+                  }
+                }
+              }
+            };
+            me.collection.sortFiltered();
           }
           
         },

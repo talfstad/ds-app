@@ -41,6 +41,7 @@ module.exports = function(db) {
         "id": 1,
         "name": "test lander 1",
         "user": "trevor@buildcave.com",
+        "deploying": true,
         "deployed": true,
         "lastUpdated": "3-2-15",
         "deployedLocations": {
@@ -91,7 +92,8 @@ module.exports = function(db) {
         "id": 2,
         "name": "test lander 234",
         "user": "trevor@buildcave.com",
-        "deployed": true,
+        "deployed": false,
+        "deploying": false,
         "lastUpdated": "3-1-15",
         "deployedLocations": {
           "hardbodiesandboners.org": [{
@@ -145,6 +147,7 @@ for(i=23 ; i>3 ; i--) {
         "name": "test lander " + i,
         "user": "trevor@buildcave.com",
         "deployed": true,
+        "deploying": false,
         "lastUpdated": "3-"+i+"-15",
         "deployedLocations": {
           "hardbodiesandboners.org": [{
