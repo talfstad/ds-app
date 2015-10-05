@@ -3,7 +3,7 @@ define(["app",
   ],
   function(Moonlander, landersListLoadingTpl) {
 
-    Moonlander.module("LandersApp.List", function(List, Moonlander, Backbone, Marionette, $, _) {
+    Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
       List.LoadingView = Marionette.ItemView.extend({
 
         template: landersListLoadingTpl,
@@ -14,5 +14,5 @@ define(["app",
 
       });
     });
-    return Moonlander.LandersApp.List.LoadingView;
+    return Moonlander.LandersApp.Landers.List.LoadingView;
   });

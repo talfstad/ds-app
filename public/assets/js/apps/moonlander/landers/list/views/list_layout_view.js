@@ -5,7 +5,7 @@ define(["app",
     "bootstrap"
   ],
   function(Moonlander, landersListTpl) {
-    Moonlander.module("LandersApp.List", function(List, Moonlander, Backbone, Marionette, $, _) {
+    Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
       List.Layout = Marionette.LayoutView.extend({
 
@@ -98,5 +98,5 @@ define(["app",
         }
       });
     });
-    return Moonlander.LandersApp.List.Layout;
+    return Moonlander.LandersApp.Landers.List.Layout;
   });

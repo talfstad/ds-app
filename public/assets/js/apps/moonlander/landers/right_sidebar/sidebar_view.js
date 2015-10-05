@@ -17,6 +17,14 @@ define(["app",
           "change": "render"
         },
 
+        events: {
+          "click button.lander-edit": "showEditLander"
+        },
+
+        showEditLander: function(e){ 
+          Moonlander.trigger("landers:showEdit", this.model);
+        },
+
         onDomRefresh: function() {
           var me = this;
           $("body").removeClass("external-page");

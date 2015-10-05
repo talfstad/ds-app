@@ -97,7 +97,6 @@
 
       <section class="footer">
         <div id="footer-region" class="footer-container">
-          
         </div>
       </section>
 

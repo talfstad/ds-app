@@ -9,7 +9,8 @@ function(Moonlander, anchorTpl){
         headerRegion: "#top-navbar",
         leftNavRegion: "#left-navbar",
         mainContentRegion: "#main-content",
-        rightSidebarRegion: "#right-sidebar"
+        rightSidebarRegion: "#right-sidebar",
+        editLanderRegion: "#edit-lander-region"
       },
     
       onDomRefresh: function(){

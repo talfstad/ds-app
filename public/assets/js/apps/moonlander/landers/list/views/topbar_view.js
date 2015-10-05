@@ -3,7 +3,7 @@ define(["app",
   ],
  function(Moonlander, topbarTpl) {
 
-  Moonlander.module("LandersApp.List", function(List, Moonlander, Backbone, Marionette, $, _) {
+  Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
     List.TopbarView = Marionette.ItemView.extend({
 
       template: topbarTpl,
@@ -20,5 +20,5 @@ define(["app",
     });
 
   });
-  return Moonlander.LandersApp.List.TopbarView;
+  return Moonlander.LandersApp.Landers.List.TopbarView;
 });

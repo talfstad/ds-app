@@ -1,7 +1,8 @@
 requirejs.config({
-  baseUrl: "js",
+  baseUrl: "/",
   paths: {
     app: "/assets/js/app",
+    vendor: "/vendor",
     backbone: "/vendor/bower_installed/backbone/backbone",
     "backbone.paginator": "/vendor/bower_installed/backbone.paginator/lib/backbone.paginator",
     syphon: "/vendor/bower_installed/backbone.syphon/lib/backbone.syphon",
@@ -18,9 +19,13 @@ requirejs.config({
     pnotify: '/vendor/plugins/pnotify/pnotify',
     "pnotify.buttons": '/vendor/plugins/pnotify/pnotify',
     "fancytree": '/vendor/plugins/fancytree/jquery.fancytree-all',
-    "typewatch": '/vendor/bower_installed/jquery-typewatch/jquery.typewatch'
+    "typewatch": '/vendor/bower_installed/jquery-typewatch/jquery.typewatch',
+    "resizeReverse": '/vendor/plugins/jquery-ui.resizeReverse'
   },
   shim: {
+    "resizeReverse": {
+      deps: ['jquery.ui']
+    },
     "backbone.paginator": {
       deps: ['backbone']
     },

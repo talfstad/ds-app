@@ -8,7 +8,7 @@ define(["app",
         "/assets/js/apps/moonlander/landers/list/views/list_layout_view.js"
 ], 
 function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedButtonView, TopbarView, LoadingView){
-  Moonlander.module("LandersApp.List", function(List, Moonlander, Backbone, Marionette, $, _){
+  Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _){
 
     List.Controller = {
 
@@ -110,5 +110,5 @@ function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, Pa
     }
   });
 
-  return Moonlander.LandersApp.List.Controller;
+  return Moonlander.LandersApp.Landers.List.Controller;
 });

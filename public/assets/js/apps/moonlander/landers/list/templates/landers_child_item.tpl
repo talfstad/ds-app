@@ -58,8 +58,8 @@
                 <span class="fa fa-plus pr5"></span>Add to Campaign
               </button> -->
 
+              <button type="button" class="btn btn-default btn-gradient dark">Add to Group</button>
               <button type="button" class="btn btn-default btn-gradient dark">Deploy to New Domain</button>
-              <button type="button" class="btn btn-default btn-gradient dark">Deploy to New Campaign</button>
               </div>
             </div>
           </div>

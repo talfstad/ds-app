@@ -50,11 +50,11 @@
     color: #222 !important;
 }
 
-.fancytree-container {
+.snippets-container .fancytree-container {
     border: none !important;
 }
 
-ul.fancytree-container {
+.snippets-container ul.fancytree-container {
     padding: 0;
 }
 
@@ -96,7 +96,7 @@ ul.fancytree-container {
     line-height: 30px;
 }
 
-span.fancytree-icon {
+.snippets-container span.fancytree-icon {
     background-image: none !important;
     background-position: 0 0;
 }
@@ -113,13 +113,13 @@ span.fancytree-icon {
 }*/
 
 
-.fancytree-title a.trash-link {
+.snippets-container .fancytree-title a.trash-link {
     position: absolute;
     right: 0;
     margin-right: 15px;
 }
 
-.fancytree-title a.edit-link {
+.snippets-container .fancytree-title a.edit-link {
     position: absolute;
     right: 0;
     margin-right: 35px;
@@ -135,7 +135,7 @@ span.fancytree-icon {
     display: block;
 }
 
-span.fancytree-node {
+.snippets-container span.fancytree-node {
     padding: 5px 0 5px 0;
 }
 
@@ -145,23 +145,22 @@ span.fancytree-node:hover {
 }
 
 span.fancytree-title {
-    cursor: inherit;
+    /*cursor: inherit;*/
 }
 
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active,
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected,
-span.fancytree-node.fancytree-active:hover,
-span.fancytree-node.fancytree-selected:hover {
-    background-color: inherit;
-    border-color: transparent;
-    cursor: inherit;
-}
-
-span.fancytree-node.fancytree-active,
-span.fancytree-node.fancytree-selected {
+/* .fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active,
+ .fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected,
+ span.fancytree-node.fancytree-active:hover,
+ span.fancytree-node.fancytree-selected:hover {
     background-color: inherit;
     border-color: transparent;
 }
+
+ span.fancytree-node.fancytree-active,
+ span.fancytree-node.fancytree-selected {
+    background-color: inherit;
+    border-color: transparent;
+}*/
 
 tr.success .domain-endpoint-select {
     display: inherit;
@@ -177,9 +176,6 @@ tr.warning .domain-endpoint-select {
     height: inherit;
 }
 
-.fancytree-domain .fancytree-title {
-    margin-left: 5px !important;
-}
 
 .domain-endpoint-select:hover {
     /*color: #1d6fa5;
@@ -300,4 +296,31 @@ tr.success input[type=select] {
 }
 tr.warning input[type=select] {
     background: inherit;
+}
+
+
+.CodeMirror {
+    border: 1px solid #ddd;
+}
+
+.edit-lander-container .fancytree-container {
+    border: none !important;
+}
+
+.edit-lander-container ul.fancytree-container {
+    padding: 0;
+}
+
+.file-list {
+    float: left;
+}
+
+.code-pane {
+    margin-left: 15px;
+    float: left;
+}
+
+.modal-navbar {
+    height: 42px !important;
+    min-height: 42px !important;
 }

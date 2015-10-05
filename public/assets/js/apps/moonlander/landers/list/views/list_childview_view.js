@@ -5,7 +5,7 @@ define(["app",
   ],
  function(Moonlander, landersListItemTpl) {
 
-  Moonlander.module("LandersApp.List", function(List, Moonlander, Backbone, Marionette, $, _) {
+  Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
     List.childView = Marionette.ItemView.extend({
       className: "bs-component",
       template: landersListItemTpl,
@@ -101,5 +101,5 @@ define(["app",
 
     });
   });
-  return Moonlander.LandersApp.List.childView;
+  return Moonlander.LandersApp.Landers.List.childView;
 });
