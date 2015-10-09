@@ -26,12 +26,7 @@
           <span class="sidebar-title">Landing Pages</span>
         </a>
       </li>
-      <li id="performance-left-nav">
-        <a href="">
-          <span style="font-size: 18px" class="fa fa-bolt"></span>
-          <span class="sidebar-title">Performance</span>
-        </a>
-      </li>
+     
     </ul>
     <!-- End: Sidebar Menu -->
 

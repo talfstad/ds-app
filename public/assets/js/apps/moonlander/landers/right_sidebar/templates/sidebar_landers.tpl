@@ -12,65 +12,77 @@
               <button type="button" style="width: 85px" class="btn btn-default btn-gradient dark">Deploy</button>
             </div>
           </div>
-          <div class="admin-form panel-body pn pb25">
+          
+          <div class="admin-form panel-body pn pb25" style="font-size: 13px">
             <h5 class="title-divider text-muted mt20 mb10">Lander Name
             </h5>
             <div class="bs-component">
               <input type="text" id="inputStandard" class="form-control" value="<%= name %>">
             </div>
-            <h5 class="title-divider text-muted mt30 mb10"><span>#</span> <span style="margin-left: 5px">Deployment Optimizations</span>
+            <h5 class="title-divider text-muted mt30 mb0"><span>#</span> <span style="margin-left: 25px">Deployment Optimizations</span>
               <a style="float: right" href="#">
                 <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
               </a>
             </h5>
             <div class="bs-component">
-              <div>1</div>
-              <div class="mb5 pt5 ml5" style="float: left;">
-              Optimize Images
-              </div>
-              <div style="float: right;">
-               <label class="switch switch-round block mn">
-                  <input type="checkbox" name="framework" id="fr2" value="angular">
-                  <label for="fr2" data-on="ON" data-off="OFF"></label>
-                </label>     
-              </div>
+              <table class="table">               
+                <tr>
+                  <td>1</td>
+                  <td>Gzip Compression</td>
+                  <td>
+                    <label class="switch switch-success switch-round block mn">
+                      <input type="checkbox" name="gzip" id="optimization-gzip" value="angular">
+                      <label for="optimization-gzip" data-on="ON" data-off="OFF"></label>
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>Optimize JS</td>
+                  <td>
+                    <label class="switch switch-success switch-round block mn">
+                      <input type="checkbox" name="optimize-js" id="optimization-js" value="angular">
+                      <label for="optimization-js" data-on="ON" data-off="OFF"></label>
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>Optimize CSS</td>
+                  <td>
+                    <label class="switch switch-success switch-round block mn">
+                      <input type="checkbox" name="optimize-css" id="optimization-css" value="angular">
+                      <label for="optimization-css" data-on="ON" data-off="OFF"></label>
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>Optimize Images</td>
+                  <td>
+                    <label class="switch switch-success switch-round block mn">
+                      <input type="checkbox" name="optimize-images" id="optimization-images" value="angular">
+                      <label for="optimization-images" data-on="ON" data-off="OFF"></label>
+                    </label>
+                  </td>
+                </tr>
+              </table>
             </div>
 
-
-
-            <div class="bs-component">
-              <div class="checkbox-custom checkbox-success mb5">
-                <input type="checkbox" <% if(optimizations.gzip){ %> checked <% } %> id="checkboxDefault3">
-                <label title="" for="checkboxDefault3">Gzip Compression</label>
+           
+            <div class="title-divider">
+              <h5 class="text-muted mt30 mb10">
+                Active JS Snippets 
+                <a style="float: right" href="#">
+                  <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
+                </a>
+              </h5>
+              <div class="bs-component ml15">
+                <button type="button" style="font-size: 13px" class="mr10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
+                  <span class="fa fa-plus pr5" ></span>Add Snippet
+                </button>
               </div>
             </div>
-
-            <div class="bs-component">
-              <div class="checkbox-custom checkbox-success mb5">
-                <input type="checkbox" <% if(optimizations.compressJs){ %> checked <% } %> id="checkboxDefault12">
-                <label for="checkboxDefault12">Optimize JS</label>
-              </div>
-            </div>
-            <div class="bs-component">
-              <div class="checkbox-custom checkbox-success mb5">
-                <input type="checkbox" <% if(optimizations.singleFileJs){ %> checked <% } %> id="checkboxDefault4">
-                <label for="checkboxDefault4">Optimize CSS</label>
-              </div>
-            </div>
-            
-
-             
- 
-
-          
-            <h5 class="title-divider text-muted mt30 mb10">
-              Active JS Snippets 
-              <a style="float: right" href="#">
-                <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
-              </a>
-            </h5>
-         
-
 
 
             <div id="jssnippets-tree" class="snippets-container fancytree-radio">

@@ -6,7 +6,7 @@ function(Moonlander, listTpl){
     HeaderApp.Header = Marionette.ItemView.extend({
       template: listTpl,
       tagName: "header",
-      className: "navbar navbar-fixed-top navbar-shadow",
+      className: "lds-top-nav navbar-inverse navbar-fixed-top navbar-shadow",
       
       // modelEvents: {
       //   'change': 'render'

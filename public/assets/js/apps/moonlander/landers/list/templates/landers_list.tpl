@@ -81,7 +81,7 @@
         <div class="topbar-right hidden-xs hidden-sm">
            <div class="bs-component ml15">
             <button type="button" class="mr10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
-              <span class="fa fa-plus pr5"></span>Add lander
+              <span class="fa fa-plus pr5"></span>New Lander
             </button>
           </div>
         </div>

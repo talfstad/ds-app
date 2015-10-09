@@ -1,11 +1,30 @@
 <!-- Start: Header -->
 <div class="navbar-branding">
   <a class="navbar-brand" href="dashboard.html">
-          <img src="/assets/img/logos/landerds_logo_black1.png" title="LanderDS Logo" class="mt5 w170">
+          <img src="/assets/img/logos/landerds_logo_white1.png" title="LanderDS Logo" class="mt5 w170">
         </a>
-  <span id="toggle_sidemenu_l" class="ad ad-lines"></span>
+  <!-- <span id="toggle_sidemenu_l" class="ad ad-lines"></span> -->
 </div>
-
+  <ul style="margin-left: 35px" class="nav navbar-nav navbar-left">
+    <li>
+      <a href="/landers" class="fw600">
+        <img style="width: 20px" src="/assets/img/logos/landers_icon_e9e9e9.png"/>
+        <span class="ml5 sidebar-title">Landing Pages</span>
+      </a>
+    </li>
+    <li>
+      <a href="/campaigns" role="button" class="fw600">
+        <img style="width: 20px" src="/assets/img/logos/campaigns_icon_e9e9e9.png"/>
+        <span  class="ml5 sidebar-title">Campaigns</span>
+      </a>
+    </li>
+    <li>
+      <a href="/domains" role="button" class="fw600">
+        <img style="width: 20px" src="/assets/img/logos/domains_icon_e9e9e9.png"/>
+        <span class="ml5 sidebar-title">Domains</span>
+      </a>
+     </li>
+  </ul>
 
 <ul class="nav navbar-nav navbar-right">
 	<li class="dropdown menu-merge">

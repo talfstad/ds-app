@@ -324,3 +324,12 @@ tr.warning input[type=select] {
     height: 42px !important;
     min-height: 42px !important;
 }
+
+.mb0 {
+    margin-bottom: 0px !important;
+}
+
+.modal-navbar-buttons {
+    margin-left: 10px;
+    margin-top: 5px;
+}

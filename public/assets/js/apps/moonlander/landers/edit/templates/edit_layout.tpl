@@ -6,13 +6,46 @@
     	</div>
 
         <header class="modal-navbar navbar navbar-shadow">
+            <div style="width: 100%; margin-top: 5px; margin-left: 15px; float: left;">
+                <div style="float: left; min-width: 220px">
+                 <button type="button" class="mr5 pl10 pt5 pb5 btn btn-default btn-gradient dark">
+                        <span class="fa fa-file pr5"></span></span>New File
+                    </button>
+                    <button type="button" class="mr5 pl10 pt5 pb5 btn btn-default btn-gradient dark">
+                        <span class="fa fa-folder pr5"></span></span>New Folder
+                    </button>
+                </div>
+                <div style="float: left; width: calc(100% - 220px);">
+                    <div style="width: calc(100% - 241px); min-width: 50px; float: left">
+                        <div class="input-group">
+                            <span class="input-group-addon" style="color: #666; padding-top: 0; padding-bottom: 0">
+                                  /
+                              </span>
+                          <input style="height: 31px" class="form-control" type="text" value="jquery.js" placeholder="Numbers">
+                           <span class="input-group-addon" style="color: #666; padding-top: 0; padding-bottom: 0">
+                                  <span class="fa fa-pencil-square-o pr5"></span></span>
+                              </span>
+                        </div>
+                    </div>
+                
+                    <div style="float: right; margin-right: 25px">
+                       
+                
+                        <button type="button" class="mr5 pl10 disabled pt5 pb5 btn btn-default btn-gradient dark">
+                           <span class="fa fa-floppy-o pr5"></span></span>Save File
+                        </button>
 
-          
-    </header>
+                         <button type="button" class="mr5 pl10 pt5 pb5 btn btn-danger btn-gradient dark">
+                            <span class="fa fa-trash pr5"></span></span>Delete File
+                        </button>
+                    </div>
+              </div>
+            </div>
+        </header>
 
     	<div class="edit-lander-modal-content modal-body">
         <div class="row">
-            <div class="file-list" style="height: 390px; overflow-y: scroll; overflow-x: hidden">
+            <div class="file-list" style="overflow-y: auto">
                 <div id="tree6" class="edit-lander-container ui-draggable-handle">
                     
               <ul id="treeData" style="display: none;" class="ui-fancytree-source ui-helper-hidden">
@@ -91,8 +124,8 @@
     	</div>
         </div>
     	<div class="modal-footer">
-            <button type="button" class="btn btn-default btn-clipboard">Close</button>
-    		<button type="button" class="btn btn-primary btn-clipboard">Save &amp; Close</button>
+            <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Close</button>
+    		<button type="button" class="btn btn-success btn-clipboard">Save &amp; Close</button>
     	</div> 
     </div> 
 </div>
