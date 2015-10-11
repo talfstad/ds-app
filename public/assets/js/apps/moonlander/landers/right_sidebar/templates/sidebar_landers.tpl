@@ -31,8 +31,17 @@
                   <td>Gzip Compression</td>
                   <td>
                     <label class="switch switch-success switch-round block mn">
-                      <input type="checkbox" name="gzip" id="optimization-gzip" value="angular">
-                      <label for="optimization-gzip" data-on="ON" data-off="OFF"></label>
+                       <% if(optimizations.gzip) { %> 
+                      
+                        <input type="checkbox" checked name="gzip" id="optimization-gzip" value="angular">
+                      
+                       <% } else { %>
+
+                        <input type="checkbox" name="gzip" id="optimization-gzip" value="angular">
+                      
+                       <% } %>
+                      
+                       <label for="optimization-gzip" data-on="ON" data-off="OFF"></label>
                     </label>
                   </td>
                 </tr>
@@ -41,7 +50,16 @@
                   <td>Optimize JS</td>
                   <td>
                     <label class="switch switch-success switch-round block mn">
+                      <% if(optimizations.optimizeJs) { %> 
+                      
+                        <input type="checkbox" checked name="optimize-js" id="optimization-js" value="angular">
+                      
+                      <% } else { %>
+
                       <input type="checkbox" name="optimize-js" id="optimization-js" value="angular">
+                      
+                      <% } %>
+                      
                       <label for="optimization-js" data-on="ON" data-off="OFF"></label>
                     </label>
                   </td>
@@ -51,7 +69,16 @@
                   <td>Optimize CSS</td>
                   <td>
                     <label class="switch switch-success switch-round block mn">
+                      <% if(optimizations.optimizeImg) { %> 
+                      
+                      <input type="checkbox" checked name="optimize-css" id="optimization-css" value="angular">
+                      
+                      <% } else { %>
+
                       <input type="checkbox" name="optimize-css" id="optimization-css" value="angular">
+                      
+                      <% } %>
+                      
                       <label for="optimization-css" data-on="ON" data-off="OFF"></label>
                     </label>
                   </td>
@@ -61,7 +88,15 @@
                   <td>Optimize Images</td>
                   <td>
                     <label class="switch switch-success switch-round block mn">
+                      <% if(optimizations.optimizeImg) { %> 
+                      
+                        <input type="checkbox" checked name="optimize-images" id="optimization-images" value="angular">
+                      
+                      <% } else { %>
+
                       <input type="checkbox" name="optimize-images" id="optimization-images" value="angular">
+                      
+                      <% } %>
                       <label for="optimization-images" data-on="ON" data-off="OFF"></label>
                     </label>
                   </td>

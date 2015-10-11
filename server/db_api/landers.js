@@ -63,11 +63,9 @@ module.exports = function(db) {
         ],
         "optimizations": {
           "gzip": true,
-          "compressJs": false,
-          "singleFileJs": true,
-          "compressCss": true,
-          "singleFileCss": true,
-          "compressImg": true,
+          "optimizeJs": false,
+          "optimizeCss": true,
+          "optimizeImg": true
         },
         "activeJsSnippets": []
       },
@@ -97,11 +95,9 @@ module.exports = function(db) {
         ],
         "optimizations": {
           "gzip": false,
-          "compressJs": false,
-          "singleFileJs": false,
-          "compressCss": false,
-          "singleFileCss": false,
-          "compressImg": true,
+          "optimizeJs": false,
+          "optimizeCss": false,
+          "optimizeImg": false
         },
         "activeJsSnippets": [
           {
@@ -155,12 +151,10 @@ for(i=23 ; i>3 ; i--) {
           "subfolder1/html/bob1.html" + i
         ],
         "optimizations": {
-          "gzip": false,
-          "compressJs": false,
-          "singleFileJs": false,
-          "compressCss": false,
-          "singleFileCss": false,
-          "compressImg": true,
+          "gzip": true,
+          "optimizeJs": true,
+          "optimizeCss": true,
+          "optimizeImg": true
         },
         "activeJsSnippets": [
           {
