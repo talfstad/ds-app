@@ -28,8 +28,6 @@ define(["app",
           // this.attachHtml = function(collectionView, childView, index) {
           //   collectionView.$el.prepend(childView.el);
           // }
-
-
         },
 
         triggerSort: function(){

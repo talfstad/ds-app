@@ -1,8 +1,9 @@
 define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
   "/assets/js/common/login/common_login.js",
   "/assets/js/apps/moonlander/landers/right_sidebar/sidebar_controller.js",
-  "/assets/js/apps/moonlander/landers/edit/edit_controller.js",
-  "/assets/js/apps/moonlander/left_nav/left_nav_app.js"], 
+  "/assets/js/apps/moonlander/landers/edit/edit_controller.js"
+  // "/assets/js/apps/moonlander/left_nav/left_nav_app.js"
+  ], 
 function(Moonlander, ListController, CommonLogin, SidemenuController, EditController){
   Moonlander.module("LandersApp", function(LandersApp, Moonlander, Backbone, Marionette, $, _){
 
@@ -12,8 +13,8 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
         
         Moonlander.navigate("landers");
         CommonLogin.Check(function(){
-          ListController.showLanders(); 
-          Moonlander.trigger("left_nav:active", "landers");
+          ListController.showLanders();
+          Moonlander.trigger("header:active", "landers");
         });
       },
 

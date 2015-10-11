@@ -130,7 +130,7 @@
     padding-right: 5px !important;
 }
 
-.btn.delete-lander {
+.btn.delete-lander, .btn.center {
     margin: 0 auto;
     display: block;
 }
@@ -146,21 +146,25 @@ span.fancytree-node:hover {
 
 span.fancytree-title {
     /*cursor: inherit;*/
+    color: #626262;
+}
+ul.fancytree-container {
+    font-family: inherit !important;
 }
 
-/* .fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active,
- .fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected,
- span.fancytree-node.fancytree-active:hover,
- span.fancytree-node.fancytree-selected:hover {
+.snippets-container .fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active,
+.snippets-container .fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected,
+.snippets-container span.fancytree-node.fancytree-active:hover,
+.snippets-container span.fancytree-node.fancytree-selected:hover {
     background-color: inherit;
     border-color: transparent;
 }
 
- span.fancytree-node.fancytree-active,
- span.fancytree-node.fancytree-selected {
+.snippets-container span.fancytree-node.fancytree-active,
+.snippets-container span.fancytree-node.fancytree-selected {
     background-color: inherit;
     border-color: transparent;
-}*/
+}
 
 tr.success .domain-endpoint-select {
     display: inherit;
@@ -332,4 +336,10 @@ tr.warning input[type=select] {
 .modal-navbar-buttons {
     margin-left: 10px;
     margin-top: 5px;
+}
+
+.snippets-empty {
+    list-style-type: none;
+    margin-top: 15px;
+    margin-left:30px;
 }

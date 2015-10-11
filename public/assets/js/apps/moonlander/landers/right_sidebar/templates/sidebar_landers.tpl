@@ -19,7 +19,7 @@
             <div class="bs-component">
               <input type="text" id="inputStandard" class="form-control" value="<%= name %>">
             </div>
-            <h5 class="title-divider text-muted mt30 mb0"><span>#</span> <span style="margin-left: 25px">Deployment Optimizations</span>
+            <h5 class="title-divider text-muted mt30 mb0"><span>#</span> <span style="margin-left: 20px">Deployment Optimizations</span>
               <a style="float: right" href="#">
                 <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
               </a>
@@ -69,60 +69,22 @@
               </table>
             </div>
 
-           
-            <div class="title-divider">
-              <h5 class="text-muted mt30 mb10">
-                Active JS Snippets 
-                <a style="float: right" href="#">
-                  <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
-                </a>
-              </h5>
-              <div class="bs-component ml15">
-                <button type="button" style="font-size: 13px" class="mr10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
-                  <span class="fa fa-plus pr5" ></span>Add Snippet
-                </button>
-              </div>
+            <h5 class="title-divider text-muted mt30 mb0">
+              Active JS Snippets 
+              <a style="float: right" href="#">
+                <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
+              </a>
+              <a style="float: right" title="Add a new snippet" href="#">
+                <i style="font-size: 18px !important" class="fa fa-plus text-info fs12 pl5 pr5"></i>
+              </a>
+            </h5>
+        
+            <div id="jssnippets-tree-container" class="snippets-container fancytree-radio">
+              
             </div>
 
+            
 
-            <div id="jssnippets-tree" class="snippets-container fancytree-radio">
-              <ul id="treeData" style="display: none;" class="ui-fancytree-source ui-helper-hidden">
-                <li id="5.7" class="fancytree-page expanded">safepage.html
-                  <ul>
-                    <li id="5.81" data-hey="true">
-                      <span>
-                        JS Cloaker
-                        <a class="trash-link" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
-                        <a class="edit-link" href="#"><i class="pull-right ml15 mt3 fa fa-pencil-square-o"></i></a>
-                      </span></li>
-                    <li id="5.83">
-                      <span>
-                        JS No-referrer
-                        <a class="trash-link" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
-                        <a class="edit-link" href="#"><i class="pull-right ml15 mt3 fa fa-pencil-square-o"></i></a>
-                      </span>
-                    </li>
-                  </ul>
-                </li>
-                <li id="5.7" class="fancytree-page expanded">index1.html
-                  <ul>
-                    <li id="5.81" data-hey="true">
-                      <span>
-                        JS Cloaker
-                        <a class="trash-link" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
-                        <a class="edit-link" href="#"><i class="pull-right ml15 mt3 fa fa-pencil-square-o"></i></a>
-                      </span></li>
-                    <li id="5.83">
-                      <span>
-                        JS No-referrer
-                        <a class="trash-link" href="#"><i class="pull-right ml15 mt3 fa fa-trash-o"></i></a>
-                        <a class="edit-link" href="#"><i class="pull-right ml15 mt3 fa fa-pencil-square-o"></i></a>
-                      </span>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </div>
           </div>
           <div class="panel-footer">
             <button type="button" class="delete-lander btn btn-danger btn-gradient dark">Delete Lander</button>

@@ -1,6 +1,5 @@
 define(["app",
-		"/assets/js/apps/moonlander/landers/dao/lander_model.js",
-    "backbone.paginator"], 
+		"/assets/js/apps/moonlander/landers/dao/lander_model.js"], 
 function(Moonlander, LanderModel) {
   var LanderCollection = Backbone.Collection.extend({
     url: '/api/landers',

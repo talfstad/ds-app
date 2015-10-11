@@ -1,7 +1,9 @@
 define(["app",
         "/assets/js/apps/moonlander/landers/right_sidebar/sidebar_view.js",
-        "/assets/js/apps/moonlander/landers/dao/lander_model.js"], 
-function(Moonlander, SidebarView, LanderModel){
+        "/assets/js/apps/moonlander/landers/dao/lander_model.js",
+        "/assets/js/apps/moonlander/landers/right_sidebar/jssnippets/views/list_view.js",
+        "/assets/js/apps/moonlander/landers/right_sidebar/jssnippets/dao/collection.js"], 
+function(Moonlander, SidebarView, LanderModel, JsSnippetsListView, JsSnippetsCollection){
   Moonlander.module("LandersApp.RightSidebar", function(RightSidebar, Moonlander, Backbone, Marionette, $, _){
 
     RightSidebar.Controller = {
@@ -14,7 +16,17 @@ function(Moonlander, SidebarView, LanderModel){
       },
 
       openSidebar: function(model){
-        Moonlander.landers.sidebarView.openSidebar(model);
+        Moonlander.landers.sidebarView.model.set(model.attributes);
+
+        //create the view here
+        var snippetsView = new JsSnippetsListView({
+          collection: new JsSnippetsCollection(model.get("activeJsSnippets"))
+        });
+
+        //show it
+        Moonlander.rootRegion.currentView.rightSidebarRegion.currentView.snippetsRegion.show(snippetsView)
+        //open
+        Moonlander.landers.sidebarView.openSidebar();
       },
 
       closeSidebar: function(){

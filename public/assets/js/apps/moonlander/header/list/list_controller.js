@@ -7,11 +7,26 @@ define(["app", "/assets/js/apps/moonlander/header/list/list_view.js"], function(
             model: Moonlander.loginModel
           });
 
-          // header.on("logout:clicked", function(){
-          //   Moonlander.trigger("authentication:logout");
-          // });
+          header.on("showDomains", function(childView, model, child) {
+            Moonlander.trigger("domains:list");
+          });
+
+          header.on("showLanders", function(childView, model, child) {
+            Moonlander.trigger("landers:list");
+          });
 
           Moonlander.rootRegion.currentView.headerRegion.show(header);
+
+          //set active item
+          Moonlander.trigger("header:active", Backbone.history.getFragment());
+          
+      },
+
+      setActiveItem: function(item){
+        if(Moonlander.rootRegion.currentView.headerRegion.hasView()) {
+          var headerView = Moonlander.rootRegion.currentView.headerRegion.currentView;
+          headerView.setActiveItem(item);
+        }
       }
     };
   });

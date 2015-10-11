@@ -74,19 +74,7 @@ module.exports = function(db) {
           "singleFileCss": true,
           "compressImg": true,
         },
-        "activeJsSnippets": {
-          "safepage.html": [{
-            "id": 1,
-            "name": "JS Cloaker"
-          }, {
-            "id": 2,
-            "name": "JS No-referrer"
-          }],
-          "index1.html": [{
-            "id": 2,
-            "name": "JS No-referrer"
-          }]
-        }
+        "activeJsSnippets": []
       },
       {
         "id": 2,
@@ -125,19 +113,29 @@ module.exports = function(db) {
           "singleFileCss": false,
           "compressImg": true,
         },
-        "activeJsSnippets": {
-          "safepage.html": [{
+        "activeJsSnippets": [
+          {
+            "page": "safepage.html",
             "id": 1,
-            "name": "JS Cloaker"
+            "snippets": 
+              [{
+                "name": "JS Cloaker"
+              }, 
+              {
+                "name": "JS No-referrer"
+              }]
           }, {
+            "page": "s2afepage2.html",
             "id": 2,
-            "name": "JS No-referrer"
-          }],
-          "index1.html": [{
-            "id": 2,
-            "name": "JS No-referrer"
+            "name": "JS No-referrer",
+            "snippets": 
+              [{
+                "name": "JS Cloaker"
+              }, 
+              {
+                "name": "JS No-referrer"
+              }]
           }]
-        }
         
       }];
 
@@ -179,19 +177,26 @@ for(i=23 ; i>3 ; i--) {
           "singleFileCss": false,
           "compressImg": true,
         },
-        "activeJsSnippets": {
-          "safepage.html": [{
+        "activeJsSnippets": [
+          {
+            "page": "safepage.html" + i,
             "id": 1,
-            "name": "JS Cloaker"
+            "snippets": 
+              [{
+                "name": "JS Cloaker"
+              }, 
+              {
+                "name": "JS No-referrer"
+              }]
           }, {
+            "page": "s2afepage2.html" + i,
             "id": 2,
-            "name": "JS No-referrer"
-          }],
-          "index1.html": [{
-            "id": 2,
-            "name": "JS No-referrer"
+            "name": "JS No-referrer",
+            "snippets": 
+              [{
+                "name": "JS No-referrer"
+              }]
           }]
-        }
 }
       mockData.push(newDataItem)
 }
