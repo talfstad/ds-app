@@ -44,22 +44,17 @@ module.exports = function(db) {
         "deploying": true,
         "deployed": true,
         "lastUpdated": "3-2-15",
-        "deployedLocations": {
-          "hardbodiesandboners.org": [{
+        "deployedLocations": 
+          [{
+            "domain": "hardbodiesandboners.org",
             "id": 1,
             "name": "target camp"
-          }, {
+          }, 
+          {
+            "domain": "weightlosskey.com",
             "id": 2,
             "name": "RON Camp Test"
           }],
-          "weightlosskey.com": [{
-            "id": 3,
-            "name": "aargete camp 1"
-          }, {
-            "id": 4,
-            "name": "RON2Camp Test 2"
-          }]
-        },
         "urlEndpoints": [
           "index.html",
           "index1.html",
@@ -83,22 +78,17 @@ module.exports = function(db) {
         "deployed": false,
         "deploying": false,
         "lastUpdated": "3-1-15",
-        "deployedLocations": {
-          "hardbodiesandboners.org": [{
+        "deployedLocations": 
+          [{
+            "domain": "hardbodiesandboners.org",
             "id": 1,
             "name": "target camp"
-          }, {
+          }, 
+          {
+            "domain": "weightlosskey.com",
             "id": 2,
             "name": "RON Camp Test"
           }],
-          "weightlosskey.com": [{
-            "id": 3,
-            "name": "aargete camp 1"
-          }, {
-            "id": 4,
-            "name": "RON2Camp Test 2"
-          }]
-        },
         "urlEndpoints": [
           "index.html",
           "index1.html",
@@ -146,28 +136,23 @@ for(i=23 ; i>3 ; i--) {
         "user": "trevor@buildcave.com",
         "deployed": true,
         "deploying": false,
-        "lastUpdated": "3-"+i+"-15",
-        "deployedLocations": {
-          "hardbodiesandboners.org": [{
+        "lastUpdated": "3/"+i+"/15",
+        "deployedLocations": 
+          [{
+            "domain": "hardbodiesandboners.org" + i,
             "id": 1,
             "name": "target camp"
-          }, {
+          }, 
+          {
+            "domain": "weightlosskey.com" + i,
             "id": 2,
             "name": "RON Camp Test"
           }],
-          "weightlosskey.com": [{
-            "id": 3,
-            "name": "aargete camp 1"
-          }, {
-            "id": 4,
-            "name": "RON2Camp Test 2"
-          }]
-        },
         "urlEndpoints": [
-          "index.html",
-          "index1.html",
-          "where/here.html",
-          "subfolder1/html/bob1.html"
+          "index.html" + i,
+          "index1.html" + i,
+          "where/here.html" + i,
+          "subfolder1/html/bob1.html" + i
         ],
         "optimizations": {
           "gzip": false,

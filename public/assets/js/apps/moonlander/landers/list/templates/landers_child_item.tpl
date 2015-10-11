@@ -8,7 +8,7 @@
           <%= name %>
        
         <div class="widget-menu domain-campaign-notification">
-           <span class="fs11 text-muted" title="Currently deployed on 2 domains">last updated 3/4/15</span>
+           <span class="fs11 text-muted" title="Currently deployed on 2 domains">last updated <%= lastUpdated %></span>
          <!--  <span class="fs11 text-muted ml10" title="Currently in 2 campaigns"><i class="fa fa-circle text-system fs12 pr5"></i> 2 Campaigns</span> -->
         </div>
          </a>
@@ -73,14 +73,23 @@
             <div style="padding-bottom: 15px" id="domains-tab-id<%= id %>" class="tab-pane active">
               <table class="table">
                 <tbody>
+                  <% var landerIdx = 0 %>
+                  
+                  <% _.each(deployedLocations, function(location) { %>
+
                   <tr class="success">
-                    <td style="width: 20px">1</td>
+                    <td style="width: 20px"><%= ++landerIdx %></td>
                     <td>
-                      <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">hardbodiesandboners.org/</a> 
+                      <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme"><%= location.domain %>/</a> 
+
                           <select class="domain-endpoint-select form-control">
-                            <option>camp1/what/index.html</option>
-                            <option>camp2/who/index3.html</option>
-                            <option>safe/otherlander/safe_page.html</option>
+
+                            <% _.each(urlEndpoints, function(endpoint){ %>
+                            
+                            <option><%= endpoint %></option>
+                            
+                            <% }); %>
+
                           </select>
                           <div style="float: right; margin-right: 10px">
                             <a href="#">
@@ -89,54 +98,8 @@
                           </div>
                     </td>
                   </tr>
-                  <tr class="success">
-                    <td style="width: 20px">2</td>
-                    <td>
-                      <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">extremewinnersonly.com/</a> 
-                          <select class="domain-endpoint-select form-control">
-                            <option>camp1/what/index.html</option>
-                            <option>camp2/who/index3.html</option>
-                            <option>safe/otherlander/safe_page.html</option>
-                          </select>
-                          <div style="float: right; margin-right: 10px">
-                            <a href="#">
-                              <span class="fa fa-trash-o"></span>
-                            </a>
-                          </div>
-                    </td>
-                  </tr>
-                  <tr class="success">
-                    <td style="width: 20px">3</td>
-                    <td>
-                      <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">losewieghttoday.net/</a> 
-                          <select class="domain-endpoint-select form-control">
-                            <option>camp1/what/index.html</option>
-                            <option>camp2/who/index3.html</option>
-                            <option>safe/otherlander/safe_page.html</option>
-                          </select>
-                          <div style="float: right; margin-right: 10px">
-                            <a href="#">
-                              <span class="fa fa-trash-o"></span>
-                            </a>
-                          </div>
-                    </td>
-                  </tr>
-                  <tr class="success">
-                    <td style="width: 20px">4</td>
-                    <td>
-                      <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">getthickquick.com/</a> 
-                          <select class="domain-endpoint-select form-control">
-                            <option>camp1/what/index.html</option>
-                            <option>camp2/who/index3.html</option>
-                            <option>safe/otherlander/safe_page.html</option>
-                          </select>
-                          <div style="float: right; margin-right: 10px">
-                            <a href="#">
-                              <span class="fa fa-trash-o"></span>
-                            </a>
-                          </div>
-                    </td>
-                  </tr>
+
+                  <% }) %>
                 </tbody>
               </table>
             </div>
