@@ -10,7 +10,7 @@ function(Moonlander, anchorTpl){
         leftNavRegion: "#left-navbar",
         mainContentRegion: "#main-content",
         rightSidebarRegion: "#right-sidebar",
-        editLanderRegion: "#edit-lander-region"
+        modalRegion: "#modal-region"
       },
     
       onDomRefresh: function(){

@@ -7,9 +7,9 @@
           </div>
           <div class="panel-menu">
             <div class="btn-group">
-              <button type="button" style="width: 85px" class="btn btn-default btn-gradient dark">Duplicate</button>
-              <button type="button" style="width: 85px" class="lander-edit btn btn-default btn-gradient dark">Edit</button>
-              <button type="button" style="width: 85px" class="btn btn-default btn-gradient dark">Deploy</button>
+              <button type="button" style="width: 80px" class="btn btn-default btn-gradient dark">Duplicate</button>
+              <button type="button" style="width: 60px" class="lander-edit btn btn-default btn-gradient dark">Edit</button>
+              <button type="button" style="width: 115px" class="save disabled btn btn-default btn-gradient dark">Save &amp; Deploy</button>
             </div>
           </div>
           
@@ -17,7 +17,7 @@
             <h5 class="title-divider text-muted mt20 mb10">Lander Name
             </h5>
             <div class="bs-component">
-              <input type="text" id="inputStandard" class="form-control" value="<%= name %>">
+              <input type="text" id="lander-name-edit" name="name" class="form-control" value="<%= name %>">
             </div>
             <h5 class="title-divider text-muted mt30 mb0"><span>#</span> <span style="margin-left: 20px">Deployment Optimizations</span>
               <a style="float: right" href="#">
@@ -25,7 +25,7 @@
               </a>
             </h5>
             <div class="bs-component">
-              <table class="table">               
+              <table class="optimizations-table table">               
                 <tr>
                   <td>1</td>
                   <td>Gzip Compression</td>

@@ -92,7 +92,7 @@
 
                           </select>
                           <div style="float: right; margin-right: 10px">
-                            <a href="#">
+                            <a class="undeploy" data-domainId="<%= location.id %>" data-domainName="<%= location.domain %>" href="#">
                               <span class="fa fa-trash-o"></span>
                             </a>
                           </div>

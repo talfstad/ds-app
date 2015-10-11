@@ -10,6 +10,25 @@ define(["app",
       className: "bs-component",
       template: landersListItemTpl,
 
+      events: {
+        "click .undeploy": "showUndeployLander"
+      },
+
+      showUndeployLander: function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        
+        //get domain id to undeploy from, send that + model TODO
+        var domainId = $(e.currentTarget).attr("data-domainId");
+        var domainName = $(e.currentTarget).attr("data-domainName");
+        var undeployInfo = {
+          domainId: domainId,
+          domainName: domainName
+        };
+        this.model.set("undeployInfo", undeployInfo);
+        Moonlander.trigger("landers:showUndeploy", this.model);
+      },
+
       onRender: function(){
         var me = this;
 

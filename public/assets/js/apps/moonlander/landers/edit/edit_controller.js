@@ -12,7 +12,7 @@ function(Moonlander, EditLayoutView){
         });
         editLanderLayout.render();
        
-        Moonlander.rootRegion.currentView.editLanderRegion.show(editLanderLayout);
+        Moonlander.rootRegion.currentView.modalRegion.show(editLanderLayout);
       }
 
     }

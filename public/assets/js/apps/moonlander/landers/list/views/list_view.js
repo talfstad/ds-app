@@ -16,9 +16,9 @@ define(["app",
         childView: landersListItemView,
         childViewContainer: "div#landers-collection-items",
 
-        collectionEvents: {
-          'change': 'render'
-        },
+        // collectionEvents: {
+        //   'change': 'render'
+        // },
 
         initialize: function() {
           this.listenTo(this, "landers:sort", this.triggerSort);

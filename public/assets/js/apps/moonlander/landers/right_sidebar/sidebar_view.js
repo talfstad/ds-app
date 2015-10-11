@@ -37,6 +37,21 @@ define(["app",
             me.closeSidebar();
             $(".collapse").collapse('hide');
           });
+
+
+          var enableSave = function(){
+            $("button.save").removeClass("disabled");
+            // $("button.save").removeClass("btn-default");
+            // $("button.save").addClass("btn-warning");
+          };
+          //check every element that can be saved for onchange
+          //so we can enable save button
+          $("input#lander-name-edit").keyup(function(e){
+            enableSave();
+          });
+          $("table.optimizations-table input").change(function(e){
+            enableSave();
+          });
         },
 
         openSidebar: function(model){
