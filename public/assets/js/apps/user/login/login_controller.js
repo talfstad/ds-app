@@ -24,8 +24,6 @@ function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordMod
         loginView.on("login:form:submit", function(){
           var successLoginCallback = function(model, message, other) {
             if(model.get("logged_in")) {
-              // TODO: Moonlander.login.fetch() <- this calls out to get whether or not we're logged in from the server!!!
-              // need to implement it on domains:list which needs to be started
               
               //call domains:list from here mate!
               Moonlander.trigger("start:moonlander");

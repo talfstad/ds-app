@@ -1,14 +1,24 @@
 define(["app",
     "tpl!/assets/js/apps/moonlander/landers/list/templates/landers_child_item.tpl",
-    "fancytree",
+    "/assets/js/apps/moonlander/landers/list/deployed/views/child_view.js",
+    "/assets/js/apps/moonlander/landers/list/deployed/views/empty_view.js",
     "bootstrap"
   ],
- function(Moonlander, landersListItemTpl) {
+ function(Moonlander, LandersListItemTpl, DeployedListChildView, DeployedListEmptyView) {
 
   Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
-    List.childView = Marionette.ItemView.extend({
+    List.childView = Marionette.CompositeView.extend({
       className: "bs-component",
-      template: landersListItemTpl,
+
+      template: LandersListItemTpl,
+      childView: DeployedListChildView,
+      emptyView: DeployedListEmptyView,
+      childViewContainer: "table.deployed-domains-region",
+
+      initialize: function() {
+        //set collection to subset of parent collection (from collectionview)
+        this.collection = this.model.deployedLocations
+      },
 
       events: {
         "click .undeploy": "showUndeployLander"
@@ -17,7 +27,7 @@ define(["app",
       showUndeployLander: function(e){
         e.preventDefault();
         e.stopPropagation();
-        
+
         //get domain id to undeploy from, send that + model TODO
         var domainId = $(e.currentTarget).attr("data-domainId");
         var domainName = $(e.currentTarget).attr("data-domainName");
@@ -90,8 +100,6 @@ define(["app",
         $(".collapse").collapse({
           toggle: false
         });
-
-       
 
         $("#tree" + this.model.get("id")).fancytree({
           click: function(event, data) {

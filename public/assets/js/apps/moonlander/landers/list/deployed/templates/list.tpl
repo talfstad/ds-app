@@ -70,8 +70,8 @@
         </div>
         <div class="panel-body">
           <div class="tab-content">
-            <div style="padding-bottom: 15px" id="domains-tab-id<%= id %>" class="tab-pane active">
-              <table class="deployed-domains-region"></table>
+            <div style="padding-bottom: 15px" id="domains-tab-id<%= id %>" class="deployed-domains-region tab-pane active">
+              
             </div>
           </div>
         </div>

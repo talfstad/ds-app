@@ -37,7 +37,7 @@ define(["app",
     };
 
     Moonlander.on("start:moonlander", function(){
-      moonlanderRoutes.showDomains();
+      moonlanderRoutes.showLanders();
     });
 
      Moonlander.addInitializer(function(){

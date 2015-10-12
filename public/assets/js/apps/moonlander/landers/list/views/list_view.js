@@ -9,12 +9,12 @@ define(["app",
 
     Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
-      List.View = Marionette.CompositeView.extend({
+      List.View = Marionette.CollectionView.extend({
         id: "landers-collection",
-        template: landersListContainerTemplate,
+        // template: landersListContainerTemplate,
         emptyView: landersEmptyView,
         childView: landersListItemView,
-        childViewContainer: "div#landers-collection-items",
+        // childViewContainer: "div#landers-collection-items",
 
         // collectionEvents: {
         //   'change': 'render'
