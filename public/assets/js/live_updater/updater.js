@@ -15,7 +15,7 @@ define(["app"], function(Moonlander){
       var UpdateCollectionBulkSaveModelWrapper = Backbone.Model.extend({
         urlRoot: '/api/updater',  //url to put to
         toJSON: function(){
-          return this.updateCollection.toJSON();
+          return me.updateCollection.toJSON();
         }
       });
 
@@ -24,13 +24,14 @@ define(["app"], function(Moonlander){
       var updateCollectionBulkSaveModelWrapper = new UpdateCollectionBulkSaveModelWrapper();
 
       //callbacks
-      var onSaveSuccess = function(models, message, other) {
-        $.each(models, function(model){
-          
-          if(model.get('finishedProcessing')){
-            var actualModel = this.updateCollection.get(model.id);
-            actualModel.set(model.attributes); //this should trigger render
-            this.updateCollection.remove(actualModel);
+      var onSaveSuccess = function(model, modelData, other) {
+        $.each(modelData, function(idx, model){
+          //anything in the collection should have processing = true unless done
+          if(!model.processing){
+            //done, update original model
+            var actualModel = me.updateCollection.get(model.id);
+            actualModel.set(model); //this should trigger render
+            me.updateCollection.remove(actualModel);
           }
           
         });

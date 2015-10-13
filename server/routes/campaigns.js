@@ -1,15 +1,15 @@
-module.exports = function(app, db, credentials, checkAuth){
+module.exports = function(app, db, passport) {
     var module = {};
 
-    app.post('/api/campaign', checkAuth, function(req, res) {
+    app.post('/api/campaigns', function(req, res) {
      
     });
 
-    app.put('/api/campaign', checkAuth, function(req, res) {
+    app.put('/api/campaigns', function(req, res) {
      
     });
 
-    app.delete('/api/campaign', checkAuth, function(req, res) {
+    app.delete('/api/campaigns', function(req, res) {
      
     });
 

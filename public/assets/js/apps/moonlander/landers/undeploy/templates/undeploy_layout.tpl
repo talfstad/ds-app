@@ -12,7 +12,7 @@
         </div>
     	<div class="modal-footer">
             <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Close</button>
-    		<button type="button" class="undeploy-confirm btn btn-success btn-clipboard">Undeploy</button>
+    		<button type="button" data-dismiss="modal" class="undeploy-confirm btn btn-success btn-clipboard">Undeploy</button>
     	</div> 
     </div> 
 </div>

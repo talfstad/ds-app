@@ -41,19 +41,18 @@ module.exports = function(db) {
         "id": 1,
         "name": "test lander 1",
         "user": "trevor@buildcave.com",
-        "deploying": true,
-        "deployed": true,
+        "deployed_status": "deployed",
         "lastUpdated": "3-2-15",
-        "deployedLocations": 
+        "deployedLocations": //made up of domain models
           [{
-            "domain": "hardbodiesandboners.org",
             "id": 1,
-            "name": "target camp"
+            "domain": "hardbodiesandboners.org",
+            "deploy_status": "deployed"
           }, 
           {
-            "domain": "weightlosskey.com",
             "id": 2,
-            "name": "RON Camp Test"
+            "domain": "weightlosskey.com",
+            "deploy_status": "deployed"
           }],
         "urlEndpoints": [
           "index.html",
@@ -73,19 +72,18 @@ module.exports = function(db) {
         "id": 2,
         "name": "test lander 234",
         "user": "trevor@buildcave.com",
-        "deployed": false,
-        "deploying": false,
+        "deployed_status": "deploying",
         "lastUpdated": "3-1-15",
         "deployedLocations": 
           [{
-            "domain": "hardbodiesandboners.org",
             "id": 1,
-            "name": "target camp"
+            "domain": "hardbodiesandboners.org",
+            "deploy_status": "deploying"
           }, 
           {
-            "domain": "weightlosskey.com",
             "id": 2,
-            "name": "RON Camp Test"
+            "domain": "weightlosskey.com",
+            "deploy_status": "deployed"
           }],
         "urlEndpoints": [
           "index.html",
@@ -130,19 +128,18 @@ for(i=23 ; i>3 ; i--) {
         "id": i,
         "name": "test lander " + i,
         "user": "trevor@buildcave.com",
-        "deployed": true,
-        "deploying": false,
+        "deployed_status": "deployed",
         "lastUpdated": "3/"+i+"/15",
         "deployedLocations": 
           [{
-            "domain": "hardbodiesandboners.org" + i,
             "id": 1,
-            "name": "target camp"
+            "domain": "hardbodiesandboners.org",
+            "deploy_status": "deployed"
           }, 
           {
-            "domain": "weightlosskey.com" + i,
             "id": 2,
-            "name": "RON Camp Test"
+            "domain": "weightlosskey.com",
+            "deploy_status": "deployed"
           }],
         "urlEndpoints": [
           "index.html" + i,

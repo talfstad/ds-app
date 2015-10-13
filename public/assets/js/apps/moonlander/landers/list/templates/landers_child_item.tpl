@@ -13,14 +13,14 @@
         </div>
          </a>
         <ul class="nav panel-tabs">
-        <% if(!deploying && deployed) { %>
+        <% if(deployed_status === "deployed") { %>
           <li>
             <a href="#domains-tab-id<%= id %>" data-toggle="tab">
               <span class="open_sidemenu_r label bg-success">
                 Deployed
               </span></a>
           </li>
-        <% } else if(deploying){ %>
+        <% } else if(deployed_status === "deploying"){ %>
           <li>
             <a href="#domains-tab-id<%= id %>" data-toggle="tab">
               <span class="open_sidemenu_r label bg-warning">

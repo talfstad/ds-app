@@ -1,15 +1,19 @@
-module.exports = function(app, db, route53, credentials, checkAuth){
+module.exports = function(app, db, passport) {
     var module = {};
 
-    app.post('/api/domain/create', checkAuth, function(req, res) {
+    app.post('/api/domains', function(req, res) {
      
     });
 
-    app.put('/api/domain', checkAuth, function(req, res) {
-     
+    app.put('/api/domains/:domain_id', function(req, res) {
+      res.json({
+      	id: req.params.domain_id,
+      	processing: true //set after worker has been started
+      });
+
     });
 
-    app.delete('/api/domain', checkAuth, function(req, res) {
+    app.delete('/api/domains', function(req, res) {
      
     });
 

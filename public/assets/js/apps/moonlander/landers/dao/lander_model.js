@@ -1,13 +1,13 @@
 define(["app",
-        "/assets/js/apps/moonlander/landers/dao/deployed_locations_collection.js"], 
-function(Moonlander, DeployedLocationsCollection){
+        "/assets/js/apps/moonlander/domains/dao/domain_collection.js"], 
+function(Moonlander, DomainCollection){
 var LanderModel = Backbone.Model.extend({
-  urlRoot: "/api/lander",
+  urlRoot: "/api/landers",
 
   //initialize the collection for deployed locations
   initialize: function(){
     var deployedLocations = this.get("deployedLocations");
-    this.deployedLocations = new DeployedLocationsCollection(deployedLocations);
+    this.deployedLocations = new DomainCollection(deployedLocations);
   },
 
   defaults: {
