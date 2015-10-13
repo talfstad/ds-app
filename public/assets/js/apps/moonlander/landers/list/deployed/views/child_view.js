@@ -8,7 +8,22 @@ define(["app",
   Moonlander.module("LandersApp.Landers.List.Deployed", function(List, Moonlander, Backbone, Marionette, $, _) {
     List.ChildView = Marionette.ItemView.extend({
       template: ChildTpl,
-      tagName: "tr"
+      tagName: "tr",
+      className: "success",
+
+      events: {
+        "click .undeploy": "showUndeployLander"
+      },
+
+      showUndeployLander: function(e){
+        e.preventDefault();
+        e.stopPropagation();
+
+        Moonlander.trigger("landers:showUndeploy", this.model);
+      },
+
+
+
     });
   });
   return Moonlander.LandersApp.Landers.List.Deployed.ChildView;

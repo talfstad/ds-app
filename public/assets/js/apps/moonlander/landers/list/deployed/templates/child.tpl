@@ -1,9 +1,14 @@
-<td style="width: 20px">asdf</td>
+<td style="width: 20px"><%= viewIndex %></td>
 <td>
-  <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme">df/</a> 
+  <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme"><%= domain %>/</a> 
 
       <select class="domain-endpoint-select form-control">
-        <option>asdf</option>
+        
+        <% _.each(urlEndpoints, function(endpoint) { %>
+        
+        <option> <%= endpoint %></option>
+
+        <% }); %>
       
       </select>
       <div style="float: right; margin-right: 10px">

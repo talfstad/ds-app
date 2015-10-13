@@ -129,4 +129,3 @@
     	</div> 
     </div> 
 </div>
-<div id="edit-modal-region"></div>

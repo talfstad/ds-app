@@ -33,7 +33,8 @@ function(Marionette, LoginModel){
   Moonlander.on("start", function(){
     
     require(["/assets/js/apps/user/user_app.js", 
-             "/assets/js/apps/moonlander/entry_point/entry_app.js"], 
+             "/assets/js/apps/moonlander/entry_point/entry_app.js",
+             "/assets/js/live_updater/updater.js"], 
     function () {
       if(Backbone.history){
         if(history.pushState) {
@@ -57,6 +58,11 @@ function(Marionette, LoginModel){
             return jqXHR.setRequestHeader('X-CSRF-Token', token);
           }
         });
+      
+
+        //START LIVE UPDATER
+        Moonlander.updater.initialize();
+
       }
     });
   });

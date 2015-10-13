@@ -24,7 +24,7 @@
           <li>
             <a href="#domains-tab-id<%= id %>" data-toggle="tab">
               <span class="open_sidemenu_r label bg-warning">
-                 <span style="margin-left: 5px; font-size: 12px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Deploying
+                 <span style="margin-right: 5px; font-size: 12px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Deploying
               </span>
             </a>
           </li>
@@ -71,7 +71,7 @@
         <div class="panel-body">
           <div class="tab-content">
             <div style="padding-bottom: 15px" id="domains-tab-id<%= id %>" class="tab-pane active">
-              <table class="deployed-domains-region"></table>
+              <table class="table deployed-domains-region"></table>
             </div>
           </div>
         </div>

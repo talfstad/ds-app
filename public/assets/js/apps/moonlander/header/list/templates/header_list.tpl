@@ -32,7 +32,7 @@
     <a href="#" class="dropdown-toggle fw600" data-toggle="dropdown">
     	<i class="glyphicon glyphicon-user"></i>
       <span class="hidden-xs pl5"> <%= username %> </span>
-      <span class="caret caret-tp hidden-xs"></span>
+      <span class="caret hidden-xs"></span>
     </a>
     <ul class="dropdown-menu list-group dropdown-persist w250" role="menu">
       

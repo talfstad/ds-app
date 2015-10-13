@@ -17,26 +17,15 @@ define(["app",
 
       initialize: function() {
         //set collection to subset of parent collection (from collectionview)
-        this.collection = this.model.deployedLocations
+        this.collection = this.model.deployedLocations;
+        this.urlEndpoints = this.model.get("urlEndpoints");
       },
 
-      events: {
-        "click .undeploy": "showUndeployLander"
-      },
-
-      showUndeployLander: function(e){
-        e.preventDefault();
-        e.stopPropagation();
-
-        //get domain id to undeploy from, send that + model TODO
-        var domainId = $(e.currentTarget).attr("data-domainId");
-        var domainName = $(e.currentTarget).attr("data-domainName");
-        var undeployInfo = {
-          domainId: domainId,
-          domainName: domainName
-        };
-        this.model.set("undeployInfo", undeployInfo);
-        Moonlander.trigger("landers:showUndeploy", this.model);
+      //pass the deployed list its rendered index for # column
+      childViewOptions: function(model) {
+        model.set('viewIndex', parseInt(this.collection.indexOf(model))+1);
+        model.set('urlEndpoints', this.urlEndpoints);
+        model.set('landerName', this.model.get("name")); //give child access to lander name
       },
 
       onRender: function(){
@@ -100,30 +89,6 @@ define(["app",
         $(".collapse").collapse({
           toggle: false
         });
-
-        $("#tree" + this.model.get("id")).fancytree({
-          click: function(event, data) {
-            var tree = $("#tree" + me.model.get("id")).fancytree("getActiveNode");
-            // A node is about to be selected: prevent this, for folder-nodes:
-            if (data.node.isFolder()) {
-              return false;
-            }
-          },
-          renderNode: function(event, data) {
-            // Optionally tweak data.node.span
-            var node = data.node;
-            var $span = $(node.span);
-
-            if ($span.hasClass("fancytree-domain")) {
-              $span.find("> span.fancytree-icon").html('<img style="width: 20px;" src="/assets/img/logos/domains_icon_purple.png"/>');
-            } else {
-              $span.find("> span.fancytree-icon").html('<i style="font-size: 18px !important" class="fa fa-crosshairs text-system fs12 pr5"></i>');
-            }
-
-          }
-        });
-
-
       }
 
     });
