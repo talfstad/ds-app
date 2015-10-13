@@ -3,6 +3,15 @@ module.exports = function(db) {
     var utils = require('../utils/utils.js')();
 
     return {
+
+        saveDomain: function(model, successCallback) {
+            //1. save the domain model TODO
+
+            //2. call callback
+            successCallback();
+
+        },
+
         add: function(domain, nameservers, user, callback) {
             db.query("CALL insert_domain(?, ?, ?);", [domain, nameservers, user], function(err, docs) {
                 if (err) {

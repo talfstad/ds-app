@@ -1,4 +1,10 @@
 module.exports = {
+
+  /*
+  id is super important and must be unique to the server!
+  */
+  id: 1,
+
   port: 3000,
   dbConnectionInfo: {
     host : '52.88.173.62',

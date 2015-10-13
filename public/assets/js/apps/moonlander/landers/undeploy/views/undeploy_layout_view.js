@@ -31,28 +31,21 @@ define(["app",
           var me = this;          
 
           var successfullyStartedUndeploy = function(model, message, other) {
-            me.model.set("deploy_status", "undeploying");
+            me.model.set(model.attributes); //sets deployed_status, procesing
             Moonlander.updater.add(me.model);
           };
           
+          //on load for each model that has live_update enabled: 
+          //should be done in the models class on init
+          //1. check if model has processing=true
+          //2. if processing add it to the live_updater
+          //3. render as normal
           
-          //.  make an actual domain model which has a rootUrl that will call out with id to update domain --DONE
-          //0. adds action 'undeploy' so server knows what to do on domain model --DONE
-          //1. puts to server, server checks if there is an action
-          //2. if action server sends request out to start action
-          //3. worker updates processing = true and responds success
-          //4. sends response setting processing = true for client (worker guarantees it)
-
-          //5. set the domain model deploy_status to undeploying, triggers render on childview (maybe no render here) --DONE
-          //6. childview template sets the table classes depending on deploy_status --DONE
           //7. listen to childview from collectionview itemview
           //8. collectionview itemview updates the collectionview model deploy_status, causes render (renders childviews too)
           //9. on render it doesnt collapse the view, only collapses on first render (todo)
 
-          //10. add modal model to live update collection for updates
-          //11. worker updates domain processessing=false, and deploy_status=undeployed when done
-          //12. live update gets that processing is false
-
+        
           this.model.set("action", "undeploy");
           this.model.save({}, {
             success: successfullyStartedUndeploy

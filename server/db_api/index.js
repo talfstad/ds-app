@@ -8,3 +8,4 @@ db.connect();
 
 exports.users = require('./users')(db);
 exports.landers = require('./landers')(db);
+exports.domains = require('./domains')(db);

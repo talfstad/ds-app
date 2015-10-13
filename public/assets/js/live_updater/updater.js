@@ -12,8 +12,9 @@ define(["app"], function(Moonlander){
         model: Backbone.Model.extend({})
       });
 
+      //collection wrapper to save collection at once
       var UpdateCollectionBulkSaveModelWrapper = Backbone.Model.extend({
-        urlRoot: '/api/updater',  //url to put to
+        urlRoot: '/api/updater',
         toJSON: function(){
           return me.updateCollection.toJSON();
         }
@@ -25,15 +26,21 @@ define(["app"], function(Moonlander){
 
       //callbacks
       var onSaveSuccess = function(model, modelData, other) {
-        $.each(modelData, function(idx, model){
-          //anything in the collection should have processing = true unless done
-          if(!model.processing){
+        $.each(modelData, function(idx, modelAttributes){
+          //anything in the collection should have processing = true or error
+          if(modelAttributes.processing === 'error'){
+            
+            //TODO growl a message that the user needs to do XYZ
+            var errorMsg = modelAttributes.errorMsg;
+
+
+          }
+          else if(!modelAttributes.processing){
             //done, update original model
-            var actualModel = me.updateCollection.get(model.id);
-            actualModel.set(model); //this should trigger render
+            var actualModel = me.updateCollection.get(modelAttributes.id);
+            actualModel.set(modelAttributes); //this should trigger render
             me.updateCollection.remove(actualModel);
           }
-          
         });
       };
       
@@ -49,6 +56,15 @@ define(["app"], function(Moonlander){
         }
       }, intervalLength);
 
+    },
+
+    //checks if model needs to be added to the updateCollection
+    //this is called by models on their initialization and is meant
+    //to determine whether or not a model needs updating
+    register: function(model) {
+      if(model.get("processing")) {
+        Moonlander.updater.add(model);
+      }
     },
 
     //adds a model to the updater
