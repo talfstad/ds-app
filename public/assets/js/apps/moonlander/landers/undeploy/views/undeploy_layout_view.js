@@ -28,29 +28,7 @@ define(["app",
         },
 
         confirmedToUndeploy: function() {
-          var me = this;          
-
-          var successfullyStartedUndeploy = function(model, message, other) {
-            me.model.set(model.attributes); //sets deployed_status, procesing
-            Moonlander.updater.add(me.model);
-          };
-          
-          //on load for each model that has live_update enabled: 
-          //should be done in the models class on init
-          //1. check if model has processing=true
-          //2. if processing add it to the live_updater
-          //3. render as normal
-          
-          //7. listen to childview from collectionview itemview
-          //8. collectionview itemview updates the collectionview model deploy_status, causes render (renders childviews too)
-          //9. on render it doesnt collapse the view, only collapses on first render (todo)
-
-        
-          this.model.set("action", "undeploy");
-          this.model.save({}, {
-            success: successfullyStartedUndeploy
-          });
-          
+          this.trigger("undeployLanderFromDomain");      
         },
 
         onRender: function() {

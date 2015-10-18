@@ -26,20 +26,12 @@ define(["app"], function(Moonlander){
 
       //callbacks
       var onSaveSuccess = function(model, modelData, other) {
+        // use activeJobs array to see if its done processing
         $.each(modelData, function(idx, modelAttributes){
-          //anything in the collection should have processing = true or error
-          if(modelAttributes.processing === 'error'){
-            
-            //TODO growl a message that the user needs to do XYZ
-            var errorMsg = modelAttributes.errorMsg;
-
-
-          }
-          else if(!modelAttributes.processing){
+          if(!modelAttributes.processing){
             //done, update original model
             var actualModel = me.updateCollection.get(modelAttributes.id);
-            actualModel.set(modelAttributes); //this should trigger render
-            me.updateCollection.remove(actualModel);
+            actualModel.set(modelAttributes); //this should trigger model to call correct state update
           }
         });
       };
@@ -55,7 +47,6 @@ define(["app"], function(Moonlander){
           });
         }
       }, intervalLength);
-
     },
 
     //checks if model needs to be added to the updateCollection
@@ -70,6 +61,10 @@ define(["app"], function(Moonlander){
     //adds a model to the updater
     add: function(model) {
       this.updateCollection.add(model);
+    },
+
+    remove: function(model){
+      this.updateCollection.remove(model);
     }
   };
 

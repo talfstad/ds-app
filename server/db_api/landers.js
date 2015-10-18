@@ -66,7 +66,8 @@ module.exports = function(db) {
           "optimizeCss": true,
           "optimizeImg": true
         },
-        "activeJsSnippets": []
+        "activeJsSnippets": [],
+        "activeJobs": []
       },
       {
         "id": 2,

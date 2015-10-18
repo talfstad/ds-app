@@ -34,7 +34,8 @@ function(Marionette, LoginModel){
     
     require(["/assets/js/apps/user/user_app.js", 
              "/assets/js/apps/moonlander/entry_point/entry_app.js",
-             "/assets/js/live_updater/updater.js"], 
+             "/assets/js/live_updater/updater.js",
+             "/assets/js/apps/jobs/jobs_app.js"], 
     function () {
       if(Backbone.history){
         if(history.pushState) {

@@ -13,6 +13,20 @@ function(Moonlander, UndeployLayoutView){
         undeployLanderLayout.render();
        
         Moonlander.rootRegion.currentView.modalRegion.show(undeployLanderLayout);
+
+
+        undeployLanderLayout.on("undeployLanderFromDomain", function(){
+
+          var jobAttributes = {
+            action: "undeployLanderFromDomain",
+            lander_id: this.model.get("lander_id"),
+            domain_id: this.model.get("id"),
+          }
+
+          Moonlander.trigger("job:start", this.model, jobAttributes);    
+
+        });
+        
       }
 
     }

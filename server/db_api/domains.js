@@ -1,50 +1,19 @@
 module.exports = function(db) {
 
-    var utils = require('../utils/utils.js')();
+  return {
 
-    return {
-
-        saveDomain: function(model, successCallback) {
-            //1. save the domain model TODO
-
-            //2. call callback
-            successCallback();
-
-        },
-
-        add: function(domain, nameservers, user, callback) {
-            db.query("CALL insert_domain(?, ?, ?);", [domain, nameservers, user], function(err, docs) {
-                if (err) {
-                    console.log(err);
-                    callback("Error adding lander.");
-                } else {
-                    callback();
-                }
-            });
-        },
-
-        delete: function(id, user, callback) {
-            db.query("CALL delete_domain(?, ?);", [id, user], function(err, docs) {
-                if (err) {
-                    console.log(err);
-                    callback("Error deleting lander with id: " + id);
-                } else {
-                    callback();
-                }
-            });
-        },
-
-        edit: function(id, name, nameservers, user, callback) {
-            db.query("CALL update_domain(?, ?, ?, ?);", [id, domain, nameservers, user], function(err, docs) {
-                if (err) {
-                    console.log(err);
-                    callback("Error updating lander with id: " + id);
-                } else {
-                    callback();
-                }
-            });
-        }
+    saveDomain: function(user, model, successCallback, errorCallback) {
+      //update model stuff into domains where id= model.id
+      db.query("UPDATE domains SET domain = ?, nameservers = ? WHERE user_id = ? AND id = ?", [model.domain, model.nameservers, user.id, model.id],
+        function(err, docs) {
+          if (err) {
+            console.log(err);
+            errorCallback("\nError saving domain.");
+          } else {
+            successCallback(docs);
+          }
+        });
 
     }
-
+  }
 };

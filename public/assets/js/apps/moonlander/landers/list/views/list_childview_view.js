@@ -26,6 +26,7 @@ define(["app",
         model.set('viewIndex', parseInt(this.collection.indexOf(model))+1);
         model.set('urlEndpoints', this.urlEndpoints);
         model.set('landerName', this.model.get("name")); //give child access to lander name
+        model.set('lander_id', this.model.get("id")); //give child access to lander id
       },
 
       onRender: function(){

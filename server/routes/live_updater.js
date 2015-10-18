@@ -6,35 +6,39 @@ module.exports = function(app, db, passport) {
   var utils = require('../utils/utils.js')();
   var db = require("../db_api");
 
-
-  //checks the status of all models sent to it and updates them
   app.post('/api/updater', function(req, res) {
+    var user = req.user;
+
     var modelsAttributes = req.body;
 
-    //. loop through all models
+    var gotActiveJobsCallback = function(activeJobs) {
+      var finishedJobs = [];
 
-    //check db for procesing value
-    //if true do nothing and return
-    //if processing=false we're done! set model to the new model and return
-
-    //. next
-
-    for(var i=0 ; i<modelsAttributes.length ; i++){
-      var modelAtributes = modelsAttributes[i];
-      
-      if(modelAtributes.action) {
-
+      for (var i = 0; i < modelsAttributes.length; i++) {
+        for (var j = 0; j < activeJobs.length; j++) {
+          if (activeJobs[j].done || activeJobs[j].error) {
+            //add to finished, remove from active
+            modelsAttributes[i].error = activeJobs[j].error;
+            modelsAttributes[i].done = activeJobs[j].done;
+            finishedJobs.push(modelsAttributes[i]);
+          }
+        }
+        if (activeJobs.length <= 0) {
+          modelsAttributes[i].error = activeJobs[j].error;
+          modelsAttributes[i].done = activeJobs[j].done;
+          finishedJobs.push(modelsAttributes[i]);
+        }
       }
-    }
 
-    res.json([
-      {
-        id: 1,
-        deploy_status: "deployed",
-        processing: false
-      }
-      ]);
+      db.jobs.finishedProcessing(user, finishedJobs, function() {
+        //join finished with active jobs to create a complete response
+        res.json(modelsAttributes);
+      });
 
+    };
+
+    //active jobs have processing=true
+    db.updater.getActiveJobs(user, gotActiveJobsCallback);
   });
 
   return module;

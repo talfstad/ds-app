@@ -1,10 +1,15 @@
-define(["app"], 
-function(Moonlander){
-  var DomainModel = Backbone.Model.extend({
+define(["app",
+        "/assets/js/apps/jobs/jobs_gui_base_model.js"], 
+function(Moonlander, JobsGuiBaseModel){
+  var DomainModel = JobsGuiBaseModel.extend({
   	urlRoot: '/api/domains',
     defaults: {
       domain: "",
-      urlEndpoints: []
+      nameservers: ""
+    },
+
+    initialize: function() {
+      this.startActiveJobs();
     }
     
   });
