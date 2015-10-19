@@ -1,5 +1,5 @@
 define(["app",
-  "/assets/js/apps/jobs/jobs_controller.js",
+  "/assets/js/jobs/jobs_controller.js",
   "/assets/js/common/login/common_login.js"
   ], 
 function(Moonlander, JobsController, CommonLogin){

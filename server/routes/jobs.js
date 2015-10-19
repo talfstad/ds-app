@@ -13,7 +13,6 @@ module.exports = function(app, db, passport) {
       //TODO: validate job model is valid to begin
 
       var afterRegisterJob = function(registeredJobAttributes) {
-        console.log("TREVERER"+JSON.stringify(registeredJobAttributes));
         res.json(registeredJobAttributes);
         WorkerController.startJob(registeredJobAttributes.action);
       };

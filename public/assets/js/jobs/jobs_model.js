@@ -1,5 +1,5 @@
 define(["app",
-    "/assets/js/apps/jobs/jobs_base_model.js"
+    "/assets/js/jobs/jobs_base_model.js"
   ],
   function(Moonlander, JobsBaseModel) {
     Moonlander.module("JobsApp", function(JobsApp, Moonlander, Backbone, Marionette, $, _) {

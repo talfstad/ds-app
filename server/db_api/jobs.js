@@ -19,8 +19,6 @@ module.exports = function(db) {
             errorCallback("Error registering new job in DB call");
           } else {
               modelAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
-
-              console.log("SHOULD BE HERE: " + docs[0][0]["LAST_INSERT_ID()"]);
               successCallback(modelAttributes);
           }
         });
