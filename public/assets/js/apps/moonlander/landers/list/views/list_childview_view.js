@@ -18,15 +18,14 @@ define(["app",
       initialize: function() {
         //set collection to subset of parent collection (from collectionview)
         this.collection = this.model.deployedLocations;
-        this.urlEndpoints = this.model.get("urlEndpoints");
       },
 
       //pass the deployed list its rendered index for # column
       childViewOptions: function(model) {
         model.set('viewIndex', parseInt(this.collection.indexOf(model))+1);
-        model.set('urlEndpoints', this.urlEndpoints);
+        model.set('urlEndpoints', this.model.get("urlEndpoints"));
         model.set('landerName', this.model.get("name")); //give child access to lander name
-        model.set('lander_id', this.model.get("id")); //give child access to lander id
+        // model.set('lander_id', this.model.get("id")); //give child access to lander id
       },
 
       onRender: function(){

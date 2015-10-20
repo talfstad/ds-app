@@ -8,7 +8,10 @@ define(["app",
       template: ChildTpl,
       tagName: "tr",
       className: "success",
+      initialize: function(){
 
+      },
+      
       modelEvents: {
         "change": "render"
       },

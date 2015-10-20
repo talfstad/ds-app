@@ -6,7 +6,7 @@
         
         <% _.each(urlEndpoints, function(endpoint) { %>
         
-        <option> <%= endpoint %></option>
+        <option> <%= endpoint.name %></option>
 
         <% }); %>
       

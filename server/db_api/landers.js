@@ -11,7 +11,6 @@ module.exports = function(db) {
 
 
       getActiveJobsForDeployedLocation = function(deployedLocation, callback) {
-        console.log("deployed vals: " + deployedLocation.lander_id + deployedLocation.id);
         db.query("SELECT id,action,processing,done,error FROM jobs WHERE (user_id = ? AND action = ? AND lander_id = ? AND processing = ?)", [user_id, "undeployLanderFromDomain", deployedLocation.lander_id, true],
           function(err, dbActiveJobs) {
             callback(dbActiveJobs);
@@ -57,7 +56,6 @@ module.exports = function(db) {
                 getActiveSnippetsForUrlEndpoint(dbUrlEndpoints[i], function(activeSnippets) {
                   var endpoint = dbUrlEndpoints[idx];
                   endpoint.activeSnippets = activeSnippets;
-                  // console.log("activeSnippets: " + JSON.stringify(activeSnippets));
                   if (++idx == dbUrlEndpoints.length) {
                     callback(dbUrlEndpoints);
                   }
@@ -81,8 +79,6 @@ module.exports = function(db) {
 
         });
       };
-
-
 
       var getAllLandersDb = function(gotLandersCallback) {
         db.query("SELECT id,name,optimize_css,optimize_js,optimize_images,optimize_gzip,last_updated FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
@@ -109,11 +105,9 @@ module.exports = function(db) {
       getAllLandersDb(function(landers) {
         return successCallback(landers);
       });
-    }
-  }
 
-};
 
+      
 ///////MOCK DATA FOR GET ALL LANDERS ////////////
 // [{
 //   "id": 1,
@@ -206,3 +200,8 @@ module.exports = function(db) {
 //   }],
 //   "deployedLocations": []
 // }]
+    }
+  }
+
+};
+

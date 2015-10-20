@@ -18,7 +18,14 @@ var LanderModel = Backbone.Model.extend({
 
   defaults: {
     name: "",
-    optimizations: {}
+    last_updated: "",
+    optimize_js: false,
+    optimize_css: false,
+    optimize_images: false,
+    optimize_gzip: false,
+
+    //gui update attributes
+    deployed_status: 'deployed'
   },
 
   validation: {

@@ -31,7 +31,7 @@
                   <td>Gzip Compression</td>
                   <td>
                     <label class="switch switch-success switch-round block mn">
-                       <% if(optimizations.gzip) { %> 
+                       <% if(optimize_gzip) { %> 
                       
                         <input type="checkbox" checked name="gzip" id="optimization-gzip" value="angular">
                       
@@ -50,7 +50,7 @@
                   <td>Optimize JS</td>
                   <td>
                     <label class="switch switch-success switch-round block mn">
-                      <% if(optimizations.optimizeJs) { %> 
+                      <% if(optimize_js) { %> 
                       
                         <input type="checkbox" checked name="optimize-js" id="optimization-js" value="angular">
                       
@@ -69,7 +69,7 @@
                   <td>Optimize CSS</td>
                   <td>
                     <label class="switch switch-success switch-round block mn">
-                      <% if(optimizations.optimizeImg) { %> 
+                      <% if(optimize_css) { %> 
                       
                       <input type="checkbox" checked name="optimize-css" id="optimization-css" value="angular">
                       
@@ -88,7 +88,7 @@
                   <td>Optimize Images</td>
                   <td>
                     <label class="switch switch-success switch-round block mn">
-                      <% if(optimizations.optimizeImg) { %> 
+                      <% if(optimize_images) { %> 
                       
                         <input type="checkbox" checked name="optimize-images" id="optimization-images" value="angular">
                       
