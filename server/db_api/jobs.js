@@ -47,8 +47,6 @@ module.exports = function(db) {
           finishedJobs[i].processing = false;
         }
 
-        console.log("finished QUERY: " + updateSql + JSON.stringify(finishedJobsValues));
-
         db.query(updateSql, finishedJobsValues, function(err, docs){
           if(err){
             console.log(err);

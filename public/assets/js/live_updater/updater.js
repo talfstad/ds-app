@@ -25,7 +25,7 @@ define(["app"], function(Moonlander){
       var updateCollectionBulkSaveModelWrapper = new UpdateCollectionBulkSaveModelWrapper();
 
       //callbacks
-      var onSaveSuccess = function(model, modelData, other) {
+      var removeIfFinishedProcessing = function(model, modelData, other) {
         // use activeJobs array to see if its done processing
         $.each(modelData, function(idx, modelAttributes){
           if(!modelAttributes.processing){
@@ -35,18 +35,35 @@ define(["app"], function(Moonlander){
           }
         });
       };
-      
-      //init the interval
+
       var intervalLength = 3000;
-      var updateInterval = setInterval(function() {
-        //if nothing to update, dont call save on interval
-        if(me.updateCollection.length >= 1) {
-          //things to update
+
+
+      this.poll = function() {
+        setTimeout(function(){
+      
           updateCollectionBulkSaveModelWrapper.save({}, {
-            success: onSaveSuccess
-          });
-        }
-      }, intervalLength);
+            success: function(model, modelData, other) {
+              removeIfFinishedProcessing(model, modelData, other);
+              if(me.updateCollection.length >= 1) {
+                me.poll();
+              }
+            }
+          });        
+        }, intervalLength);
+      };
+
+      
+      // //init the interval
+      // var updateInterval = setInterval(function() {
+      //   //if nothing to update, dont call save on interval
+      //   if(me.updateCollection.length >= 1) {
+      //     //things to update
+      //     updateCollectionBulkSaveModelWrapper.save({}, {
+      //       success: onSaveSuccess
+      //     });
+      //   }
+      // }, intervalLength);
     },
 
     //checks if model needs to be added to the updateCollection
@@ -61,6 +78,12 @@ define(["app"], function(Moonlander){
     //adds a model to the updater
     add: function(model) {
       this.updateCollection.add(model);
+
+      //start polling if first one.
+      //function is self perpetuating so no need to call it for more than 1 model
+      if(this.updateCollection.length == 1) {
+        this.poll();
+      }
     },
 
     remove: function(model){

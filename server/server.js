@@ -40,6 +40,8 @@ app.use(express.static(__dirname + '/../public'));
 
 require("./routes")(app, login);
 
+http.globalAgent.maxSockets = 10
+
 //server
 http.createServer(app).listen(config.port, function() {
   console.log('Express server listening on port ' + config.port);

@@ -18,13 +18,21 @@ function(Moonlander, SidebarView, LanderModel, JsSnippetsListView, JsSnippetsCol
       openSidebar: function(model){
         Moonlander.landers.sidebarView.model.set(model.attributes);
 
+
+        //create active snippets array for lander
+        var endpointsWithActiveSnippets = [];
+        $.each(model.get("urlEndpoints"), function(idx, endpoint){
+          if(endpoint.activeSnippets.length > 0)
+            endpointsWithActiveSnippets.push(endpoint);
+        });
+
         //create the view here
-        var snippetsView = new JsSnippetsListView({
-          collection: new JsSnippetsCollection(model.get("activeJsSnippets"))
+        var activeSnippetsView = new JsSnippetsListView({
+          collection: new JsSnippetsCollection(endpointsWithActiveSnippets)
         });
 
         //show it
-        Moonlander.rootRegion.currentView.rightSidebarRegion.currentView.snippetsRegion.show(snippetsView)
+        Moonlander.rootRegion.currentView.rightSidebarRegion.currentView.snippetsRegion.show(activeSnippetsView)
         //open
         Moonlander.landers.sidebarView.openSidebar();
       },

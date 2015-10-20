@@ -16,16 +16,16 @@ module.exports = function(app, db, passport) {
 
       for (var i = 0; i < modelsAttributes.length; i++) {
         for (var j = 0; j < activeJobs.length; j++) {
-          if (activeJobs[j].done || activeJobs[j].error) {
-            //add to finished, remove from active
-            modelsAttributes[i].error = activeJobs[j].error;
-            modelsAttributes[i].done = activeJobs[j].done;
-            finishedJobs.push(modelsAttributes[i]);
+          if(modelsAttributes[i].id === activeJobs[j].id) {
+            if (activeJobs[j].done || activeJobs[j].error) {
+              //add to finished, remove from active
+              modelsAttributes[i].error = activeJobs[j].error;
+              modelsAttributes[i].done = activeJobs[j].done;
+              finishedJobs.push(modelsAttributes[i]);
+            }
           }
         }
         if (activeJobs.length <= 0) {
-          modelsAttributes[i].error = activeJobs[j].error;
-          modelsAttributes[i].done = activeJobs[j].done;
           finishedJobs.push(modelsAttributes[i]);
         }
       }

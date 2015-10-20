@@ -23,7 +23,7 @@ define(["app",
         onRender: function(){
 
           //only fancy tree if have children
-          if(this.children.length > 1) {
+          if(this.children.first().model.get("activeSnippets")) {
             this.$el.addClass("fancytree-radio ui-fancytree-source");
             
             this.$el.fancytree({

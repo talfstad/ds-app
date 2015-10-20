@@ -1,9 +1,9 @@
 
-  <%= page %>
+  <%= name %>
   
   <ul>
 
-    <% _.each(snippets, function(snippet) { %> 
+    <% _.each(activeSnippets, function(snippet) { %> 
   
     <li>
       <span>

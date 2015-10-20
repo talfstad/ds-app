@@ -7,7 +7,7 @@ var JobsGuiBaseModel = Backbone.Model.extend({
         var me = this;
         var activeJobs = this.get("activeJobs") || [];
         $.each(activeJobs, function(idx, jobAttributes){
-            Moonlander.trigger("jobs:start", me, jobAttributes);
+            Moonlander.trigger("job:start", me, jobAttributes);
         });
         if(activeJobs.length > 0) {
           this.processingState();
