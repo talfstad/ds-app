@@ -37,7 +37,8 @@ module.exports = function(app, db, passport) {
 
   app.get('/api/landers', function(req, res) {
     var user = req.user;
-    db.landers.getAll(user, function(error, rows) {
+    db.landers.getAll(user, function(rows) {
+      console.log("got here" + JSON.stringify(rows));
       res.json(rows);
     });
   });
