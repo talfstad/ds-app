@@ -1,7 +1,7 @@
 define(["app",
     "tpl!/assets/js/apps/moonlander/landers/list/templates/landers_child_item.tpl",
-    "/assets/js/apps/moonlander/landers/list/deployed/views/child_view.js",
-    "/assets/js/apps/moonlander/landers/list/deployed/views/empty_view.js",
+    "/assets/js/apps/moonlander/landers/list/deployed/views/deployed_domains_collection_view.js",
+    "/assets/js/apps/moonlander/landers/list/deployed/views/deployed_domains_empty_view.js",
     "bootstrap"
   ],
  function(Moonlander, LandersListItemTpl, DeployedListChildView, DeployedListEmptyView) {

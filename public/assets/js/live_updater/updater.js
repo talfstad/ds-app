@@ -26,13 +26,14 @@ define(["app"], function(Moonlander){
 
       //callbacks
       var removeIfFinishedProcessing = function(model, modelData, other) {
+        if(me.updateCollection.length <= 0) return;
         // use activeJobs array to see if its done processing
         $.each(modelData, function(idx, modelAttributes){
           if(!modelAttributes.processing){
             //done, update original model
-            var actualModel = me.updateCollection.get(modelAttributes.id);
-            actualModel.set(modelAttributes); //this should trigger model to call correct state update
-            actualModel.triggerFinishedState();
+            var actualJobModel = me.updateCollection.get(modelAttributes.id);
+            actualJobModel.set(modelAttributes); //this should trigger model to call correct state update
+            me.remove(actualJobModel);
           }
         });
       };

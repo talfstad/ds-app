@@ -6,7 +6,7 @@ define(["app",
     "/assets/js/apps/moonlander/landers/list/views/topbar_view.js",
     "/assets/js/apps/moonlander/landers/list/views/loading_view.js",
     "/assets/js/apps/moonlander/landers/list/views/deploy_status_view.js",
-    "/assets/js/apps/moonlander/landers/list/deployed/views/child_view.js",
+    "/assets/js/apps/moonlander/landers/list/deployed/views/deployed_domains_collection_view.js",
     "/assets/js/apps/moonlander/domains/dao/domain_collection.js",
     "/assets/js/apps/moonlander/landers/list/views/list_layout_view.js"
   ],
@@ -55,33 +55,26 @@ define(["app",
             landersListLayout.on("landers:filterList", function(filterVal) {
               filteredLanderCollection.filter(filterVal);
 
-
-
             });
 
             landersListLayout.on("landers:sort", function() {
               landersListView.trigger("landers:sort");
-
-              // update low and high
-
             });
 
             landersListLayout.on("landers:changepagesize", function(pageSize) {
               filteredLanderCollection.setPageSize(pageSize);
-
-              //update low and high
-
             });
 
             landersListLayout.landersCollectionRegion.show(landersListView);
-
-            
-
+          
             filteredLanderCollection.on("reset", function(collection){
               landersListView.children.each(function(view){
                 var deployStatusView = new DeployStatusView({model: view.model});
                 var deployedDomainsAttributes = view.model.get("deployedLocations");
-
+                
+                $.each(deployedDomainsAttributes, function(idx, location){
+                  location.landerName = view.model.get("name");
+                });
 
                 var deployedDomainsCollection = new DeployedDomainsCollection(deployedDomainsAttributes);
                 deployedDomainsCollection.urlEndpoints = view.model.get("urlEndpoints");
@@ -90,6 +83,10 @@ define(["app",
                 var deployedDomainsView = new DeployedDomainsView({collection: deployedDomainsCollection});
                 view.deploy_status_region.show(deployStatusView);
                 view.deployed_domains_region.show(deployedDomainsView);
+
+                deployedDomainsView.on("childview:updateParentLayout", function(childView){
+                  deployStatusView.model.set("deploy_status", childView.model.get("deploy_status"));
+                });
               });
             });
 

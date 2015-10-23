@@ -11,7 +11,6 @@
         </div>
          </a>
         <ul class="deploy-status-region nav panel-tabs">
-        
         </ul>
       </div>
       <div id="accord<%= id %>" class="panel-collapse collapse" style="height: auto;">

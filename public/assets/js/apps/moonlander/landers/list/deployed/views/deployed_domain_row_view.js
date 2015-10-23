@@ -10,9 +10,8 @@ define(["app",
         tagName: "tr",
         className: "success",
 
-        
         modelEvents: {
-          "change": "updateDeployStatus"
+          "change": "render"
         },
 
         events: {
@@ -24,6 +23,8 @@ define(["app",
         },
 
         onRender: function() {
+          this.trigger("updateParentLayout");
+
           var me = this;
           //add correct classname
           var deployStatus = this.model.get("deploy_status");

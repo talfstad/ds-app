@@ -6,7 +6,11 @@ define(["app",
   Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
     List.DeployStatus = Marionette.ItemView.extend({
       tagName: "li",
-      template: deployStatusTpl
+      template: deployStatusTpl,
+
+      modelEvents: {
+      	"change": "render"
+      }
     });
   });
   return Moonlander.LandersApp.Landers.List.DeployStatus;
