@@ -1,8 +1,8 @@
-<div class="bs-component">
-  <div class="panel-group accordion">
+
+  <div class="panel-group">
     <div class="panel">
       <div class="panel-heading">
-        <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#accordion" href="#accord<%= id %>">
+        <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#landers-collection" href="#accord<%= id %>">
           <%= name %>
        
         <div class="widget-menu domain-campaign-notification">
@@ -52,4 +52,3 @@
       </div>
     </div>
   </div>
-</div>

@@ -8,7 +8,7 @@ define(["app",
 
   Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
     List.childView = Marionette.LayoutView.extend({
-      className: "bs-component",
+      className: "bs-component accordion-group",
 
       template: LandersListItemTpl,
       childView: DeployedListChildView,
@@ -27,8 +27,6 @@ define(["app",
 
         
       },
-
-      
 
       onBeforeRender: function(){
         var me = this;
@@ -57,13 +55,16 @@ define(["app",
           }
 
           $(e.currentTarget).find("li.active").removeClass("active");
-          $(e.currentTarget).find(".accordion-toggle").removeClass('active')
+          $(e.currentTarget).find(".accordion-toggle").removeClass('active');
 
         });
 
         this.$el.on('show.bs.collapse', function(e) {
             //collapse ALL others so we get an accordian effect !IMPORTANT for design
-            $(".collapse").collapse('hide');
+            $("#landers-collection .collapse").collapse("hide");
+            
+            //disable the controls until shown (fixes multiple showing bug if clicked too fast)
+            $(".accordion-toggle").addClass("inactive-link");
 
             $(e.currentTarget).find("li:first").addClass("active");
             $(e.currentTarget).find(".accordion-toggle").addClass('active')
@@ -72,6 +73,12 @@ define(["app",
 
 
             Moonlander.trigger('landers:opensidebar', me.model);
+
+          });
+
+          this.$el.on('shown.bs.collapse', function(e) {
+            //enable the anchor tags
+            $(".accordion-toggle").removeClass("inactive-link");
 
           });
 
@@ -104,10 +111,6 @@ define(["app",
       onDomRefresh: function() {
         var me = this;
 
-        //needed to init correctly. avoids initial toggle on button click (expand/collapse all)
-        $(".collapse").collapse({
-          toggle: false
-        });
       }
 
     });

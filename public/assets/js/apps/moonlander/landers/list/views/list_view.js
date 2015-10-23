@@ -11,6 +11,7 @@ define(["app",
 
       List.View = Marionette.CollectionView.extend({
         id: "landers-collection",
+        className: "accordion",
         emptyView: landersEmptyView,
         childView: landersListItemView,
         
@@ -168,8 +169,11 @@ define(["app",
         },
 
         onDomRefresh: function() {
-          
 
+          $(".collapse").collapse({
+            toggle: false,
+            parent: "#landers-collection"
+          });
         }
       });
 
