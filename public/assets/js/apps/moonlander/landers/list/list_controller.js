@@ -50,8 +50,6 @@ define(["app",
               collection: filteredLanderCollection
             });
 
-
-
             landersListLayout.on("landers:filterList", function(filterVal) {
               filteredLanderCollection.filter(filterVal);
 
@@ -67,7 +65,14 @@ define(["app",
 
             landersListLayout.landersCollectionRegion.show(landersListView);
           
+
+            var topbarView = new TopbarView({
+              model: filteredLanderCollection.state.gui
+            });
+
+
             filteredLanderCollection.on("reset", function(collection){
+              var filteredCollection = this;
               landersListView.children.each(function(view){
                 var deployStatusView = new DeployStatusView({model: view.model});
                 var deployedDomainsAttributes = view.model.get("deployedLocations");
@@ -81,12 +86,33 @@ define(["app",
                 
 
                 var deployedDomainsView = new DeployedDomainsView({collection: deployedDomainsCollection});
+                //add events before show!
+                deployedDomainsView.on("updateParentLayout", function(deployStatus){
+                  deployStatusView.model.set("deploy_status", deployStatus);
+
+                });
+
+                //whenever the deployed status view is updated update deployed totals
+                //this should be rendered whenever there is a change to the landers deployed status
+                deployStatusView.on("render", function(){
+                  var notDeployedTotal = 0;
+                  var deployingTotal = 0;
+                  landersListView.children.each(function(lander){
+                    var deployStatus = lander.model.get("deploy_status");
+                    if(deployStatus === "not_deployed"){
+                      notDeployedTotal++;
+                    }
+                    else if(deployStatus === "deploying"){ 
+                      deployingTotal++;
+                    }
+                  });
+                  filteredCollection.state.gui.set("total_not_deployed", notDeployedTotal);
+                  filteredCollection.state.gui.set("total_deploying", deployingTotal);
+                });
+
                 view.deploy_status_region.show(deployStatusView);
                 view.deployed_domains_region.show(deployedDomainsView);
 
-                deployedDomainsView.on("childview:updateParentLayout", function(childView){
-                  deployStatusView.model.set("deploy_status", childView.model.get("deploy_status"));
-                });
               });
             });
 
@@ -118,10 +144,7 @@ define(["app",
             landersListLayout.footerRegion.show(paginatedButtonView);
 
 
-            var topbarView = new TopbarView({
-              model: filteredLanderCollection.state.gui
-            });
-
+            
            
             landersListLayout.topbarRegion.show(topbarView);
 

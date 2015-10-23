@@ -12,10 +12,6 @@ function(Moonlander, JobsGuiBaseModel){
       deploy_status: 'deployed'
     },
 
-    initialize: function() {
-      this.startActiveJobs();
-    },
-
     processingState: function() {
       this.set("deploy_status", "deploying");
     },

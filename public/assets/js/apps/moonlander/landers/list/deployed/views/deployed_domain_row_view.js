@@ -10,16 +10,16 @@ define(["app",
         tagName: "tr",
         className: "success",
 
+        initialize: function(){
+          this.model.startActiveJobs();
+        },
+
         modelEvents: {
           "change": "render"
         },
 
         events: {
           "click .undeploy": "showUndeployLander"
-        },
-
-        updateDeployStatus: function(){
-          this.trigger("updateDeployStatus");          
         },
 
         onRender: function() {
