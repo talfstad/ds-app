@@ -11,7 +11,7 @@ module.exports = function(db) {
 
 
       getActiveJobsForDeployedLocation = function(deployedLocation, callback) {
-        db.query("SELECT id,action,processing,done,error FROM jobs WHERE (user_id = ? AND action = ? AND lander_id = ? AND processing = ?)", [user_id, "undeployLanderFromDomain", deployedLocation.lander_id, true],
+        db.query("SELECT id,action,processing,done,error FROM jobs WHERE (user_id = ? AND action = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", [user_id, "undeployLanderFromDomain", deployedLocation.lander_id, deployedLocation.id, true],
           function(err, dbActiveJobs) {
             callback(dbActiveJobs);
           });

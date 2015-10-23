@@ -7,9 +7,9 @@
           </div>
           <div class="panel-menu">
             <div class="btn-group">
-              <button type="button" style="width: 80px" class="btn btn-default btn-gradient dark">Duplicate</button>
-              <button type="button" style="width: 60px" class="lander-edit btn btn-default btn-gradient dark">Edit</button>
-              <button type="button" style="width: 115px" class="save disabled btn btn-default btn-gradient dark">Save &amp; Deploy</button>
+              <button type="button" style="width: 100px" class="btn btn-default btn-gradient dark"><span class="fa fa-copy pr5"></span>Duplicate</button>
+              <button type="button" style="width: 77px" class="lander-edit btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Edit</button>
+              <button type="button" style="width: 78px" class="save disabled btn btn-default btn-gradient dark"><span class="fa fa-save pr5"></span>Save</button>
             </div>
           </div>
           
@@ -122,6 +122,6 @@
 
           </div>
           <div class="panel-footer">
-            <button type="button" class="delete-lander btn btn-danger btn-gradient dark">Delete Lander</button>
+            <button type="button" class="delete-lander btn btn-danger btn-gradient dark"><span class="fa fa-trash pr5"></span>Delete Lander</button>
           </div>
         </div>

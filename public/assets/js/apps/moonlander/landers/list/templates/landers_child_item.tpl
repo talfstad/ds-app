@@ -1,5 +1,3 @@
-<% if(true) { %>
-
 <div class="bs-component">
   <div class="panel-group accordion">
     <div class="panel">
@@ -12,31 +10,8 @@
          <!--  <span class="fs11 text-muted ml10" title="Currently in 2 campaigns"><i class="fa fa-circle text-system fs12 pr5"></i> 2 Campaigns</span> -->
         </div>
          </a>
-        <ul class="nav panel-tabs">
-        <% if(deployed_status === "deployed") { %>
-          <li>
-            <a href="#domains-tab-id<%= id %>" data-toggle="tab">
-              <span class="open_sidemenu_r label bg-success">
-                Deployed
-              </span></a>
-          </li>
-        <% } else if(deployed_status === "deploying"){ %>
-          <li>
-            <a href="#domains-tab-id<%= id %>" data-toggle="tab">
-              <span class="open_sidemenu_r label bg-warning">
-                 <span style="margin-right: 5px; font-size: 12px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Deploying
-              </span>
-            </a>
-          </li>
-        <% } else { %>
-          <li>
-            <a href="#domains-tab-id<%= id %>" data-toggle="tab">
-              <span class="open_sidemenu_r label bg-danger">
-                 Not Deployed
-              </span>
-            </a>
-          </li>
-        <% } %>
+        <ul class="deploy-status-region nav panel-tabs">
+        
         </ul>
       </div>
       <div id="accord<%= id %>" class="panel-collapse collapse" style="height: auto;">
@@ -58,8 +33,8 @@
                 <span class="fa fa-plus pr5"></span>Add to Campaign
               </button> -->
 
-              <button type="button" class="btn btn-default btn-gradient dark">Add to Campaign</button>
-              <button type="button" class="btn btn-default btn-gradient dark">Deploy to New Domain</button>
+              <!-- <button type="button" class="btn btn-default btn-gradient dark">Add to Campaign</button> -->
+              <button type="button" class="btn btn-default btn-gradient dark"><span class="fa fa-cloud-upload pr5"></span>Deploy to New Domain</button>
               </div>
             </div>
           </div>
@@ -79,57 +54,3 @@
     </div>
   </div>
 </div>
-
-
-<% } else { %>
-
-
-<div class="bs-component">
-  <div class="panel-group accordion">
-    <div class="panel">
-      <div class="panel-heading">
-        <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#accordion" href="#accord<%= id %>">
-          Weight Loss Lander version 1
-       
-        <div class="widget-menu domain-campaign-notification">
-          <span class="fs11 text-muted" title="Currently deployed on 0 domains">
-          Not Deployed</span>
-          <!-- <span class="fs11 text-muted ml10" title="Currently in 0 campaigns"><i class="fa fa-circle text-system fs12 pr5"></i> 0 Campaigns</span> -->
-        </div>
-         </a>
-        <ul class="nav panel-tabs">
-          <li>
-            <a href="#domains-tab-id<%= id %>" data-toggle="tab">
-              <span class="open_sidemenu_r label bg-warning">
-                                       <span style="margin-left: 5px; font-size: 12px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Deploying
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div id="accord<%= id %>" class="panel-collapse collapse" style="height: auto;">
-        <div class="panel-menu clearfix">
-          <div class="row">
-            <div class="col-md-8">
-              <div class="alert alert-micro alert-border-left alert-danger pastel alert-dismissable mn">
-                <i class="fa fa-danger pr10"></i> This lander does not currently belong to any domains or campaigns.
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="bs-component btn-group ml15">
-                <button type="button" class="btn btn-default btn-gradient dark">Add to Domain</button>
-                <button type="button" class="btn btn-default btn-gradient dark">Add to Campaign</button>
-              </div>
-            </div>
-          </div>
-          <!-- <button type="button" class="btn btn-default light mr10">
-              <span class="fa fa-car pr5"></span> Add to Domain</button>
-            <button type="button" class="btn btn-info mr10">
-              <span class="fa fa-home pr5"></span> Add to Campaign</button> -->
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<% } %>

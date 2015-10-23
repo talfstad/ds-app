@@ -6,7 +6,14 @@ define(["app",
   Moonlander.module("LandersApp.Landers.List.Deployed", function(List, Moonlander, Backbone, Marionette, $, _) {
     List.EmptyView = Marionette.ItemView.extend({
       template: EmptyTpl,
-      tagName: "tr"
+      tagName: "tr",
+      className: "warning",
+
+
+      onRender: function() {
+       
+      }
+
     });
   });
   return Moonlander.LandersApp.Landers.List.Deployed.EmptyView;

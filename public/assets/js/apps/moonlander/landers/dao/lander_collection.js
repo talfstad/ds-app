@@ -6,6 +6,7 @@ function(Moonlander, LanderModel) {
     model: LanderModel,
     comparator: 'name',
     collectionTotals: {}
+
   });
 
   var API = {
@@ -15,21 +16,13 @@ function(Moonlander, LanderModel) {
       var landersCollection = new LanderCollection();
       var defer = $.Deferred();
       landersCollection.fetch({
-        success: function(data) {
-          data.collectionTotals.totalNotDeployed = 0;
-          data.collectionTotals.totalDeploying = 0;
-          data.collectionTotals.totalLanders = 0;
+        success: function(landers) {
+
+          landers.collectionTotals.totalNotDeployed = 0;
+          landers.collectionTotals.totalDeploying = 0;
+          landers.collectionTotals.totalLanders = 0;
           
-          $.each(data.models, function(index, lander){
-            if(lander.get("deploying")){
-              data.collectionTotals.totalDeploying++;
-            } else if(!lander.get("deployed") && !lander.get("deploying")) {
-              data.collectionTotals.totalNotDeployed++;
-            }
-            data.collectionTotals.totalLanders++;
-          });
-          
-          defer.resolve(data);
+          defer.resolve(landers);
         }
       });
       var promise = defer.promise();

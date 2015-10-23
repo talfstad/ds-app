@@ -32,6 +32,7 @@ define(["app"], function(Moonlander){
             //done, update original model
             var actualModel = me.updateCollection.get(modelAttributes.id);
             actualModel.set(modelAttributes); //this should trigger model to call correct state update
+            actualModel.triggerFinishedState();
           }
         });
       };

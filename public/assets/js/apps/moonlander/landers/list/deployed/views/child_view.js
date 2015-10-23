@@ -1,45 +1,31 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/list/deployed/templates/child.tpl"
+    "/assets/js/apps/moonlander/landers/list/deployed/views/deployed_domain_row_view.js",
+    "/assets/js/apps/moonlander/landers/list/deployed/views/empty_view.js"
   ],
- function(Moonlander, ChildTpl, DomainModel) {
+  function(Moonlander, DeployedDomainRowView, EmptyView) {
 
-  Moonlander.module("LandersApp.Landers.List.Deployed", function(List, Moonlander, Backbone, Marionette, $, _) {
-    List.ChildView = Marionette.ItemView.extend({
-      template: ChildTpl,
-      tagName: "tr",
-      className: "success",
-      
-      modelEvents: {
-        "change": "render"
-      },
+    Moonlander.module("LandersApp.Landers.List.Deployed", function(Deployed, Moonlander, Backbone, Marionette, $, _) {
+      Deployed.ChildView = Marionette.CollectionView.extend({
+        tagName: "ul",
+        childView: DeployedDomainRowView,
+        emptyView: EmptyView,
 
-      events: {
-        "click .undeploy": "showUndeployLander"
-      },
+        //pass the deployed list its rendered index for # column
+        childViewOptions: function(model) {
+          model.set('viewIndex', parseInt(this.collection.indexOf(model))+1);
+          model.set('urlEndpoints', this.collection.urlEndpoints);
+        },
 
-      onRender: function() {
-        //add correct classname
-        var deployedStatus = this.model.get("deploy_status");
-        this.$el.removeClass("success warning");
-        if(deployedStatus === "deployed") {
-          this.$el.addClass("success");
-        } 
-        else if(deployedStatus === "deploying" ||
-                deployedStatus === "undeploying") {
-          this.$el.addClass("warning");
+        initialize: function(){
+
+        },
+        
+        onRender: function() {
+        
         }
-      },
 
-      showUndeployLander: function(e){
-        e.preventDefault();
-        e.stopPropagation();
-
-        Moonlander.trigger("landers:showUndeploy", this.model);
-      },
-
-
-
+      
+      });
     });
+    return Moonlander.LandersApp.Landers.List.Deployed.ChildView;
   });
-  return Moonlander.LandersApp.Landers.List.Deployed.ChildView;
-});

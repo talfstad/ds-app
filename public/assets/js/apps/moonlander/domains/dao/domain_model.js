@@ -14,7 +14,20 @@ function(Moonlander, JobsGuiBaseModel){
 
     initialize: function() {
       this.startActiveJobs();
-    }
+    },
+
+    processingState: function() {
+      this.set("deploy_status", "deploying");
+    },
+
+    finishedState: function() {
+      this.set("deploy_status", "deployed");
+
+    },
+
+    errorState: function() {
+      this.set("deploy_status", "error");
+    }  
     
   });
 

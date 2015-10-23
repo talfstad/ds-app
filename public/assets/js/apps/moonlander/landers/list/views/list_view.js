@@ -11,15 +11,9 @@ define(["app",
 
       List.View = Marionette.CollectionView.extend({
         id: "landers-collection",
-        // template: landersListContainerTemplate,
         emptyView: landersEmptyView,
         childView: landersListItemView,
-        // childViewContainer: "div#landers-collection-items",
-
-        // collectionEvents: {
-        //   'change': 'render'
-        // },
-
+        
         initialize: function() {
           this.listenTo(this, "landers:sort", this.triggerSort);
         },
@@ -174,7 +168,7 @@ define(["app",
         },
 
         onDomRefresh: function() {
-
+          
 
         }
       });

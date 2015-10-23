@@ -9,23 +9,20 @@ var JobsGuiBaseModel = Backbone.Model.extend({
         $.each(activeJobs, function(idx, jobAttributes){
             Moonlander.trigger("job:start", me, jobAttributes);
         });
-        if(activeJobs.length > 0) {
-          this.processingState();
-        }
     },
 
     //YOU SHOULD OVERRIDE THESE IN CHILD CLASSES!
     processingState: function() {
-      this.set("deployed_status", "deploying");
+      this.set("deploy_status", "deploying");
     },
 
     finishedState: function() {
-      this.set("deployed_status", "deployed");
+      this.set("deploy_status", "deployed");
 
     },
 
     errorState: function() {
-      this.set("deployed_status", "error");
+      this.set("deploy_status", "error");
     }  
 });
   return JobsGuiBaseModel;

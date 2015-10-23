@@ -7,7 +7,7 @@ define(["app",
  function(Moonlander, LandersListItemTpl, DeployedListChildView, DeployedListEmptyView) {
 
   Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
-    List.childView = Marionette.CompositeView.extend({
+    List.childView = Marionette.LayoutView.extend({
       className: "bs-component",
 
       template: LandersListItemTpl,
@@ -15,20 +15,39 @@ define(["app",
       emptyView: DeployedListEmptyView,
       childViewContainer: "table.deployed-domains-region",
 
-      initialize: function() {
-        //set collection to subset of parent collection (from collectionview)
-        this.collection = this.model.deployedLocations;
+      regions: {
+        'deploy_status_region':'.deploy-status-region',
+        'deployed_domains_region': '.deployed-domains-region'
       },
 
-      //pass the deployed list its rendered index for # column
-      childViewOptions: function(model) {
-        model.set('viewIndex', parseInt(this.collection.indexOf(model))+1);
-        model.set('urlEndpoints', this.model.get("urlEndpoints"));
-        model.set('landerName', this.model.get("name")); //give child access to lander name
-        // model.set('lander_id', this.model.get("id")); //give child access to lander id
+      initialize: function() {
+        var me = this;
+        //set collection to subset of parent collection (from collectionview)
+        this.collection = this.model.deployedLocations;
+
+        
+      },
+
+      
+
+      onBeforeRender: function(){
+        var me = this;
+        //figure out what the deploy_status should be here
+        var deployStatus = "deployed";
+        if(this.collection.length <= 0) {
+          deployStatus = "not_deployed";
+        }
+        $.each(this.collection.models, function(idx, model){
+          var modelDeployedStatus = model.get("deploy_status");
+          if(modelDeployedStatus === "deploying") {
+            deployStatus = "deploying";
+          }
+        });
+        this.model.set("deploy_status", deployStatus);
       },
 
       onRender: function(){
+        
         var me = this;
 
         this.$el.on('hide.bs.collapse', function(e) {

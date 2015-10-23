@@ -16,6 +16,7 @@ function(Moonlander, JobsModel){
         var addToUpdater = function(){
           //adds to updater
           Moonlander.updater.add(jobsModel);
+          jobsModel.triggerProcessingState();
         };
 
         if(!jobsModel.get("processing")) {

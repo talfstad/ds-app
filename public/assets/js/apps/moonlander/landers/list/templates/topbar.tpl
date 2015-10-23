@@ -15,12 +15,20 @@
 
     <% } else { %>
     
-    <div>
-      <span class="badge-danger badge"><%= total_not_deployed %></span> Not Deployed
-    </div>
-    <div>
-      <span class="badge-warning badge"><%= total_deploying %></span> Deploying
-    </div>
+      <% if(total_not_deployed > 0) { %>
+      
+      <div>
+        <span class="badge-warning badge"><%= total_not_deployed %></span> Not Deployed
+      </div>
+      
+      <% } %>
+      
+      <% if(total_deploying > 0) { %>
+
+      <div>
+        <span class="badge-warning badge"><%= total_deploying %></span> Deploying
+      </div>
+       <% } %>
     
     <% } %>
 
