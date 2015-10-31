@@ -10,22 +10,22 @@ define(["app",
     Moonlander.module("LandersApp.RightSidebar.JsSnippets.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
       List.View = Marionette.CollectionView.extend({
-        id: "jssnippets-tree",
+        
         emptyView: emptyView,
         childView: listItemView,
-
+        tagName: "ul",
+        
         collectionEvents: {
           'change': 'render'
         },
-
-        onRender: function(){
-
+        
+        onDomRefresh: function(e) {
           //only fancy tree if have children
-          var activeSnippetLength = this.children.length;
-          if(activeSnippetLength > 0) {
-            this.$el.addClass("fancytree-radio ui-fancytree-source");
+          var activeSnippetLength = this.children.first().model.get("id");
+          if(activeSnippetLength) {
+            // this.$el.addClass("ui-fancytree-source ui-helper-hidden");
             
-            this.$el.fancytree({
+            $("#jssnippets-tree").fancytree({
               click: function(event, data) {
                 var tree = $("#jssnippets-tree").fancytree("getActiveNode");
                 // A node is about to be selected: prevent this, for folder-nodes:
@@ -48,10 +48,6 @@ define(["app",
               }
             });
           }
-
-        },
-        
-        onDomRefresh: function(e) {
 
         }
       });

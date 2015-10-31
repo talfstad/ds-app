@@ -28,9 +28,9 @@ function(Moonlander, PaginatedModel){
 
       }
 
-      filtered.state.gui.set('total_not_deployed', original.collectionTotals.totalNotDeployed);
-      filtered.state.gui.set('total_deploying', original.collectionTotals.totalDeploying);
-      filtered.state.gui.set('total_landers', original.collectionTotals.totalLanders);
+      filtered.state.gui.set('total_not_deployed', 0);
+      filtered.state.gui.set('total_deploying', 0);
+      filtered.state.gui.set('total_landers', 0);
      
       filtered.currentFilteredCollection = [];
 

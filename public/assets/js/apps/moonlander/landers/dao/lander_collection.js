@@ -6,39 +6,51 @@ function(Moonlander, LanderModel, DeployedLocationsCollection, UrlEndpointCollec
   var LanderCollection = Backbone.Collection.extend({
     url: '/api/landers',
     model: LanderModel,
-    comparator: 'name',
-    collectionTotals: {
-      totalNotDeployed: 0,
-      totalDeploying: 0,
-      totalLanders: 0
-    }
-
+    comparator: 'name'
   });
+
+  var landerCollectionInstance = null;
 
   var API = {
     getLandersCollection: function() {
       var me = this;
-
-      var landersCollection = new LanderCollection();
       var defer = $.Deferred();
-      landersCollection.fetch({
-        success: function(landers) {
 
-          landersCollection.each(function(landerModel){
-            //1. build deployedLocations collection
-            var deployedLocationsAttributes = landerModel.get("deployedLocations");
-            var deployedLocationsCollection = new DeployedLocationsCollection(deployedLocationsAttributes);
-            landerModel.set("deployedLocations", deployedLocationsCollection);
+      if(!this.landerCollectionInstance){
 
-            //2. build urlendpoint collection
-            var urlEndpointAttributes = landerModel.get("urlEndpoints");
-            var urlEndpointCollection = new UrlEndpointCollection(urlEndpointAttributes);
-            landerModel.set("urlEndpoints", urlEndpointCollection);
-          });
-          
-          defer.resolve(landers);
-        }
-      });
+        this.landerCollectionInstance = new LanderCollection();
+
+        this.landerCollectionInstance.fetch({
+          success: function(landers) {
+
+            landers.each(function(landerModel){
+              //1. build deployedLocations collection
+              //2. build urlendpoint collection
+
+              var urlEndpointAttributes = landerModel.get("urlEndpoints");
+              var deployedLocationsAttributes = landerModel.get("deployedLocations");
+
+
+              var deployedLocationsCollection = new DeployedLocationsCollection(deployedLocationsAttributes);
+              deployedLocationsCollection.urlEndpoints = urlEndpointAttributes;
+              deployedLocationsCollection.landerName = landerModel.get("name");
+
+              landerModel.set("deployedLocations", deployedLocationsCollection);
+
+              var urlEndpointCollection = new UrlEndpointCollection(urlEndpointAttributes);
+              landerModel.set("urlEndpoints", urlEndpointCollection);
+            });
+            
+            defer.resolve(landers);
+          }
+        });
+      } else {
+        //async hack to still return defer
+        setTimeout(function(){
+          defer.resolve(me.landerCollectionInstance);
+        }, 100);
+      }
+
       var promise = defer.promise();
       return promise;
     }

@@ -115,7 +115,9 @@
             </h5>
         
             <div id="jssnippets-tree-container" class="snippets-container fancytree-radio">
+              <div id="jssnippets-tree" class="fancytree-radio ui-fancytree-source">
               
+              </div>
             </div>
 
             

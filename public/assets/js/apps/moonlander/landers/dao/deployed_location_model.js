@@ -1,5 +1,5 @@
 define(["app",
-        "/assets/js/jobs/jobs_gui_base_model.js"], 
+        "/assets/js/jobs/jobs_base_gui_model.js"], 
 function(Moonlander, JobsGuiBaseModel){
   var DeployedLocationModel = JobsGuiBaseModel.extend({
 

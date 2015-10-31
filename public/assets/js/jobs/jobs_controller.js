@@ -1,6 +1,5 @@
-define(["app",
-  "/assets/js/jobs/jobs_model.js"], 
-function(Moonlander, JobsModel){
+define(["app"], 
+function(Moonlander){
   Moonlander.module("JobsApp", function(JobsApp, Moonlander, Backbone, Marionette, $, _){
 
     JobsApp.Controller = {
@@ -12,8 +11,6 @@ function(Moonlander, JobsModel){
           var model = (jobModelWithId ? jobModelWithId : jobModel);
           
           Moonlander.updater.add(model);
-          
-          model.showProcessingState();
         };
 
         //there won't be an ID on a new job, and only should start it if

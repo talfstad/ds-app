@@ -6,13 +6,23 @@ define(["app",
     Moonlander.module("LandersApp.Landers.List.Deployed", function(Deployed, Moonlander, Backbone, Marionette, $, _) {
       Deployed.DeployedRowView = Marionette.ItemView.extend({
         
+        initialize: function(){
+          var me = this;
+
+          //listen for destroy/change events to active jobs
+          var activeJobsCollection = this.model.get("activeJobs");
+          this.listenTo(activeJobsCollection, "change", function(){
+            me.render();
+          });
+          this.listenTo(activeJobsCollection, "destroy", function(){
+            me.render();
+          });
+          
+        },
+
         template: DeployedDomainRowTpl,
         tagName: "tr",
         className: "success",
-
-        initialize: function(){
-          this.model.startActiveJobs();
-        },
 
         modelEvents: {
           "change": "render"
@@ -23,8 +33,6 @@ define(["app",
         },
 
         onBeforeRender: function(){
-          //set gui attributes based on model
-
           //if we have active jobs we are deploying
           if(this.model.get("activeJobs").length > 0 ) {
             this.model.set("deploy_status", "deploying");
@@ -53,10 +61,7 @@ define(["app",
           e.stopPropagation();
 
           Moonlander.trigger("landers:showUndeploy", this.model);
-        },
-
-
-
+        }
       });
     });
     return Moonlander.LandersApp.Landers.List.Deployed.DeployedRowView;

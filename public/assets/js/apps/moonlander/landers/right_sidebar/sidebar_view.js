@@ -10,7 +10,7 @@ define(["app",
       RightSidebar.View = Marionette.LayoutView.extend({
 
         regions: {
-          snippetsRegion: "#jssnippets-tree-container"
+          snippetsRegion: "#jssnippets-tree"
         },
 
         template: sidebarLanders,

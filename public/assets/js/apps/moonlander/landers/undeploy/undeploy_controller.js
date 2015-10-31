@@ -1,6 +1,7 @@
 define(["app",
-        "/assets/js/apps/moonlander/landers/undeploy/views/undeploy_layout_view.js"], 
-function(Moonlander, UndeployLayoutView){
+        "/assets/js/apps/moonlander/landers/undeploy/views/undeploy_layout_view.js",
+        "/assets/js/jobs/jobs_model.js"], 
+function(Moonlander, UndeployLayoutView, JobModel){
   Moonlander.module("LandersApp.Landers.Undeploy", function(Undeploy, Moonlander, Backbone, Marionette, $, _){
 
     Undeploy.Controller = {
@@ -23,7 +24,12 @@ function(Moonlander, UndeployLayoutView){
             domain_id: model.get("id"),
           }
 
-          Moonlander.trigger("job:start", model, jobAttributes);    
+          //create job and add to models activeJobs
+          var jobModel = new JobModel(jobAttributes);
+          var activeJobsCollection = this.model.get("activeJobs");
+          activeJobsCollection.add(jobModel);
+
+          Moonlander.trigger("job:start", jobModel);    
 
         });
         

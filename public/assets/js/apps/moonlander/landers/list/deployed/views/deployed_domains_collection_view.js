@@ -14,8 +14,10 @@ define(["app",
         childViewOptions: function(model) {
           model.set('viewIndex', parseInt(this.collection.indexOf(model))+1);
           model.set('urlEndpoints', this.collection.urlEndpoints);
+          model.set('landerName', this.collection.landerName);
         },
 
+       
         onRender: function(){
 
           this.$el.find(".domain-link").click(function(e) {

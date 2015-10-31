@@ -11,7 +11,7 @@ define(["app",
       initialize: function(){
         this.collection = this.model.get("activeSnippets");
       },
-
+      tagName: "li",
       template: UrlEndpointActiveSnippetListTpl,
       childView: ActiveSnippetView,
       childViewContainer: "ul",

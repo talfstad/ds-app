@@ -34,14 +34,15 @@ define(["app"], function(Moonlander){
           if(!modelAttributes.processing){
             //done, update original model
             var actualJobModel = me.updateCollection.get(modelAttributes.id);
-            actualJobModel.removeFinishedJobFromGuiModel();
-            // actualJobModel.set(modelAttributes); //this should trigger model to call correct state update
+            
+            //hack to get it to not send DELETE XHR
+            delete actualJobModel.attributes.id;
+            actualJobModel.destroy();
           }
         });
       };
 
       var intervalLength = 10000;
-
 
       this.poll = function() {
         setTimeout(function(){
@@ -58,53 +59,6 @@ define(["app"], function(Moonlander){
           });        
         }, intervalLength);
       };
-
-      
-      // //init the interval
-      // var updateInterval = setInterval(function() {
-      //   //if nothing to update, dont call save on interval
-      //   if(me.updateCollection.length >= 1) {
-      //     //things to update
-      //     updateCollectionBulkSaveModelWrapper.save({}, {
-      //       success: onSaveSuccess
-      //     });
-      //   }
-      // }, intervalLength);
-    },
-
-    //checks if model needs to be added to the updateCollection
-    //this is called by models on their initialization and is meant
-    //to determine whether or not a model needs updating
-    register: function(model) {
-      if(model.get("processing")) {
-        Moonlander.updater.add(model);
-      }
-    },
-
-    reset: function(){
-      this.updateCollection.reset();
-    },
-
-    removeJobsByIds: function(jobIdArray){
-      var me = this;
-      $.each(jobIdArray, function(idx, jobIdToRemove){
-        me.updateCollection.remove(jobIdToRemove);
-      });
-    },
-
-    isAlreadyUpdating: function(jobAttributes){
-      //if no id on job attributes then its brand new
-      var isAlreadyUpdating = false;
-      if(jobAttributes.id) {
-        //check if jobAttributes is in the updater
-        this.updateCollection.each(function(job){
-          if(jobAttributes.id === job.id){
-            isAlreadyUpdating = true;
-          }
-        });
-      }
-
-      return isAlreadyUpdating;
     },
 
     //adds a model to the updater
@@ -122,6 +76,7 @@ define(["app"], function(Moonlander){
     remove: function(model){
       this.updateCollection.remove(model);
     }
+
   };
 
 

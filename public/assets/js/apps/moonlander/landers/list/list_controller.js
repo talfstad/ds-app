@@ -36,8 +36,8 @@ define(["app",
               filterFunction: function(filterCriterion) {
                 var criterion = filterCriterion.toLowerCase();
                 return function(lander) {
-                  if (lander.get('name').toLowerCase().indexOf(criterion) !== -1
-                    || lander.get('last_updated').toLowerCase().indexOf(criterion) !== -1) {
+                  if (lander.get('name').toLowerCase().indexOf(criterion) !== -1){
+                    // || lander.get('last_updated').toLowerCase().indexOf(criterion) !== -1) {
                     // || lander.get('phoneNumber').toLowerCase().indexOf(criterion) !== -1){
                     return lander;
                   }
@@ -70,6 +70,10 @@ define(["app",
             });
 
             //on reset rebuild the collectionview layout from scratch
+            filteredLanderCollection.on("destroy", function(one, two){
+              alert("ih");
+            });
+
             filteredLanderCollection.on("reset", function(collection) {
 
               var filteredCollection = this;
@@ -77,11 +81,9 @@ define(["app",
               if (this.length > 0) {
                 landersListView.children.each(function(landerView) {
 
-
                   var deployStatusView = new DeployStatusView({
                     model: landerView.model
                   });
-
 
                   var deployedDomainsCollection = landerView.model.get("deployedLocations");
 
@@ -91,12 +93,18 @@ define(["app",
 
                   //add events before show!
                   //update the landerView layout with whatever the child has
-                  deployedDomainsView.on("childview:updateParentLayout", function(childView) {
+                  deployedDomainsView.on("childview:updateParentLayout", function(childView, notDeployed, three) {
                     //update deploy status view
                     var deployStatus = "deployed";
                     this.children.each(function(deployedDomainView){
-                      if(deployedDomainView.model.get("activeJobs").length > 0) {
-                        deployStatus = "deploying";
+                      if(deployedDomainView.model.get("activeJobs")) {
+                        if(deployedDomainView.model.get("activeJobs").length > 0) {
+                          deployStatus = "deploying";
+                        }
+                      }
+                      //empty view passes not_deployed in as its arg
+                      else if(notDeployed === "not_deployed") {
+                        deployStatus = "not_deployed";
                       }
                     });
                     deployStatusView.model.set("deploy_status", deployStatus);

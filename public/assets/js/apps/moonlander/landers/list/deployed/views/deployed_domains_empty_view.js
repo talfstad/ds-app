@@ -9,9 +9,8 @@ define(["app",
       tagName: "tr",
       className: "warning",
 
-
       onRender: function() {
-       
+        this.trigger("updateParentLayout", "not_deployed");
       }
 
     });

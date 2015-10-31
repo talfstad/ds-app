@@ -1,48 +1,18 @@
-define(["app",
-    "/assets/js/jobs/jobs_base_model.js"
+define(["app"
   ],
-  function(Moonlander, JobsBaseModel) {
-    Moonlander.module("JobsApp", function(JobsApp, Moonlander, Backbone, Marionette, $, _) {
+  function(Moonlander) {
+    var JobsModel = Backbone.Model.extend({
 
-      JobsApp.JobsModel = function(options) {
-        var guiModel = options.guiModel;
-        var jobModel = new JobsBaseModel();
+      url: "/api/jobs",
 
-        //create set job model attr
-        jobModel.set(options.jobAttributes);
+      defaults: {
+        "action": "",
+        "processing": false,
+        "lander_id": "",
+        "campaign_id": "",
+        "domain_id": ""
+      },
 
-
-        jobModel.triggerProcessingState = function() {
-          guiModel.processingState();
-        };
-
-        jobModel.triggerFinishedState = function(jobThatFinished) {
-          guiModel.finishedState(jobThatFinished);
-        };
-
-        jobModel.triggerErrorState = function() {
-          guiModel.errorState();
-        };
-
-       
-        jobModel.on("change", function(){
-          if(!this.get("processing")) {
-            if(this.get("error")) {
-              jobModel.triggerErrorState();
-            }
-            else if(this.get("done")) {
-              jobModel.triggerFinishedState(this);
-            }
-          
-            Moonlander.updater.remove(jobModel);
-          }
-          
-
-        });
-
-        return jobModel;
-      }
     });
-
-    return Moonlander.JobsApp.JobsModel;
+    return JobsModel;
   });

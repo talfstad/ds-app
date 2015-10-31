@@ -20,30 +20,6 @@ define(["app",
         'deployed_domains_region': '.deployed-domains-region'
       },
 
-      initialize: function() {
-        var me = this;
-        //set collection to subset of parent collection (from collectionview)
-        this.collection = this.model.deployedLocations;
-
-        
-      },
-
-      onBeforeRender: function(){
-        var me = this;
-        //figure out what the deploy_status should be here
-        var deployStatus = "deployed";
-        if(this.collection.length <= 0) {
-          deployStatus = "not_deployed";
-        }
-        $.each(this.collection.models, function(idx, model){
-          var modelDeployedStatus = model.get("deploy_status");
-          if(modelDeployedStatus === "deploying") {
-            deployStatus = "deploying";
-          }
-        });
-        this.model.set("deploy_status", deployStatus);
-      },
-
       onRender: function(){
         
         var me = this;
@@ -87,13 +63,7 @@ define(["app",
           });
 
 
-      },
-
-      onDomRefresh: function() {
-        var me = this;
-
       }
-
     });
   });
   return Moonlander.LandersApp.Landers.List.childView;
