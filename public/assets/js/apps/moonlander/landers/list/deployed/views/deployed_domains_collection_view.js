@@ -10,30 +10,33 @@ define(["app",
         childView: DeployedDomainRowView,
         emptyView: EmptyView,
 
-        childEvents: {
-          "updateParentLayout": "updateLayoutWithNewChildInfo"
-        },
-
-        updateLayoutWithNewChildInfo: function(childView){
-          //only update if deploying or not_deployed
-          var deployStatus = "deployed";
-          this.children.each(function(deployedDomainView){
-            var deployedDomainDeployStatus = deployedDomainView.model.get("deploy_status");
-            if(deployedDomainDeployStatus == "not_deployed") {
-              deployStatus = "not_deployed";
-            }
-            else if(deployedDomainDeployStatus == "deploying") {
-              deployStatus = "deploying";
-            }
-          });
-
-           this.trigger("updateParentLayout", deployStatus);
-        },
-
         //pass the deployed list its rendered index for # column
         childViewOptions: function(model) {
           model.set('viewIndex', parseInt(this.collection.indexOf(model))+1);
           model.set('urlEndpoints', this.collection.urlEndpoints);
+        },
+
+        onRender: function(){
+
+          this.$el.find(".domain-link").click(function(e) {
+            //get the val from select box
+            var domainEndpointSelectValue = $(e.currentTarget).parent().find("select").val();
+            var domainLinkHref = $(e.currentTarget).text();
+            //go to the full page
+            $(e.currentTarget).attr("href", "http://" + domainLinkHref + domainEndpointSelectValue);
+          });
+
+          this.$el.find(".domain-link").hover(function(e) {
+            //get next select
+            var domainEndpointSelect = $(e.currentTarget).parent().find("select");
+
+            //underline it or undo underline if already applied
+            if (domainEndpointSelect.hasClass("domain-link-hover")) {
+              domainEndpointSelect.removeClass("domain-link-hover");
+            } else {
+              domainEndpointSelect.addClass("domain-link-hover");
+            }
+         });
         }
         
       });

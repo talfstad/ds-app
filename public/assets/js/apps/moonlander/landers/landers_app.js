@@ -38,7 +38,7 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
 
     Moonlander.on("landers:list", function(){
       landersAppAPI.showLanders();
-      landersAppAPI.loadLandersSideMenu();
+      // landersAppAPI.loadLandersSideMenu();
     });
 
     Moonlander.on("landers:opensidebar", function(model){

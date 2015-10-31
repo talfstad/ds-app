@@ -22,8 +22,19 @@ define(["app",
           "click .undeploy": "showUndeployLander"
         },
 
+        onBeforeRender: function(){
+          //set gui attributes based on model
+
+          //if we have active jobs we are deploying
+          if(this.model.get("activeJobs").length > 0 ) {
+            this.model.set("deploy_status", "deploying");
+          } else {
+            this.model.set("deploy_status", "deployed");
+          }
+        },
+
         onRender: function() {
-          this.trigger("updateParentLayout");
+          this.trigger("updateParentLayout", this.model);
 
           var me = this;
           //add correct classname

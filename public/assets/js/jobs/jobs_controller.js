@@ -5,29 +5,29 @@ function(Moonlander, JobsModel){
 
     JobsApp.Controller = {
 
-      startJob: function(guiModel, jobAttributes) {
-  
-        //create jobs model which is a wrapper model wrapping a job model & gui update model
-        var jobsModel = JobsModel({
-          guiModel: guiModel,
-          jobAttributes: jobAttributes
-        });
-
-        var addToUpdater = function(){
+      startJob: function(jobModel) {
+        
+        var addToUpdater = function(jobModelWithId){
           //adds to updater
-          Moonlander.updater.add(jobsModel);
-          jobsModel.triggerProcessingState();
+          var model = (jobModelWithId ? jobModelWithId : jobModel);
+          
+          Moonlander.updater.add(model);
+          
+          model.showProcessingState();
         };
 
-        if(!jobsModel.get("processing")) {
-          jobsModel.save({}, {success: addToUpdater});
+        //there won't be an ID on a new job, and only should start it if
+        // it's processing and currently being worked on
+        if(!jobModel.get("processing") && !jobModel.get("id")) {
+          jobModel.save({}, {
+            success: function(model, response){
+              addToUpdater(model, response);
+            }
+          });
         } else {
           addToUpdater();
         }
-
       }
-   
-
     }
   });
 

@@ -67,8 +67,6 @@
             </div>
           </ul>
         </div>
-
-        
         
         <ul class="nav nav-list nav-list-topbar pull-left">
           <form class="navbar-form navbar-search pull-left mtn mbn" role="search">
@@ -79,7 +77,10 @@
         </ul>
 
         <div class="topbar-right hidden-xs hidden-sm">
-           <div class="bs-component ml15">
+           <div class="bs-component btn-group ml15">
+            <button type="button" class="pl10 pt5 pb5 btn btn-default btn-gradient dark">
+              <span class="fa fa-cloud-download pr5"></span>Rip &amp; Deploy
+            </button>
             <button type="button" class="mr10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
               <span class="fa fa-plus pr5"></span>New Lander
             </button>

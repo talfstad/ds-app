@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/apps/moonlander/landers/right_sidebar/jssnippets/views/child_view.js",
-    "/assets/js/apps/moonlander/landers/right_sidebar/jssnippets/views/empty_view.js",
+    "/assets/js/apps/moonlander/landers/right_sidebar/jssnippets/views/url_endpoint_child_view.js",
+    "/assets/js/apps/moonlander/landers/right_sidebar/jssnippets/views/url_endpoint_empty_view.js",
     "tpl!/assets/js/apps/moonlander/landers/right_sidebar/jssnippets/templates/list.tpl"
     // "fancytree",
     // "bootstrap"
@@ -9,12 +9,10 @@ define(["app",
 
     Moonlander.module("LandersApp.RightSidebar.JsSnippets.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
-      List.View = Marionette.CompositeView.extend({
+      List.View = Marionette.CollectionView.extend({
         id: "jssnippets-tree",
-        template: listTpl,
         emptyView: emptyView,
         childView: listItemView,
-        childViewContainer: "ul",
 
         collectionEvents: {
           'change': 'render'
@@ -23,7 +21,8 @@ define(["app",
         onRender: function(){
 
           //only fancy tree if have children
-          if(this.children.first().model.get("activeSnippets")) {
+          var activeSnippetLength = this.children.length;
+          if(activeSnippetLength > 0) {
             this.$el.addClass("fancytree-radio ui-fancytree-source");
             
             this.$el.fancytree({

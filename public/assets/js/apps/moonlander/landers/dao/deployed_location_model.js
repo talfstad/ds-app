@@ -1,9 +1,14 @@
 define(["app",
         "/assets/js/jobs/jobs_gui_base_model.js"], 
 function(Moonlander, JobsGuiBaseModel){
-  var DomainModel = JobsGuiBaseModel.extend({
-  	urlRoot: '/api/domains',
-    defaults: {
+  var DeployedLocationModel = JobsGuiBaseModel.extend({
+
+    initialize: function(){
+      //call base class init
+      JobsGuiBaseModel.prototype.initialize.apply(this);
+    },
+
+  	defaults: {
       domain: "",
       nameservers: "",
 
@@ -12,21 +17,21 @@ function(Moonlander, JobsGuiBaseModel){
       deploy_status: 'deployed'
     },
 
-    processingState: function() {
+    showProcessingState: function() {
       this.set("deploy_status", "deploying");
     },
 
-    finishedState: function(jobThatFinished) {
+    showFinishedState: function(jobThatFinished) {
       this.set("deploy_status", "deployed");
 
     },
 
-    errorState: function() {
+    showErrorState: function() {
       this.set("deploy_status", "error");
     }  
     
   });
 
-  return DomainModel;
+  return DeployedLocationModel;
 
 });

@@ -15,15 +15,15 @@ function(Moonlander, UndeployLayoutView){
         Moonlander.rootRegion.currentView.modalRegion.show(undeployLanderLayout);
 
 
-        undeployLanderLayout.on("undeployLanderFromDomain", function(){
+        undeployLanderLayout.on("undeployLanderFromDomain", function(model){
 
           var jobAttributes = {
             action: "undeployLanderFromDomain",
-            lander_id: this.model.get("lander_id"),
-            domain_id: this.model.get("id"),
+            lander_id: model.get("lander_id"),
+            domain_id: model.get("id"),
           }
 
-          Moonlander.trigger("job:start", this.model, jobAttributes);    
+          Moonlander.trigger("job:start", model, jobAttributes);    
 
         });
         

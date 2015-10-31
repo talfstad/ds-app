@@ -86,25 +86,6 @@ define(["app",
             $(e.currentTarget).parent().parent().find(".panel-collapse").collapse('show');
           });
 
-         this.$el.find(".domain-link").click(function(e) {
-          //get the val from select box
-          var domainEndpointSelectValue = $(e.currentTarget).parent().find("select").val();
-          var domainLinkHref = $(e.currentTarget).text();
-          //go to the full page
-          $(e.currentTarget).attr("href", "http://" + domainLinkHref + domainEndpointSelectValue);
-        });
-
-         this.$el.find(".domain-link").hover(function(e) {
-          //get next select
-          var domainEndpointSelect = $(e.currentTarget).parent().find("select");
-
-          //underline it or undo underline if already applied
-          if (domainEndpointSelect.hasClass("domain-link-hover")) {
-            domainEndpointSelect.removeClass("domain-link-hover");
-          } else {
-            domainEndpointSelect.addClass("domain-link-hover");
-          }
-         });
 
       },
 

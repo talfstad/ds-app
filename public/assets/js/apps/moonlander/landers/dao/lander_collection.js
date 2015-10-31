@@ -1,11 +1,17 @@
 define(["app",
-		"/assets/js/apps/moonlander/landers/dao/lander_model.js"], 
-function(Moonlander, LanderModel) {
+		"/assets/js/apps/moonlander/landers/dao/lander_model.js",
+    "/assets/js/apps/moonlander/landers/dao/deployed_location_collection.js",
+    "/assets/js/apps/moonlander/landers/dao/url_endpoint_collection.js"], 
+function(Moonlander, LanderModel, DeployedLocationsCollection, UrlEndpointCollection) {
   var LanderCollection = Backbone.Collection.extend({
     url: '/api/landers',
     model: LanderModel,
     comparator: 'name',
-    collectionTotals: {}
+    collectionTotals: {
+      totalNotDeployed: 0,
+      totalDeploying: 0,
+      totalLanders: 0
+    }
 
   });
 
@@ -18,9 +24,17 @@ function(Moonlander, LanderModel) {
       landersCollection.fetch({
         success: function(landers) {
 
-          landers.collectionTotals.totalNotDeployed = 0;
-          landers.collectionTotals.totalDeploying = 0;
-          landers.collectionTotals.totalLanders = 0;
+          landersCollection.each(function(landerModel){
+            //1. build deployedLocations collection
+            var deployedLocationsAttributes = landerModel.get("deployedLocations");
+            var deployedLocationsCollection = new DeployedLocationsCollection(deployedLocationsAttributes);
+            landerModel.set("deployedLocations", deployedLocationsCollection);
+
+            //2. build urlendpoint collection
+            var urlEndpointAttributes = landerModel.get("urlEndpoints");
+            var urlEndpointCollection = new UrlEndpointCollection(urlEndpointAttributes);
+            landerModel.set("urlEndpoints", urlEndpointCollection);
+          });
           
           defer.resolve(landers);
         }

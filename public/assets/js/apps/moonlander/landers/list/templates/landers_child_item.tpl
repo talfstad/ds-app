@@ -21,7 +21,7 @@
                 <i class="fa fa-info pr10"></i> This lander is <b>currently deployed</b> on the domains listed below.
               </div> -->
               <span style="width: 20px">#</span>
-              <span style="margin-left: 15px">Deployed Domains</span>
+              <span style="margin-left: 15px">Currently Deployed Domains</span>
             </div>
             <div style="float: right;" class="clearfix">
               <div class="bs-component btn-group ml15">

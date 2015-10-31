@@ -10,7 +10,7 @@ define(["app",
     "/assets/js/apps/moonlander/domains/dao/domain_collection.js",
     "/assets/js/apps/moonlander/landers/list/views/list_layout_view.js"
   ],
-  function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, 
+  function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection,
     PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, DeployedDomainsView, DeployedDomainsCollection) {
     Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
@@ -36,8 +36,8 @@ define(["app",
               filterFunction: function(filterCriterion) {
                 var criterion = filterCriterion.toLowerCase();
                 return function(lander) {
-                  if (lander.get('name').toLowerCase().indexOf(criterion) !== -1) {
-                    // || lander.get('lastName').toLowerCase().indexOf(criterion) !== -1
+                  if (lander.get('name').toLowerCase().indexOf(criterion) !== -1
+                    || lander.get('last_updated').toLowerCase().indexOf(criterion) !== -1) {
                     // || lander.get('phoneNumber').toLowerCase().indexOf(criterion) !== -1){
                     return lander;
                   }
@@ -52,7 +52,6 @@ define(["app",
 
             landersListLayout.on("landers:filterList", function(filterVal) {
               filteredLanderCollection.filter(filterVal);
-
             });
 
             landersListLayout.on("landers:sort", function() {
@@ -64,56 +63,56 @@ define(["app",
             });
 
             landersListLayout.landersCollectionRegion.show(landersListView);
-          
 
+            //this is the pagination pages totals and lander count totals view
             var topbarView = new TopbarView({
               model: filteredLanderCollection.state.gui
             });
 
+            //on reset rebuild the collectionview layout from scratch
+            filteredLanderCollection.on("reset", function(collection) {
 
-            filteredLanderCollection.on("reset", function(collection){
               var filteredCollection = this;
-              landersListView.children.each(function(view){
-                var deployStatusView = new DeployStatusView({model: view.model});
-                var deployedDomainsAttributes = view.model.get("deployedLocations");
-                
-                $.each(deployedDomainsAttributes, function(idx, location){
-                  location.landerName = view.model.get("name");
-                });
+            
+              if (this.length > 0) {
+                landersListView.children.each(function(landerView) {
 
-                var deployedDomainsCollection = new DeployedDomainsCollection(deployedDomainsAttributes);
-                deployedDomainsCollection.urlEndpoints = view.model.get("urlEndpoints");
-                
 
-                var deployedDomainsView = new DeployedDomainsView({collection: deployedDomainsCollection});
-                //add events before show!
-                deployedDomainsView.on("updateParentLayout", function(deployStatus){
-                  deployStatusView.model.set("deploy_status", deployStatus);
-
-                });
-
-                //whenever the deployed status view is updated update deployed totals
-                //this should be rendered whenever there is a change to the landers deployed status
-                deployStatusView.on("render", function(){
-                  var notDeployedTotal = 0;
-                  var deployingTotal = 0;
-                  landersListView.children.each(function(lander){
-                    var deployStatus = lander.model.get("deploy_status");
-                    if(deployStatus === "not_deployed"){
-                      notDeployedTotal++;
-                    }
-                    else if(deployStatus === "deploying"){ 
-                      deployingTotal++;
-                    }
+                  var deployStatusView = new DeployStatusView({
+                    model: landerView.model
                   });
-                  filteredCollection.state.gui.set("total_not_deployed", notDeployedTotal);
-                  filteredCollection.state.gui.set("total_deploying", deployingTotal);
+
+
+                  var deployedDomainsCollection = landerView.model.get("deployedLocations");
+
+                  var deployedDomainsView = new DeployedDomainsView({
+                    collection: deployedDomainsCollection
+                  });
+
+                  //add events before show!
+                  //update the landerView layout with whatever the child has
+                  deployedDomainsView.on("childview:updateParentLayout", function(childView) {
+                    //update deploy status view
+                    var deployStatus = "deployed";
+                    this.children.each(function(deployedDomainView){
+                      if(deployedDomainView.model.get("activeJobs").length > 0) {
+                        deployStatus = "deploying";
+                      }
+                    });
+                    deployStatusView.model.set("deploy_status", deployStatus);
+                  });
+
+                  //whenever the deployed status view is updated update deployed totals
+                  //this should be rendered whenever there is a change to the landers deployed status
+                  deployStatusView.on("render", function() {
+                    filteredCollection.updateTotals();
+                  });
+
+                  landerView.deploy_status_region.show(deployStatusView);
+                  landerView.deployed_domains_region.show(deployedDomainsView);
+
                 });
-
-                view.deploy_status_region.show(deployStatusView);
-                view.deployed_domains_region.show(deployedDomainsView);
-
-              });
+              }
             });
 
 
@@ -144,8 +143,6 @@ define(["app",
             landersListLayout.footerRegion.show(paginatedButtonView);
 
 
-            
-           
             landersListLayout.topbarRegion.show(topbarView);
 
 

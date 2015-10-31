@@ -16,21 +16,22 @@ define(["app",
           guiModel.processingState();
         };
 
-        jobModel.triggerFinishedState = function() {
-          guiModel.finishedState();
+        jobModel.triggerFinishedState = function(jobThatFinished) {
+          guiModel.finishedState(jobThatFinished);
         };
 
         jobModel.triggerErrorState = function() {
           guiModel.errorState();
         };
 
+       
         jobModel.on("change", function(){
           if(!this.get("processing")) {
             if(this.get("error")) {
               jobModel.triggerErrorState();
             }
             else if(this.get("done")) {
-              jobModel.triggerFinishedState();
+              jobModel.triggerFinishedState(this);
             }
           
             Moonlander.updater.remove(jobModel);

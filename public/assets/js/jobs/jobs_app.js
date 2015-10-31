@@ -6,15 +6,15 @@ function(Moonlander, JobsController, CommonLogin){
   Moonlander.module("JobsApp", function(JobsApp, Moonlander, Backbone, Marionette, $, _){
 
     var jobsAppAPI = {
-      startJob: function(guiModel, jobAttributes){
+      startJob: function(jobModel){
         CommonLogin.Check(function(){
-          JobsController.startJob(guiModel, jobAttributes);
+          JobsController.startJob(jobModel);
         });
       }
     };
 
-    Moonlander.on("job:start", function(guiModel, jobAttributes){
-      jobsAppAPI.startJob(guiModel, jobAttributes);
+    Moonlander.on("job:start", function(jobModel){
+      jobsAppAPI.startJob(jobModel);
     });
   });
 

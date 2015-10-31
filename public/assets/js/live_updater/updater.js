@@ -4,6 +4,8 @@ define(["app"], function(Moonlander){
 
     updateCollection: null,
 
+    pollNotStarted: true,
+
     initialize: function() {
       var me = this;
 
@@ -32,13 +34,13 @@ define(["app"], function(Moonlander){
           if(!modelAttributes.processing){
             //done, update original model
             var actualJobModel = me.updateCollection.get(modelAttributes.id);
-            actualJobModel.set(modelAttributes); //this should trigger model to call correct state update
-            me.remove(actualJobModel);
+            actualJobModel.removeFinishedJobFromGuiModel();
+            // actualJobModel.set(modelAttributes); //this should trigger model to call correct state update
           }
         });
       };
 
-      var intervalLength = 3000;
+      var intervalLength = 10000;
 
 
       this.poll = function() {
@@ -48,7 +50,9 @@ define(["app"], function(Moonlander){
             success: function(model, modelData, other) {
               removeIfFinishedProcessing(model, modelData, other);
               if(me.updateCollection.length >= 1) {
-                me.poll();
+                  me.poll();
+              } else {
+                me.pollNotStarted = true;
               }
             }
           });        
@@ -77,13 +81,40 @@ define(["app"], function(Moonlander){
       }
     },
 
+    reset: function(){
+      this.updateCollection.reset();
+    },
+
+    removeJobsByIds: function(jobIdArray){
+      var me = this;
+      $.each(jobIdArray, function(idx, jobIdToRemove){
+        me.updateCollection.remove(jobIdToRemove);
+      });
+    },
+
+    isAlreadyUpdating: function(jobAttributes){
+      //if no id on job attributes then its brand new
+      var isAlreadyUpdating = false;
+      if(jobAttributes.id) {
+        //check if jobAttributes is in the updater
+        this.updateCollection.each(function(job){
+          if(jobAttributes.id === job.id){
+            isAlreadyUpdating = true;
+          }
+        });
+      }
+
+      return isAlreadyUpdating;
+    },
+
     //adds a model to the updater
     add: function(model) {
       this.updateCollection.add(model);
 
       //start polling if first one.
       //function is self perpetuating so no need to call it for more than 1 model
-      if(this.updateCollection.length == 1) {
+      if(this.pollNotStarted) {
+        this.pollNotStarted = false;
         this.poll();
       }
     },

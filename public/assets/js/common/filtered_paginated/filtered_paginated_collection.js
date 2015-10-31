@@ -9,6 +9,7 @@ function(Moonlander, PaginatedModel){
       var original = options.collection;
 
       var filtered = new original.constructor();
+      filtered.original = original;
       filtered.add(original.models);
       filtered.filterFunction = options.filterFunction;
 
@@ -151,6 +152,25 @@ function(Moonlander, PaginatedModel){
         
         return currentPage;
       };
+
+      filtered.updateTotals = function() {
+        var notDeployedTotal = 0;
+        var deployingTotal = 0;
+        var totalLanders = 0;
+        //loop through all landers to count the totals
+        original.each(function(model) {
+          totalLanders++;
+          var deployStatus = model.get("deploy_status");
+          if (deployStatus === "not_deployed") {
+            notDeployedTotal++;
+          } else if (deployStatus === "deploying") {
+            deployingTotal++;
+          }
+        });
+        filtered.state.gui.set("total_not_deployed", notDeployedTotal);
+        filtered.state.gui.set("total_deploying", deployingTotal);
+        filtered.state.gui.set("total_landers", totalLanders);
+      }
 
       filtered.setPageSize = function(pageSize) {
         if(pageSize >= 1) {

@@ -28,7 +28,7 @@ define(["app",
         },
 
         confirmedToUndeploy: function() {
-          this.trigger("undeployLanderFromDomain");      
+          this.trigger("undeployLanderFromDomain", this.model);      
         },
 
         onRender: function() {
