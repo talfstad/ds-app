@@ -2,9 +2,10 @@ define(["app",
     "tpl!/assets/js/apps/moonlander/landers/list/templates/landers_child_item.tpl",
     "/assets/js/apps/moonlander/landers/list/deployed/views/deployed_domains_collection_view.js",
     "/assets/js/apps/moonlander/landers/list/deployed/views/deployed_domains_empty_view.js",
+    "moment",
     "bootstrap"
   ],
- function(Moonlander, LandersListItemTpl, DeployedListChildView, DeployedListEmptyView) {
+ function(Moonlander, LandersListItemTpl, DeployedListChildView, DeployedListEmptyView, moment) {
 
   Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
     List.childView = Marionette.LayoutView.extend({
@@ -19,6 +20,12 @@ define(["app",
         'deploy_status_region':'.deploy-status-region',
         'deployed_domains_region': '.deployed-domains-region'
       },
+
+      onBeforeRender: function(){
+        var lastUpdatedRawMysqlDateTime = this.model.get("last_updated");
+        var formattedTime = moment(new Date(lastUpdatedRawMysqlDateTime)).format("MMM DD, YYYY HH:MM A");
+        this.model.set("last_updated", formattedTime);
+      },  
 
       onRender: function(){
         

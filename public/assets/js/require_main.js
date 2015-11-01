@@ -10,6 +10,7 @@ requirejs.config({
     bootstrap: "/vendor/bower_installed/bootstrap/dist/js/bootstrap.min",
     jquery: "/vendor/bower_installed/jquery/dist/jquery",
     "jquery.ui": "/vendor/bower_installed/jquery-ui/jquery-ui",
+    moment: "/vendor/bower_installed/moment/moment",
     marionette: "/vendor/bower_installed/backbone.marionette/lib/backbone.marionette",
     text: "/vendor/bower_installed/requirejs-text/text",
     tpl: "/vendor/bower_installed/requirejs-underscore-tpl/underscore-tpl",

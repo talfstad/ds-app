@@ -2,10 +2,11 @@ define(["app",
     "/assets/js/apps/moonlander/landers/list/views/list_childview_view.js",
     "/assets/js/apps/moonlander/landers/list/views/list_emptyview_view.js",
     "tpl!/assets/js/apps/moonlander/landers/list/templates/list_container.tpl",
+    "moment",
     "fancytree",
     "bootstrap"
   ],
-  function(Moonlander, landersListItemView, landersEmptyView, landersListContainerTemplate) {
+  function(Moonlander, landersListItemView, landersEmptyView, landersListContainerTemplate, moment) {
 
     Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
@@ -63,13 +64,13 @@ define(["app",
             
             me.collection.comparator = function(a, b) {
 
-              var aLanderName = a.get("lastUpdated"); 
-              var bLanderName = b.get("lastUpdated");
+              var aLastUpdated = moment(new Date(a.get("last_updated"))).unix(); 
+              var bLastUpdated = moment(new Date(b.get("last_updated"))).unix();
 
-              if(aLanderName === bLanderName) {
+              if(aLastUpdated === bLastUpdated) {
                 return 0;
               } else {
-                if(aLanderName < bLanderName) {
+                if(aLastUpdated < bLastUpdated) {
                   if(sortOrder === 'asc') {
                     return -1;
                   } else {

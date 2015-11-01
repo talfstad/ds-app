@@ -28,7 +28,8 @@ function(Moonlander, SidebarView, LanderModel, ActiveJsSnippetsListView){
       },
 
       closeSidebar: function(){
-        Moonlander.landers.sidebarView.closeSidebar();
+        if(Moonlander.landers.sidebarView)
+          Moonlander.landers.sidebarView.closeSidebar();
       }
     }
   });

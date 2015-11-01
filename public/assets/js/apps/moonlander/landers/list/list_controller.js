@@ -69,11 +69,6 @@ define(["app",
               model: filteredLanderCollection.state.gui
             });
 
-            //on reset rebuild the collectionview layout from scratch
-            filteredLanderCollection.on("destroy", function(one, two){
-              alert("ih");
-            });
-
             filteredLanderCollection.on("reset", function(collection) {
 
               var filteredCollection = this;
