@@ -7,6 +7,13 @@ function(Moonlander, SidebarView, LanderModel, ActiveJsSnippetsListView){
 
     RightSidebar.Controller = {
       
+      loadLandersSideMenu: function(){
+        Moonlander.landers.sidebarView = new SidebarView({
+          model: new LanderModel()
+        });
+        Moonlander.rootRegion.currentView.rightSidebarRegion.show(Moonlander.landers.sidebarView);
+      },
+
       openSidebar: function(model){
         Moonlander.landers.sidebarView = new SidebarView({
           model: model
@@ -24,7 +31,7 @@ function(Moonlander, SidebarView, LanderModel, ActiveJsSnippetsListView){
 
         Moonlander.rootRegion.currentView.rightSidebarRegion.currentView.snippetsRegion.show(activeSnippetsView)
         //open
-        Moonlander.landers.sidebarView.openSidebar();
+        setTimeout(Moonlander.landers.sidebarView.openSidebar, 20);
       },
 
       closeSidebar: function(){

@@ -32,14 +32,15 @@ define(["app",
         var me = this;
 
         this.$el.on('hide.bs.collapse', function(e) {
-          //close right sidebar if closing all domain accordions
-          if ($(".collapse-in").length <= 1) {
-            Moonlander.trigger('landers:closesidebar');
-          }
-
           $(e.currentTarget).find("li.active").removeClass("active");
           $(e.currentTarget).find(".accordion-toggle").removeClass('active');
+        });
 
+        this.$el.on('hidden.bs.collapse', function(e) {
+          //close right sidebar if closing all domain accordions
+          if ($(".collapsing").length < 1) {
+            Moonlander.trigger('landers:closesidebar');
+          }
         });
 
         this.$el.on('show.bs.collapse', function(e) {
