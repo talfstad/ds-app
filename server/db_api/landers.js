@@ -9,6 +9,13 @@ module.exports = function(db) {
 
       var user_id = user.id;
 
+      var getActiveCampaignsForLander = function(lander, callback) {
+        db.query("SELECT a.id,a.name,b.lander_id from campaigns a JOIN landers_with_campaigns b ON a.id=b.campaign_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
+          function(err, dbActiveCampaigns) {
+            callback(dbActiveCampaigns);
+          });
+      };
+
 
       getActiveJobsForDeployedLocation = function(deployedLocation, callback) {
         db.query("SELECT id,action,processing,done,error FROM jobs WHERE (user_id = ? AND action = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", [user_id, "undeployLanderFromDomain", deployedLocation.lander_id, deployedLocation.id, true],
@@ -72,9 +79,16 @@ module.exports = function(db) {
           lander.urlEndpoints = endpoints;
 
           getDeployedLocationsForLander(lander, function(deployedLocations) {
+
             lander.deployedLocations = deployedLocations;
 
-            callback();
+            getActiveCampaignsForLander(lander, function(activeCampaigns) {
+
+              lander.activeCampaigns = activeCampaigns;
+              callback();
+
+            });
+
           });
 
         });
@@ -107,101 +121,114 @@ module.exports = function(db) {
       });
 
 
-      
-///////MOCK DATA FOR GET ALL LANDERS ////////////
-// [{
-//   "id": 1,
-//   "name": "test lander 1",
-//   "optimize_css": 1,
-//   "optimize_js": 1,
-//   "optimize_images": 0,
-//   "optimize_gzip": 0,
-//   "last_updated": null,
-//   "urlEndpoints": [{
-//     "id": 1,
-//     "name": "index.html",
-//     "lander_id": 1,
-//     "activeSnippets": []
-//   }],
-//   "deployedLocations": [{
-//     "id": 1,
-//     "domain": "hardbodiesandboners.org",
-//     "lander_id": 1,
-//     "activeJobs": [{
-//       "id": 56,
-//       "action": "undeployLanderFromDomain",
-//       "processing": 1,
-//       "done": 1,
-//       "error": null
-//     }]
-//   }]
-// }, {
-//   "id": 2,
-//   "name": "test lander 2",
-//   "optimize_css": 0,
-//   "optimize_js": 0,
-//   "optimize_images": 1,
-//   "optimize_gzip": 1,
-//   "last_updated": null,
-//   "urlEndpoints": [{
-//     "id": 2,
-//     "name": "index.html",
-//     "lander_id": 2,
-//     "activeSnippets": [{
-//       "id": 3,
-//       "name": "JS No-referrer"
-//     }]
-//   }, {
-//     "id": 5,
-//     "name": "index1.html",
-//     "lander_id": 2,
-//     "activeSnippets": []
-//   }],
-//   "deployedLocations": [{
-//     "id": 1,
-//     "domain": "hardbodiesandboners.org",
-//     "lander_id": 2,
-//     "activeJobs": [{
-//       "id": 57,
-//       "action": "undeployLanderFromDomain",
-//       "processing": 1,
-//       "done": null,
-//       "error": 1
-//     }]
-//   }]
-// }, {
-//   "id": 3,
-//   "name": "test lander 3",
-//   "optimize_css": 0,
-//   "optimize_js": 1,
-//   "optimize_images": 1,
-//   "optimize_gzip": 0,
-//   "last_updated": null,
-//   "urlEndpoints": [{
-//     "id": 3,
-//     "name": "index.html",
-//     "lander_id": 3,
-//     "activeSnippets": []
-//   }],
-//   "deployedLocations": []
-// }, {
-//   "id": 4,
-//   "name": "test lander 4",
-//   "optimize_css": 1,
-//   "optimize_js": 0,
-//   "optimize_images": 0,
-//   "optimize_gzip": 1,
-//   "last_updated": null,
-//   "urlEndpoints": [{
-//     "id": 4,
-//     "name": "index.html",
-//     "lander_id": 4,
-//     "activeSnippets": []
-//   }],
-//   "deployedLocations": []
-// }]
+
+      ///////MOCK DATA FOR GET ALL LANDERS ////////////      
+      // [{
+      //   "id": 1,
+      //   "name": "test lander 1",
+      //   "optimize_css": 1,
+      //   "optimize_js": 1,
+      //   "optimize_images": 0,
+      //   "optimize_gzip": 0,
+      //   "last_updated": "2015-04-15T07:00:00.000Z",
+      //   "urlEndpoints": [{
+      //     "id": 1,
+      //     "name": "index.html",
+      //     "lander_id": 1,
+      //     "activeSnippets": []
+      //   }],
+      //   "deployedLocations": [{
+      //     "id": 1,
+      //     "domain": "hardbodiesandboners.org",
+      //     "lander_id": 1,
+      //     "activeJobs": []
+      //   }],
+      //   "activeCampaigns": []
+      // }, {
+      //   "id": 2,
+      //   "name": "test lander 2",
+      //   "optimize_css": 0,
+      //   "optimize_js": 0,
+      //   "optimize_images": 1,
+      //   "optimize_gzip": 1,
+      //   "last_updated": "2015-03-15T19:30:00.000Z",
+      //   "urlEndpoints": [{
+      //     "id": 2,
+      //     "name": "index.html",
+      //     "lander_id": 2,
+      //     "activeSnippets": [{
+      //       "id": 3,
+      //       "name": "JS No-referrer"
+      //     }]
+      //   }, {
+      //     "id": 5,
+      //     "name": "index1.html",
+      //     "lander_id": 2,
+      //     "activeSnippets": [{
+      //       "id": 4,
+      //       "name": "test"
+      //     }]
+      //   }],
+      //   "deployedLocations": [{
+      //     "id": 1,
+      //     "domain": "hardbodiesandboners.org",
+      //     "lander_id": 2,
+      //     "activeJobs": []
+      //   }, {
+      //     "id": 2,
+      //     "domain": "weightlosskey.com",
+      //     "lander_id": 2,
+      //     "activeJobs": []
+      //   }],
+      //   "activeCampaigns": [{
+      //     "id": 1,
+      //     "name": "default",
+      //     "lander_id": 2
+      //   }, {
+      //     "id": 2,
+      //     "name": "camp1",
+      //     "lander_id": 2
+      //   }]
+      // }, {
+      //   "id": 3,
+      //   "name": "test lander 3",
+      //   "optimize_css": 0,
+      //   "optimize_js": 1,
+      //   "optimize_images": 1,
+      //   "optimize_gzip": 0,
+      //   "last_updated": "2015-05-31T19:30:00.000Z",
+      //   "urlEndpoints": [{
+      //     "id": 3,
+      //     "name": "index.html",
+      //     "lander_id": 3,
+      //     "activeSnippets": []
+      //   }],
+      //   "deployedLocations": [{
+      //     "id": 2,
+      //     "domain": "weightlosskey.com",
+      //     "lander_id": 3,
+      //     "activeJobs": []
+      //   }],
+      //   "activeCampaigns": []
+      // }, {
+      //   "id": 4,
+      //   "name": "test lander 4",
+      //   "optimize_css": 1,
+      //   "optimize_js": 0,
+      //   "optimize_images": 0,
+      //   "optimize_gzip": 1,
+      //   "last_updated": "2015-06-15T19:30:00.000Z",
+      //   "urlEndpoints": [{
+      //     "id": 4,
+      //     "name": "index.html",
+      //     "lander_id": 4,
+      //     "activeSnippets": []
+      //   }],
+      //   "deployedLocations": [],
+      //   "activeCampaigns": []
+      // }]
+
     }
   }
 
 };
-

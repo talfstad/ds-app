@@ -13,7 +13,8 @@ var LanderModel = Backbone.Model.extend({
     optimize_gzip: false,
 
     //gui update attributes
-    deploy_status: 'deployed'
+    deploy_status: 'deployed',
+    active_campaigns_count: 0
   },
 
   validation: {

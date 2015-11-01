@@ -18,7 +18,9 @@ define(["app",
 
       regions: {
         'deploy_status_region':'.deploy-status-region',
-        'deployed_domains_region': '.deployed-domains-region'
+        'deployed_domains_region': '.deployed-domains-region',
+        'campaign_tab_handle_region': '.campaign-tab-handle-region',
+        'active_campaigns_region': '.active_campaigns_region'
       },
 
       onBeforeRender: function(){
@@ -31,16 +33,35 @@ define(["app",
         
         var me = this;
 
-        this.$el.on('hide.bs.collapse', function(e) {
-          $(e.currentTarget).find("li.active").removeClass("active");
-          $(e.currentTarget).find(".accordion-toggle").removeClass('active');
+        //add/remove hovering attribute so we can correctly animate closing of the right sidebar
+        this.$el.find(".accordion-toggle").hover(function(e){
+          $(e.currentTarget).attr("data-currently-hovering", true);
+        },
+        function(e){
+          $(e.currentTarget).attr("data-currently-hovering", false);
         });
 
-        this.$el.on('hidden.bs.collapse', function(e) {
+        this.$el.find(".campaign-tab-handle-region").hover(function(e){
+          $(e.currentTarget).attr("data-currently-hovering", true);
+        }, function(e){
+          $(e.currentTarget).attr("data-currently-hovering", false);
+        });
+
+        this.$el.find(".deploy-status-region").hover(function(e){
+          $(e.currentTarget).attr("data-currently-hovering", true);
+        }, function(e){
+          $(e.currentTarget).attr("data-currently-hovering", false);
+        });
+
+        this.$el.on('hide.bs.collapse', function(e) {
+          
           //close right sidebar if closing all domain accordions
-          if ($(".collapsing").length < 1) {
+          if ($(e.currentTarget).find("a[data-currently-hovering='true']").length > 0) {
             Moonlander.trigger('landers:closesidebar');
           }
+
+          $(e.currentTarget).find("li.active").removeClass("active");
+          $(e.currentTarget).find(".accordion-toggle").removeClass('active');
         });
 
         this.$el.on('show.bs.collapse', function(e) {
@@ -50,7 +71,25 @@ define(["app",
             //disable the controls until shown (fixes multiple showing bug if clicked too fast)
             $(".accordion-toggle").addClass("inactive-link");
 
-            $(e.currentTarget).find("li:first").addClass("active");
+            //first dont show any tabs then show correct tab
+            $(e.currentTarget).find("li.deploy-status-region").removeClass("active");
+            $(e.currentTarget).find("div[id^='domains-tab']").removeClass("active");
+            $(e.currentTarget).find("li.campaign-tab-handle-region").removeClass("active");
+            $(e.currentTarget).find("div[id^='campaigns-tab']").removeClass("active");
+            //show the correct tab
+            var currentTab = $(e.currentTarget).find("li[data-currently-hovering='true']");
+            var currentTabData = $("#"+currentTab.attr("data-tab-target"));
+            if(currentTab.length > 0) {
+              //show clicked on tab
+              currentTab.addClass("active");
+              currentTabData.addClass("active");
+            } else {
+              //no tab show domains tab
+              $(e.currentTarget).find("li.deploy-status-region").addClass("active");
+              $(e.currentTarget).find("div[id^='domains-tab']").addClass("active");
+            }
+
+
             $(e.currentTarget).find(".accordion-toggle").addClass('active')
 
             $(e.currentTarget).parent().find(".panel").addClass(".panel-info");

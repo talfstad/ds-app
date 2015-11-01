@@ -83,7 +83,7 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    margin-right: 110px;
+    margin-right: 240px;
 }
 
 .accordion-toggle.active .domain-campaign-notification span {
@@ -347,4 +347,9 @@ tr.warning input[type=select] {
 .inactive-link {
    pointer-events: none;
    cursor: default;
+}
+
+
+.campaign-status-tab-handle {
+    width: 120px !important;
 }

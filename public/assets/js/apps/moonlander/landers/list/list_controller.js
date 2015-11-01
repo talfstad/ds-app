@@ -6,12 +6,15 @@ define(["app",
     "/assets/js/apps/moonlander/landers/list/views/topbar_view.js",
     "/assets/js/apps/moonlander/landers/list/views/loading_view.js",
     "/assets/js/apps/moonlander/landers/list/views/deploy_status_view.js",
+    "/assets/js/apps/moonlander/landers/list/views/campaign_tab_handle_view.js",
     "/assets/js/apps/moonlander/landers/list/deployed/views/deployed_domains_collection_view.js",
     "/assets/js/apps/moonlander/domains/dao/domain_collection.js",
+    "/assets/js/apps/moonlander/landers/list/active_campaigns/views/active_campaigns_collection_view.js",
     "/assets/js/apps/moonlander/landers/list/views/list_layout_view.js"
   ],
   function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection,
-    PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, DeployedDomainsView, DeployedDomainsCollection) {
+    PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView, 
+    DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView) {
     Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
       List.Controller = {
@@ -80,6 +83,21 @@ define(["app",
                     model: landerView.model
                   });
 
+                  var campaignTabHandleView = new CampaignTabHandleView({
+                    model: landerView.model
+                  });
+
+                  var activeCampaignsCollection = landerView.model.get("activeCampaigns");
+
+                  var activeCampaignsView = new ActiveCampaignsView({
+                    collection: activeCampaignsCollection
+                  })
+
+                  activeCampaignsView.on("childview:updateParentLayout", function(childView, options){
+                    //update the campaign count for lander
+                    campaignTabHandleView.model.set("active_campaigns_count", this.children.length);
+                  });
+
                   var deployedDomainsCollection = landerView.model.get("deployedLocations");
 
                   var deployedDomainsView = new DeployedDomainsView({
@@ -103,6 +121,7 @@ define(["app",
                       }
                     });
                     deployStatusView.model.set("deploy_status", deployStatus);
+
                   });
 
                   //whenever the deployed status view is updated update deployed totals
@@ -112,8 +131,9 @@ define(["app",
                   });
 
                   landerView.deploy_status_region.show(deployStatusView);
+                  landerView.campaign_tab_handle_region.show(campaignTabHandleView);
                   landerView.deployed_domains_region.show(deployedDomainsView);
-
+                  landerView.active_campaigns_region.show(activeCampaignsView);
                 });
               }
             });

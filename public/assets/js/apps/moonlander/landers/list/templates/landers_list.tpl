@@ -47,7 +47,7 @@
             </li>
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
-                <input data-sortby-name="Last Edited" data-sort-by="last-updated" type="radio" id="last-updated" name="sort-radio">
+                <input data-sortby-name="Last Updated" data-sort-by="last-updated" type="radio" id="last-updated" name="sort-radio">
                 <label class="ml5" for="last-updated">Last Updated</label>
               </a>
             </li>
