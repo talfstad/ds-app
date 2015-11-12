@@ -2,10 +2,11 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
   "/assets/js/common/login/common_login.js",
   "/assets/js/apps/moonlander/landers/right_sidebar/sidebar_controller.js",
   "/assets/js/apps/moonlander/landers/edit/edit_controller.js",
+  "/assets/js/apps/moonlander/landers/deploy_to_domain/deploy_to_domain_controller.js",
   "/assets/js/apps/moonlander/landers/undeploy/undeploy_controller.js"
   // "/assets/js/apps/moonlander/left_nav/left_nav_app.js"
   ], 
-function(Moonlander, ListController, CommonLogin, SidemenuController, EditController, UndeployController){
+function(Moonlander, ListController, CommonLogin, SidemenuController, EditController, DeployToDomainController, UndeployController){
   Moonlander.module("LandersApp", function(LandersApp, Moonlander, Backbone, Marionette, $, _){
 
     var landersAppAPI = {
@@ -21,6 +22,9 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
 
       showEditLander: function(model){
         EditController.showEditLander(model);
+      },
+      showDeployToDomain: function(model){
+        DeployToDomainController.showDeployLanderToDomain(model);
       },
       showUndeployLander: function(model){
         UndeployController.showUndeployLander(model);
@@ -55,6 +59,10 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
 
     Moonlander.on("landers:showUndeploy", function(model){
       landersAppAPI.showUndeployLander(model);
+    });
+
+    Moonlander.on("landers:showDeployToDomain", function(model){
+      landersAppAPI.showDeployToDomain(model);
     });
 
   });

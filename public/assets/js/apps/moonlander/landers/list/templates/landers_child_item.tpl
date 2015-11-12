@@ -26,7 +26,7 @@
                     <i class="fa fa-info pr10"></i> This lander is <b>currently deployed</b> on the domains listed below.
                   </div> -->
                   <span style="width: 20px">#</span>
-                  <span style="margin-left: 15px">Currently Deployed Domains</span>
+                  <span style="margin-left: 15px">Deployed Domains</span>
                 </div>
                 <div style="float: right;" class="clearfix">
                   <div class="bs-component btn-group ml15">
@@ -38,7 +38,7 @@
                   </button> -->
 
                   <!-- <button type="button" class="btn btn-default btn-gradient dark">Add to Campaign</button> -->
-                  <button type="button" class="btn btn-default btn-gradient dark"><span class="fa fa-cloud-upload pr5"></span>Deploy to New Domain</button>
+                  <button type="button" class="deploy-to-domain btn btn-default btn-gradient dark"><span class="fa fa-cloud-upload pr5"></span>Deploy to New Domain</button>
                   </div>
                 </div>
               </div>
@@ -74,7 +74,7 @@
                   </button> -->
 
                   <!-- <button type="button" class="btn btn-default btn-gradient dark">Add to Campaign</button> -->
-                  <button type="button" class="btn btn-default btn-gradient dark"><span class="fa fa-plus pr5"></span>Add to Campaign</button>
+                  <button type="button" class="btn btn-default btn-gradient dark"><span class="fa fa-plus pr5"></span>Add to New Campaign</button>
                   </div>
                 </div>
               </div>

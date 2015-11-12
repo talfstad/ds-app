@@ -8,6 +8,8 @@ requirejs.config({
     syphon: "/vendor/bower_installed/backbone.syphon/lib/backbone.syphon",
     "backbone.validation": "/vendor/bower_installed/backbone.validation/dist/backbone-validation-amd",
     bootstrap: "/vendor/bower_installed/bootstrap/dist/js/bootstrap.min",
+    'bootstrap.datatables': "/vendor/bower_installed/datatables/media/js/dataTables.bootstrap",
+    'datatables.net': "/vendor/bower_installed/datatables/media/js/jquery.dataTables",
     jquery: "/vendor/bower_installed/jquery/dist/jquery",
     "jquery.ui": "/vendor/bower_installed/jquery-ui/jquery-ui",
     moment: "/vendor/bower_installed/moment/moment",
@@ -24,6 +26,12 @@ requirejs.config({
     "resizeReverse": '/vendor/plugins/jquery-ui.resizeReverse'
   },
   shim: {
+    "datatables.net": {
+      deps: ['jquery.ui']
+    },
+    "bootstrap.datatables": {
+      deps: ['datatables.net']
+    },
     "resizeReverse": {
       deps: ['jquery.ui']
     },

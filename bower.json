@@ -23,6 +23,7 @@
     "jquery-typewatch": "2.2.2",
     "backbone.paginator": "2.0.2",
     "codemirror": "5.7.0",
-    "moment": "2.10.6"
+    "moment": "2.10.6",
+    "datatables": "1.10.10"
   }
 }

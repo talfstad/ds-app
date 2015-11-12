@@ -7,7 +7,7 @@ define(["app",
     ActiveCampaigns.EmptyView = Marionette.ItemView.extend({
       template: EmptyTpl,
       tagName: "tr",
-      className: "warning",
+      className: "warning pb13",
 
     });
   });

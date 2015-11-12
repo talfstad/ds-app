@@ -8,7 +8,7 @@ define(["app",
 
         template: ActiveCampaignRowTpl,
         tagName: "tr",
-        className: "info",
+        className: "info pb13",
 
         modelEvents: {
           "change": "render"

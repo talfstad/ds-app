@@ -3,6 +3,15 @@ module.exports = function(app, db, passport) {
     
     var db = require("../db_api");
 
+
+    app.get('/api/domains', function(req,res){
+      var user = req.user;
+      db.domains.getAll(user, function(rows) {
+        res.json(rows);
+      });
+    });
+
+
     app.post('/api/domains', function(req, res) {
       //call insertDomain on db_api
     });

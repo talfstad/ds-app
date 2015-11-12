@@ -167,6 +167,7 @@ ul.fancytree-container {
 }
 
 tr.success .domain-endpoint-select {
+    height: 21px;
     display: inherit;
     color: #3f9532;
     width: inherit;
@@ -294,11 +295,26 @@ tr.success a {
 tr.warning a {
     color: #c88a0a;
 }
+tr.dark a {
+    color: #3b3f4f;
+}
+tr.info a {
+    color: #1c7393;
+}
+tr.info > td {
+    line-height: 1.49 !important;
+}
+
+tr.pb13 > td {
+    padding-bottom: 13px !important;
+}
 
 tr.success input[type=select] {
+    /*height: 21px !important;*/
     background: inherit;
 }
 tr.warning input[type=select] {
+    /*height: 21px !important;*/
     background: inherit;
 }
 

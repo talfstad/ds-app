@@ -1,0 +1,22 @@
+<div class="modal-dialog modal-lg">
+	<div class=" modal-content">
+    	<div class="modal-header">
+    		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    		<h4 class="modal-title">Deploy <%= name %> to a new domain</h4>
+    	</div>
+
+        
+
+    	<div class="domains-list-region modal-body">
+
+                
+
+        </div>
+
+
+    	<div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Close</button>
+    		<button type="button" data-dismiss="modal" class="deploy-confirm btn btn-primary btn-clipboard">Deploy</button>
+    	</div> 
+    </div>
+</div>

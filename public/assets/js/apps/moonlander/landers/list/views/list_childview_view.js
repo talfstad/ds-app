@@ -16,11 +16,19 @@ define(["app",
       emptyView: DeployedListEmptyView,
       childViewContainer: "table.deployed-domains-region",
 
+      events: {
+        "click button.deploy-to-domain": "showDeployLanderToDomain"
+      },
+
       regions: {
         'deploy_status_region':'.deploy-status-region',
         'deployed_domains_region': '.deployed-domains-region',
         'campaign_tab_handle_region': '.campaign-tab-handle-region',
         'active_campaigns_region': '.active_campaigns_region'
+      },
+
+      showDeployLanderToDomain: function(){
+        Moonlander.trigger("landers:showDeployToDomain", this.model);
       },
 
       onBeforeRender: function(){
