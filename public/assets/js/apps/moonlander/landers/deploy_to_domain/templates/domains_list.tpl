@@ -9,8 +9,10 @@
 
 
   <div class="alert alert-micro alert-primary light alert-dismissable" style="margin-bottom: 0">
-  <i class="fa fa-info pr10"></i>
-                  <strong>Instructions:</strong> Click the domain you'd like to deploy on, and select the deploy button.
+  <span>
+    <i class="fa fa-info pr10"></i>
+    <strong>Instructions:</strong> Click the domain you'd like to deploy on, and select the deploy button.
+  </span>
                 </div>
 
   <div class="panel-body pn">

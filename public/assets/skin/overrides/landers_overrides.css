@@ -369,3 +369,8 @@ tr.warning input[type=select] {
 .campaign-status-tab-handle {
     width: 120px !important;
 }
+
+
+#domains-list-datatable > tbody > tr {
+    cursor: pointer;
+}

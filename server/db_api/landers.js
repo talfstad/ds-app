@@ -4,6 +4,12 @@ module.exports = function(db) {
 
   return {
 
+    deployLanderToDomain: function(user, lander_id, domain_id, successCallback) {
+      var user_id = user.id;
+
+
+    },
+
 
     getAll: function(user, successCallback) {
 

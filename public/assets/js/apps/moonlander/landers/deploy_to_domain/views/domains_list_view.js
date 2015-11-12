@@ -37,6 +37,12 @@ define(["app",
               "sInfoEmpty": "You currently don't have any domains",
               "sZeroRecords": "No matching domains found"
             },
+            //set the domain id on the row so we can use it to know which to deploy to
+            //in the layout view
+            "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+              $(nRow).attr("data-domain-id", aData.domainId);
+              return nRow;
+            },
             "iDisplayLength": 5,
             "aLengthMenu": [
               [5, 10, 25, 50, -1],
@@ -65,6 +71,7 @@ define(["app",
           this.datatablesCollection.each(function(rowModel){
             var dtRow = {};
             dtRow.domain = rowModel.get("domain");
+            dtRow.domainId = rowModel.get("id");
             dtRows.push(dtRow);
           });
 

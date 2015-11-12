@@ -10,17 +10,23 @@ define(["app",
     "/assets/js/apps/moonlander/landers/list/deployed/views/deployed_domains_collection_view.js",
     "/assets/js/apps/moonlander/domains/dao/domain_collection.js",
     "/assets/js/apps/moonlander/landers/list/active_campaigns/views/active_campaigns_collection_view.js",
+    "/assets/js/apps/moonlander/landers/dao/deployed_location_model.js",
+    "/assets/js/jobs/jobs_model.js",
     "/assets/js/apps/moonlander/landers/list/views/list_layout_view.js"
   ],
   function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection,
     PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView, 
-    DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView) {
+    DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLocationModel,
+    JobModel) {
     Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
       List.Controller = {
 
+        filteredLanderCollection: null,
+
         showLanders: function() {
           //make layout for landers
+          var me = this;
           var landersListLayout = new List.Layout();
           landersListLayout.render();
 
@@ -34,7 +40,7 @@ define(["app",
 
           $.when(deferredLandersCollection).done(function(landersCollection) {
 
-            var filteredLanderCollection = FilteredPaginatedCollection({
+            me.filteredLanderCollection = FilteredPaginatedCollection({
               collection: landersCollection,
               filterFunction: function(filterCriterion) {
                 var criterion = filterCriterion.toLowerCase();
@@ -50,11 +56,11 @@ define(["app",
 
             //make landers view and display data
             var landersListView = new ListView({
-              collection: filteredLanderCollection
+              collection: me.filteredLanderCollection
             });
 
             landersListLayout.on("landers:filterList", function(filterVal) {
-              filteredLanderCollection.filter(filterVal);
+              me.filteredLanderCollection.filter(filterVal);
             });
 
             landersListLayout.on("landers:sort", function() {
@@ -62,17 +68,17 @@ define(["app",
             });
 
             landersListLayout.on("landers:changepagesize", function(pageSize) {
-              filteredLanderCollection.setPageSize(pageSize);
+              me.filteredLanderCollection.setPageSize(pageSize);
             });
 
             landersListLayout.landersCollectionRegion.show(landersListView);
 
             //this is the pagination pages totals and lander count totals view
             var topbarView = new TopbarView({
-              model: filteredLanderCollection.state.gui
+              model: me.filteredLanderCollection.state.gui
             });
 
-            filteredLanderCollection.on("reset", function(collection) {
+            me.filteredLanderCollection.on("reset", function(collection) {
 
               var filteredCollection = this;
             
@@ -140,27 +146,27 @@ define(["app",
 
 
             var paginatedButtonView = new PaginatedButtonView({
-              model: filteredLanderCollection.state.gui
+              model: me.filteredLanderCollection.state.gui
             });
             paginatedButtonView.on("landers:firstPage", function(page) {
               Moonlander.trigger('landers:closesidebar');
-              filteredLanderCollection.getFirstPage();
+              me.filteredLanderCollection.getFirstPage();
             });
             paginatedButtonView.on("landers:previousPage", function(page) {
               Moonlander.trigger('landers:closesidebar');
-              filteredLanderCollection.getPreviousPage();
+              me.filteredLanderCollection.getPreviousPage();
             });
             paginatedButtonView.on("landers:nextPage", function(page) {
               Moonlander.trigger('landers:closesidebar');
-              filteredLanderCollection.getNextPage();
+              me.filteredLanderCollection.getNextPage();
             });
             paginatedButtonView.on("landers:lastPage", function(page) {
               Moonlander.trigger('landers:closesidebar');
-              filteredLanderCollection.getLastPage();
+              me.filteredLanderCollection.getLastPage();
             });
             paginatedButtonView.on("landers:gotoPage", function(page) {
               Moonlander.trigger('landers:closesidebar');
-              filteredLanderCollection.gotoPage(page);
+              me.filteredLanderCollection.gotoPage(page);
             });
 
             landersListLayout.footerRegion.show(paginatedButtonView);
@@ -169,8 +175,41 @@ define(["app",
             landersListLayout.topbarRegion.show(topbarView);
 
 
-            filteredLanderCollection.filter("");
+            me.filteredLanderCollection.filter("");
           });
+        },
+
+        //take a landerID and domainID and deploy the domain
+        //to that lander by adding it to the collection. This triggers
+        //a new job to be created, etc.
+        deployDomainToLander: function(modelAttributes){
+          //we're deploying!
+          modelAttributes.deploy_status = "deploying";
+
+          //create active job model to deploy this lander to a domain
+          var jobAttributes = {
+            action: "deployLanderToDomain",
+            lander_id: modelAttributes.lander_id,
+            domain_id: modelAttributes.id,
+          }
+
+          //create job and add to models activeJobs
+          var jobModel = new JobModel(jobAttributes);
+
+          var lander = this.filteredLanderCollection.get(modelAttributes.lander_id);
+          if(!lander) return false;
+
+          //create the deployed location model
+          var domainModel = new DeployedLocationModel(modelAttributes);
+
+          var activeJobs = domainModel.get("activeJobs");
+
+          activeJobs.add(jobModel);
+          Moonlander.trigger("job:start", jobModel);    
+
+          var deployedLocations = lander.get("deployedLocations");
+          deployedLocations.add(domainModel);
+
         }
       }
     });

@@ -19,7 +19,9 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
           Moonlander.trigger("header:active", "landers");
         });
       },
-
+      deployLanderToNewDomain: function(attr){
+        ListController.deployDomainToLander(attr);
+      },
       showEditLander: function(model){
         EditController.showEditLander(model);
       },
@@ -61,9 +63,15 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
       landersAppAPI.showUndeployLander(model);
     });
 
+    Moonlander.on("landers:deployLanderToNewDomain", function(attr){
+      landersAppAPI.deployLanderToNewDomain(attr);
+    });
+
     Moonlander.on("landers:showDeployToDomain", function(model){
       landersAppAPI.showDeployToDomain(model);
     });
+
+    
 
   });
 
