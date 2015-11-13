@@ -12,8 +12,12 @@ function(Moonlander, JobsGuiBaseModel){
 
       //when job is destroyed must look to see if there are any more
       var activeJobs = this.get("activeJobs");
-      activeJobs.on("finishedState", function(one, two, three){
-        me.trigger('destroy', me, me.collection);     
+      activeJobs.on("finishedState", function(model){
+    
+        if(model.get("action") === "undeployLanderFromDomain") {
+          me.trigger('destroy', me, me.collection);     
+        }
+
       });
     },
 

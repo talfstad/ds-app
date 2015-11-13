@@ -129,10 +129,14 @@ define(["app",
                           deployStatus = "deploying";
                         }
                       }
-                      //empty view passes not_deployed in as its arg
-                      else if(notDeployed === "not_deployed") {
+                      //active jobs is totally undefined then we're showing the empty view
+                      else if(!deployedDomainView.model.get("activeJobs")) {
                         deployStatus = "not_deployed";
                       }
+                      //empty view passes not_deployed in as its arg
+                      // else if(notDeployed === "not_deployed") {
+                      //   deployStatus = "not_deployed";
+                      // }
                     });
                     deployStatusView.model.set("deploy_status", deployStatus);
 

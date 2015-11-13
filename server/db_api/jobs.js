@@ -24,6 +24,45 @@ module.exports = function(db) {
         });
     },
 
+    finishedJobSuccessfully: function(user, finishedJobs, successCallback, errorCallback){
+      var user_id = user.id;
+
+      if(finishedJobs.length > 0) {
+        //build sql command
+        var finishedJobsValues = [true];
+
+        var updateSql = "UPDATE jobs SET done = ? WHERE ";
+        
+
+        for(var i=0 ; i<finishedJobs.length ; i++){
+          updateSql = updateSql.concat("id = ?");
+
+          if((i+1)<finishedJobs.length){
+            updateSql = updateSql.concat(" OR ");
+          }
+
+          finishedJobsValues.push(finishedJobs[i]);
+
+          //update processing *guaranteed bc returning to client only on success*
+          finishedJobs[i].processing = false;
+        }
+
+        console.log("TREV: " + updateSql + JSON.stringify(finishedJobsValues));
+
+        db.query(updateSql, finishedJobsValues, function(err, docs){
+          if(err){
+            console.log(err);
+            errorCallback("Error finishing processing on job in DB call")
+          } else {
+            //processing key updated above
+            successCallback();
+          }
+        });
+      } else {
+        successCallback();
+      }
+    },
+
     finishedProcessing: function(user, finishedJobs, successCallback, errorCallback){
       var user_id = user.id;
 

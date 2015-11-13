@@ -34,7 +34,7 @@ define(["app"], function(Moonlander){
           if(!modelAttributes.processing){
             //done, update original model
             var actualJobModel = me.updateCollection.get(modelAttributes.id);
-            actualJobModel.trigger("finishedState");
+            actualJobModel.trigger("finishedState", actualJobModel);
             //hack to get it to not send DELETE XHR
             delete actualJobModel.attributes.id;
             actualJobModel.destroy();

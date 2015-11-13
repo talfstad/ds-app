@@ -9,15 +9,26 @@ module.exports = function(db) {
 
       //insert into deployed_landers
 
-       db.query("INSERT INTO deployed_landers(user_id, lander_id, domain_id) VALUES (?, ?, ?);", [user_id, lander_id, domain_id], function(err, docs) {
+      db.query("INSERT INTO deployed_landers(user_id, lander_id, domain_id) VALUES (?, ?, ?);", [user_id, lander_id, domain_id], function(err, docs) {
         if (err) {
           console.log(err);
         } else {
           successCallback();
         }
-       });
-     },
+      });
+    },
 
+    undeployLanderFromDomain: function(user, lander_id, domain_id, successCallback) {
+      var user_id = user.id;
+
+      db.query("DELETE FROM deployed_landers WHERE user_id = ? AND lander_id = ? AND domain_id = ?", [user_id, lander_id, domain_id], function(err, docs) {
+        if (err) {
+          console.log(err);
+        } else {
+          successCallback();
+        }
+      });
+    },
 
     getAll: function(user, successCallback) {
 
@@ -246,6 +257,3 @@ module.exports = function(db) {
   }
 
 };
-
-
-

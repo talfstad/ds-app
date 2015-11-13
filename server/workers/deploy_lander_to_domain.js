@@ -17,6 +17,10 @@ module.exports = function(app, db) {
       //2. 
       console.log("successfully added to deployed landers");
 
+      var jobs = [attr.id];
+      db.jobs.finishedJobSuccessfully(user, jobs, function(){
+        console.log("updated job to finished")
+      }); 
 
     });
 
