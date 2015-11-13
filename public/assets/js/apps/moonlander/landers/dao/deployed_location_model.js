@@ -3,9 +3,18 @@ define(["app",
 function(Moonlander, JobsGuiBaseModel){
   var DeployedLocationModel = JobsGuiBaseModel.extend({
 
+    url: '/',
+
     initialize: function(){
+      var me = this;
       //call base class init
       JobsGuiBaseModel.prototype.initialize.apply(this);
+
+      //when job is destroyed must look to see if there are any more
+      var activeJobs = this.get("activeJobs");
+      activeJobs.on("finishedState", function(one, two, three){
+        me.trigger('destroy', me, me.collection);     
+      });
     },
 
   	defaults: {
@@ -15,20 +24,8 @@ function(Moonlander, JobsGuiBaseModel){
       //gui attributes
       //should default true since deployed_domains is where this model is used
       deploy_status: 'deployed'
-    },
+    }
 
-    showProcessingState: function() {
-      this.set("deploy_status", "deploying");
-    },
-
-    showFinishedState: function(jobThatFinished) {
-      this.set("deploy_status", "deployed");
-
-    },
-
-    showErrorState: function() {
-      this.set("deploy_status", "error");
-    }  
     
   });
 

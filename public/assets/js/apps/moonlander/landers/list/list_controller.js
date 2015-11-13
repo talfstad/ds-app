@@ -110,6 +110,10 @@ define(["app",
 
                   var deployedDomainsCollection = landerView.model.get("deployedLocations");
 
+                  deployedDomainsCollection.on("destroy", function(){
+                    deployedDomainsView.trigger("childview:updateParentLayout");
+                  });
+
                   var deployedDomainsView = new DeployedDomainsView({
                     collection: deployedDomainsCollection
                   });
