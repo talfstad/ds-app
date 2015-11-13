@@ -4,16 +4,21 @@ module.exports = function(app, db) {
 
   var config = require("../config");
 
-  module.deployLanderToDomain = function(attr) {
+  module.deployLanderToDomain = function(user, attr) {
     //add to deployed_landers table
-    var user = attr.user;
+    console.log(JSON.stringify(attr));
+    var user_id = user.id;
+    var lander_id = attr.lander_id;
+    var domain_id = attr.domain_id;
 
-    var lander_id = "";
-    var domain_id = "";
+    //1. add to deployed_landers
+    db.landers.deployLanderToDomain(user, lander_id, domain_id, function(){
 
-    console.log("model attributes: " + modelAttributes);
+      //2. 
+      console.log("successfully added to deployed landers");
 
-    db.landers.deployLanderToDomain(user, lander_id, domain_id);
+
+    });
 
     console.log("now starting deploy");
 

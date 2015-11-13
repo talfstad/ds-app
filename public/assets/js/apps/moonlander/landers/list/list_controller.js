@@ -12,12 +12,13 @@ define(["app",
     "/assets/js/apps/moonlander/landers/list/active_campaigns/views/active_campaigns_collection_view.js",
     "/assets/js/apps/moonlander/landers/dao/deployed_location_model.js",
     "/assets/js/jobs/jobs_model.js",
+    "/assets/js/apps/moonlander/landers/dao/deploy_status_model.js",
     "/assets/js/apps/moonlander/landers/list/views/list_layout_view.js"
   ],
   function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection,
     PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView, 
     DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLocationModel,
-    JobModel) {
+    JobModel, DeployStatusModel) {
     Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
       List.Controller = {
@@ -86,7 +87,10 @@ define(["app",
                 landersListView.children.each(function(landerView) {
 
                   var deployStatusView = new DeployStatusView({
-                    model: landerView.model
+                    model: new DeployStatusModel({
+                      id: landerView.model.get("id"),
+                      deploy_status: landerView.model.get("deploy_status")
+                    })
                   });
 
                   var campaignTabHandleView = new CampaignTabHandleView({

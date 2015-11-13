@@ -7,8 +7,16 @@ module.exports = function(db) {
     deployLanderToDomain: function(user, lander_id, domain_id, successCallback) {
       var user_id = user.id;
 
+      //insert into deployed_landers
 
-    },
+       db.query("INSERT INTO deployed_landers(user_id, lander_id, domain_id) VALUES (?, ?, ?);", [user_id, lander_id, domain_id], function(err, docs) {
+        if (err) {
+          console.log(err);
+        } else {
+          successCallback();
+        }
+       });
+     },
 
 
     getAll: function(user, successCallback) {
@@ -24,7 +32,7 @@ module.exports = function(db) {
 
 
       getActiveJobsForDeployedLocation = function(deployedLocation, callback) {
-        db.query("SELECT id,action,processing,done,error FROM jobs WHERE (user_id = ? AND action = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", [user_id, "undeployLanderFromDomain", deployedLocation.lander_id, deployedLocation.id, true],
+        db.query("SELECT id,action,processing,done,error FROM jobs WHERE (user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", [user_id, deployedLocation.lander_id, deployedLocation.id, true],
           function(err, dbActiveJobs) {
             callback(dbActiveJobs);
           });
@@ -238,3 +246,6 @@ module.exports = function(db) {
   }
 
 };
+
+
+

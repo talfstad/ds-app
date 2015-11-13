@@ -14,7 +14,7 @@ module.exports = function(app, db, passport) {
 
       var afterRegisterJob = function(registeredJobAttributes) {
         res.json(registeredJobAttributes);
-        WorkerController.startJob(registeredJobAttributes.action);
+        WorkerController.startJob(registeredJobAttributes.action, user, registeredJobAttributes);
       };
 
       var registerError = function(){};

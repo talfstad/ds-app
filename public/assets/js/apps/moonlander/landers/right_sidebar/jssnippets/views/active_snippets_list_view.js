@@ -18,6 +18,14 @@ define(["app",
         collectionEvents: {
           'change': 'render'
         },
+
+        onRender: function(){
+
+        },
+
+        onDestroy: function(){
+
+        },
         
         onDomRefresh: function(e) {
           //only fancy tree if have children
