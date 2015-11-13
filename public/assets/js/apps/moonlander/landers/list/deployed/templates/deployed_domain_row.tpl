@@ -1,5 +1,6 @@
 <td style="width: 20px"><%= viewIndex %></td>
 <td>
+  <%= deploy_status_gui %> 
   <a class="domain-link" target="_blank" href="http://www.hardbodiesandboners.org/campaign2/extreme"><%= domain %>/</a> 
 
       <select class="domain-endpoint-select form-control">

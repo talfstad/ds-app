@@ -10,20 +10,9 @@ function(Moonlander, JobsGuiBaseModel){
       //gui attributes
       //should default true since deployed_domains is where this model is used
       deploy_status: 'deployed'
-    },
+    }
 
-    processingState: function() {
-      this.set("deploy_status", "deploying");
-    },
-
-    finishedState: function(jobThatFinished) {
-      this.set("deploy_status", "deployed");
-
-    },
-
-    errorState: function() {
-      this.set("deploy_status", "error");
-    }  
+   
     
   });
 

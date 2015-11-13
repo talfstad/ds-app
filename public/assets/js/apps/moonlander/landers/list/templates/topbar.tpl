@@ -18,7 +18,7 @@
       <% if(total_not_deployed > 0) { %>
       
       <div>
-        <span class="badge-warning badge"><%= total_not_deployed %></span> Not Deployed
+        <span class="badge-danger badge"><%= total_not_deployed %></span> Not Deployed
       </div>
       
       <% } %>
