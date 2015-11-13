@@ -7,6 +7,7 @@ function(Moonlander, SidebarView, LanderModel, ActiveJsSnippetsListView){
 
     RightSidebar.Controller = {
       
+      //needed to make animations correct sets width etc. for initial opening
       loadLandersSideMenu: function(){
         Moonlander.landers.sidebarView = new SidebarView({
           model: new LanderModel()

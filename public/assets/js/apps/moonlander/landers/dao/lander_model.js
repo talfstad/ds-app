@@ -15,18 +15,7 @@ var LanderModel = Backbone.Model.extend({
     //gui update attributes
     deploy_status: 'deployed',
     active_campaigns_count: 0
-  },
-
-  validation: {
-      username: {
-        required: true,
-        msg: "is Required"
-      },
-      password: {
-        required: true,
-        msg: "is Required"
-      }
-    }
+  }
     
   });
   return LanderModel;

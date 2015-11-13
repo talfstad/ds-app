@@ -9,6 +9,7 @@
 
   exports.users = require('./users')(db);
   exports.landers = require('./landers')(db);
+  exports.campaigns = require('./campaigns')(db);
   exports.domains = require('./domains')(db);
   exports.updater = require('./updater')(db);
   exports.jobs = require('./jobs')(db);

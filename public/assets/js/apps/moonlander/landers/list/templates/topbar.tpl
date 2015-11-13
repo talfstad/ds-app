@@ -7,18 +7,33 @@
   </ol>
 
   <div class="right-stats"> 
+    <% 
+      var lander = "Lander"
+      if(total_not_deployed > 1) {
+        var lander = "Landers"
+      } 
+      var totalLander = "Lander"
+      if(total_landers > 1) {
+        totalLander = "Landers"
+      }
+      var totalDeployingLander = "Lander"
+      if(total_deploying > 1) {
+        totalDeployingLander = "Landers"
+      }
+    %>
+
     <% if(total_not_deployed == 0 && total_deploying == 0) { %>
 
-    <div>
+    <!-- <div>
       <span class="badge-success badge"><%= total_landers %></span> Deployed
-    </div>
+    </div> -->
 
     <% } else { %>
     
       <% if(total_not_deployed > 0) { %>
       
       <div>
-        <span class="badge-danger badge"><%= total_not_deployed %></span> Not Deployed
+        <span class="badge-warning badge"><%= total_not_deployed %></span> <%= lander %> Not Deployed
       </div>
       
       <% } %>
@@ -26,7 +41,7 @@
       <% if(total_deploying > 0) { %>
 
       <div>
-        <span class="badge-warning badge"><%= total_deploying %></span> Deploying
+        <span class="badge-warning badge"><%= total_deploying %></span> <%= totalDeployingLander %> Working
       </div>
        <% } %>
     
@@ -36,7 +51,7 @@
       <span class="badge-success badge">45</span> Deployed
     </div> -->
     <div>
-      <span class="badge-primary badge"><%= total_landers %></span> Total Landers
+      <span class="badge-primary badge"><%= total_landers %></span> Total <%= totalLander %>
     </div>
   </div>
 </div>

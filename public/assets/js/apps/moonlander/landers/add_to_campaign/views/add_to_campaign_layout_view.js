@@ -1,11 +1,11 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/deploy_to_domain/templates/deploy_to_domain_layout.tpl"
+    "tpl!/assets/js/apps/moonlander/landers/add_to_campaign/templates/add_to_campaign_layout.tpl"
   ],
-  function(Moonlander, DeployToDomainLayout) {
+  function(Moonlander, AddToCampaignLayoutTpl) {
 
-    Moonlander.module("LandersApp.Landers.DeployToDomain", function(DeployToDomain, Moonlander, Backbone, Marionette, $, _) {
+    Moonlander.module("LandersApp.Landers.AddToCampaign", function(AddToCampaign, Moonlander, Backbone, Marionette, $, _) {
 
-      DeployToDomain.Layout = Marionette.LayoutView.extend({
+      AddToCampaign.Layout = Marionette.LayoutView.extend({
 
         // id: "undeploy-lander-modal",
 
@@ -17,20 +17,20 @@ define(["app",
           "data-backdrop": "static"
         },
 
-        template: DeployToDomainLayout,
+        template: AddToCampaignLayoutTpl,
 
         regions: {
-          "domainsListRegion": ".domains-list-region"
+          "campaignsListRegion": ".campaigns-list-region"
         },
 
         events: {
-          "click .deploy-confirm": "confirmedToDeploy"
+          "click .add-campaign-confirm": "confirmedAddCampaign"
         },
 
-        confirmedToDeploy: function() {
+        confirmedAddCampaign: function() {
 
           //show error if no domain selected or if more than 1 is somehow selected
-          var selectedRow = $("#domains-list-datatable").find("tr.primary");
+          var selectedRow = $("#campaigns-list-datatable").find("tr.primary");
           if(selectedRow.length <= 0 || selectedRow.length > 1) {
             $(".alert").addClass("alert-danger").removeClass("alert-primary");
             var currentHtml = $(".alert span").html();
@@ -41,23 +41,23 @@ define(["app",
             }, 3000);
 
           } else {
-            var domainId = selectedRow.attr("data-domain-id");
-            var domain = selectedRow.text();
-            this.startDeployingToNewDomain(domainId, domain);
-            //add a row to the deployed domains thats deploying and trigger a start on the deployToDomain job
-            this.$el.modal("hide");
-          }        
+            // var domainId = selectedRow.attr("data-domain-id");
+            // var domain = selectedRow.text();
+            // this.startDeployingToNewDomain(domainId, domain);
+            // //add a row to the deployed domains thats deploying and trigger a start on the deployToDomain job
+            // this.$el.modal("hide");
+          }       
         },
 
-        startDeployingToNewDomain: function(domainId, domain){
-          var attrs = {
-            domain: domain,
-            id: domainId,
-            lander_id: this.model.get("id")
-          }
-          // triggers add row to deployed domains and starts job 
-          Moonlander.trigger("landers:deployLanderToNewDomain", attrs);
-        },
+        // startDeployingToNewDomain: function(domainId, domain){
+        //   var attrs = {
+        //     domain: domain,
+        //     id: domainId,
+        //     lander_id: this.model.get("id")
+        //   }
+        //   // triggers add row to deployed domains and starts job 
+        //   Moonlander.trigger("landers:deployLanderToNewDomain", attrs);
+        // },
 
         onRender: function() {
           var me = this;
@@ -90,5 +90,5 @@ define(["app",
       });
 
     });
-    return Moonlander.LandersApp.Landers.DeployToDomain.Layout;
+    return Moonlander.LandersApp.Landers.AddToCampaign.Layout;
   });

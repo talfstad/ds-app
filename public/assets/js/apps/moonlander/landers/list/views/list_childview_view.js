@@ -17,7 +17,8 @@ define(["app",
       childViewContainer: "table.deployed-domains-region",
 
       events: {
-        "click button.deploy-to-domain": "showDeployLanderToDomain"
+        "click button.deploy-to-domain": "showDeployLanderToDomain",
+        "click button.add-to-campaign": "showAddToCampaign"
       },
 
       regions: {
@@ -29,6 +30,10 @@ define(["app",
 
       showDeployLanderToDomain: function(){
         Moonlander.trigger("landers:showDeployToDomain", this.model);
+      },
+
+      showAddToCampaign: function(){
+        Moonlander.trigger("landers:showAddToCampaign", this.model);
       },
 
       onBeforeRender: function(){
@@ -102,8 +107,9 @@ define(["app",
 
             $(e.currentTarget).parent().find(".panel").addClass(".panel-info");
 
-
-            Moonlander.trigger('landers:opensidebar', me.model);
+            //pass a clone not the real model so everyone gets their own. no references for
+            //right sidebar, interferes with active snippets
+            Moonlander.trigger('landers:opensidebar', me.model.clone());
 
           });
 

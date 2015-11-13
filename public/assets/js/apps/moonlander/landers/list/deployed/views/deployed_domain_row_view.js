@@ -52,10 +52,10 @@ define(["app",
             this.model.set("deploy_status_gui", "");
           }
           else if(deployStatus === "deploying"){
-            this.model.set("deploy_status_gui", "DEPLOYING &mdash;");
+            this.model.set("deploy_status_gui", "<strong>DEPLOYING</strong> &mdash;");
           }
           else if(deployStatus === "undeploying"){
-            this.model.set("deploy_status_gui", "UNDEPLOYING &mdash;");
+            this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong> &mdash;");
           }
         },
 

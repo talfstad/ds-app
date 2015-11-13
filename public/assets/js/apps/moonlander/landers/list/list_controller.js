@@ -87,10 +87,11 @@ define(["app",
                 landersListView.children.each(function(landerView) {
 
                   var deployStatusView = new DeployStatusView({
-                    model: new DeployStatusModel({
-                      id: landerView.model.get("id"),
-                      deploy_status: landerView.model.get("deploy_status")
-                    })
+                    // model: new DeployStatusModel({
+                    //   id: landerView.model.get("id"),
+                    //   deploy_status: landerView.model.get("deploy_status")
+                    // })
+                    model: landerView.model
                   });
 
                   var campaignTabHandleView = new CampaignTabHandleView({
@@ -138,8 +139,7 @@ define(["app",
                       //   deployStatus = "not_deployed";
                       // }
                     });
-                    deployStatusView.model.set("deploy_status", deployStatus);
-
+                    landerView.model.set("deploy_status", deployStatus);
                   });
 
                   //whenever the deployed status view is updated update deployed totals
@@ -194,7 +194,7 @@ define(["app",
         //take a landerID and domainID and deploy the domain
         //to that lander by adding it to the collection. This triggers
         //a new job to be created, etc.
-        deployDomainToLander: function(modelAttributes){
+        deployLanderToDomain: function(modelAttributes){
           //we're deploying!
           modelAttributes.deploy_status = "deploying";
 
