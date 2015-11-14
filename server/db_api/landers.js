@@ -34,10 +34,34 @@ module.exports = function(db) {
 
       var user_id = user.id;
 
+      getAllDomainIdsForCampaign = function(campaign, callback) {
+        db.query("SELECT a.domain_id,b.domain FROM campaigns_with_domains a JOIN domains b ON a.domain_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.id],
+          function(err, dbDomainIdsForCampaign) {
+            console.log("domains: " + JSON.stringify(dbDomainIdsForCampaign));
+            callback(dbDomainIdsForCampaign);
+          });
+
+      };
+
       var getActiveCampaignsForLander = function(lander, callback) {
         db.query("SELECT a.id,a.name,b.lander_id from campaigns a JOIN landers_with_campaigns b ON a.id=b.campaign_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
           function(err, dbActiveCampaigns) {
-            callback(dbActiveCampaigns);
+
+            if (dbActiveCampaigns.length <= 0) {
+              callback([]);
+            } else {
+              var idx = 0;
+              for (var i = 0; i < dbActiveCampaigns.length; i++) {
+                getAllDomainIdsForCampaign(dbActiveCampaigns[i], function(currentDomains) {
+                  var deployedLander = dbActiveCampaigns[idx];
+                  deployedLander.currentDomains = currentDomains;
+
+                  if (++idx == dbActiveCampaigns.length) {
+                    callback(dbActiveCampaigns);
+                  }
+                });
+              }
+            }
           });
       };
 

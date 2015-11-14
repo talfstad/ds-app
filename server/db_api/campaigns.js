@@ -4,20 +4,56 @@ module.exports = function(db) {
 
   return {
 
+    addActiveCampaign: function(user, modelAttributes, successCallback) {
+      var user_id = user.id;
+
+      // args: lander_id, campaign_id, user_id
+      db.query("CALL add_campaign_to_lander(?, ?, ?)", [modelAttributes.lander_id, modelAttributes.campaign_id, user_id], function(err, docs) {
+        if (err) {
+          console.log(err);
+          callback("Error adding active campaign");
+        } else {
+          console.log("TREV: " + JSON.stringify(docs));
+          modelAttributes.currentDomains = docs[0];
+          modelAttributes.id = modelAttributes.campaign_id;
+          successCallback(modelAttributes);
+        }
+      });
+    },
+
     getAll: function(user, successCallback) {
 
       var user_id = user.id;
 
-      var getAllCampaignsDb = function(gotCampaignsCallback) {
-        db.query("SELECT id,name FROM campaigns WHERE user_id = ?", [user_id], function(err, dbCampaigns) {
-          if (err) {
-            throw err;
-          } else {
-            gotCampaignsCallback(dbCampaigns);
-          }
-        });
+      getAllDomainIdsForCampaign = function(campaign, callback) {
+        db.query("SELECT domain_id FROM campaigns_with_domains WHERE user_id = ? AND campaign_id = ?", [user_id, campaign.id],
+          function(err, dbDomainIdsForCampaign) {
+            callback(dbDomainIdsForCampaign);
+          });
       };
 
+      var getAllCampaignsDb = function(callback) {
+        db.query("SELECT id,name FROM campaigns WHERE user_id = ?", [user_id],
+          function(err, dbCampaigns) {
+            if (dbCampaigns.length <= 0) {
+              callback([]);
+            } else {
+              var idx = 0;
+              for (var i = 0; i < dbCampaigns.length; i++) {
+                getAllDomainIdsForCampaign(dbCampaigns[i], function(campaignsDomainIds) {
+
+                  var deployedCampaign = dbCampaigns[idx];
+                  deployedCampaign.campaignsDomainIds = campaignsDomainIds;
+
+                  if (++idx == dbCampaigns.length) {
+                    callback(dbCampaigns);
+                  }
+
+                });
+              }
+            }
+          });
+      };
 
       //call to get all and return rows
       getAllCampaignsDb(function(campaigns) {

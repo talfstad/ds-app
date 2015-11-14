@@ -24,6 +24,9 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
       deployLanderToNewDomain: function(attr){
         ListController.deployLanderToDomain(attr);
       },
+      addCampaignToLander: function(attr){
+        ListController.addCampaignToLander(attr);
+      },
       showEditLander: function(model){
         EditController.showEditLander(model);
       },
@@ -70,6 +73,10 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
 
     Moonlander.on("landers:deployLanderToNewDomain", function(attr){
       landersAppAPI.deployLanderToNewDomain(attr);
+    });
+
+    Moonlander.on("landers:addCampaignToLander", function(attr){
+      landersAppAPI.addCampaignToLander(attr);
     });
 
     Moonlander.on("landers:showDeployToDomain", function(model){

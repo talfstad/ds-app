@@ -13,12 +13,13 @@ define(["app",
     "/assets/js/apps/moonlander/landers/dao/deployed_location_model.js",
     "/assets/js/jobs/jobs_model.js",
     "/assets/js/apps/moonlander/landers/dao/deploy_status_model.js",
+    "/assets/js/apps/moonlander/landers/dao/active_campaign_model.js",
     "/assets/js/apps/moonlander/landers/list/views/list_layout_view.js"
   ],
   function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection,
     PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView, 
     DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLocationModel,
-    JobModel, DeployStatusModel) {
+    JobModel, DeployStatusModel, ActiveCampaignModel) {
     Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
       List.Controller = {
@@ -194,6 +195,7 @@ define(["app",
         //take a landerID and domainID and deploy the domain
         //to that lander by adding it to the collection. This triggers
         //a new job to be created, etc.
+        // lander = optional!
         deployLanderToDomain: function(modelAttributes){
           //we're deploying!
           modelAttributes.deploy_status = "deploying";
@@ -207,9 +209,13 @@ define(["app",
 
           //create job and add to models activeJobs
           var jobModel = new JobModel(jobAttributes);
-
-          var lander = this.filteredLanderCollection.get(modelAttributes.lander_id);
-          if(!lander) return false;
+          
+          //can pass lander optional
+          var landerModel = modelAttributes.lander_model;
+          if(!landerModel){
+            landerModel = this.filteredLanderCollection.get(modelAttributes.lander_id);
+          }
+          if(!landerModel) return false;
 
           //create the deployed location model
           var domainModel = new DeployedLocationModel(modelAttributes);
@@ -219,9 +225,34 @@ define(["app",
           activeJobs.add(jobModel);
           Moonlander.trigger("job:start", jobModel);    
 
-          var deployedLocations = lander.get("deployedLocations");
+          var deployedLocations = landerModel.get("deployedLocations");
           deployedLocations.add(domainModel);
 
+        },
+
+        addCampaignToLander: function(modelAttributes){
+          var me = this;
+          var addedCampaignSuccessCallback = function(activeCampaignModel) {
+            // add the model to collection
+            var lander = me.filteredLanderCollection.get(modelAttributes.lander_id);
+            var activeCampaignsCollection = lander.get("activeCampaigns");
+
+            activeCampaignsCollection.add(activeCampaignModel);
+
+            //trigger the deploy domains for the domains
+
+          };
+          var addedCampaignErrorCallback = function() {
+
+          };
+          //add the campaign to the lander first, on success close dialog
+          var campaignModel = new ActiveCampaignModel(modelAttributes);
+            
+          // create the model for activeCampaign model. make sure it saves to
+          // /api/active_campaigns
+          campaignModel.save({}, {success: addedCampaignSuccessCallback, error: addedCampaignErrorCallback})
+
+         
         }
       }
     });

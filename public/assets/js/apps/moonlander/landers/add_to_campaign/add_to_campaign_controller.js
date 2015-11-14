@@ -47,9 +47,11 @@ define(["app",
 
 
 
-          addLanderToCampaignLayout.on("addLanderToCampaign", function(model) {
+          addLanderToCampaignLayout.on("addLanderToCampaign", function(campaignId, campaign) {
+            
 
 
+            
           });
 
         }
