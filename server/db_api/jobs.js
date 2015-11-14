@@ -29,9 +29,9 @@ module.exports = function(db) {
 
       if(finishedJobs.length > 0) {
         //build sql command
-        var finishedJobsValues = [true];
+        var finishedJobsValues = [true, false];
 
-        var updateSql = "UPDATE jobs SET done = ? WHERE ";
+        var updateSql = "UPDATE jobs SET done = ?, processing = ? WHERE ";
         
 
         for(var i=0 ; i<finishedJobs.length ; i++){
@@ -47,7 +47,6 @@ module.exports = function(db) {
           finishedJobs[i].processing = false;
         }
 
-        console.log("TREV: " + updateSql + JSON.stringify(finishedJobsValues));
 
         db.query(updateSql, finishedJobsValues, function(err, docs){
           if(err){

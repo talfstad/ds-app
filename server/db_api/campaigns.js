@@ -13,7 +13,6 @@ module.exports = function(db) {
           console.log(err);
           callback("Error adding active campaign");
         } else {
-          console.log("TREV: " + JSON.stringify(docs));
           modelAttributes.currentDomains = docs[0];
           modelAttributes.id = modelAttributes.campaign_id;
           successCallback(modelAttributes);

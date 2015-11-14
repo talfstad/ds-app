@@ -37,7 +37,6 @@ module.exports = function(db) {
       getAllDomainIdsForCampaign = function(campaign, callback) {
         db.query("SELECT a.domain_id,b.domain FROM campaigns_with_domains a JOIN domains b ON a.domain_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.id],
           function(err, dbDomainIdsForCampaign) {
-            console.log("domains: " + JSON.stringify(dbDomainIdsForCampaign));
             callback(dbDomainIdsForCampaign);
           });
 
