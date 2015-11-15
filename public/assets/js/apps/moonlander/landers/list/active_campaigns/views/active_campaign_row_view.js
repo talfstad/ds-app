@@ -10,8 +10,23 @@ define(["app",
         tagName: "tr",
         className: "info pb13",
 
+        events: {
+          "click .remove-campaign": "showRemoveLanderFromCampaignDialog"
+        },
+
+        showRemoveLanderFromCampaignDialog: function(e){
+          e.preventDefault();
+          e.stopPropagation();
+
+          Moonlander.trigger("landers:showRemoveLanderFromCampaignDialog", this.model);
+        },
+
         modelEvents: {
           "change": "render"
+        },
+
+        onDestroy: function() {
+          this.trigger("updateParentLayout", 'hi');
         },
 
         onRender: function() {

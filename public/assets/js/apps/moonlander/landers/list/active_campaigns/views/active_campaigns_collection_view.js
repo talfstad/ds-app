@@ -10,6 +10,7 @@ define(["app",
         //pass the deployed list its rendered index for # column
         childViewOptions: function(model) {
           model.set('viewIndex', parseInt(this.collection.indexOf(model))+1);
+          model.set("landerName", this.collection.landerName);
         },
 
         childView: ActiveCampaignRowView,

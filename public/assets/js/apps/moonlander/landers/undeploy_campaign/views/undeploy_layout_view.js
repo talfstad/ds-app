@@ -1,9 +1,9 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/undeploy/templates/undeploy_layout.tpl"
+    "tpl!/assets/js/apps/moonlander/landers/undeploy_campaign/templates/undeploy_layout.tpl"
   ],
   function(Moonlander, UndeployLayoutTemplate) {
 
-    Moonlander.module("LandersApp.Landers.Undeploy", function(Undeploy, Moonlander, Backbone, Marionette, $, _) {
+    Moonlander.module("LandersApp.Landers.List.Campaign.Undeploy", function(Undeploy, Moonlander, Backbone, Marionette, $, _) {
 
       Undeploy.Layout = Marionette.LayoutView.extend({
 
@@ -24,11 +24,11 @@ define(["app",
         },
 
         events: {
-          "click .undeploy-confirm": "confirmedToUndeploy"
+          "click .undeploy-confirm": "confirmedRemoveCampaignFromLander"
         },
 
-        confirmedToUndeploy: function() {
-          this.trigger("undeployLanderFromDomain", this.model);      
+        confirmedRemoveCampaignFromLander: function() {
+          this.trigger("removeCampaignFromLander", this.model);      
         },
 
         onRender: function() {
@@ -62,5 +62,5 @@ define(["app",
       });
 
     });
-    return Moonlander.LandersApp.Landers.Undeploy.Layout;
+    return Moonlander.LandersApp.Landers.List.Campaign.Undeploy.Layout;
   });

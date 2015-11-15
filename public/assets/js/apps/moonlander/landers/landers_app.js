@@ -4,11 +4,11 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
   "/assets/js/apps/moonlander/landers/edit/edit_controller.js",
   "/assets/js/apps/moonlander/landers/deploy_to_domain/deploy_to_domain_controller.js",
   "/assets/js/apps/moonlander/landers/add_to_campaign/add_to_campaign_controller.js",
-  "/assets/js/apps/moonlander/landers/undeploy/undeploy_controller.js"
-  // "/assets/js/apps/moonlander/left_nav/left_nav_app.js"
+  "/assets/js/apps/moonlander/landers/undeploy_lander/undeploy_controller.js",
+  "/assets/js/apps/moonlander/landers/undeploy_campaign/undeploy_controller.js"
   ], 
 function(Moonlander, ListController, CommonLogin, SidemenuController, EditController, DeployToDomainController, 
-  AddToCampaignController, UndeployController){
+  AddToCampaignController, UndeployLanderController, UndeployCampaignController){
   Moonlander.module("LandersApp", function(LandersApp, Moonlander, Backbone, Marionette, $, _){
 
     var landersAppAPI = {
@@ -37,7 +37,10 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
         AddToCampaignController.showAddToCampaign(model);
       },
       showUndeployLander: function(model){
-        UndeployController.showUndeployLander(model);
+        UndeployLanderController.showUndeployLander(model);
+      },
+      showRemoveLanderFromCampaignDialog: function(model){
+        UndeployCampaignController.showRemoveLanderFromCampaignDialog(model);
       },
       loadLandersSideMenu: function(d){
         SidemenuController.loadLandersSideMenu();
@@ -69,6 +72,10 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
 
     Moonlander.on("landers:showUndeploy", function(model){
       landersAppAPI.showUndeployLander(model);
+    });
+
+    Moonlander.on("landers:showRemoveLanderFromCampaignDialog", function(model){
+      landersAppAPI.showRemoveLanderFromCampaignDialog(model);
     });
 
     Moonlander.on("landers:deployLanderToNewDomain", function(attr){

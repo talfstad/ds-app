@@ -1,8 +1,8 @@
 define(["app",
-        "/assets/js/apps/moonlander/landers/undeploy/views/undeploy_layout_view.js",
+        "/assets/js/apps/moonlander/landers/undeploy_lander/views/undeploy_layout_view.js",
         "/assets/js/jobs/jobs_model.js"], 
 function(Moonlander, UndeployLayoutView, JobModel){
-  Moonlander.module("LandersApp.Landers.Undeploy", function(Undeploy, Moonlander, Backbone, Marionette, $, _){
+  Moonlander.module("LandersApp.Landers.List.Lander.Undeploy", function(Undeploy, Moonlander, Backbone, Marionette, $, _){
 
     Undeploy.Controller = {
       
@@ -38,5 +38,5 @@ function(Moonlander, UndeployLayoutView, JobModel){
     }
   });
 
-  return Moonlander.LandersApp.Landers.Undeploy.Controller;
+  return Moonlander.LandersApp.Landers.List.Lander.Undeploy.Controller;
 });

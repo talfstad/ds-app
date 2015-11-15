@@ -5,7 +5,7 @@
      
       <div style="float: right; margin-right: 10px">
         <a class="undeploy" data-domainId="df" data-domainName="fd" href="#">
-          <span class="fa fa-trash-o"></span>
+          <span class="remove-campaign fa fa-trash-o"></span>
         </a>
       </div>
 </td>

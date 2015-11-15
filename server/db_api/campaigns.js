@@ -4,16 +4,57 @@ module.exports = function(db) {
 
   return {
 
+    removeFromLandersWithCampaigns: function(user, id, successCallback){
+      var user_id = user.id;
+
+      db.query("DELETE FROM landers_with_campaigns WHERE user_id = ? AND id = ?", [user_id, id],
+        function(err, dbSuccessDelete) {
+          
+          successCallback(dbSuccessDelete);
+      
+        });
+
+
+    },
+
     addActiveCampaign: function(user, modelAttributes, successCallback) {
       var user_id = user.id;
 
       // args: lander_id, campaign_id, user_id
+
+      // [
+      //   [{
+      //     "LAST_INSERT_ID()": 48
+      //   }],
+      //   [{
+      //     "domain_id": 1,
+      //     "domain": "hardbodiesandboners.org"
+      //   }, {
+      //     "domain_id": 2,
+      //     "domain": "weightlosskey.com"
+      //   }, {
+      //     "domain_id": 3,
+      //     "domain": "notdeployed.com"
+      //   }], {
+      //     "fieldCount": 0,
+      //     "affectedRows": 0,
+      //     "insertId": 0,
+      //     "serverStatus": 34,
+      //     "warningCount": 0,
+      //     "message": "",
+      //     "protocol41": true,
+      //     "changedRows": 0
+      //   }
+      // ]
+
+
       db.query("CALL add_campaign_to_lander(?, ?, ?)", [modelAttributes.lander_id, modelAttributes.campaign_id, user_id], function(err, docs) {
         if (err) {
           console.log(err);
           callback("Error adding active campaign");
         } else {
-          modelAttributes.currentDomains = docs[0];
+          modelAttributes.active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
+          modelAttributes.currentDomains = docs[1];
           modelAttributes.id = modelAttributes.campaign_id;
           successCallback(modelAttributes);
         }

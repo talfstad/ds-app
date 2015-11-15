@@ -43,7 +43,7 @@ module.exports = function(db) {
       };
 
       var getActiveCampaignsForLander = function(lander, callback) {
-        db.query("SELECT a.id,a.name,b.lander_id from campaigns a JOIN landers_with_campaigns b ON a.id=b.campaign_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
+        db.query("SELECT a.id, b.id AS active_campaign_id, a.name,b.lander_id from campaigns a JOIN landers_with_campaigns b ON a.id=b.campaign_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
           function(err, dbActiveCampaigns) {
 
             if (dbActiveCampaigns.length <= 0) {

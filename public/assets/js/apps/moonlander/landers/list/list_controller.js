@@ -100,6 +100,8 @@ define(["app",
                   });
 
                   var activeCampaignsCollection = landerView.model.get("activeCampaigns");
+                  //set landername to be used by campaign models dialog
+                  activeCampaignsCollection.landerName = landerView.model.get("name");
 
                   var activeCampaignsView = new ActiveCampaignsView({
                     collection: activeCampaignsCollection
@@ -107,7 +109,9 @@ define(["app",
 
                   activeCampaignsView.on("childview:updateParentLayout", function(childView, options){
                     //update the campaign count for lander
-                    campaignTabHandleView.model.set("active_campaigns_count", this.children.length);
+                    var length = this.children.length;
+                    if(childView.isDestroyed) --length;
+                    campaignTabHandleView.model.set("active_campaigns_count", length);
                   });
 
                   var deployedDomainsCollection = landerView.model.get("deployedLocations");
