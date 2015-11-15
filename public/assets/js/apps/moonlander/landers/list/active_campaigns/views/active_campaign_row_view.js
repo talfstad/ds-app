@@ -26,7 +26,7 @@ define(["app",
         },
 
         onDestroy: function() {
-          this.trigger("updateParentLayout", 'hi');
+          this.trigger("updateParentLayout", this.model);
         },
 
         onRender: function() {

@@ -6,7 +6,6 @@ module.exports = function(app, db) {
 
   module.undeployLanderFromDomain = function(user, attr) {
     //add to deployed_landers table
-    console.log("TREV" + JSON.stringify(attr));
     var user_id = user.id;
     var lander_id = attr.lander_id;
     var domain_id = attr.domain_id;

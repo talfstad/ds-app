@@ -27,7 +27,7 @@ function(Moonlander, UndeployLayoutView, JobModel){
             success: function(model, response) {
   
               //on success remove the active campaign from the collection it belongs to
-              
+              Moonlander.trigger("landers:removeCampaignFromLander", model);
    
               //this triggers a remove on the collection which we can make cause an undeploy of the landers
               //belonging to that collection

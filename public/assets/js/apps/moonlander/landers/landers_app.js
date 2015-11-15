@@ -42,6 +42,9 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
       showRemoveLanderFromCampaignDialog: function(model){
         UndeployCampaignController.showRemoveLanderFromCampaignDialog(model);
       },
+      removeCampaignFromLander: function(campaignModel){
+        ListController.removeCampaignFromLander(campaignModel);
+      },
       loadLandersSideMenu: function(d){
         SidemenuController.loadLandersSideMenu();
       },
@@ -80,6 +83,10 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
 
     Moonlander.on("landers:deployLanderToNewDomain", function(attr){
       landersAppAPI.deployLanderToNewDomain(attr);
+    });
+
+    Moonlander.on("landers:removeCampaignFromLander", function(campaignModel){
+      landersAppAPI.removeCampaignFromLander(campaignModel);
     });
 
     Moonlander.on("landers:addCampaignToLander", function(attr){

@@ -17,7 +17,7 @@ define(["app",
     "/assets/js/apps/moonlander/landers/list/views/list_layout_view.js"
   ],
   function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection,
-    PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView, 
+    PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView,
     DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLocationModel,
     JobModel, DeployStatusModel, ActiveCampaignModel) {
     Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
@@ -47,7 +47,7 @@ define(["app",
               filterFunction: function(filterCriterion) {
                 var criterion = filterCriterion.toLowerCase();
                 return function(lander) {
-                  if (lander.get('name').toLowerCase().indexOf(criterion) !== -1){
+                  if (lander.get('name').toLowerCase().indexOf(criterion) !== -1) {
                     // || lander.get('last_updated').toLowerCase().indexOf(criterion) !== -1) {
                     // || lander.get('phoneNumber').toLowerCase().indexOf(criterion) !== -1){
                     return lander;
@@ -83,7 +83,7 @@ define(["app",
             me.filteredLanderCollection.on("reset", function(collection) {
 
               var filteredCollection = this;
-            
+
               if (this.length > 0) {
                 landersListView.children.each(function(landerView) {
 
@@ -107,16 +107,16 @@ define(["app",
                     collection: activeCampaignsCollection
                   })
 
-                  activeCampaignsView.on("childview:updateParentLayout", function(childView, options){
+                  activeCampaignsView.on("childview:updateParentLayout", function(childView, options) {
                     //update the campaign count for lander
                     var length = this.children.length;
-                    if(childView.isDestroyed) --length;
+                    if (childView.isDestroyed) --length;
                     campaignTabHandleView.model.set("active_campaigns_count", length);
                   });
 
                   var deployedDomainsCollection = landerView.model.get("deployedLocations");
 
-                  deployedDomainsCollection.on("destroy", function(){
+                  deployedDomainsCollection.on("destroy", function() {
                     deployedDomainsView.trigger("childview:updateParentLayout");
                   });
 
@@ -129,14 +129,14 @@ define(["app",
                   deployedDomainsView.on("childview:updateParentLayout", function(childView, notDeployed, three) {
                     //update deploy status view
                     var deployStatus = "deployed";
-                    this.children.each(function(deployedDomainView){
-                      if(deployedDomainView.model.get("activeJobs")) {
-                        if(deployedDomainView.model.get("activeJobs").length > 0) {
+                    this.children.each(function(deployedDomainView) {
+                      if (deployedDomainView.model.get("activeJobs")) {
+                        if (deployedDomainView.model.get("activeJobs").length > 0) {
                           deployStatus = "deploying";
                         }
                       }
                       //active jobs is totally undefined then we're showing the empty view
-                      else if(!deployedDomainView.model.get("activeJobs")) {
+                      else if (!deployedDomainView.model.get("activeJobs")) {
                         deployStatus = "not_deployed";
                       }
                       //empty view passes not_deployed in as its arg
@@ -200,7 +200,7 @@ define(["app",
         //to that lander by adding it to the collection. This triggers
         //a new job to be created, etc.
         // lander = optional!
-        deployLanderToDomain: function(modelAttributes){
+        deployLanderToDomain: function(modelAttributes) {
           //we're deploying!
           modelAttributes.deploy_status = "deploying";
 
@@ -213,13 +213,13 @@ define(["app",
 
           //create job and add to models activeJobs
           var jobModel = new JobModel(jobAttributes);
-          
+
           //can pass lander optional
           var landerModel = modelAttributes.lander_model;
-          if(!landerModel){
+          if (!landerModel) {
             landerModel = this.filteredLanderCollection.get(modelAttributes.lander_id);
           }
-          if(!landerModel) return false;
+          if (!landerModel) return false;
 
           //create the deployed location model
           var domainModel = new DeployedLocationModel(modelAttributes);
@@ -227,14 +227,14 @@ define(["app",
           var activeJobs = domainModel.get("activeJobs");
 
           activeJobs.add(jobModel);
-          Moonlander.trigger("job:start", jobModel);    
+          Moonlander.trigger("job:start", jobModel);
 
           var deployedLocations = landerModel.get("deployedLocations");
           deployedLocations.add(domainModel);
 
         },
 
-        addCampaignToLander: function(modelAttributes){
+        addCampaignToLander: function(modelAttributes) {
           var me = this;
           var addedCampaignSuccessCallback = function(activeCampaignModel) {
             // add the model to collection
@@ -243,7 +243,6 @@ define(["app",
 
             activeCampaignsCollection.add(activeCampaignModel);
 
-            //trigger the deploy domains for the domains
 
           };
           var addedCampaignErrorCallback = function() {
@@ -251,12 +250,47 @@ define(["app",
           };
           //add the campaign to the lander first, on success close dialog
           var campaignModel = new ActiveCampaignModel(modelAttributes);
-            
+
           // create the model for activeCampaign model. make sure it saves to
           // /api/active_campaigns
-          campaignModel.save({}, {success: addedCampaignSuccessCallback, error: addedCampaignErrorCallback})
+          campaignModel.save({}, {
+            success: addedCampaignSuccessCallback,
+            error: addedCampaignErrorCallback
+          })
 
-         
+        },
+
+        //takes an array of objects, keys off domain_id to undeploy each domain
+        removeCampaignFromLander: function(campaignModel) {
+          var me = this;
+          var lander_id = campaignModel.get("lander_id");
+
+          //trigger undeploy job on each deployed domain that belongs to this campaign
+          $.each(campaignModel.get("currentDomains"), function(idx, domain) {
+            var domain_id = domain.domain_id;
+
+            var jobAttributes = {
+              action: "undeployLanderFromDomain",
+              lander_id: lander_id,
+              domain_id: domain_id,
+            }
+
+            //create job and add to models activeJobs
+
+            //get lander so we can add jobs to the deployed domains we want to undeploy
+            var lander = me.filteredLanderCollection.get(lander_id);
+            var deployedLocations = lander.get("deployedLocations");
+            var deployedDomainModel = deployedLocations.get(domain_id);
+            var activeJobsCollection = deployedDomainModel.get("activeJobs");
+
+            //create the new job model
+            var jobModel = new JobModel(jobAttributes);
+            activeJobsCollection.add(jobModel);
+
+            Moonlander.trigger("job:start", jobModel);
+
+          });
+
         }
       }
     });
