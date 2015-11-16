@@ -120,8 +120,14 @@ define(["app",
                     deployedDomainsView.trigger("childview:updateParentLayout");
                   });
 
+
                   var deployedDomainsView = new DeployedDomainsView({
                     collection: deployedDomainsCollection
+                  });
+
+                  //when campaign link selected go to camp tab (this is from deployed domains campaign name link)
+                  deployedDomainsView.on("childview:selectCampaignTab", function(one, two, three){
+                    landerView.$el.find("a[href=#campaigns-tab-id-" + landerView.model.get("id") + "]").tab('show')
                   });
 
                   //add events before show!

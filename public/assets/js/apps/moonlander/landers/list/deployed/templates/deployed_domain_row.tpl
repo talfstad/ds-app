@@ -13,8 +13,22 @@
       
       </select>
       <div style="float: right; margin-right: 10px">
-        <a class="undeploy" data-domainId="df" data-domainName="fd" href="#">
+
+        <% if(attached_campaigns_gui.length > 0) { %>
+
+          <% _.each(attached_campaigns_gui, function(campaignName, i){ %>
+          
+          <a class="campaign-tab-link" href="#">
+            <span><%= campaignName %></span></a><% if (i !== attached_campaigns_gui.length-1){ %>,<% } %>
+          <% }); %>
+
+
+        <% } else { %>
+        
+        <a class="undeploy" href="#">
           <span class="fa fa-trash-o"></span>
         </a>
+
+        <% } %>
       </div>
 </td>

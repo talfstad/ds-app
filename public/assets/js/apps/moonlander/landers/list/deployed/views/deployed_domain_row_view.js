@@ -29,7 +29,13 @@ define(["app",
         },
 
         events: {
-          "click .undeploy": "showUndeployLander"
+          "click .undeploy": "showUndeployLander",
+          "click .campaign-tab-link": "selectCampaignTab"
+        },
+
+        selectCampaignTab: function(e){
+          e.preventDefault();
+          this.trigger("selectCampaignTab");
         },
 
         onBeforeRender: function(){
@@ -57,6 +63,14 @@ define(["app",
           else if(deployStatus === "undeploying"){
             this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong> &mdash;");
           }
+
+
+          //add attached campaigns to template
+          var attachedCampaignNamesArray = [];
+          this.model.get("attachedCampaigns").each(function(campaign){
+            attachedCampaignNamesArray.push(campaign.get("name"));
+          });
+          this.model.set("attached_campaigns_gui", attachedCampaignNamesArray);
         },
 
         onRender: function() {

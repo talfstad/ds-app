@@ -16,7 +16,6 @@ define(["app",
           model.set('urlEndpoints', this.collection.urlEndpoints);
           model.set('landerName', this.collection.landerName);
         },
-
        
         onRender: function(){
 

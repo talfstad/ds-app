@@ -50,17 +50,22 @@ define(["app",
                       // campaigns current domains is in deployedLocations. if not then trigger a deploy on
                       // 
                       var deployedLocations = landerModel.get("deployedLocations");
-                      activeCampaignsCollection.on("add", function(model, campaignCollection, options) {
+                      activeCampaignsCollection.on("add", function(campaignModel, campaignCollection, options) {
                           // check all deployed locations make sure all campaign model deployed domains is deployed if not then trigger
                           // a deploy here TODO
-                          $.each(model.get("currentDomains"), function(idx, currentDomain) {
+                          $.each(campaignModel.get("currentDomains"), function(idx, currentDomain) {
                             
                             var isDeployed = false;
 
-                              deployedLocations.each(function(location) {
+                              deployedLocations.each(function(deployLocationModel) {
 
-                                if (currentDomain.domain_id === location.id) {
+                                if (currentDomain.domain_id === deployLocationModel.id) {
                                   isDeployed = true;
+
+                                  //add this campaign info to the deployed location so we can see that it belongs to
+                                  //this campaign in the deployed tab
+                                  var attachedCampaigns = deployLocationModel.get("attachedCampaigns");
+                                  attachedCampaigns.add(campaignModel);
                                 }
                               });
 

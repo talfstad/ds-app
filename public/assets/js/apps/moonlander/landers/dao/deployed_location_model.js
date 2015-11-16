@@ -1,6 +1,7 @@
 define(["app",
-        "/assets/js/jobs/jobs_base_gui_model.js"], 
-function(Moonlander, JobsGuiBaseModel){
+        "/assets/js/jobs/jobs_base_gui_model.js",
+        "/assets/js/apps/moonlander/landers/dao/attached_campaigns_collection.js"], 
+function(Moonlander, JobsGuiBaseModel, AttachedCampaignsCollection){
   var DeployedLocationModel = JobsGuiBaseModel.extend({
 
     url: '/',
@@ -19,6 +20,13 @@ function(Moonlander, JobsGuiBaseModel){
         }
 
       });
+
+
+      //build attachedCampaigns collection
+      var attachedCampaignsCollection = new AttachedCampaignsCollection();
+      this.set("attachedCampaigns", attachedCampaignsCollection);
+
+    
     },
 
   	defaults: {
