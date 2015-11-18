@@ -245,9 +245,22 @@ define(["app",
           var addedCampaignSuccessCallback = function(activeCampaignModel) {
             // add the model to collection
             var lander = me.filteredLanderCollection.get(modelAttributes.lander_id);
+            
             var activeCampaignsCollection = lander.get("activeCampaigns");
-
             activeCampaignsCollection.add(activeCampaignModel);
+
+            var deployedLocations = lander.get("deployedLocations");
+            
+            //add the model to the attachedCampaigns for the campaigns currentDomains
+            $.each(activeCampaignModel.get("currentDomains"), function(idx, domain){
+              var domain_id = domain.domain_id;
+
+              var deployedDomainModel = deployedLocations.get(domain_id);
+              var attachedCampaigns = deployedDomainModel.get("attachedCampaigns");
+
+              attachedCampaigns.add(activeCampaignModel);
+
+            });
 
 
           };
@@ -271,9 +284,17 @@ define(["app",
           var me = this;
           var lander_id = campaignModel.get("lander_id");
 
+          var lander = me.filteredLanderCollection.get(lander_id);
+          var deployedLocations = lander.get("deployedLocations");
+          
+
           //trigger undeploy job on each deployed domain that belongs to this campaign
           $.each(campaignModel.get("currentDomains"), function(idx, domain) {
             var domain_id = domain.domain_id;
+
+            var deployedDomainModel = deployedLocations.get(domain_id);
+            var activeJobsCollection = deployedDomainModel.get("activeJobs");
+
 
             var jobAttributes = {
               action: "undeployLanderFromDomain",
@@ -284,11 +305,7 @@ define(["app",
             //create job and add to models activeJobs
 
             //get lander so we can add jobs to the deployed domains we want to undeploy
-            var lander = me.filteredLanderCollection.get(lander_id);
-            var deployedLocations = lander.get("deployedLocations");
-            var deployedDomainModel = deployedLocations.get(domain_id);
-            var activeJobsCollection = deployedDomainModel.get("activeJobs");
-
+            
             //only undeploy lander if this is the only campaign attached to the domain
             var attachedCampaigns = deployedDomainModel.get("attachedCampaigns");
             if (attachedCampaigns.length <= 0) {
