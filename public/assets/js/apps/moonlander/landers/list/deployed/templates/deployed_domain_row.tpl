@@ -23,7 +23,7 @@
           <% }); %>
 
 
-        <% } else { %>
+        <% } else if(deploy_status === "deployed") { %>
         
         <a class="undeploy" href="#">
           <span class="fa fa-trash-o"></span>
