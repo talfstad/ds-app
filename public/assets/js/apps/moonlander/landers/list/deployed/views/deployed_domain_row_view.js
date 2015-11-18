@@ -17,6 +17,16 @@ define(["app",
           this.listenTo(activeJobsCollection, "destroy", function(){
             me.render();
           });
+
+          //render on attached campaigns change/destroy. needs to be rendered because
+          //changes the text
+          var attachedCampaigns = this.model.get("attachedCampaigns");
+          this.listenTo(attachedCampaigns, "destroy", function(){
+            me.render();
+          });
+          this.listenTo(attachedCampaigns, "change", function(){
+            me.render();
+          });
           
         },
 

@@ -126,7 +126,7 @@ define(["app",
                   });
 
                   //when campaign link selected go to camp tab (this is from deployed domains campaign name link)
-                  deployedDomainsView.on("childview:selectCampaignTab", function(one, two, three){
+                  deployedDomainsView.on("childview:selectCampaignTab", function(one, two, three) {
                     landerView.$el.find("a[href=#campaigns-tab-id-" + landerView.model.get("id") + "]").tab('show')
                   });
 
@@ -289,11 +289,17 @@ define(["app",
             var deployedDomainModel = deployedLocations.get(domain_id);
             var activeJobsCollection = deployedDomainModel.get("activeJobs");
 
-            //create the new job model
-            var jobModel = new JobModel(jobAttributes);
-            activeJobsCollection.add(jobModel);
+            //only undeploy lander if this is the only campaign attached to the domain
+            var attachedCampaigns = deployedDomainModel.get("attachedCampaigns");
+            if (attachedCampaigns.length <= 0) {
+              //create the new job model
+              var jobModel = new JobModel(jobAttributes);
+              activeJobsCollection.add(jobModel);
 
-            Moonlander.trigger("job:start", jobModel);
+              Moonlander.trigger("job:start", jobModel);
+
+            }
+
 
           });
 
