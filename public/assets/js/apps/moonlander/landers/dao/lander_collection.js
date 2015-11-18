@@ -59,7 +59,7 @@ define(["app",
 
                               deployedLocations.each(function(deployLocationModel) {
 
-                                if (currentDomain.domain_id === deployLocationModel.id) {
+                                if (currentDomain.domain_id == deployLocationModel.id) {
                                   isDeployed = true;
 
                                   //add this campaign info to the deployed location so we can see that it belongs to

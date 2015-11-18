@@ -24,7 +24,7 @@ define(["app",
           this.listenTo(attachedCampaigns, "destroy", function(){
             me.render();
           });
-          this.listenTo(attachedCampaigns, "change", function(){
+          this.listenTo(attachedCampaigns, "add", function(){
             me.render();
           });
           
