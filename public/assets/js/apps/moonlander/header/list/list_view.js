@@ -11,7 +11,7 @@ function(Moonlander, listTpl){
       events: {
         "click .go-domains": "goDomains",
         "click .go-campaigns": "goCampaigns",
-        "click .go-landers": "goLanders"
+        "click .go-landers": "goLanders",
       },
 
       goDomains: function(e){
@@ -39,6 +39,14 @@ function(Moonlander, listTpl){
 
       onDomRefresh: function() {
 
+        var me = this;
+
+        //done here instead of events because event isnt triggered on click the other way
+        //for some reason...
+        $("a.user-logout").click(function(e){
+          e.preventDefault();
+          Moonlander.trigger("user:logout");
+        });
           
       }
     });

@@ -5,7 +5,7 @@
         </a>
   <!-- <span id="toggle_sidemenu_l" class="ad ad-lines"></span> -->
 </div>
-  <ul style="margin-left: 35px" class="nav navbar-nav navbar-left">
+  <ul style="margin-left: 35px" class="landerds-nav nav navbar-nav navbar-left">
     <li class="landers">
       <a href="/landers" class="go-landers fw600">
         <img style="width: 20px" src="/assets/img/logos/landers_icon_e9e9e9.png"/>
@@ -35,10 +35,13 @@
       <span class="caret hidden-xs"></span>
     </a>
     <ul class="dropdown-menu list-group dropdown-persist w250" role="menu">
-      
+      <li class="dropdown-footer">
+        <a style="color: #666 !important" href="/account">
+        <span class="fa fa-cog pr5"></span>Your Account &amp; Settings </a>
+      </li>
       
       <li class="dropdown-footer">
-        <a href="/logout">
+        <a style="color: #666 !important" href="#" class="user-logout">
         <span class="fa fa-power-off pr5"></span> Logout </a>
       </li>
     </ul>

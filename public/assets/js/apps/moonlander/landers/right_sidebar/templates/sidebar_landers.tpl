@@ -7,18 +7,22 @@
           </div>
           <div class="panel-menu">
             <div class="btn-group">
-              <button type="button" style="width: 100px" class="btn btn-default btn-gradient dark"><span class="fa fa-copy pr5"></span>Duplicate</button>
-              <button type="button" style="width: 77px" class="lander-edit btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Edit</button>
-              <button type="button" style="width: 78px" class="save disabled btn btn-default btn-gradient dark"><span class="fa fa-save pr5"></span>Save</button>
+              <button type="button" style="width: 127px" class="btn btn-default btn-gradient dark"><span class="fa fa-copy pr5"></span>Duplicate</button>
+              <button type="button" style="width: 127px" class="lander-edit btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Edit Lander</button>
+              <!-- <button type="button" style="width: 78px" class="save disabled btn btn-default btn-gradient dark"><span class="fa fa-save pr5"></span>Save</button> -->
             </div>
           </div>
           
           <div class="admin-form panel-body pn pb25" style="font-size: 13px">
             <h5 class="title-divider text-muted mt20 mb10">Lander Name
             </h5>
-            <div class="bs-component">
-              <input type="text" id="lander-name-edit" name="name" class="form-control" value="<%= name %>">
+            <div class="input-group">
+              <input id="lander-name-edit" name="name" class="form-control" type="text" value="<%= name %>">
+              <span class="input-group-addon">
+              <a class="disabled" href="#">  <i title="Save Lander Name" class="fa fa-save"></i></a>
+              </span>
             </div>
+
             <h5 class="title-divider text-muted mt30 mb0"><span>#</span> <span style="margin-left: 20px">Deployment Optimizations</span>
               <a style="float: right" href="#">
                 <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>

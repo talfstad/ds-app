@@ -14,7 +14,7 @@
       </select>
       <div style="float: right; margin-right: 10px">
 
-        <% if(attached_campaigns_gui.length > 0) { %>
+        <% if(attached_campaigns_gui.length > 0 && deploy_status === "deployed") { %>
 
           <% _.each(attached_campaigns_gui, function(campaignName, i){ %>
           

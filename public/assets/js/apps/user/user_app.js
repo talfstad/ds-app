@@ -40,7 +40,7 @@ function(Moonlander, LoginController, CommonLogin, LoginModel){
         showIfNotLoggedIn(LoginController.showResetPasswordStep2, code);
       },
 
-      logout: function(){
+      logout: function(e){
         Moonlander.navigate("logout");
         LoginController.logout();
       }
@@ -54,6 +54,15 @@ function(Moonlander, LoginController, CommonLogin, LoginModel){
       userAppAPI.showResetPassword();
     });
 
+    Moonlander.commands.setHandler("user:logout", function(){
+      userAppAPI.logout();
+    });
+
+    Moonlander.on("user:logout", function(){
+      userAppAPI.logout();
+    });
+
+    
     Moonlander.addInitializer(function(){
       Moonlander.loginModel = new LoginModel();
       new UserApp.Router({
