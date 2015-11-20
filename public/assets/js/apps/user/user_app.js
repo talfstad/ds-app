@@ -40,6 +40,10 @@ function(Moonlander, LoginController, CommonLogin, LoginModel){
         showIfNotLoggedIn(LoginController.showResetPasswordStep2, code);
       },
 
+      showSettings: function(){
+        SettingsController.showSettingsModal();
+      },
+
       logout: function(e){
         Moonlander.navigate("logout");
         LoginController.logout();
@@ -60,6 +64,10 @@ function(Moonlander, LoginController, CommonLogin, LoginModel){
 
     Moonlander.on("user:logout", function(){
       userAppAPI.logout();
+    });
+
+    Moonlander.on("user:showSettings", function(){
+      userAppAPI.showSettings();
     });
 
     

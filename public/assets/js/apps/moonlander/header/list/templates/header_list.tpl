@@ -36,12 +36,12 @@
     </a>
     <ul class="dropdown-menu list-group dropdown-persist w250" role="menu">
       <li class="dropdown-footer">
-        <a style="color: #666 !important" href="/account">
+        <a style="color: #666 !important" href="/account" class="user-settings-account">
         <span class="fa fa-cog pr5"></span>Your Account &amp; Settings </a>
       </li>
       
       <li class="dropdown-footer">
-        <a style="color: #666 !important" href="#" class="user-logout">
+        <a style="color: #666 !important" href="/logout" class="user-logout">
         <span class="fa fa-power-off pr5"></span> Logout </a>
       </li>
     </ul>

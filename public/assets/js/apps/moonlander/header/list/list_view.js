@@ -11,7 +11,7 @@ function(Moonlander, listTpl){
       events: {
         "click .go-domains": "goDomains",
         "click .go-campaigns": "goCampaigns",
-        "click .go-landers": "goLanders",
+        "click .go-landers": "goLanders"
       },
 
       goDomains: function(e){
@@ -47,6 +47,13 @@ function(Moonlander, listTpl){
           e.preventDefault();
           Moonlander.trigger("user:logout");
         });
+
+        $("a.user-settings-account").click(function(e){
+          e.preventDefault();
+          Moonlander.trigger("user:showSettings");
+        });
+
+
           
       }
     });
