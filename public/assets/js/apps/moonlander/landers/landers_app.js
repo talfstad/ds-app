@@ -5,10 +5,11 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
   "/assets/js/apps/moonlander/landers/deploy_to_domain/deploy_to_domain_controller.js",
   "/assets/js/apps/moonlander/landers/add_to_campaign/add_to_campaign_controller.js",
   "/assets/js/apps/moonlander/landers/undeploy_lander/undeploy_controller.js",
-  "/assets/js/apps/moonlander/landers/undeploy_campaign/undeploy_controller.js"
+  "/assets/js/apps/moonlander/landers/undeploy_campaign/undeploy_controller.js",
+  "/assets/js/apps/moonlander/landers/add_new_lander/add_new_lander_controller.js"
   ], 
 function(Moonlander, ListController, CommonLogin, SidemenuController, EditController, DeployToDomainController, 
-  AddToCampaignController, UndeployLanderController, UndeployCampaignController){
+  AddToCampaignController, UndeployLanderController, UndeployCampaignController, AddNewLanderController){
   Moonlander.module("LandersApp", function(LandersApp, Moonlander, Backbone, Marionette, $, _){
 
     var landersAppAPI = {
@@ -35,6 +36,9 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
       },
       showAddToCampaign: function(model){
         AddToCampaignController.showAddToCampaign(model);
+      },
+      showAddNewLander: function(){
+        AddNewLanderController.showAddNewLander();
       },
       showUndeployLander: function(model){
         UndeployLanderController.showUndeployLander(model);
@@ -99,6 +103,10 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
 
     Moonlander.on("landers:showAddToCampaign", function(model){
       landersAppAPI.showAddToCampaign(model);
+    });
+
+    Moonlander.on("landers:showAddNewLander", function(){
+      landersAppAPI.showAddNewLander();
     });
   });
 

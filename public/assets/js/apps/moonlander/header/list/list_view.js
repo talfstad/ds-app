@@ -50,7 +50,12 @@ function(Moonlander, listTpl){
 
         $("a.user-settings-account").click(function(e){
           e.preventDefault();
+          
+          me.$el.find(".navbar-right li").removeClass("open")
+
+          //show settings now that dropdown is closed 
           Moonlander.trigger("user:showSettings");
+        
         });
 
 

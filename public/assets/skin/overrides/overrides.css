@@ -322,3 +322,13 @@ body.sb-l-o #topbar.affix,
 .navbar-brand:hover {
     opacity: 0.8;
 }
+
+.settings-topbar {
+    padding: 0px 21px;
+    background: #fafafa;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.kv-upload-progress .progress {
+    display: none;
+}

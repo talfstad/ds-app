@@ -23,9 +23,13 @@ requirejs.config({
     "pnotify.buttons": '/vendor/plugins/pnotify/pnotify',
     "fancytree": '/vendor/plugins/fancytree/jquery.fancytree-all',
     "typewatch": '/vendor/bower_installed/jquery-typewatch/jquery.typewatch',
-    "resizeReverse": '/vendor/plugins/jquery-ui.resizeReverse'
+    "resizeReverse": '/vendor/plugins/jquery-ui.resizeReverse',
+    "bootstrap.fileinput": '/vendor/bower_installed/bootstrap-fileinput/js/fileinput.min'
   },
   shim: {
+    "bootstrap.fileinput": {
+      deps: ['bootstrap', 'jquery']
+    },
     "datatables.net": {
       deps: ['jquery.ui']
     },

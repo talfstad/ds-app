@@ -11,6 +11,7 @@ module.exports = function(app, passport) {
     require('./domains')(app, passport);
     require('./live_updater')(app, passport);
     require('./jobs')(app, passport);
+    require('./user')(app, passport);
     
 
     app.get("*", function(req, res) {

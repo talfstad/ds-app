@@ -19,6 +19,16 @@ define(["app",
           topbarRegion: "#first-topbar"
         },
 
+        events: {
+          "click .add-new-lander-button": "showAddNewLander"
+        },
+
+        showAddNewLander: function(e){
+          e.preventDefault();
+
+          Moonlander.trigger("landers:showAddNewLander");
+        },
+
         filterLanders: function(filterValue) {
           this.trigger("landers:filterList", filterValue);
           Moonlander.trigger('landers:closesidebar');

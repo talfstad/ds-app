@@ -141,7 +141,7 @@ module.exports = function(db) {
     },
 
     getAmazonAPIKeys: function(user, callback) {
-        db.query("SELECT access_key_id, secret_access_key FROM users WHERE user=?;", [user], function(err, docs) {
+        db.query("SELECT aws_access_key_id, aws_secret_access_key FROM users WHERE user=?;", [user], function(err, docs) {
             if (docs[0]) {
                 if(!docs[0].access_key_id) {
                     callback("Amazon access key id not set.", null, null);
@@ -159,17 +159,18 @@ module.exports = function(db) {
     },
 
     getUserSettings: function(user, callback) {
-        db.query("SELECT access_key_id, secret_access_key, uid FROM users WHERE user=?;", [user], function(err, docs) {
+        var user_id = user.id;
+        db.query("SELECT aws_access_key_id, aws_secret_access_key, uid FROM users WHERE id=?;", [user_id], function(err, docs) {
             if(!err) {
                 var access_key_id = null;
                 var secret_access_key = null;
                 var uid = null;
                 if (docs[0]) {
-                    if(docs[0].access_key_id) {
-                        access_key_id = docs[0].access_key_id;
+                    if(docs[0].aws_access_key_id) {
+                        access_key_id = docs[0].aws_access_key_id;
                     }
-                    if(docs[0].secret_access_key) {
-                        secret_access_key = docs[0].secret_access_key;
+                    if(docs[0].aws_secret_access_key) {
+                        secret_access_key = docs[0].aws_secret_access_key;
                     }
                     if(docs[0].uid){
                         uid = docs[0].uid;

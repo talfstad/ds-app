@@ -17,20 +17,21 @@ module.exports = function(app, passport) {
       req.session.cookie.expires = false;
     }
 
-        var user = req.user.user;
+        var user = req.user;
         db.users.getUserSettings(user, function(error, access_key_id, secret_access_key, uid) {
             if(error) {
                 console.log(error);
                 utils.sendResponse(res, error, "settingsRetrieved");
             } else {
                 //TODO: encrypt these?
-                res.cookie('access_key_id', access_key_id, { signed: true, maxAge: config.cookieMaxAge  });
-                res.cookie('secret_access_key', secret_access_key, { signed: true, maxAge: config.cookieMaxAge  });
-                res.cookie('uid', uid, { signed: true, maxAge: config.cookieMaxAge  });
+                // res.cookie('access_key_id', access_key_id, { signed: true, maxAge: config.cookieMaxAge  });
+                // res.cookie('secret_access_key', secret_access_key, { signed: true, maxAge: config.cookieMaxAge  });
+                // res.cookie('uid', uid, { signed: true, maxAge: config.cookieMaxAge  });
                 res.json({
       		    username: req.user.user,
                     logged_in: true,
-                    settingsRetrieved: true
+                    aws_access_key_id: access_key_id,
+                    aws_secret_access_key: secret_access_key,
                 });
             }
         }); //getAmazonAPIKeys

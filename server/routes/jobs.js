@@ -10,16 +10,41 @@ module.exports = function(app, db, passport) {
 
       var jobModelAttributes = req.body;
 
-      //TODO: validate job model is valid to begin
-
       var afterRegisterJob = function(registeredJobAttributes) {
+        if(registeredJobAttributes.action === "addNewLander"){
+          //remove the stuff we dont want
+          delete registeredJobAttributes.landerFile;
+          delete registeredJobAttributes.file_id;
+          delete registeredJobAttributes.landerName;
+        }
+        //send response
         res.json(registeredJobAttributes);
+        //start job
         WorkerController.startJob(registeredJobAttributes.action, user, registeredJobAttributes);
       };
-
       var registerError = function(){};
 
-      db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob, registerError)
+
+      //special logic for add lander
+      if(jobModelAttributes.action === "addNewLander"){
+        jobModelAttributes.landerFile = req.files['landerFile'];
+
+        //need to save the lander first since its new to get an id before triggering register job
+        db.landers.saveNewLander(user, jobModelAttributes.landerName, function(landerAttributes){
+          jobModelAttributes.lander_id = landerAttributes.id;
+          db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob, registerError)
+        });
+
+      } else {
+        
+        //TODO: validate job model is valid to begin
+        db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob, registerError)
+      
+      }
+
+
+
+
 
 
     });

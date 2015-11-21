@@ -4,6 +4,29 @@ module.exports = function(db) {
 
   return {
 
+    saveNewLander: function(user, landerName, successCallback){
+
+      var user_id = user.id;
+      console.log("saving lander" + landerName + user_id);
+      
+      //param order: working_node_id, action, processing, lander_id, domain_id, campaign_id, user_id
+      db.query("CALL save_new_lander(?, ?)", [landerName, user_id],
+
+        function(err, docs) {
+          if (err) {
+            console.log(err);
+            errorCallback("Error registering new job in DB call");
+          } else {
+              var modelAttributes = {
+                name: landerName,
+                id: docs[0][0]["LAST_INSERT_ID()"]
+              };
+              successCallback(modelAttributes);
+          }
+        });
+
+    },
+
     deployLanderToDomain: function(user, lander_id, domain_id, successCallback) {
       var user_id = user.id;
 
