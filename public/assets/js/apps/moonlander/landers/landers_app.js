@@ -57,6 +57,9 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
       },
       closeSidebar: function(){
         SidemenuController.closeSidebar();
+      },
+      addLander: function(landerModel){
+        ListController.addLander(landerModel);
       }
     };
 
@@ -108,6 +111,11 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
     Moonlander.on("landers:showAddNewLander", function(){
       landersAppAPI.showAddNewLander();
     });
+
+    Moonlander.on("landers:list:addLander", function(landerModel){
+      landersAppAPI.addLander(landerModel);
+    });
+
   });
 
   return Moonlander.LandersApp;

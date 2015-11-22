@@ -39,15 +39,7 @@ define(["app",
 
           //on successful upload callback this function
           $("#new-lander-file").on('fileuploaded', function(e, data, previewId, index){
-
-
-            //// server returns job id, lander id
-            //2. create new jobmodel with jobid and action and lander id
-            //3. create a new lander model
-            //4. add jobmodel to lander model
-            //5. trigger add lander model on the landers collection
-
-
+            me.trigger("fileUploadComplete", data);
           });
 
           //just a very small amount of validation, all really done on server

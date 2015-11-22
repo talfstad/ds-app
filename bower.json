@@ -24,7 +24,9 @@
     "backbone.paginator": "2.0.2",
     "codemirror": "5.7.0",
     "moment": "2.10.6",
+    "moment-timezone": "0.4.1",
     "datatables": "1.10.10",
-    "bootstrap-fileinput": "4.2.8"
+    "bootstrap-fileinput": "4.2.8",
+    "jstz": "1af1e80448"
   }
 }

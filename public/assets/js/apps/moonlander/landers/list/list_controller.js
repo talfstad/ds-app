@@ -80,6 +80,11 @@ define(["app",
               model: me.filteredLanderCollection.state.gui
             });
 
+            //these lines only if we're rendering children not in reset...
+            // landersListView.on("childview:updateCollectionTotals", function(){
+            //   me.filteredLanderCollection.updateTotals();
+            // });
+
             me.filteredLanderCollection.on("reset", function(collection) {
 
               var filteredCollection = this;
@@ -245,14 +250,14 @@ define(["app",
           var addedCampaignSuccessCallback = function(activeCampaignModel) {
             // add the model to collection
             var lander = me.filteredLanderCollection.get(modelAttributes.lander_id);
-            
+
             var activeCampaignsCollection = lander.get("activeCampaigns");
             activeCampaignsCollection.add(activeCampaignModel);
 
             var deployedLocations = lander.get("deployedLocations");
-            
+
             //add the model to the attachedCampaigns for the campaigns currentDomains
-            $.each(activeCampaignModel.get("currentDomains"), function(idx, domain){
+            $.each(activeCampaignModel.get("currentDomains"), function(idx, domain) {
               var domain_id = domain.domain_id;
 
               var deployedDomainModel = deployedLocations.get(domain_id);
@@ -286,7 +291,7 @@ define(["app",
 
           var lander = me.filteredLanderCollection.get(lander_id);
           var deployedLocations = lander.get("deployedLocations");
-          
+
 
           //trigger undeploy job on each deployed domain that belongs to this campaign
           $.each(campaignModel.get("currentDomains"), function(idx, domain) {
@@ -305,7 +310,7 @@ define(["app",
             //create job and add to models activeJobs
 
             //get lander so we can add jobs to the deployed domains we want to undeploy
-            
+
             //only undeploy lander if this is the only campaign attached to the domain
             var attachedCampaigns = deployedDomainModel.get("attachedCampaigns");
             if (attachedCampaigns.length <= 0) {
@@ -320,6 +325,12 @@ define(["app",
 
           });
 
+        },
+
+        //add the lander model to the list
+        addLander: function(landerModel) {
+          this.filteredLanderCollection.add(landerModel);
+          this.filteredLanderCollection.resetWithOriginals();
         }
       }
     });

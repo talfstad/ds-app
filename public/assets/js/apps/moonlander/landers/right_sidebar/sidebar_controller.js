@@ -1,8 +1,8 @@
 define(["app",
         "/assets/js/apps/moonlander/landers/right_sidebar/sidebar_view.js",
-        "/assets/js/apps/moonlander/landers/dao/lander_model.js",
+        "/assets/js/apps/moonlander/landers/dao/sidebar_model.js",
         "/assets/js/apps/moonlander/landers/right_sidebar/jssnippets/views/active_snippets_list_view.js"], 
-function(Moonlander, SidebarView, LanderModel, ActiveJsSnippetsListView){
+function(Moonlander, SidebarView, SidebarModel, ActiveJsSnippetsListView){
   Moonlander.module("LandersApp.RightSidebar", function(RightSidebar, Moonlander, Backbone, Marionette, $, _){
 
     RightSidebar.Controller = {
@@ -10,7 +10,7 @@ function(Moonlander, SidebarView, LanderModel, ActiveJsSnippetsListView){
       //needed to make animations correct sets width etc. for initial opening
       loadLandersSideMenu: function(){
         Moonlander.landers.sidebarView = new SidebarView({
-          model: new LanderModel()
+          model: new SidebarModel()
         });
         Moonlander.rootRegion.currentView.rightSidebarRegion.show(Moonlander.landers.sidebarView);
       },

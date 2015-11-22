@@ -2,134 +2,139 @@
 //https://github.com/davidsulc/structuring-backbone-with-requirejs-and-marionette
 
 define(["app",
-        "/assets/js/common/filtered_paginated/paginated_model.js"], 
-function(Moonlander, PaginatedModel){
-  Moonlander.module("Entities", function(Entities, Moonlander, Backbone, Marionette, $, _){
-    Entities.FilteredPaginatedCollection = function(options){
-      var original = options.collection;
+  "/assets/js/common/filtered_paginated/paginated_model.js"
+],
+function(Moonlander, PaginatedModel) {
+  Moonlander.module("Entities", function(Entities, Moonlander, Backbone, Marionette, $, _) {
+      Entities.FilteredPaginatedCollection = function(options) {
+        var original = options.collection;
 
-      var filtered = new original.constructor();
-      filtered.original = original;
-      filtered.add(original.models);
-      filtered.filterFunction = options.filterFunction;
+        var filtered = new original.constructor();
+        filtered.original = original;
+        filtered.add(original.models);
+        filtered.filterFunction = options.filterFunction;
 
-      filtered.state = {
-        paginated: true,
-        currentPage: 1,
-        pageSize: 10
-      };
-
-
-      if(filtered.state.paginated) {
-        filtered.state.gui = new PaginatedModel();
-        //init
-        filtered.state.gui.set('current_page', 1);
-        filtered.state.gui.set('num_pages', 1);
-
-      }
-
-      filtered.state.gui.set('total_not_deployed', 0);
-      filtered.state.gui.set('total_deploying', 0);
-      filtered.state.gui.set('total_landers', 0);
-     
-      filtered.currentFilteredCollection = [];
+        filtered.state = {
+          paginated: true,
+          currentPage: 1,
+          pageSize: 10
+        };
 
 
-      var applyFilter = function(filterCriterion, filterStrategy, collection){
-        var collection = collection || original;
-        var criterion;
-        if(filterStrategy == "filter"){
-          criterion = filterCriterion.trim();
-        }
-        else{
-          criterion = filterCriterion;
+        if (filtered.state.paginated) {
+          filtered.state.gui = new PaginatedModel();
+          //init
+          filtered.state.gui.set('current_page', 1);
+          filtered.state.gui.set('num_pages', 1);
+
         }
 
-        var items = [];
-        if(criterion){
-          
-          filtered.state.currentFilter = filterCriterion;
+        filtered.state.gui.set('total_not_deployed', 0);
+        filtered.state.gui.set('total_deploying', 0);
+        filtered.state.gui.set('total_landers', 0);
 
-          if(filterStrategy == "filter"){
-            if( ! filtered.filterFunction){
-              throw("Attempted to use 'filter' function, but none was defined");
+        filtered.currentFilteredCollection = [];
+
+        var applyFilter = function(filterCriterion, filterStrategy, collection) {
+          var collection = collection || original;
+          var criterion;
+          if (filterStrategy == "filter") {
+            criterion = filterCriterion.trim();
+          } else {
+            criterion = filterCriterion;
+          }
+
+          var items = [];
+          if (criterion) {
+
+            filtered.state.currentFilter = filterCriterion;
+
+            if (filterStrategy == "filter") {
+              if (!filtered.filterFunction) {
+                throw ("Attempted to use 'filter' function, but none was defined");
+              }
+              var filterFunction = filtered.filterFunction(criterion);
+              items = collection.filter(filterFunction);
+            } else {
+              items = collection.where(criterion);
             }
-            var filterFunction = filtered.filterFunction(criterion);
-            items = collection.filter(filterFunction);
+          } else {
+            items = collection.models;
           }
-          else{
-            items = collection.where(criterion);
+
+          // store current criterion
+          filtered._currentCriterion = criterion;
+
+
+          //where we paginate and return the first page
+          filtered.currentFilteredCollection = items;
+          if (filtered.state.paginated) {
+            return filtered.paginate(items);
+          } else {
+            return items;
           }
-        }
-        else{
-          items = collection.models;
-        }
+        };
 
-        // store current criterion
-        filtered._currentCriterion = criterion;
+        var updateShowing = function(low, high, total) {
+          if (total < high) {
+            high = total;
+          }
+          if (total < low) {
+            low = total;
+          }
+          filtered.state.gui.set('showing_low', low);
+          filtered.state.gui.set('showing_high', high);
+          filtered.state.gui.set('showing_total', total);
+        };
 
+        filtered.filter = function(filterCriterion) {
+          filtered._currentFilter = "filter";
+          var items = applyFilter(filterCriterion, "filter");
 
-        //where we paginate and return the first page
-        filtered.currentFilteredCollection = items;
-        if(filtered.state.paginated) {
-          return filtered.paginate(items);
-        } else {
-          return items;
-        }
-      };
+          // reset the filtered collection with the new items
+          filtered.reset(items);
+          return filtered;
+        };
 
-      var updateShowing = function(low, high, total) {
-        if(total < high) {
-          high = total;
-        }
-        if(total < low) {
-          low = total;
-        }
-        filtered.state.gui.set('showing_low', low);
-        filtered.state.gui.set('showing_high', high);
-        filtered.state.gui.set('showing_total', total);
-      };
+        filtered.where = function(filterCriterion) {
+          filtered._currentFilter = "where";
+          var items = applyFilter(filterCriterion, "where");
 
-      filtered.filter = function(filterCriterion){
-        filtered._currentFilter = "filter";
-        var items = applyFilter(filterCriterion, "filter");
+          // reset the filtered collection with the new items
+          filtered.reset(items);
+          return filtered;
+        };
 
-        // reset the filtered collection with the new items
-        filtered.reset(items);
-        return filtered;
-      };
+        filtered.resetWithOriginals = function(criterion) {
+          criterion = "";
+          var items = applyFilter(criterion, "filter");
 
-      filtered.where = function(filterCriterion){
-        filtered._currentFilter = "where";
-        var items = applyFilter(filterCriterion, "where");
-
-        // reset the filtered collection with the new items
-        filtered.reset(items);
-        return filtered;
-      };
+          filtered.reset(items);
+          return filtered;
+        };
 
       /////
       //pageination stuff starts
       /////
-      filtered.paginate = function(items, pageToReturn){
+      filtered.paginate = function(items, pageToReturn) {
         pageToReturn = pageToReturn || 1;
 
         filtered.state.gui.set('total_num_items', items.length);
 
         var pageSize = parseInt(filtered.state.pageSize);
-        
+
         filtered.state.gui.set('page_size', pageSize);
 
         var totalPages = Math.floor(items.length / pageSize);
-        if(items.length % pageSize > 0) {
+        if (items.length % pageSize > 0) {
           totalPages = Math.floor(items.length / pageSize) + 1;
         }
-        
+
         var startingPoint = 0;
-        if(pageToReturn) {
-          startingPoint = (pageToReturn-1)*pageSize;
+        if (pageToReturn) {
+          startingPoint = (pageToReturn - 1) * pageSize;
         }
-        
+
         var currentPage = items.slice(startingPoint, startingPoint + pageSize);
 
 
@@ -142,14 +147,14 @@ function(Moonlander, PaginatedModel){
         var newLowPageItemNum = 1;
         var newHighPageItemNum = filtered.state.gui.get("page_size");
 
-        if(totalItemsCount < newHighPageItemNum) {
+        if (totalItemsCount < newHighPageItemNum) {
           newHighPageItemNum = totalItemsCount;
         }
-        if(totalItemsCount < 1) {
+        if (totalItemsCount < 1) {
           newLowPageItemNum = 0;
         }
         updateShowing(newLowPageItemNum, newHighPageItemNum, totalItemsCount);
-        
+
         return currentPage;
       };
 
@@ -173,10 +178,10 @@ function(Moonlander, PaginatedModel){
       }
 
       filtered.setPageSize = function(pageSize) {
-        if(pageSize >= 1) {
+        if (pageSize >= 1) {
           filtered.state.pageSize = pageSize;
           var items = filtered.paginate(filtered.currentFilteredCollection);
-          
+
           var totalItemsCount = filtered.state.gui.get("total_num_items");
 
           updateShowing(1, pageSize, totalItemsCount);
@@ -189,36 +194,36 @@ function(Moonlander, PaginatedModel){
       };
 
       filtered.getFirstPage = function() {
-          var items = filtered.paginate(filtered.currentFilteredCollection);
-          filtered.state.gui.set('current_page', 1);
-          
-          var totalItemsCount = filtered.state.gui.get("total_num_items");
-          
-          updateShowing(1, filtered.state.gui.get('page_size'), totalItemsCount);
+        var items = filtered.paginate(filtered.currentFilteredCollection);
+        filtered.state.gui.set('current_page', 1);
 
-          filtered.reset(items);
-          return filtered;
+        var totalItemsCount = filtered.state.gui.get("total_num_items");
+
+        updateShowing(1, filtered.state.gui.get('page_size'), totalItemsCount);
+
+        filtered.reset(items);
+        return filtered;
       };
 
       filtered.getLastPage = function() {
-          var items = filtered.paginate(filtered.currentFilteredCollection, filtered.state.gui.get('num_pages'));
-          filtered.state.gui.set('current_page', filtered.state.gui.get('num_pages'));
-          
-          var totalItemsCount = filtered.state.gui.get("total_num_items");
-          
-          var showingLow = (parseInt(filtered.state.gui.get('current_page')) * parseInt(filtered.state.gui.get('page_size'))) - parseInt(filtered.state.gui.get('page_size')) + 1;
+        var items = filtered.paginate(filtered.currentFilteredCollection, filtered.state.gui.get('num_pages'));
+        filtered.state.gui.set('current_page', filtered.state.gui.get('num_pages'));
 
-          var totalItemsCount = filtered.state.gui.get("total_num_items");
+        var totalItemsCount = filtered.state.gui.get("total_num_items");
 
-          updateShowing(showingLow, totalItemsCount, totalItemsCount);
+        var showingLow = (parseInt(filtered.state.gui.get('current_page')) * parseInt(filtered.state.gui.get('page_size'))) - parseInt(filtered.state.gui.get('page_size')) + 1;
 
-          filtered.reset(items);
-          return filtered;
+        var totalItemsCount = filtered.state.gui.get("total_num_items");
+
+        updateShowing(showingLow, totalItemsCount, totalItemsCount);
+
+        filtered.reset(items);
+        return filtered;
       };
 
       filtered.getNextPage = function() {
         var nextPage = filtered.state.gui.get('current_page') + 1;
-        if(filtered.state.gui.get('num_pages') >= nextPage) {
+        if (filtered.state.gui.get('num_pages') >= nextPage) {
           filtered.state.gui.set('current_page', nextPage);
           var items = filtered.paginate(filtered.currentFilteredCollection, nextPage);
 
@@ -238,17 +243,17 @@ function(Moonlander, PaginatedModel){
 
       filtered.getPreviousPage = function() {
         var previousPage = filtered.state.gui.get('current_page') - 1;
-        if(0 < previousPage) {
+        if (0 < previousPage) {
           filtered.state.gui.set('current_page', previousPage);
           var items = filtered.paginate(filtered.currentFilteredCollection, previousPage);
-          
+
           var showingLow = (parseInt(filtered.state.gui.get('current_page')) * parseInt(filtered.state.gui.get('page_size'))) - parseInt(filtered.state.gui.get('page_size')) + 1;
-          if(previousPage < 2) {
+          if (previousPage < 2) {
             showingLow = 1;
           }
 
           var showingHigh = showingLow + parseInt(filtered.state.gui.get('page_size'));
-          if(previousPage < 2) {
+          if (previousPage < 2) {
             showingHigh = filtered.state.gui.get('page_size');
           }
           var totalItemsCount = filtered.state.gui.get("total_num_items");
@@ -264,28 +269,28 @@ function(Moonlander, PaginatedModel){
       };
 
       filtered.gotoPage = function(page) {
-          filtered.state.gui.set('current_page', page);
-          var items = filtered.paginate(filtered.currentFilteredCollection, page);
+        filtered.state.gui.set('current_page', page);
+        var items = filtered.paginate(filtered.currentFilteredCollection, page);
 
-          var showingLow = (parseInt(page) * parseInt(filtered.state.gui.get('page_size'))) - parseInt(filtered.state.gui.get('page_size')) + 1;
-          if(page < 2) {
-            showingLow = 1;
-          }
+        var showingLow = (parseInt(page) * parseInt(filtered.state.gui.get('page_size'))) - parseInt(filtered.state.gui.get('page_size')) + 1;
+        if (page < 2) {
+          showingLow = 1;
+        }
 
-          var showingHigh = showingLow + parseInt(filtered.state.gui.get('page_size'));
+        var showingHigh = showingLow + parseInt(filtered.state.gui.get('page_size'));
 
-          if(page < 2) {
-            showingHigh = filtered.state.gui.get('page_size');
-          }
-          var totalItemsCount = filtered.state.gui.get("total_num_items");
+        if (page < 2) {
+          showingHigh = filtered.state.gui.get('page_size');
+        }
+        var totalItemsCount = filtered.state.gui.get("total_num_items");
 
-          updateShowing(showingLow, showingHigh, totalItemsCount);
+        updateShowing(showingLow, showingHigh, totalItemsCount);
 
-          filtered.reset(items);
-          return filtered;
+        filtered.reset(items);
+        return filtered;
       };
-    
-      filtered.sortFiltered = function(){
+
+      filtered.sortFiltered = function() {
         //set original data
         filtered.set(filtered.currentFilteredCollection);
         filtered.sort();
@@ -302,7 +307,7 @@ function(Moonlander, PaginatedModel){
       // when the original collection is reset,
       // the filtered collection will re-filter itself
       // and end up with the new filtered result set
-      original.on("reset", function(){
+      original.on("reset", function() {
         var items = applyFilter(filtered._currentCriterion, filtered._currentFilter);
         filtered.currentFilteredCollection = items;
         // reset the filtered collection with the new items
@@ -314,16 +319,21 @@ function(Moonlander, PaginatedModel){
       // 2. filter it
       // 3. add the filtered models (i.e. the models that were added *and*
       //     match the filtering criterion) to the `filtered` collection
-      original.on("add", function(models){
+      original.on("add", function(models) {
         var coll = new original.constructor();
         coll.add(models);
         var items = applyFilter(filtered._currentCriterion, filtered._currentFilter, coll);
+
         filtered.add(items);
+      });
+
+      filtered.on("add", function(models) {
+        original.add(models);
       });
 
       return filtered;
     };
   });
 
-  return Moonlander.Entities.FilteredPaginatedCollection;
+return Moonlander.Entities.FilteredPaginatedCollection;
 });

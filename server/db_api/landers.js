@@ -12,14 +12,15 @@ module.exports = function(db) {
       //param order: working_node_id, action, processing, lander_id, domain_id, campaign_id, user_id
       db.query("CALL save_new_lander(?, ?)", [landerName, user_id],
 
-        function(err, docs) {
+        function(err, docs) {          
           if (err) {
             console.log(err);
             errorCallback("Error registering new job in DB call");
           } else {
               var modelAttributes = {
                 name: landerName,
-                id: docs[0][0]["LAST_INSERT_ID()"]
+                id: docs[0][0]["LAST_INSERT_ID()"],
+                last_updated: docs[1][0].last_updated
               };
               successCallback(modelAttributes);
           }
@@ -166,12 +167,11 @@ module.exports = function(db) {
       };
 
       var getAllLandersDb = function(gotLandersCallback) {
-        db.query("SELECT id,name,optimize_css,optimize_js,optimize_images,optimize_gzip,last_updated FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
+        db.query("SELECT id,name,optimize_css,optimize_js,optimize_images,optimize_gzip,DATE_FORMAT(last_updated, '%b %e, %Y %l:%i:%s %p') AS last_updated FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
           if (err) {
             throw err;
           } else {
             var idx = 0;
-
             for (var i = 0; i < dblanders.length; i++) {
               getExtraNestedForLander(dblanders[i], function() {
 

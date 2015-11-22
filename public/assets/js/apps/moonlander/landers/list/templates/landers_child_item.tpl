@@ -6,7 +6,7 @@
           <%= name %>
        
         <div class="widget-menu domain-campaign-notification">
-           <span class="fs11 text-muted" title="Currently deployed on 2 domains"><%= last_updated %></span>
+           <span class="fs11 text-muted" title="Currently deployed on 2 domains"><%= last_updated_gui %></span>
         </div>
          </a>
        

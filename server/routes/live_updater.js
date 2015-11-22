@@ -14,10 +14,14 @@ module.exports = function(app, db, passport) {
     var gotActiveJobsCallback = function(activeJobs) {
       var finishedJobs = [];
 
+      console.log("active jobs: " + JSON.stringify(activeJobs));
+
       for (var i = 0; i < modelsAttributes.length; i++) {
+        var jobNotFound = true;
         for (var j = 0; j < activeJobs.length; j++) {
           if(modelsAttributes[i].id === activeJobs[j].id) {
             if (activeJobs[j].done || activeJobs[j].error) {
+              jobNotFound = false;
               //add to finished, remove from active
               modelsAttributes[i].error = activeJobs[j].error;
               modelsAttributes[i].done = activeJobs[j].done;
@@ -25,7 +29,7 @@ module.exports = function(app, db, passport) {
             }
           }
         }
-        if (activeJobs.length <= 0) {
+        if (activeJobs.length <= 0 || jobNotFound) {
           finishedJobs.push(modelsAttributes[i]);
         }
       }

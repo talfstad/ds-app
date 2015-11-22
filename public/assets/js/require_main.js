@@ -24,9 +24,14 @@ requirejs.config({
     "fancytree": '/vendor/plugins/fancytree/jquery.fancytree-all',
     "typewatch": '/vendor/bower_installed/jquery-typewatch/jquery.typewatch',
     "resizeReverse": '/vendor/plugins/jquery-ui.resizeReverse',
-    "bootstrap.fileinput": '/vendor/bower_installed/bootstrap-fileinput/js/fileinput.min'
+    "bootstrap.fileinput": '/vendor/bower_installed/bootstrap-fileinput/js/fileinput.min',
+    jstz: "/vendor/bower_installed/jstz/jstz",
+    "moment-timezone": "/vendor/bower_installed/moment-timezone/builds/moment-timezone-with-data-2010-2020"
   },
   shim: {
+    jstz: {
+      deps: []
+    },
     "bootstrap.fileinput": {
       deps: ['bootstrap', 'jquery']
     },

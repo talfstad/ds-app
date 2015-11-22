@@ -18,4 +18,12 @@
          Not Deployed
       </span>
   
+<% } else if(deploy_status === "initializing"){ %>
+ 
+      <span class="open_sidemenu_r label bg-warning">
+         <span style="margin-right: 5px; font-size: 12px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+         </span>
+         Initializing
+      </span>
+  
 <% } %>

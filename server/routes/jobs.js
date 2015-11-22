@@ -1,54 +1,54 @@
 module.exports = function(app, db, passport) {
-    var module = {};
-    
-    var db = require("../db_api");
-    var WorkerController = require("../workers")(app, db);
+  var module = {};
 
-    //start a new job
-    app.post('/api/jobs', function(req, res) {
-      var user = req.user;
+  var db = require("../db_api");
+  var WorkerController = require("../workers")(app, db);
 
-      var jobModelAttributes = req.body;
+  //start a new job
+  app.post('/api/jobs', function(req, res) {
+    var user = req.user;
 
-      var afterRegisterJob = function(registeredJobAttributes) {
-        if(registeredJobAttributes.action === "addNewLander"){
-          //remove the stuff we dont want
-          delete registeredJobAttributes.landerFile;
-          delete registeredJobAttributes.file_id;
-          delete registeredJobAttributes.landerName;
-        }
-        //send response
-        res.json(registeredJobAttributes);
-        //start job
-        WorkerController.startJob(registeredJobAttributes.action, user, registeredJobAttributes);
-      };
-      var registerError = function(){};
+    var jobModelAttributes = req.body;
 
-
-      //special logic for add lander
-      if(jobModelAttributes.action === "addNewLander"){
-        jobModelAttributes.landerFile = req.files['landerFile'];
-
-        //need to save the lander first since its new to get an id before triggering register job
-        db.landers.saveNewLander(user, jobModelAttributes.landerName, function(landerAttributes){
-          jobModelAttributes.lander_id = landerAttributes.id;
-          db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob, registerError)
-        });
-
-      } else {
-        
-        //TODO: validate job model is valid to begin
-        db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob, registerError)
-      
+    var afterRegisterJob = function(registeredJobAttributes) {
+      if (registeredJobAttributes.action === "addNewLander") {
+        //remove the stuff we dont want
+        delete registeredJobAttributes.landerFile;
+        delete registeredJobAttributes.file_id;
       }
+      //send response
+      res.json(registeredJobAttributes);
+      //start job
+      WorkerController.startJob(registeredJobAttributes.action, user, registeredJobAttributes);
+    };
+    var registerError = function() {};
+
+
+    //special logic for add lander
+    if (jobModelAttributes.action === "addNewLander") {
+      jobModelAttributes.landerFile = req.files['landerFile'];
+
+      //need to save the lander first since its new to get an id before triggering register job
+      db.landers.saveNewLander(user, jobModelAttributes.landerName, function(landerAttributes) {
+        jobModelAttributes.lander_id = landerAttributes.id;
+        jobModelAttributes.last_updated = landerAttributes.last_updated;
+        db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob, registerError)
+      });
+
+    } else {
+
+      //TODO: validate job model is valid to begin
+      db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob, registerError)
+
+    }
 
 
 
 
 
 
-    });
+  });
 
-    return module;
+  return module;
 
 }
