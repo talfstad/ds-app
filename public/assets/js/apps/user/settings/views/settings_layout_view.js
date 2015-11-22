@@ -21,6 +21,7 @@ define(["app",
         template: SettingsLayoutTpl,
 
         regions: {
+          'awsSettingsRegion': ".aws-settings-region"
         },
 
         events: {

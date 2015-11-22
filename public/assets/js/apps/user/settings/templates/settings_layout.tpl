@@ -33,35 +33,9 @@
                   <div class="panel-heading">
                     <span class="panel-title">AWS Access Settings</span>
                   </div>
-                  <div class="panel-body bg-light dark">
+                  <div class="aws-settings-region panel-body bg-light dark">
                 
-
-
-                    <div class="admin-form">
-                      <div class="section row mb10">
-                        <label for="accessKeyId" class="field-label col-md-3 text-center">Access Key ID:</label>
-                        <div class="col-md-9">
-                          <label for="accessKeyId" class="field prepend-icon">
-                            <input type="text" name="accessKeyId" id="access-key-id" class="gui-input" value="<%= aws_access_key_id %>">
-                            <label for="accessKeyId" class="field-icon">
-                              <i class="fa fa-key"></i>
-                            </label>
-                          </label>
-                        </div>
-                      </div>
-                      <div class="section row mb10">
-                        <label for="secretAccessKey" class="field-label col-md-3 text-center">Secret Access Key:</label>
-                        <div class="col-md-9">
-                          <label for="secretAccessKey" class="field prepend-icon">
-                            <input type="password" name="secretAccessKey" id="secret-access-key" class="gui-input" value="<%= aws_secret_access_key %>">
-                            <label for="secretAccessKey" class="field-icon">
-                              <i class="fa fa-user-secret"></i>
-                            </label>
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                    </div>
+                  </div>
                     <div class="panel-footer">
                         <button type="button" class="update-aws-access-keys btn btn-primary btn-clipboard">Update Access Keys</button>
                     </div> 
