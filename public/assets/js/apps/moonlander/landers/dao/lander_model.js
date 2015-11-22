@@ -36,6 +36,7 @@ define(["app",
             jobModel.trigger('destroy');
             //update lander status to not deployed
             me.set("deploy_status", "not_deployed");
+            me.trigger("finishedInitializing");
           }
 
         });

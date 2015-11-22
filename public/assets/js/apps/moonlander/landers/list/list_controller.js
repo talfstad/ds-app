@@ -14,12 +14,14 @@ define(["app",
     "/assets/js/jobs/jobs_model.js",
     "/assets/js/apps/moonlander/landers/dao/deploy_status_model.js",
     "/assets/js/apps/moonlander/landers/dao/active_campaign_model.js",
+    "/assets/js/apps/moonlander/landers/list/views/deploy_to_new_domain_view.js",
+    "/assets/js/apps/moonlander/landers/list/views/add_to_new_campaign_view.js",
     "/assets/js/apps/moonlander/landers/list/views/list_layout_view.js"
   ],
   function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection,
     PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView,
     DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLocationModel,
-    JobModel, DeployStatusModel, ActiveCampaignModel) {
+    JobModel, DeployStatusModel, ActiveCampaignModel, DeployToNewDomainView, AddToNewCampaignView) {
     Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
       List.Controller = {
@@ -129,6 +131,13 @@ define(["app",
                     deployedDomainsView.trigger("childview:updateParentLayout");
                   });
 
+                  var deployToNewDomainView = new DeployToNewDomainView({
+                    model: landerView.model
+                  });
+
+                  var addToNewCampaignView = new AddToNewCampaignView({
+                    model: landerView.model
+                  })
 
                   var deployedDomainsView = new DeployedDomainsView({
                     collection: deployedDomainsCollection
@@ -165,6 +174,16 @@ define(["app",
                       landerView.model.set("deploy_status", deployStatus);
                     }
                   });
+  
+                  //when finished initializing an added lander render deployedLocations & activeCampaigns & remove disabled
+                  landerView.model.on("finishedInitializing", function(){
+                    deployedDomainsCollection.deployStatus = "not_deployed";
+                    activeCampaignsCollection.deployStatus = "not_deployed";
+                    deployedDomainsView.render();
+                    activeCampaignsView.render();
+                    deployToNewDomainView.render();
+                    addToNewCampaignView.render();
+                  });
 
                   //update deployStatusView to show not deployed (initial adding, no way it can be deployed yet)
                   // landerView.model.on("finishedInitialization", function(){
@@ -181,6 +200,8 @@ define(["app",
                   landerView.campaign_tab_handle_region.show(campaignTabHandleView);
                   landerView.deployed_domains_region.show(deployedDomainsView);
                   landerView.active_campaigns_region.show(activeCampaignsView);
+                  landerView.deploy_to_new_domain_region.show(deployToNewDomainView);
+                  landerView.add_to_new_campaign_region.show(addToNewCampaignView);
                 });
               }
             });

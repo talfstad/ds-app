@@ -24,20 +24,8 @@
                   <span style="width: 20px">#</span>
                   <span style="margin-left: 15px">Deployed Domains</span>
                 </div>
-                <div style="float: right;" class="clearfix">
-                  <div class="bs-component btn-group ml15">
-
-                  <% if(deploy_status !== "initializing") { %>
+                <div style="float: right;" class="deploy-to-new-domain-region clearfix">
                   
-                  <button type="button" class="deploy-to-domain btn btn-default btn-gradient dark"><span class="fa fa-cloud-upload pr5"></span>Deploy to New Domain</button>
-                  
-                  <% } else { %>
-
-                  <button type="button" class="disabled deploy-to-domain btn btn-default btn-gradient dark"><span class="fa fa-cloud-upload pr5"></span>Deploy to New Domain</button>
-
-                  <% } %>
-
-                  </div>
                 </div>
               </div>
             </div>
@@ -55,20 +43,8 @@
                   <span style="width: 20px">#</span>
                   <span style="margin-left: 15px">Current Campaigns</span>
                 </div>
-                <div style="float: right;" class="clearfix">
-                  <div class="bs-component btn-group ml15">
+                <div style="float: right;" class="add-to-new-campaign-region clearfix">
                   
-                    <% if(deploy_status !== "initializing") { %>
-                    
-                    <button type="button" class="add-to-campaign btn btn-default btn-gradient dark"><span class="fa fa-plus pr5"></span>Add to New Campaign</button>
-                    
-                    <% } else { %>
-
-                    <button type="button" class="disabled add-to-campaign btn btn-default btn-gradient dark"><span class="fa fa-plus pr5"></span>Add to New Campaign</button>
-
-                    <% } %>
-
-                  </div>
                 </div>
               </div>
              </div>
