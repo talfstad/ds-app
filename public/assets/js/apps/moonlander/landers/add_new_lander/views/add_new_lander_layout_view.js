@@ -21,8 +21,7 @@ define(["app",
 
         template: AddNewLanderLayoutTpl,
 
-        regions: {
-        },
+        regions: {},
 
         events: {
           "click .add-new-lander-confirm": "confirmedAddNewLander"
@@ -30,7 +29,7 @@ define(["app",
 
         confirmedAddNewLander: function(e) {
 
-           var me = this;
+          var me = this;
 
           e.preventDefault();
 
@@ -38,15 +37,15 @@ define(["app",
           var newLanderData = Backbone.Syphon.serialize(this);
 
           //on successful upload callback this function
-          $("#new-lander-file").on('fileuploaded', function(e, data, previewId, index){
+          $("#new-lander-file").on('fileuploaded', function(e, data, previewId, index) {
             me.trigger("fileUploadComplete", data);
           });
 
           //just a very small amount of validation, all really done on server
-          if(newLanderData.landerName != "" && newLanderData.landerFile != ""){
-  
+          if (newLanderData.landerName != "" && newLanderData.landerFile != "") {
+
             this.model.set("landerName", newLanderData.landerName);
-           
+
             //////save lander & add to collection
 
             //1. trigger upload. server adds the lander to db, registers active job, and starts job
@@ -54,7 +53,7 @@ define(["app",
 
           } else {
             var alert = this.$el.find(".new-lander-info-alert");
-            var adminForm = this.$el.find(".admin-form");            
+            var adminForm = this.$el.find(".admin-form");
             var currentHtml = alert.html();
 
             adminForm.addClass("has-error");
@@ -64,7 +63,7 @@ define(["app",
             alert.html("You must add both a new lander name &amp; lander file to create a new lander");
 
 
-            setTimeout(function(){
+            setTimeout(function() {
               adminForm.removeClass("has-error");
               alert.removeClass("alert-danger").addClass("alert-default");
               alert.html(currentHtml);
@@ -77,13 +76,13 @@ define(["app",
           var me = this;
 
           this.$el.find("#new-lander-file").fileinput({
-            showUpload:false,
+            showUpload: false,
             uploadAsync: true,
             dropZoneTitle: "Drag & drop lander here",
             fileActionSettings: {
               indicatorNew: ''
             },
-            uploadExtraData: function(){
+            uploadExtraData: function() {
               return me.model.attributes
             },
             allowedFileExtensions: ['zip'],
@@ -98,9 +97,9 @@ define(["app",
           this.$el.off('show.bs.modal');
           this.$el.off('shown.bs.modal');
 
-          this.$el.on('show.bs.modal', function(e){
-          
-           
+          this.$el.on('show.bs.modal', function(e) {
+
+
           });
 
           this.$el.on('shown.bs.modal', function(e) {

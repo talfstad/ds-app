@@ -34,6 +34,7 @@ define(["app",
             //4. add jobmodel to lander model
             var activeJobs = landerModel.get("activeJobs");
             activeJobs.add(jobModel);
+            Moonlander.trigger("job:start", jobModel);
             //5. trigger add lander model on the landers collection
             Moonlander.trigger("landers:list:addLander", landerModel);
           });

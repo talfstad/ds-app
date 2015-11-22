@@ -32,6 +32,7 @@ function(Moonlander, PaginatedModel) {
         filtered.state.gui.set('total_not_deployed', 0);
         filtered.state.gui.set('total_deploying', 0);
         filtered.state.gui.set('total_landers', 0);
+        filtered.state.gui.set('total_initializing', 0);
 
         filtered.currentFilteredCollection = [];
 
@@ -162,6 +163,7 @@ function(Moonlander, PaginatedModel) {
         var notDeployedTotal = 0;
         var deployingTotal = 0;
         var totalLanders = 0;
+        var initializing = 0;
         //loop through all landers to count the totals
         original.each(function(model) {
           totalLanders++;
@@ -170,11 +172,14 @@ function(Moonlander, PaginatedModel) {
             notDeployedTotal++;
           } else if (deployStatus === "deploying") {
             deployingTotal++;
+          } else if(deployStatus === "initializing") {
+            initializing++;
           }
         });
         filtered.state.gui.set("total_not_deployed", notDeployedTotal);
         filtered.state.gui.set("total_deploying", deployingTotal);
         filtered.state.gui.set("total_landers", totalLanders);
+        filtered.state.gui.set("total_initializing", initializing);
       }
 
       filtered.setPageSize = function(pageSize) {

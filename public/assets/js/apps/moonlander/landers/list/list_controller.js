@@ -107,6 +107,7 @@ define(["app",
                   var activeCampaignsCollection = landerView.model.get("activeCampaigns");
                   //set landername to be used by campaign models dialog
                   activeCampaignsCollection.landerName = landerView.model.get("name");
+                  activeCampaignsCollection.deployStatus = landerView.model.get("deploy_status");
 
                   var activeCampaignsView = new ActiveCampaignsView({
                     collection: activeCampaignsCollection
@@ -120,6 +121,9 @@ define(["app",
                   });
 
                   var deployedDomainsCollection = landerView.model.get("deployedLocations");
+
+                  deployedDomainsCollection.deployStatus = landerView.model.get("deploy_status");
+
 
                   deployedDomainsCollection.on("destroy", function() {
                     deployedDomainsView.trigger("childview:updateParentLayout");
@@ -138,25 +142,34 @@ define(["app",
                   //add events before show!
                   //update the landerView layout with whatever the child has
                   deployedDomainsView.on("childview:updateParentLayout", function(childView, notDeployed, three) {
-                    //update deploy status view
-                    var deployStatus = "deployed";
-                    this.children.each(function(deployedDomainView) {
-                      if (deployedDomainView.model.get("activeJobs")) {
-                        if (deployedDomainView.model.get("activeJobs").length > 0) {
-                          deployStatus = "deploying";
+                    //update deploy status view UNLESS we're initializing. if initializing needs to be changed
+                    //to not_deployed by the lander job itself because we're adding a new lander. this logic is
+                    //for when the lander is already added
+                    if (landerView.model.get("deploy_status") !== "initializing") {
+                      var deployStatus = "deployed";
+                      this.children.each(function(deployedDomainView) {
+                        if (deployedDomainView.model.get("activeJobs")) {
+                          if (deployedDomainView.model.get("activeJobs").length > 0) {
+                            deployStatus = "deploying";
+                          }
                         }
-                      }
-                      //active jobs is totally undefined then we're showing the empty view
-                      else if (!deployedDomainView.model.get("activeJobs")) {
-                        deployStatus = "not_deployed";
-                      }
-                      //empty view passes not_deployed in as its arg
-                      // else if(notDeployed === "not_deployed") {
-                      //   deployStatus = "not_deployed";
-                      // }
-                    });
-                    landerView.model.set("deploy_status", deployStatus);
+                        //active jobs is totally undefined then we're showing the empty view
+                        else if (!deployedDomainView.model.get("activeJobs")) {
+                          deployStatus = "not_deployed";
+                        }
+                        //empty view passes not_deployed in as its arg
+                        // else if(notDeployed === "not_deployed") {
+                        //   deployStatus = "not_deployed";
+                        // }
+                      });
+                      landerView.model.set("deploy_status", deployStatus);
+                    }
                   });
+
+                  //update deployStatusView to show not deployed (initial adding, no way it can be deployed yet)
+                  // landerView.model.on("finishedInitialization", function(){
+                    
+                  // });
 
                   //whenever the deployed status view is updated update deployed totals
                   //this should be rendered whenever there is a change to the landers deployed status

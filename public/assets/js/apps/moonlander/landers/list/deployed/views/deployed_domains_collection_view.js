@@ -15,6 +15,7 @@ define(["app",
           model.set('viewIndex', parseInt(this.collection.indexOf(model))+1);
           model.set('urlEndpoints', this.collection.urlEndpoints);
           model.set('landerName', this.collection.landerName);
+          model.set('deployStatus', this.collection.deployStatus);
         },
        
         onRender: function(){

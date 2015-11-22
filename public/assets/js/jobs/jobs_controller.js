@@ -5,7 +5,7 @@ function(Moonlander){
     JobsApp.Controller = {
 
       startJob: function(jobModel) {
-        
+
         var addToUpdater = function(jobModelWithId){
           //adds to updater
           var model = (jobModelWithId ? jobModelWithId : jobModel);

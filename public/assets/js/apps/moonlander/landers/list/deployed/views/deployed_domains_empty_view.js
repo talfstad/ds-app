@@ -9,8 +9,13 @@ define(["app",
       tagName: "tr",
       className: "warning",
 
+  
       onRender: function() {
-        this.trigger("updateParentLayout", "not_deployed");
+        if(this.model.get("deployStatus") === "initializing") {
+          this.$el.removeClass("warning").addClass("primary");
+        }
+
+        // this.trigger("updateParentLayout", "not_deployed");
       }
 
     });

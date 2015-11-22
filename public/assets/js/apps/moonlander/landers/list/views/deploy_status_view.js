@@ -15,6 +15,10 @@ define(["app",
       },
       template: deployStatusTpl,
 
+      onRender: function(){
+
+      },
+
       modelEvents: {
       	"change": "render"
       }

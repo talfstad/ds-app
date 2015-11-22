@@ -4,25 +4,25 @@ module.exports = function(db) {
 
   return {
 
-    saveNewLander: function(user, landerName, successCallback){
+    saveNewLander: function(user, landerName, successCallback) {
 
       var user_id = user.id;
       console.log("saving lander" + landerName + user_id);
-      
+
       //param order: working_node_id, action, processing, lander_id, domain_id, campaign_id, user_id
       db.query("CALL save_new_lander(?, ?)", [landerName, user_id],
 
-        function(err, docs) {          
+        function(err, docs) {
           if (err) {
             console.log(err);
             errorCallback("Error registering new job in DB call");
           } else {
-              var modelAttributes = {
-                name: landerName,
-                id: docs[0][0]["LAST_INSERT_ID()"],
-                last_updated: docs[1][0].last_updated
-              };
-              successCallback(modelAttributes);
+            var modelAttributes = {
+              name: landerName,
+              id: docs[0][0]["LAST_INSERT_ID()"],
+              last_updated: docs[1][0].last_updated
+            };
+            successCallback(modelAttributes);
           }
         });
 
@@ -90,7 +90,10 @@ module.exports = function(db) {
 
 
       getActiveJobsForDeployedLocation = function(deployedLocation, callback) {
-        db.query("SELECT id,action,processing,done,error FROM jobs WHERE (user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", [user_id, deployedLocation.lander_id, deployedLocation.id, true],
+        //get all jobs attached to lander and make sure only select those. list is:
+        // 1. deployLanderToDomain
+        // 2. undeployLanderFromDomain
+        db.query("SELECT id,action,processing,done,error FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, deployedLocation.lander_id, deployedLocation.id, true],
           function(err, dbActiveJobs) {
             callback(dbActiveJobs);
           });
@@ -144,6 +147,15 @@ module.exports = function(db) {
           });
       };
 
+      getActiveJobsForLander = function(lander, callback) {
+        //get all jobs attached to lander and make sure only select those. list is:
+        // 1. addNewLander
+        db.query("SELECT id,action,processing,done,error FROM jobs WHERE (action = ? AND user_id = ? AND lander_id = ? AND processing = ?)", ["addNewLander", user_id, lander.id, true],
+          function(err, dbActiveJobs) {
+            callback(dbActiveJobs);
+          });
+      };
+
 
       var getExtraNestedForLander = function(lander, callback) {
         getEndpointsForLander(lander, function(endpoints) {
@@ -157,7 +169,12 @@ module.exports = function(db) {
             getActiveCampaignsForLander(lander, function(activeCampaigns) {
 
               lander.activeCampaigns = activeCampaigns;
-              callback();
+
+              getActiveJobsForLander(lander, function(activeJobsForLander) {
+                lander.activeJobs = activeJobsForLander;
+                callback();
+
+              });
 
             });
 

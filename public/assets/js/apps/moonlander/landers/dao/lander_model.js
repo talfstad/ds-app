@@ -11,13 +11,31 @@ define(["app",
       urlRoot: "/api/landers",
 
       initialize: function() {
+        var me = this;
+
+        //on active jobs initialize check if any of them exist and handle start state
+        this.on("change:activeJobs", function(landerModel, activeJobsCollection) {
+          if (activeJobsCollection.length > 0) {
+            activeJobsCollection.each(function(jobModel) {
+              if (jobModel.get("action") === "addNewLander") {
+                //adding new lander so we're still initializing...
+                me.set("deploy_status","initializing");
+              }
+            })
+          }
+        });
+
         JobsGuiBaseModel.prototype.initialize.apply(this);
 
         var activeJobs = this.get("activeJobs");
-        activeJobs.on("finishedState", function(model) {
 
-          if (model.get("action") === "addLander") {
-            //where we change the tab handle message from initializing to not deployed
+        activeJobs.on("finishedState", function(jobModel) {
+
+          if (jobModel.get("action") === "addNewLander") {
+            //1. always destroy the active job model
+            jobModel.trigger('destroy');
+            //update lander status to not deployed
+            me.set("deploy_status", "not_deployed");
           }
 
         });

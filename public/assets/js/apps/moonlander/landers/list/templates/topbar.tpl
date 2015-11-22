@@ -20,6 +20,10 @@
       if(total_deploying > 1) {
         totalDeployingLander = "Landers"
       }
+      var initializingLanderText = "Lander"
+      if(total_initializing > 1){ 
+        initializingLanderText = "Landers"
+      }
     %>
 
     <% if(total_not_deployed == 0 && total_deploying == 0) { %>
@@ -29,6 +33,14 @@
     </div> -->
 
     <% } else { %>
+
+      <% if(total_initializing > 0) { %>
+      
+      <div>
+        <span class="badge-primary badge"><%= total_initializing %></span> <%= initializingLanderText %> Initializing
+      </div>
+
+      <% } %>
     
       <% if(total_not_deployed > 0) { %>
       
@@ -51,7 +63,7 @@
       <span class="badge-success badge">45</span> Deployed
     </div> -->
     <div>
-      <span class="badge-primary badge"><%= total_landers %></span> Total <%= totalLander %>
+      <span class="badge-success badge"><%= total_landers %></span> Total <%= totalLander %>
     </div>
   </div>
 </div>

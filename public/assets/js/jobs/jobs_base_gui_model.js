@@ -7,7 +7,7 @@ var JobsBaseGuiModel = Backbone.Model.extend({
       //build active jobs child collection
       var activeJobsAttributes = this.get("activeJobs");
       var activeJobCollection = new ActiveJobCollection(activeJobsAttributes);
-    
+
       this.set("activeJobs", activeJobCollection);
 
       //start active jobs
