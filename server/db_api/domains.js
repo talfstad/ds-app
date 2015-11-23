@@ -7,12 +7,15 @@ module.exports = function(db) {
       var user_id = user.id;
 
       var getAllDomainsDb = function(gotDomainsCallback) {
-        db.query("SELECT id,domain FROM domains WHERE user_id = ?", [user_id], function(err, dblanders) {
-          if (err) {
-            throw err;
-          } else {
-               gotDomainsCallback(dblanders);
-          }
+        db.getConnection(function(err, connection) {
+          connection.query("SELECT id,domain FROM domains WHERE user_id = ?", [user_id], function(err, dblanders) {
+            if (err) {
+              throw err;
+            } else {
+              gotDomainsCallback(dblanders);
+            }
+            connection.release();
+          });
         });
       };
 
@@ -35,15 +38,18 @@ module.exports = function(db) {
 
     saveDomain: function(user, model, successCallback, errorCallback) {
       //update model stuff into domains where id= model.id
-      db.query("UPDATE domains SET domain = ?, nameservers = ? WHERE user_id = ? AND id = ?", [model.domain, model.nameservers, user.id, model.id],
-        function(err, docs) {
-          if (err) {
-            console.log(err);
-            errorCallback("\nError saving domain.");
-          } else {
-            successCallback(docs);
-          }
-        });
+      db.getConnection(function(err, connection) {
+        connection.query("UPDATE domains SET domain = ?, nameservers = ? WHERE user_id = ? AND id = ?", [model.domain, model.nameservers, user.id, model.id],
+          function(err, docs) {
+            if (err) {
+              console.log(err);
+              errorCallback("\nError saving domain.");
+            } else {
+              successCallback(docs);
+            }
+            connection.release();
+          });
+      });
 
     }
   }

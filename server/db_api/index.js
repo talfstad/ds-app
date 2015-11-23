@@ -3,8 +3,7 @@
 
   var config = require("../config");
 
-  var db = mysql.createConnection(config.dbConnectionInfo);
-  db.connect();
+  var db = mysql.createPool(config.dbConnectionInfo);
 
 
   exports.users = require('./users')(db);

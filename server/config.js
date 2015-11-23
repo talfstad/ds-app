@@ -12,7 +12,8 @@ module.exports = {
     user : 'root',
     password : 'wewillwinintheend123!@#',
     database : 'moonlander',
-    multipleStatements: true
+    multipleStatements: true,
+    connectionLimit: 10
   },
   cookieSecret: 'moonlandersecretkeytobechangedlatermaybe123!#',
   sessionSecret: 'moonlandersecretkeytobechangedlatermaybe123!#',

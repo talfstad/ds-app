@@ -1,5 +1,5 @@
 module.exports = function(db) {
-  
+
   var config = require('../config');
 
   return {
@@ -11,33 +11,36 @@ module.exports = function(db) {
       modelAttributes.processing = true;
 
       //param order: working_node_id, action, processing, lander_id, domain_id, campaign_id, user_id
-      db.query("CALL register_job(?, ?, ?, ?, ?, ?, ?)", [config.id, modelAttributes.action, true, modelAttributes.lander_id, modelAttributes.domain_id, null, user_id],
+      db.getConnection(function(err, connection) {
+        connection.query("CALL register_job(?, ?, ?, ?, ?, ?, ?)", [config.id, modelAttributes.action, true, modelAttributes.lander_id, modelAttributes.domain_id, null, user_id],
 
-        function(err, docs) {
-          if (err) {
-            console.log(err);
-            errorCallback("Error registering new job in DB call");
-          } else {
+          function(err, docs) {
+            if (err) {
+              console.log(err);
+              errorCallback("Error registering new job in DB call");
+            } else {
               modelAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
               successCallback(modelAttributes);
-          }
-        });
+            }
+            connection.release();
+          });
+      });
     },
 
-    finishedJobSuccessfully: function(user, finishedJobs, successCallback, errorCallback){
+    finishedJobSuccessfully: function(user, finishedJobs, successCallback, errorCallback) {
       var user_id = user.id;
 
-      if(finishedJobs.length > 0) {
+      if (finishedJobs.length > 0) {
         //build sql command
         var finishedJobsValues = [true, false];
 
         var updateSql = "UPDATE jobs SET done = ?, processing = ? WHERE ";
-        
 
-        for(var i=0 ; i<finishedJobs.length ; i++){
+
+        for (var i = 0; i < finishedJobs.length; i++) {
           updateSql = updateSql.concat("id = ?");
 
-          if((i+1)<finishedJobs.length){
+          if ((i + 1) < finishedJobs.length) {
             updateSql = updateSql.concat(" OR ");
           }
 
@@ -48,34 +51,37 @@ module.exports = function(db) {
         }
 
 
-        db.query(updateSql, finishedJobsValues, function(err, docs){
-          if(err){
-            console.log(err);
-            errorCallback("Error finishing processing on job in DB call")
-          } else {
-            //processing key updated above
-            successCallback();
-          }
+        db.getConnection(function(err, connection) {
+          connection.query(updateSql, finishedJobsValues, function(err, docs) {
+            if (err) {
+              console.log(err);
+              errorCallback("Error finishing processing on job in DB call")
+            } else {
+              //processing key updated above
+              successCallback();
+            }
+            connection.release();
+          });
         });
       } else {
         successCallback();
       }
     },
 
-    finishedProcessing: function(user, finishedJobs, successCallback, errorCallback){
+    finishedProcessing: function(user, finishedJobs, successCallback, errorCallback) {
       var user_id = user.id;
 
-      if(finishedJobs.length > 0) {
+      if (finishedJobs.length > 0) {
         //build sql command
         var finishedJobsValues = [false];
 
         var updateSql = "UPDATE jobs SET processing= ? WHERE ";
-        
 
-        for(var i=0 ; i<finishedJobs.length ; i++){
+
+        for (var i = 0; i < finishedJobs.length; i++) {
           updateSql = updateSql.concat("id = ?");
 
-          if((i+1)<finishedJobs.length){
+          if ((i + 1) < finishedJobs.length) {
             updateSql = updateSql.concat(" OR ");
           }
 
@@ -85,14 +91,17 @@ module.exports = function(db) {
           finishedJobs[i].processing = false;
         }
 
-        db.query(updateSql, finishedJobsValues, function(err, docs){
-          if(err){
-            console.log(err);
-            errorCallback("Error finishing processing on job in DB call")
-          } else {
-            //processing key updated above
-            successCallback();
-          }
+        db.getConnection(function(err, connection) {
+          connection.query(updateSql, finishedJobsValues, function(err, docs) {
+            if (err) {
+              console.log(err);
+              errorCallback("Error finishing processing on job in DB call")
+            } else {
+              //processing key updated above
+              successCallback();
+            }
+            connection.release();
+          });
         });
       } else {
         successCallback();

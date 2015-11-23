@@ -4,16 +4,19 @@ module.exports = function(db) {
 
   return {
 
-    removeFromLandersWithCampaigns: function(user, id, successCallback){
+    removeFromLandersWithCampaigns: function(user, id, successCallback) {
       var user_id = user.id;
+      db.getConnection(function(err, connection) {
 
-      db.query("DELETE FROM landers_with_campaigns WHERE user_id = ? AND id = ?", [user_id, id],
-        function(err, dbSuccessDelete) {
-          
-          successCallback(dbSuccessDelete);
-      
-        });
+        connection.query("DELETE FROM landers_with_campaigns WHERE user_id = ? AND id = ?", [user_id, id],
+          function(err, dbSuccessDelete) {
 
+            successCallback(dbSuccessDelete);
+
+            //release connection
+            connection.release();
+          });
+      });
 
     },
 
@@ -47,17 +50,22 @@ module.exports = function(db) {
       //   }
       // ]
 
+      db.getConnection(function(err, connection) {
 
-      db.query("CALL add_campaign_to_lander(?, ?, ?)", [modelAttributes.lander_id, modelAttributes.campaign_id, user_id], function(err, docs) {
-        if (err) {
-          console.log(err);
-          callback("Error adding active campaign");
-        } else {
-          modelAttributes.active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
-          modelAttributes.currentDomains = docs[1];
-          modelAttributes.id = modelAttributes.campaign_id;
-          successCallback(modelAttributes);
-        }
+        connection.query("CALL add_campaign_to_lander(?, ?, ?)", [modelAttributes.lander_id, modelAttributes.campaign_id, user_id], function(err, docs) {
+          if (err) {
+            console.log(err);
+            callback("Error adding active campaign");
+          } else {
+            modelAttributes.active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
+            modelAttributes.currentDomains = docs[1];
+            modelAttributes.id = modelAttributes.campaign_id;
+            successCallback(modelAttributes);
+          }
+
+          //release connection
+          connection.release();
+        });
       });
     },
 
@@ -66,33 +74,43 @@ module.exports = function(db) {
       var user_id = user.id;
 
       getAllDomainIdsForCampaign = function(campaign, callback) {
-        db.query("SELECT domain_id FROM campaigns_with_domains WHERE user_id = ? AND campaign_id = ?", [user_id, campaign.id],
-          function(err, dbDomainIdsForCampaign) {
-            callback(dbDomainIdsForCampaign);
-          });
+
+        db.getConnection(function(err, connection) {
+          connection.query("SELECT domain_id FROM campaigns_with_domains WHERE user_id = ? AND campaign_id = ?", [user_id, campaign.id],
+            function(err, dbDomainIdsForCampaign) {
+              callback(dbDomainIdsForCampaign);
+            
+              //release connection
+              connection.release();
+            });
+        });
       };
 
       var getAllCampaignsDb = function(callback) {
-        db.query("SELECT id,name FROM campaigns WHERE user_id = ?", [user_id],
-          function(err, dbCampaigns) {
-            if (dbCampaigns.length <= 0) {
-              callback([]);
-            } else {
-              var idx = 0;
-              for (var i = 0; i < dbCampaigns.length; i++) {
-                getAllDomainIdsForCampaign(dbCampaigns[i], function(campaignsDomainIds) {
+        db.getConnection(function(err, connection) {
+          connection.query("SELECT id,name FROM campaigns WHERE user_id = ?", [user_id],
+            function(err, dbCampaigns) {
+              if (dbCampaigns.length <= 0) {
+                callback([]);
+              } else {
+                var idx = 0;
+                for (var i = 0; i < dbCampaigns.length; i++) {
+                  getAllDomainIdsForCampaign(dbCampaigns[i], function(campaignsDomainIds) {
 
-                  var deployedCampaign = dbCampaigns[idx];
-                  deployedCampaign.campaignsDomainIds = campaignsDomainIds;
+                    var deployedCampaign = dbCampaigns[idx];
+                    deployedCampaign.campaignsDomainIds = campaignsDomainIds;
 
-                  if (++idx == dbCampaigns.length) {
-                    callback(dbCampaigns);
-                  }
+                    if (++idx == dbCampaigns.length) {
+                      callback(dbCampaigns);
+                    }
 
-                });
+                  });
+                }
               }
-            }
-          });
+              //release connection
+              connection.release();
+            });
+        });
       };
 
       //call to get all and return rows

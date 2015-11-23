@@ -179,10 +179,6 @@ define(["app",
                   landerView.model.on("finishedInitializing", function(){
                     deployedDomainsCollection.deployStatus = "not_deployed";
                     activeCampaignsCollection.deployStatus = "not_deployed";
-                    deployedDomainsView.render();
-                    activeCampaignsView.render();
-                    deployToNewDomainView.render();
-                    addToNewCampaignView.render();
                   });
 
                   //update deployStatusView to show not deployed (initial adding, no way it can be deployed yet)
@@ -363,6 +359,7 @@ define(["app",
 
         //add the lander model to the list
         addLander: function(landerModel) {
+          Moonlander.trigger('landers:closesidebar');
           this.filteredLanderCollection.add(landerModel);
           this.filteredLanderCollection.resetWithOriginals();
         }
