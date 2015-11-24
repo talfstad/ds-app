@@ -7,12 +7,12 @@ define(["app",
     ActiveCampaigns.EmptyView = Marionette.ItemView.extend({
       template: EmptyTpl,
       tagName: "tr",
-      className: "warning pb13",
+      className: "primary pb13",
 
 
       onRender: function(){
         if(this.model.get("deploy_status") === "initializing") {
-          this.$el.removeClass("warning").addClass("primary");
+          this.$el.removeClass("primary").addClass("alert");
         }
       }
       

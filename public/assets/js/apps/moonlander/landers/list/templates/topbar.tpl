@@ -37,7 +37,7 @@
       <% if(total_initializing > 0) { %>
       
       <div>
-        <span class="badge-primary badge"><%= total_initializing %></span> <%= initializingLanderText %> Initializing
+        <span class="badge-alert badge"><%= total_initializing %></span> <%= initializingLanderText %> Initializing
       </div>
 
       <% } %>
@@ -45,7 +45,7 @@
       <% if(total_not_deployed > 0) { %>
       
       <div>
-        <span class="badge-warning badge"><%= total_not_deployed %></span> <%= lander %> Not Deployed
+        <span class="badge-primary badge"><%= total_not_deployed %></span> <%= lander %> Not Deployed
       </div>
       
       <% } %>

@@ -181,6 +181,20 @@ tr.warning .domain-endpoint-select {
     height: inherit;
 }
 
+tr.primary .domain-endpoint-select {
+    display: inherit;
+    color: #c88a0a;
+    width: inherit;
+    height: inherit;
+}
+
+tr.alert .domain-endpoint-select {
+    display: inherit;
+    color: #c88a0a;
+    width: inherit;
+    height: inherit;
+}
+
 
 .domain-endpoint-select:hover {
     /*color: #1d6fa5;
@@ -292,6 +306,11 @@ input.lander-search {
 tr.success a {
     color: #3f9532;
 }
+
+tr.alert td {
+    font-size: 13px;
+}
+
 tr.warning a {
     color: #c88a0a;
 }

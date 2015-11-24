@@ -7,11 +7,11 @@ define(["app",
     List.EmptyView = Marionette.ItemView.extend({
       template: EmptyTpl,
       tagName: "tr",
-      className: "warning", 
+      className: "primary", 
   
       onRender: function() {
         if(this.model.get("deploy_status") === "initializing") {
-          this.$el.removeClass("warning").addClass("primary");
+          this.$el.removeClass("primary").addClass("alert");
         }
 
         // this.trigger("updateParentLayout", "not_deployed");
