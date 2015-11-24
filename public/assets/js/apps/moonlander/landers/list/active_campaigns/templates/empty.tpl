@@ -1,4 +1,4 @@
-<% if(deployStatus !== "initializing") { %>
+<% if(deploy_status !== "initializing") { %>
 <td style="">This lander doesn't currently belong to any campaigns.</td>
 <td>
 

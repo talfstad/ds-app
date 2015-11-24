@@ -1,5 +1,5 @@
 
-<% if(deployStatus !== "initializing") { %>
+<% if(deploy_status !== "initializing") { %>
 
 <td style="width: 120px">Lander Preview: </td>
 <td>

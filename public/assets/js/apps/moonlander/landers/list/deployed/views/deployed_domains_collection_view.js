@@ -9,15 +9,16 @@ define(["app",
         tagName: "tbody",
         childView: DeployedDomainRowView,
         emptyView: EmptyView,
+        
 
         //pass the deployed list its rendered index for # column
         childViewOptions: function(model) {
           model.set('viewIndex', parseInt(this.collection.indexOf(model))+1);
           model.set('urlEndpoints', this.collection.urlEndpoints);
           model.set('landerName', this.collection.landerName);
-          model.set('deployStatus', this.collection.deployStatus);
+          model.set('deploy_status', this.collection.deploy_status);
         },
-       
+
         onRender: function(){
 
           this.$el.find(".domain-link").click(function(e) {

@@ -7,11 +7,13 @@ define(["app",
     Moonlander.module("LandersApp.Landers.List.ActiveCampaigns", function(ActiveCampaigns, Moonlander, Backbone, Marionette, $, _) {
       ActiveCampaigns.ChildView = Marionette.CollectionView.extend({
         tagName: "tbody",
+
+
         //pass the deployed list its rendered index for # column
         childViewOptions: function(model) {
           model.set('viewIndex', parseInt(this.collection.indexOf(model))+1);
           model.set("landerName", this.collection.landerName);
-          model.set("deployStatus", this.collection.deployStatus);
+          model.set("deploy_status", this.collection.deploy_status);
         },
 
         childView: ActiveCampaignRowView,

@@ -14,7 +14,7 @@ module.exports = function(app, db, passport) {
     var gotActiveJobsCallback = function(activeJobs) {
       var finishedJobs = [];
 
-      console.log("active jobs: " + JSON.stringify(activeJobs));
+      // console.log("active jobs: " + JSON.stringify(activeJobs));
 
       for (var i = 0; i < modelsAttributes.length; i++) {
         var jobNotFound = true;

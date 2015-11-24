@@ -9,8 +9,9 @@ define(["app",
       tagName: "tr",
       className: "warning pb13",
 
+
       onRender: function(){
-        if(this.model.get("deployStatus") === "initializing") {
+        if(this.model.get("deploy_status") === "initializing") {
           this.$el.removeClass("warning").addClass("primary");
         }
       }

@@ -109,7 +109,7 @@ define(["app",
                   var activeCampaignsCollection = landerView.model.get("activeCampaigns");
                   //set landername to be used by campaign models dialog
                   activeCampaignsCollection.landerName = landerView.model.get("name");
-                  activeCampaignsCollection.deployStatus = landerView.model.get("deploy_status");
+                  activeCampaignsCollection.deploy_status = landerView.model.get("deploy_status");
 
                   var activeCampaignsView = new ActiveCampaignsView({
                     collection: activeCampaignsCollection
@@ -124,7 +124,7 @@ define(["app",
 
                   var deployedDomainsCollection = landerView.model.get("deployedLocations");
 
-                  deployedDomainsCollection.deployStatus = landerView.model.get("deploy_status");
+                  deployedDomainsCollection.deploy_status = landerView.model.get("deploy_status");
 
 
                   deployedDomainsCollection.on("destroy", function() {
@@ -174,16 +174,28 @@ define(["app",
                       landerView.model.set("deploy_status", deployStatus);
                     }
                   });
-  
-                  //when finished initializing an added lander render deployedLocations & activeCampaigns & remove disabled
-                  landerView.model.on("finishedInitializing", function(){
-                    deployedDomainsCollection.deployStatus = "not_deployed";
-                    activeCampaignsCollection.deployStatus = "not_deployed";
+
+                  //when lander changes its deploy status update the child collections to the same deploy status
+                  landerView.model.on("change:deploy_status", function() {
+                    filteredCollection.updateTotals();
+
+                    var deployStatus = this.get("deploy_status");
+                    deployedDomainsCollection.deploy_status = deployStatus;
+                    activeCampaignsCollection.deploy_status = deployStatus;
+
+                    // render if is showing AND EMPTY else dont (this logic meant for initializing state)
+                    if (deployedDomainsView.isRendered && deployedDomainsCollection.length <= 0) {
+                      deployedDomainsView.render();
+                    }
+                    if (activeCampaignsView.isRendered && activeCampaignsCollection.length <= 0) {
+                      activeCampaignsView.render();
+                    }
+
                   });
 
                   //update deployStatusView to show not deployed (initial adding, no way it can be deployed yet)
                   // landerView.model.on("finishedInitialization", function(){
-                    
+
                   // });
 
                   //whenever the deployed status view is updated update deployed totals
