@@ -4,6 +4,25 @@ module.exports = function(db) {
 
   return {
 
+    deleteLander: function(user_id, lander_id, successCallback, errorCallback) {
+
+      db.getConnection(function(err, connection) {
+
+        connection.query("DELETE FROM landers WHERE user_id = ? AND id = ?", [user_id, lander_id], function(err, docs) {
+
+          if (err) {
+            console.log(err);
+            errorCallback();
+          } else {
+            successCallback();
+          }
+
+        });
+        connection.release();
+      });
+
+    },
+
     saveNewLander: function(user, landerName, successCallback) {
 
       var user_id = user.id;
@@ -177,7 +196,7 @@ module.exports = function(db) {
         //get all jobs attached to lander and make sure only select those. list is:
         // 1. addNewLander
         db.getConnection(function(err, connection) {
-          connection.query("SELECT id,action,processing,done,error FROM jobs WHERE (action = ? AND user_id = ? AND lander_id = ? AND processing = ?)", ["addNewLander", user_id, lander.id, true],
+          connection.query("SELECT id,action,processing,done,error FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addNewLander", "deleteLander", user_id, lander.id, true],
             function(err, dbActiveJobs) {
               callback(dbActiveJobs);
               connection.release();

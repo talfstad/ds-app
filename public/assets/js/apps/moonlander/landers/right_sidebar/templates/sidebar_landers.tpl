@@ -128,6 +128,6 @@
 
           </div>
           <div class="panel-footer">
-            <button type="button" class="delete-lander btn btn-danger btn-gradient dark"><span class="fa fa-trash pr5"></span>Delete Lander</button>
+            <button type="button" class="delete-lander-button btn btn-danger btn-gradient dark"><span class="fa fa-trash pr5"></span>Delete Lander</button>
           </div>
         </div>

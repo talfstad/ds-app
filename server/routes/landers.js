@@ -50,8 +50,8 @@ module.exports = function(app, db, passport) {
 
   });
 
-  app.delete('/api/lander', function(req, res) {
-
+  app.delete('/api/landers/:id', function(req, res) {
+    res.json({})
   });
 
   return module;

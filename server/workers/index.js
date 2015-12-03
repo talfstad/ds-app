@@ -4,11 +4,16 @@ module.exports = function(app, db) {
   module.undeployLanderFromDomain = require('./undeploy_lander_from_domain')(app, db);
   module.deployLanderToDomain = require('./deploy_lander_to_domain')(app,db);
   module.addNewLander = require('./add_new_lander')(app,db);
+  module.deleteLander = require('./delete_lander')(app,db);
 
   module.startJob = function(action, user, attr) {
     //start job
     console.log("\nACTION: " + action);
-    module[action](user, attr);
+    try {
+      module[action](user, attr);
+    } catch(e){
+      console.log("job worker method does not exist!!!! must implement it.")
+    }
   };
 
   return module;

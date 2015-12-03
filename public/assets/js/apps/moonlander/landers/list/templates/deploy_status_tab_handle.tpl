@@ -26,4 +26,12 @@
          Initializing
       </span>
   
+<% } else if(deploy_status === "deleting"){ %>
+ 
+      <span class="open_sidemenu_r label bg-warning">
+         <span style="margin-right: 5px; font-size: 12px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+         </span>
+         Deleting
+      </span>
+  
 <% } %>

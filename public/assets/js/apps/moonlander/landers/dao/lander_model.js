@@ -20,6 +20,8 @@ define(["app",
               if (jobModel.get("action") === "addNewLander") {
                 //adding new lander so we're still initializing...
                 me.set("deploy_status","initializing");
+              } else if(jobModel.get("action") === "deleteLander") {
+                me.set("deploy_status", "deleting");
               }
             })
           }
@@ -37,6 +39,12 @@ define(["app",
             //update lander status to not deployed
             me.set("deploy_status", "not_deployed");
             // me.trigger("finishedInitializing");
+          } else if(jobModel.get("action") === "deleteLander"){
+            jobModel.trigger('destroy');
+
+            //destroy the lander model
+            me.destroy();
+
           }
 
         });

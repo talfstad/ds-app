@@ -130,7 +130,7 @@
     padding-right: 5px !important;
 }
 
-.btn.delete-lander, .btn.center {
+.btn.delete-lander-button, .btn.center {
     margin: 0 auto;
     display: block;
 }

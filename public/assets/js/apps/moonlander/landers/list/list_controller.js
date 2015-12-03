@@ -193,6 +193,10 @@ define(["app",
 
                   });
 
+                  landerView.model.on("destroy", function() {
+                    me.filteredLanderCollection.resetWithOriginals();
+                  });
+
                   //update deployStatusView to show not deployed (initial adding, no way it can be deployed yet)
                   // landerView.model.on("finishedInitialization", function(){
 
@@ -374,6 +378,28 @@ define(["app",
           Moonlander.trigger('landers:closesidebar');
           this.filteredLanderCollection.add(landerModel);
           this.filteredLanderCollection.resetWithOriginals();
+        },
+
+        deleteLander: function(model) {
+          var lander_id = model.get("id");
+          var lander = this.filteredLanderCollection.get(lander_id);
+
+          //model is a clone not 'the' model in filtered collection
+          var filteredCollectionLanderModel = this.filteredLanderCollection.get(model.get("id"));
+          filteredCollectionLanderModel.set("deploy_status", "deleting");
+
+          var jobAttributes = {
+            action: "deleteLander",
+            lander_id: model.get("id")
+          }
+          var jobModel = new JobModel(jobAttributes);
+
+          var activeJobCollection = lander.get("activeJobs");
+          activeJobCollection.add(jobModel);
+
+          Moonlander.trigger("job:start", jobModel);
+
+
         }
       }
     });

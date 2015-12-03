@@ -6,10 +6,11 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
   "/assets/js/apps/moonlander/landers/add_to_campaign/add_to_campaign_controller.js",
   "/assets/js/apps/moonlander/landers/undeploy_lander/undeploy_controller.js",
   "/assets/js/apps/moonlander/landers/undeploy_campaign/undeploy_controller.js",
-  "/assets/js/apps/moonlander/landers/add_new_lander/add_new_lander_controller.js"
+  "/assets/js/apps/moonlander/landers/add_new_lander/add_new_lander_controller.js",
+  "/assets/js/apps/moonlander/landers/delete_lander/delete_lander_controller.js"
   ], 
 function(Moonlander, ListController, CommonLogin, SidemenuController, EditController, DeployToDomainController, 
-  AddToCampaignController, UndeployLanderController, UndeployCampaignController, AddNewLanderController){
+  AddToCampaignController, UndeployLanderController, UndeployCampaignController, AddNewLanderController, DeleteLanderController){
   Moonlander.module("LandersApp", function(LandersApp, Moonlander, Backbone, Marionette, $, _){
 
     var landersAppAPI = {
@@ -52,6 +53,12 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
       loadLandersSideMenu: function(d){
         SidemenuController.loadLandersSideMenu();
       },
+      deleteLander: function(model){
+        ListController.deleteLander(model);
+      },
+      showDeleteLanderModal: function(model){
+        DeleteLanderController.showDeleteLanderModal(model);
+      },
       openSidebar: function(model){
         SidemenuController.openSidebar(model);
       },
@@ -82,6 +89,14 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
 
     Moonlander.on("landers:showUndeploy", function(model){
       landersAppAPI.showUndeployLander(model);
+    });
+
+    Moonlander.on("landers:deleteLander", function(model){
+      landersAppAPI.deleteLander(model);
+    });
+
+    Moonlander.on("landers:showDeleteLanderModal", function(model){
+      landersAppAPI.showDeleteLanderModal(model);
     });
 
     Moonlander.on("landers:showRemoveLanderFromCampaignDialog", function(model){
