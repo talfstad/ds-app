@@ -14,23 +14,23 @@ module.exports = function(app, db) {
     var user_id = user.id;
     var lander_id = attr.lander_id;
 
-    // db.landers.deleteLander(user_id, lander_id, function() {
-    //   //successCB
+    db.landers.deleteLander(user_id, lander_id, function() {
+      //successCB
 
-    //   var finishedJobs = [attr.id];
+      var finishedJobs = [attr.id];
     
-    //   db.jobs.finishedJobSuccessfully(user, finishedJobs, function() {
+      db.jobs.finishedJobSuccessfully(user, finishedJobs, function() {
     
-    //     console.log("successfully updated deleteLander job to finished");
+        console.log("successfully updated deleteLander job to finished");
     
-    //   });
+      });
 
 
 
-    // }, function() {
-    //   //errorCB
-    //   console.log("Error deleting lander with id: " + lander_id);
-    // });
+    }, function() {
+      //errorCB
+      console.log("Error deleting lander with id: " + lander_id);
+    });
 
   };
 

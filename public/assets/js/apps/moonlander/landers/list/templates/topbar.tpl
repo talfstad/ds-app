@@ -24,6 +24,10 @@
       if(total_initializing > 1){ 
         initializingLanderText = "Landers"
       }
+      var deletingLanderText = "Lander"
+      if(total_deleting > 1){
+        deletingLanderText = "Landers"
+      }
     %>
 
     <% if(total_not_deployed == 0 && total_deploying == 0) { %>
@@ -33,6 +37,14 @@
     </div> -->
 
     <% } else { %>
+
+      <% if(total_deleting > 0) { %>
+      
+      <div>
+        <span class="badge-danger badge"><%= total_deleting %></span> <%= deletingLanderText %> Deleting
+      </div>
+
+      <% } %>
 
       <% if(total_initializing > 0) { %>
       

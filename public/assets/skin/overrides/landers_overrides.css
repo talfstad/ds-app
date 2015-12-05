@@ -379,9 +379,12 @@ tr.warning input[type=select] {
     margin-left:30px;
 }
 
+.disabled-link {
+   cursor: not-allowed;
+}
+
 .inactive-link {
    pointer-events: none;
-   cursor: default;
 }
 
 

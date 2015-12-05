@@ -26,6 +26,9 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
       deployLanderToNewDomain: function(attr){
         ListController.deployLanderToDomain(attr);
       },
+      updateTopbarTotals: function(){
+        ListController.updateTopbarTotals();
+      },
       addCampaignToLander: function(attr){
         ListController.addCampaignToLander(attr);
       },
@@ -91,7 +94,7 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
       landersAppAPI.showUndeployLander(model);
     });
 
-    Moonlander.on("landers:deleteLander", function(model){
+    Moonlander.on("landers:list:deleteLander", function(model){
       landersAppAPI.deleteLander(model);
     });
 
@@ -129,6 +132,10 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
 
     Moonlander.on("landers:list:addLander", function(landerModel){
       landersAppAPI.addLander(landerModel);
+    });
+
+    Moonlander.on("landers:updateTopbarTotals", function(landerModel){
+      landersAppAPI.updateTopbarTotals();
     });
 
   });

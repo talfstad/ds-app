@@ -63,6 +63,7 @@ define(["app",
             this.model.set("deploy_status", "deployed");
           }
 
+          //set deploystatus for gui
           var deployStatus = this.model.get("deploy_status");
           if(deployStatus === "deployed"){
             this.model.set("deploy_status_gui", "");

@@ -29,7 +29,7 @@ define(["app",
 
         confirmedDeleteLander: function() {
 
-          Moonlander.trigger("landers:deleteLander", this.model);
+          Moonlander.trigger("landers:list:deleteLander", this.model);
           this.$el.modal("hide");
 
         },

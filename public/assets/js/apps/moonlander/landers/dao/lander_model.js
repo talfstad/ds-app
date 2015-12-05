@@ -10,44 +10,51 @@ define(["app",
     var LanderModel = JobsGuiBaseModel.extend({
       urlRoot: "/api/landers",
 
+
+      //init has 3 steps.
+      //1. initialize the activeJobs collection in parent class
+      //2. now do stuff for this specific type
+      //3. start the jobs from the parent class
       initialize: function() {
+        JobsGuiBaseModel.prototype.initialize.apply(this);
+
         var me = this;
 
         //on active jobs initialize check if any of them exist and handle start state
-        this.on("change:activeJobs", function(landerModel, activeJobsCollection) {
+        var activeJobsCollection = this.get("activeJobs");
+
+        activeJobsCollection.on("startState", function() {
           if (activeJobsCollection.length > 0) {
             activeJobsCollection.each(function(jobModel) {
               if (jobModel.get("action") === "addNewLander") {
                 //adding new lander so we're still initializing...
-                me.set("deploy_status","initializing");
-              } else if(jobModel.get("action") === "deleteLander") {
-                me.set("deploy_status", "deleting");
+                me.set("deploy_status", "initializing");
+
+              } else if (jobModel.get("action") === "deleteLander") {
+                me.set("deploy_status", "deleting");              
               }
             })
           }
         });
 
-        JobsGuiBaseModel.prototype.initialize.apply(this);
 
-        var activeJobs = this.get("activeJobs");
-
-        activeJobs.on("finishedState", function(jobModel) {
+        activeJobsCollection.on("finishedState", function(jobModel) {
 
           if (jobModel.get("action") === "addNewLander") {
-            //1. always destroy the active job model
-            jobModel.trigger('destroy');
+
             //update lander status to not deployed
             me.set("deploy_status", "not_deployed");
-            // me.trigger("finishedInitializing");
-          } else if(jobModel.get("action") === "deleteLander"){
-            jobModel.trigger('destroy');
+
+          } else if (jobModel.get("action") === "deleteLander") {
 
             //destroy the lander model
             me.destroy();
-
+            Moonlander.trigger("landers:updateTopbarTotals");
           }
 
         });
+
+        this.startActiveJobs();
 
       },
 

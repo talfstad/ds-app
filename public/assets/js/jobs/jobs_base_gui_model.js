@@ -11,7 +11,7 @@ var JobsBaseGuiModel = Backbone.Model.extend({
       this.set("activeJobs", activeJobCollection);
 
       //start active jobs
-      this.startActiveJobs();
+      // this.startActiveJobs();
     },
 
 

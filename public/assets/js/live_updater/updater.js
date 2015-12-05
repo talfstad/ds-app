@@ -64,7 +64,7 @@ define(["app"], function(Moonlander){
     //adds a model to the updater
     add: function(model) {
       this.updateCollection.add(model);
-
+      model.trigger("startState");
       //start polling if first one.
       //function is self perpetuating so no need to call it for more than 1 model
       if(this.pollNotStarted) {

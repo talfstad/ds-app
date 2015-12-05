@@ -154,7 +154,8 @@ define(["app",
                     //update deploy status view UNLESS we're initializing. if initializing needs to be changed
                     //to not_deployed by the lander job itself because we're adding a new lander. this logic is
                     //for when the lander is already added
-                    if (landerView.model.get("deploy_status") !== "initializing") {
+                    if (landerView.model.get("deploy_status") !== "initializing" &&
+                      landerView.model.get("deploy_status") !== "deleting") {
                       var deployStatus = "deployed";
                       this.children.each(function(deployedDomainView) {
                         if (deployedDomainView.model.get("activeJobs")) {
@@ -191,11 +192,19 @@ define(["app",
                       activeCampaignsView.render();
                     }
 
+                    //if deleting then trigger delete state on landerView
+                    if (landerView.isRendered && deployStatus === "deleting") {
+                      landerView.disableAccordionPermanently();
+                      //close sidebar
+                      Moonlander.trigger('landers:closesidebar');
+
+                    }
+
                   });
 
-                  landerView.model.on("destroy", function() {
-                    me.filteredLanderCollection.resetWithOriginals();
-                  });
+                  // landerView.model.on("destroy", function() {
+                  //   me.filteredLanderCollection.resetWithOriginals();
+                  // });
 
                   //update deployStatusView to show not deployed (initial adding, no way it can be deployed yet)
                   // landerView.model.on("finishedInitialization", function(){
@@ -368,7 +377,6 @@ define(["app",
 
             }
 
-
           });
 
         },
@@ -382,24 +390,27 @@ define(["app",
 
         deleteLander: function(model) {
           var lander_id = model.get("id");
-          var lander = this.filteredLanderCollection.get(lander_id);
+          var landerModel = this.filteredLanderCollection.get(lander_id);
 
           //model is a clone not 'the' model in filtered collection
-          var filteredCollectionLanderModel = this.filteredLanderCollection.get(model.get("id"));
-          filteredCollectionLanderModel.set("deploy_status", "deleting");
+          // var filteredCollectionLanderModel = this.filteredLanderCollection.get(model.get("id"));
+          // filteredCollectionLanderModel.set("deploy_status", "deleting");
 
           var jobAttributes = {
             action: "deleteLander",
-            lander_id: model.get("id")
+            lander_id: landerModel.get("id")
           }
           var jobModel = new JobModel(jobAttributes);
 
-          var activeJobCollection = lander.get("activeJobs");
+          var activeJobCollection = landerModel.get("activeJobs");
           activeJobCollection.add(jobModel);
-
           Moonlander.trigger("job:start", jobModel);
 
 
+        },
+
+        updateTopbarTotals: function(){
+          this.filteredLanderCollection.updateTotals();
         }
       }
     });
