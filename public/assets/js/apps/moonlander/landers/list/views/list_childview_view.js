@@ -16,6 +16,14 @@ define(["app",
 
     Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
       List.childView = Marionette.LayoutView.extend({
+
+        initialize: function(){
+          var me = this;
+          this.listenTo(this.model, "view:expand", function(){
+            me.expandAccordion();
+          });
+        },
+
         className: "bs-component accordion-group",
 
         template: LandersListItemTpl,
@@ -50,6 +58,10 @@ define(["app",
           var timezoneName = new jstz().timezone_name;
           var formattedTime = moment.utc(lastUpdatedRawMysqlDateTime, "MMM DD, YYYY h:mm A").tz(timezoneName).format("MMM DD, YYYY h:mm A");
           this.model.set("last_updated_gui", formattedTime);
+        },
+
+        expandAccordion: function(){
+          this.$el.find("a:first").click();
         },
 
 

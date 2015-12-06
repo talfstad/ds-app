@@ -29,7 +29,7 @@
                         <label for="landerName" class="field-label col-md-3 text-center">New Lander Name:</label>
                         <div class="col-md-9">
                           <label for="landerName" class="field prepend-icon">
-                            <input type="text" name="landerName" id="access-key-id" class="gui-input" value="">
+                            <input type="text" name="landerName" id="lander-name" class="lander-name gui-input" value="">
                             <label for="landerName" class="field-icon">
                               <i class="fa fa-file"></i>
                             </label>

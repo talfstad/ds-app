@@ -27,7 +27,13 @@ define(["app",
 
           }
 
+          this.$el.click(function(e){
+            e.preventDefault();
+          });
+
         }
+
+
       });
     });
     return Moonlander.LandersApp.Landers.List.DeployStatus;

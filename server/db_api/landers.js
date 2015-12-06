@@ -247,6 +247,9 @@ module.exports = function(db) {
 
                 });
               }
+              if(dblanders.length <= 0){
+                gotLandersCallback(dblanders);
+              }
             }
             connection.release();
           });

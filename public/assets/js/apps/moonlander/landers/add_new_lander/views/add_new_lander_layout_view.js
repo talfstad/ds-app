@@ -99,10 +99,10 @@ define(["app",
 
           this.$el.on('show.bs.modal', function(e) {
 
-
           });
 
           this.$el.on('shown.bs.modal', function(e) {
+              $(".lander-name").focus();
 
 
           });
@@ -116,8 +116,7 @@ define(["app",
         },
 
         onDomRefresh: function() {
-
-
+        
         }
       });
 

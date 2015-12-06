@@ -187,7 +187,7 @@ define(["app",
           activeJobsCollection.each(function(job) {
             if (job.get("action") === "deletingLander") {
               deployStatus = "deleting";
-            } else if (job.get("action") === "addLander") {
+            } else if (job.get("action") === "addNewLander") {
               deployStatus = "initializing";
             }
           });

@@ -9,7 +9,7 @@
 
     	<div class="campaigns-list-region modal-body">
 
-            <p>Are you sure you want to <strong>delete <%= name %></strong> permanently?</p>
+            <p>Are you sure you want to delete <strong><%= name %></strong> permanently?</p>
                 
         </div>
 

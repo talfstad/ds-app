@@ -85,8 +85,6 @@ define(["app",
         },
 
         onRender: function() {
-          this.trigger("updateParentLayout", this.model);
-
           var me = this;
           //add correct classname
           var deployStatus = this.model.get("deploy_status");

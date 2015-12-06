@@ -117,6 +117,16 @@ define(["app",
           return filtered;
         };
 
+        filtered.showPageWithModel = function(model){
+          filtered.resetWithOriginals(filtered.state.currentFilter);
+          //1. get page number that this model is on
+          var pageSize = filtered.state.gui.get("page_size");
+          var itemIndex = original.indexOf(model) + 1;
+          //2. goto that page!
+          var pageToGoto = Math.floor(itemIndex / pageSize) + 1
+          filtered.gotoPage(pageToGoto);
+        };
+
         /////
         //pageination stuff starts
         /////
@@ -342,7 +352,13 @@ define(["app",
         });
 
         original.on("destroy", function(models) {
+          var currentPage = filtered.state.gui.get("current_page");
+          //1. filter to reset it
           filtered.filter(filtered.state.currentFilter);
+          //2. set current page = to what it was before
+          if(currentPage <= filtered.state.gui.get("num_pages")){
+            filtered.gotoPage(currentPage);
+          }
         });
 
         filtered.on("add", function(models) {

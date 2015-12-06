@@ -116,7 +116,6 @@ define(["app",
                   })
 
                   activeCampaignsView.on("childview:updateParentLayout", function(childView, options) {
-
                     //update the campaign count for lander
                     var length = this.children.length;
                     if (childView.isDestroyed) --length;
@@ -149,11 +148,6 @@ define(["app",
                     landerView.$el.find("a[href=#campaigns-tab-id-" + landerView.model.get("id") + "]").tab('show')
                   });
 
-                  //whenever deployed domain coll updates deploy_status, update master lander deploy status
-                  deployedDomainsCollection.on("change:deploy_status", function(){
-
-                  });
-
                  
                   //update view information on model change
                   landerView.model.on("change:deploy_status", function() {
@@ -174,7 +168,6 @@ define(["app",
                       Moonlander.trigger('landers:closesidebar');
 
                     }
-
                   });
 
 
@@ -188,6 +181,9 @@ define(["app",
                   landerView.add_to_new_campaign_region.show(addToNewCampaignView);
                 });
               }
+
+              //set topbar totals on reset
+              Moonlander.trigger("landers:updateTopbarTotals")
             });
 
 
@@ -348,7 +344,10 @@ define(["app",
         addLander: function(landerModel) {
           Moonlander.trigger('landers:closesidebar');
           this.filteredLanderCollection.add(landerModel);
-          this.filteredLanderCollection.resetWithOriginals();
+          //1. goto page with new lander on it
+          this.filteredLanderCollection.showPageWithModel(landerModel);
+          //2. expand new lander
+          landerModel.trigger("view:expand");
         },
 
         deleteLander: function(model) {
