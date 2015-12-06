@@ -1,57 +1,59 @@
 define(["app",
     "/assets/js/apps/moonlander/landers/duplicate_lander/views/duplicate_lander_layout_view.js",
-    "/assets/js/jobs/jobs_model.js",
     "/assets/js/apps/moonlander/landers/dao/lander_model.js"
   ],
-  function(Moonlander, DuplicateLanderLayoutView, JobModel, LanderModel) {
+  function(Moonlander, DuplicateLanderLayoutView, LanderModel) {
     Moonlander.module("LandersApp.Landers.DuplicateLander", function(DuplicateLander, Moonlander, Backbone, Marionette, $, _) {
 
       DuplicateLander.Controller = {
 
         showDuplicateLander: function(landerModelToDuplicate) {
+          //remove all jobs from new lander & id to save as new
+          // delete landerModelToDuplicate.attributes.deployedLocations;
+          // delete landerModelToDuplicate.attributes.activeCampaigns;
+          // delete landerModelToDuplicate.attributes.activeJobs;
+          //empty all collection crap we dont want.
+          landerModelToDuplicate.attributes.deployedLocations = [];
+          landerModelToDuplicate.attributes.activeCampaigns = [];
+          landerModelToDuplicate.attributes.activeJobs = [];
+          landerModelToDuplicate.attributes.active_campaigns_count = 0;
+          landerModelToDuplicate.attributes.urlEndpoints = landerModelToDuplicate.get("urlEndpoints").toJSON();
 
-          //make new lander model for it
-          var jobModel = new JobModel({
-            action: "duplicateLander"
+          $.each(landerModelToDuplicate.attributes.urlEndpoints, function(idx, endpoint) {
+            endpoint.activeSnippets = []; //no active snippets carried over
           });
+
+          var duplicatedLanderModel = new LanderModel(landerModelToDuplicate.attributes)
+          delete duplicatedLanderModel.attributes.id;
+
 
           var duplicateLanderLayout = new DuplicateLanderLayoutView({
-            model: landerModelToDuplicate
+            model: duplicatedLanderModel
           });
 
-          duplicateLanderLayout.on("duplicateLander", function(data){
+          duplicateLanderLayout.on("duplicateLander", function(newLanderName) {
+            var me = this;
+
+            this.model.set("name", newLanderName);
 
             //1. save the lander as a new lander
+            this.model.save({}, {
+              success: function(landerModel, two, three) {
+                Moonlander.trigger("landers:list:addNewDuplicatedLander", landerModel);
 
+              },
+              error: function() {
 
-            //2. 
+              }
+            })
 
-
-
-            var jobAttributes = data.response;
-             //// server returns job id, lander id
-            //2. create new jobmodel with jobid and action and lander id
-            var jobModel = new JobModel(jobAttributes);
-            //3. create a new lander model
-            var landerModel = new LanderModel({
-              id: jobAttributes.lander_id,
-              name: jobAttributes.landerName,
-              last_updated: jobAttributes.last_updated,
-              deploy_status: "initializing"
-            });
-            //4. add jobmodel to lander model
-            var activeJobs = landerModel.get("activeJobs");
-            activeJobs.add(jobModel);
-            Moonlander.trigger("job:start", jobModel);
-            //5. trigger add lander model on the landers collection
-            Moonlander.trigger("landers:list:addLander", landerModel);
           });
 
 
           duplicateLanderLayout.render();
 
           Moonlander.rootRegion.currentView.modalRegion.show(duplicateLanderLayout);
-        
+
         }
 
       }

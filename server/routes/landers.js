@@ -42,6 +42,20 @@ module.exports = function(app, db, passport) {
     });
   });
 
+
+  //called when adding a DUPLICATE lander! not a new lander. this is because adding a new lander
+  //takes a JOB worth of work where as this is just copying db fields
+  app.post('/api/landers', function(req, res) {
+    var user = req.user;
+    var duplicateLanderData = req.body;
+    db.landers.addNewDuplicateLander(user, duplicateLanderData, function(duplicateLanderWithIdAttributes){
+
+      res.json(duplicateLanderWithIdAttributes);
+
+    });
+
+  });
+
   app.get('/api/lander', function(req, res) {
 
   });

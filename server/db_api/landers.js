@@ -23,6 +23,43 @@ module.exports = function(db) {
 
     },
 
+    addNewDuplicateLander: function(user, duplicateLanderAttributes, successCallback) {
+
+      var user_id = user.id;
+      var lander_name = duplicateLanderAttributes.name;
+      var optimize_js = duplicateLanderAttributes.optimize_js;
+      var optimize_css = duplicateLanderAttributes.optimize_css;
+      var optimize_images = duplicateLanderAttributes.optimize_images;
+      var optimize_gzip = duplicateLanderAttributes.optimize_gzip;
+
+      db.getConnection(function(err, connection) {
+        connection.query("CALL save_new_duplicate_lander(?, ?, ?, ?, ?, ?)", [lander_name, user_id, optimize_js, optimize_css, optimize_images, optimize_gzip],
+          function(err, docs) {
+            if (err) {
+              console.log(err);
+            } else {
+              //success
+
+              //TODO copy all lander resources as well on duplicate lander (urlEndpoints, files, etc)
+
+
+              duplicateLanderAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
+              duplicateLanderAttributes.last_updated = docs[1][0].last_updated;
+              //remove any attributes we dont want to overwrite
+              delete duplicateLanderAttributes.deployedLocations;
+              delete duplicateLanderAttributes.activeJobs;
+              delete duplicateLanderAttributes.activeCampaigns;
+              delete duplicateLanderAttributes.urlEndpoints;
+
+              successCallback(duplicateLanderAttributes);
+            }
+
+          });
+      });
+
+
+    },
+
     saveNewLander: function(user, landerName, successCallback) {
 
       var user_id = user.id;
@@ -247,7 +284,7 @@ module.exports = function(db) {
 
                 });
               }
-              if(dblanders.length <= 0){
+              if (dblanders.length <= 0) {
                 gotLandersCallback(dblanders);
               }
             }

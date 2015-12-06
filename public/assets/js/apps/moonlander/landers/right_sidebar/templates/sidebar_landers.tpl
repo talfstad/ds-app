@@ -7,8 +7,8 @@
           </div>
           <div class="panel-menu">
             <div class="btn-group">
-              <button type="button" style="width: 95px" class="duplicate-lander-button btn btn-default btn-gradient dark"><span class="fa fa-copy pr5"></span>Duplicate</button>
-              <button type="button" style="width: 73px" class="lander-edit btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Edit</button>
+              <button type="button" style="width: 97px" class="duplicate-lander-button btn btn-default btn-gradient dark"><span class="fa fa-copy pr5"></span>Duplicate</button>
+              <button type="button" style="width: 71px" class="lander-edit btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Edit</button>
               <button type="button" style="width: 87px" class="save disabled btn btn-default btn-gradient dark"><span class="fa fa-save pr5"></span>Update</button>
             </div>
           </div>

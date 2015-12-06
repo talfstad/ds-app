@@ -25,6 +25,9 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
           Moonlander.trigger("header:active", "landers");
         });
       },
+      addNewDuplicatedLander: function(model){
+        ListController.addNewDuplicatedLander(model);
+      },
       deployLanderToNewDomain: function(attr){
         ListController.deployLanderToDomain(attr);
       },
@@ -109,6 +112,10 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
 
     Moonlander.on("landers:showRemoveLanderFromCampaignDialog", function(model){
       landersAppAPI.showRemoveLanderFromCampaignDialog(model);
+    });
+
+    Moonlander.on("landers:list:addNewDuplicatedLander", function(model){
+      landersAppAPI.addNewDuplicatedLander(model);
     });
 
     Moonlander.on("landers:deployLanderToNewDomain", function(attr){

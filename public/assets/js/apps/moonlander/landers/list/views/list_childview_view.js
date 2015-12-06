@@ -17,9 +17,9 @@ define(["app",
     Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
       List.childView = Marionette.LayoutView.extend({
 
-        initialize: function(){
+        initialize: function() {
           var me = this;
-          this.listenTo(this.model, "view:expand", function(){
+          this.listenTo(this.model, "view:expand", function() {
             me.expandAccordion();
           });
         },
@@ -60,7 +60,7 @@ define(["app",
           this.model.set("last_updated_gui", formattedTime);
         },
 
-        expandAccordion: function(){
+        expandAccordion: function() {
           this.$el.find("a:first").click();
         },
 
@@ -86,9 +86,9 @@ define(["app",
           //disable main link
           // this.$el.find(".accordion-toggle").removeAttr("data-toggle");
           this.$el.find(".accordion-toggle").hover(function() {
-              $(this).addClass("disabled-link");
+            $(this).addClass("disabled-link");
           });
-         
+
           this.$el.find("ul li").addClass("disabled");
 
         },
@@ -102,83 +102,86 @@ define(["app",
             this.disableAccordionPermanently();
           } else {
 
-          //add/remove hovering attribute so we can correctly animate closing of the right sidebar
-          this.$el.find(".accordion-toggle").hover(function(e) {
+            //add/remove hovering attribute so we can correctly animate closing of the right sidebar
+            this.$el.find(".accordion-toggle").hover(function(e) {
+                $(e.currentTarget).attr("data-currently-hovering", true);
+              },
+              function(e) {
+                $(e.currentTarget).attr("data-currently-hovering", false);
+              });
+
+            this.$el.find(".campaign-tab-handle-region").hover(function(e) {
               $(e.currentTarget).attr("data-currently-hovering", true);
-            },
-            function(e) {
+            }, function(e) {
               $(e.currentTarget).attr("data-currently-hovering", false);
             });
 
-          this.$el.find(".campaign-tab-handle-region").hover(function(e) {
-            $(e.currentTarget).attr("data-currently-hovering", true);
-          }, function(e) {
-            $(e.currentTarget).attr("data-currently-hovering", false);
-          });
+            this.$el.find(".deploy-status-region").hover(function(e) {
+              $(e.currentTarget).attr("data-currently-hovering", true);
+            }, function(e) {
+              $(e.currentTarget).attr("data-currently-hovering", false);
+            });
 
-          this.$el.find(".deploy-status-region").hover(function(e) {
-            $(e.currentTarget).attr("data-currently-hovering", true);
-          }, function(e) {
-            $(e.currentTarget).attr("data-currently-hovering", false);
-          });
+            this.$el.on('hide.bs.collapse', function(e) {
 
-          this.$el.on('hide.bs.collapse', function(e) {
+              //close right sidebar if closing all domain accordions
+              if ($(e.currentTarget).find("a[data-currently-hovering='true']").length > 0) {
+                Moonlander.trigger('landers:closesidebar');
+              }
 
-            //close right sidebar if closing all domain accordions
-            if ($(e.currentTarget).find("a[data-currently-hovering='true']").length > 0) {
-              Moonlander.trigger('landers:closesidebar');
-            }
+              $(e.currentTarget).find("li.active").removeClass("active");
+              $(e.currentTarget).find(".accordion-toggle").removeClass('active');
+            });
 
-            $(e.currentTarget).find("li.active").removeClass("active");
-            $(e.currentTarget).find(".accordion-toggle").removeClass('active');
-          });
+            this.$el.on('show.bs.collapse', function(e) {
+              //collapse ALL others so we get an accordian effect !IMPORTANT for design
+              $("#landers-collection .collapse").collapse("hide");
 
-          this.$el.on('show.bs.collapse', function(e) {
-            //collapse ALL others so we get an accordian effect !IMPORTANT for design
-            $("#landers-collection .collapse").collapse("hide");
+              //disable the controls until shown (fixes multiple showing bug if clicked too fast)
+              $(".accordion-toggle").addClass("inactive-link");
 
-            //disable the controls until shown (fixes multiple showing bug if clicked too fast)
-            $(".accordion-toggle").addClass("inactive-link");
-
-            //first dont show any tabs then show correct tab
-            $(e.currentTarget).find("li.deploy-status-region").removeClass("active");
-            $(e.currentTarget).find("div[id^='domains-tab']").removeClass("active");
-            $(e.currentTarget).find("li.campaign-tab-handle-region").removeClass("active");
-            $(e.currentTarget).find("div[id^='campaigns-tab']").removeClass("active");
-            //show the correct tab
-            var currentTab = $(e.currentTarget).find("li[data-currently-hovering='true']");
-            var currentTabData = $("#" + currentTab.attr("data-tab-target"));
-            if (currentTab.length > 0) {
-              //show clicked on tab
-              currentTab.addClass("active");
-              currentTabData.addClass("active");
-            } else {
-              //no tab show domains tab
-              $(e.currentTarget).find("li.deploy-status-region").addClass("active");
-              $(e.currentTarget).find("div[id^='domains-tab']").addClass("active");
-            }
+              //first dont show any tabs then show correct tab
+              $(e.currentTarget).find("li.deploy-status-region").removeClass("active");
+              $(e.currentTarget).find("div[id^='domains-tab']").removeClass("active");
+              $(e.currentTarget).find("li.campaign-tab-handle-region").removeClass("active");
+              $(e.currentTarget).find("div[id^='campaigns-tab']").removeClass("active");
+              //show the correct tab
+              var currentTab = $(e.currentTarget).find("li[data-currently-hovering='true']");
+              var currentTabData = $("#" + currentTab.attr("data-tab-target"));
+              if (currentTab.length > 0) {
+                //show clicked on tab
+                currentTab.addClass("active");
+                currentTabData.addClass("active");
+              } else {
+                //no tab show domains tab
+                $(e.currentTarget).find("li.deploy-status-region").addClass("active");
+                $(e.currentTarget).find("div[id^='domains-tab']").addClass("active");
+              }
 
 
-            $(e.currentTarget).find(".accordion-toggle").addClass('active')
+              $(e.currentTarget).find(".accordion-toggle").addClass('active')
 
-            $(e.currentTarget).parent().find(".panel").addClass(".panel-info");
+              $(e.currentTarget).parent().find(".panel").addClass(".panel-info");
 
-            //pass a clone not the real model so everyone gets their own. no references for
-            //right sidebar, interferes with active snippets
-            Moonlander.trigger('landers:opensidebar', new SidebarModel(me.model.attributes));
+              //pass a clone not the real model so everyone gets their own. no references for
+              //right sidebar, interferes with active snippets
+              var sidebarModel = new SidebarModel(me.model.attributes);
+              
 
-          });
+              Moonlander.trigger('landers:opensidebar', sidebarModel);
 
-          this.$el.on('shown.bs.collapse', function(e) {
-            //enable the anchor tags
-            $(".accordion-toggle").removeClass("inactive-link");
+            });
 
-          });
+            this.$el.on('shown.bs.collapse', function(e) {
+              //enable the anchor tags
+              $(".accordion-toggle").removeClass("inactive-link");
 
-          this.$el.find(".nav.panel-tabs").click(function(e) {
-            $(e.currentTarget).parent().parent().find(".panel-collapse").collapse('show');
-          });
-}
+            });
+
+            this.$el.find(".nav.panel-tabs").click(function(e) {
+              $(e.currentTarget).parent().parent().find(".panel-collapse").collapse('show');
+            });
+          }
 
         }
       });

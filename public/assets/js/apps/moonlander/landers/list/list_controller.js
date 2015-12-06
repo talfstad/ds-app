@@ -350,6 +350,17 @@ define(["app",
           landerModel.trigger("view:expand");
         },
 
+        addNewDuplicatedLander: function(landerModel){
+
+          Moonlander.trigger('landers:closesidebar');
+          this.filteredLanderCollection.add(landerModel);
+          //1. goto page with new lander on it
+          this.filteredLanderCollection.showPageWithModel(landerModel);
+          //2. expand new lander
+          landerModel.trigger("view:expand");
+          
+        },
+
         deleteLander: function(model) {
           var lander_id = model.get("id");
           var landerModel = this.filteredLanderCollection.get(lander_id);
