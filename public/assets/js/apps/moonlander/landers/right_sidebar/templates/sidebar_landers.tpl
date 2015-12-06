@@ -17,10 +17,11 @@
             <h5 class="title-divider text-muted mt20 mb10">Lander Name
             </h5>
             <div class="input-group">
-              <input id="lander-name-edit" name="name" class="form-control" type="text" value="<%= name %>">
               <span class="input-group-addon">
-              <a class="disabled" href="#">  <i title="Save Lander Name" class="fa fa-save"></i></a>
+                <i title="Save Lander Name" class="fa fa-file-o"></i>
               </span>
+              <input id="lander-name-edit" name="name" class="form-control" type="text" value="<%= name %>">
+              
             </div>
 
             <h5 class="title-divider text-muted mt30 mb0"><span>#</span> <span style="margin-left: 20px">Deployment Optimizations</span>

@@ -90,8 +90,16 @@
       <!-- End: Topbar -->
       <!-- Begin: Content -->
       <section id="content" class="landers-list-content">
+        <div style="position: absolute; width: 100%; font-size: 11px; font-weight: 600">
         
-        <div id="landers-region" class="ph10 landers-list-items">
+        <div style="float: left; margin-left: 15px; margin-bottom: 10px">Lander Name</div>
+        <div style="float: right; margin-right: 55px; margin-bottom: 10px">Deployed Domains</div>
+        <div style="float: right; margin-right: 28px; margin-bottom: 10px">Active Campaigns</div>
+        <div style="float: right; margin-right: 45px; margin-bottom: 10px">Last Updated Date</div>
+        
+
+        </div>
+        <div id="landers-region" style="margin-top: 25px" class="ph10 landers-list-items">
           
         </div>
       </section>
