@@ -282,25 +282,25 @@ define(["app",
 
         filtered.gotoPage = function(page) {
           page = parseInt(page);
-            filtered.state.gui.set('current_page', page);
-            var items = filtered.paginate(filtered.currentFilteredCollection, page);
+          filtered.state.gui.set('current_page', page);
+          var items = filtered.paginate(filtered.currentFilteredCollection, page);
 
-            var showingLow = (page * parseInt(filtered.state.gui.get('page_size'))) - parseInt(filtered.state.gui.get('page_size')) + 1;
-            if (page < 2) {
-              showingLow = 1;
-            }
+          var showingLow = (page * parseInt(filtered.state.gui.get('page_size'))) - parseInt(filtered.state.gui.get('page_size')) + 1;
+          if (page < 2) {
+            showingLow = 1;
+          }
 
-            var showingHigh = showingLow + parseInt(filtered.state.gui.get('page_size'));
+          var showingHigh = showingLow + parseInt(filtered.state.gui.get('page_size'));
 
-            if (page < 2) {
-              showingHigh = filtered.state.gui.get('page_size');
-            }
-            var totalItemsCount = filtered.state.gui.get("total_num_items");
+          if (page < 2) {
+            showingHigh = filtered.state.gui.get('page_size');
+          }
+          var totalItemsCount = filtered.state.gui.get("total_num_items");
 
-            updateShowing(showingLow, showingHigh, totalItemsCount);
+          updateShowing(showingLow, showingHigh, totalItemsCount);
 
-            filtered.reset(items);
-            return filtered;
+          filtered.reset(items);
+          return filtered;
         };
 
         filtered.sortFiltered = function() {
@@ -337,7 +337,11 @@ define(["app",
           filtered.add(items);
         });
 
-        original.on("destroy", function(models){
+        original.on("change:deploy_status", function() {
+          filtered.updateTotals();
+        });
+
+        original.on("destroy", function(models) {
           filtered.filter(filtered.state.currentFilter);
         });
 

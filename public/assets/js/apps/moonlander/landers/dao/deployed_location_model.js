@@ -13,10 +13,18 @@ function(Moonlander, JobsGuiBaseModel, AttachedCampaignsCollection){
 
       //when job is destroyed must look to see if there are any more
       var activeJobs = this.get("activeJobs");
-      activeJobs.on("finishedState", function(model){
+      activeJobs.on("finishedState", function(jobModel){
     
-        if(model.get("action") === "undeployLanderFromDomain") {
+        if(jobModel.get("action") === "undeployLanderFromDomain") {
           me.trigger('destroy', me, me.collection);     
+        }
+        else if(jobModel.get("action") === "deployLanderToDomain"){
+          //finished with this job so destroy the jobModel
+          //hack to get it to not send DELETE XHR
+            delete jobModel.attributes.id;
+            jobModel.destroy();
+
+          me.set("deploy_status", "deployed")
         }
 
       });
@@ -26,6 +34,7 @@ function(Moonlander, JobsGuiBaseModel, AttachedCampaignsCollection){
       var attachedCampaignsCollection = new AttachedCampaignsCollection();
       this.set("attachedCampaigns", attachedCampaignsCollection);
 
+      this.startActiveJobs();
     
     },
 
@@ -35,7 +44,8 @@ function(Moonlander, JobsGuiBaseModel, AttachedCampaignsCollection){
 
       //gui attributes
       //should default true since deployed_domains is where this model is used
-      deploy_status: 'deployed'
+      deploy_status: 'deployed',
+      attachedCampaigns: []
     }
 
     

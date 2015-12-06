@@ -83,9 +83,9 @@ define(["app",
             });
 
             //these lines only if we're rendering children not in reset...
-            // landersListView.on("childview:updateCollectionTotals", function(){
-            //   me.filteredLanderCollection.updateTotals();
-            // });
+            landersListView.on("childview:updateCollectionTotals", function(){
+              me.filteredLanderCollection.updateTotals();
+            });
 
             me.filteredLanderCollection.on("reset", function(collection) {
 
@@ -116,6 +116,7 @@ define(["app",
                   })
 
                   activeCampaignsView.on("childview:updateParentLayout", function(childView, options) {
+
                     //update the campaign count for lander
                     var length = this.children.length;
                     if (childView.isDestroyed) --length;
@@ -148,41 +149,15 @@ define(["app",
                     landerView.$el.find("a[href=#campaigns-tab-id-" + landerView.model.get("id") + "]").tab('show')
                   });
 
-                  //add events before show!
-                  //update the landerView layout with whatever the child has
-                  deployedDomainsView.on("childview:updateParentLayout", function(childView, notDeployed, three) {
-                    //update deploy status view UNLESS we're initializing. if initializing needs to be changed
-                    //to not_deployed by the lander job itself because we're adding a new lander. this logic is
-                    //for when the lander is already added
-                    if (landerView.model.get("deploy_status") !== "initializing" &&
-                      landerView.model.get("deploy_status") !== "deleting") {
-                      var deployStatus = "deployed";
-                      this.children.each(function(deployedDomainView) {
-                        if (deployedDomainView.model.get("activeJobs")) {
-                          if (deployedDomainView.model.get("activeJobs").length > 0) {
-                            deployStatus = "deploying";
-                          }
-                        }
-                        //active jobs is totally undefined then we're showing the empty view
-                        else if (!deployedDomainView.model.get("activeJobs")) {
-                          deployStatus = "not_deployed";
-                        }
-                        //empty view passes not_deployed in as its arg
-                        // else if(notDeployed === "not_deployed") {
-                        //   deployStatus = "not_deployed";
-                        // }
-                      });
-                      landerView.model.set("deploy_status", deployStatus);
-                    }
+                  //whenever deployed domain coll updates deploy_status, update master lander deploy status
+                  deployedDomainsCollection.on("change:deploy_status", function(){
+
                   });
 
-                  //when lander changes its deploy status update the child collections to the same deploy status
+                 
+                  //update view information on model change
                   landerView.model.on("change:deploy_status", function() {
-                    filteredCollection.updateTotals();
-
-                    var deployStatus = this.get("deploy_status");
-                    deployedDomainsCollection.deploy_status = deployStatus;
-                    activeCampaignsCollection.deploy_status = deployStatus;
+                    Moonlander.trigger("landers:updateTopbarTotals")
 
                     // render if is showing AND EMPTY else dont (this logic meant for initializing state)
                     if (deployedDomainsView.isRendered && deployedDomainsCollection.length <= 0) {
@@ -193,7 +168,7 @@ define(["app",
                     }
 
                     //if deleting then trigger delete state on landerView
-                    if (landerView.isRendered && deployStatus === "deleting") {
+                    if (landerView.isRendered && this.get("deploy_status") === "deleting") {
                       landerView.disableAccordionPermanently();
                       //close sidebar
                       Moonlander.trigger('landers:closesidebar');
@@ -202,20 +177,8 @@ define(["app",
 
                   });
 
-                  // landerView.model.on("destroy", function() {
-                  //   me.filteredLanderCollection.resetWithOriginals();
-                  // });
 
-                  //update deployStatusView to show not deployed (initial adding, no way it can be deployed yet)
-                  // landerView.model.on("finishedInitialization", function(){
 
-                  // });
-
-                  //whenever the deployed status view is updated update deployed totals
-                  //this should be rendered whenever there is a change to the landers deployed status
-                  deployStatusView.on("render", function() {
-                    filteredCollection.updateTotals();
-                  });
 
                   landerView.deploy_status_region.show(deployStatusView);
                   landerView.campaign_tab_handle_region.show(campaignTabHandleView);
@@ -316,8 +279,8 @@ define(["app",
               var domain_id = domain.domain_id;
 
               var deployedDomainModel = deployedLocations.get(domain_id);
-              var attachedCampaigns = deployedDomainModel.get("attachedCampaigns");
 
+              var attachedCampaigns = deployedDomainModel.get("attachedCampaigns");
               attachedCampaigns.add(activeCampaignModel);
 
             });
@@ -409,7 +372,7 @@ define(["app",
 
         },
 
-        updateTopbarTotals: function(){
+        updateTopbarTotals: function() {
           this.filteredLanderCollection.updateTotals();
         }
       }

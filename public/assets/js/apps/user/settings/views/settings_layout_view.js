@@ -75,32 +75,6 @@ define(["app",
           }
         },
 
-        confirmedAddCampaign: function() {
-
-          //show error if no domain selected or if more than 1 is somehow selected
-          var selectedRow = $("#campaigns-list-datatable").find("tr.primary");
-          if(selectedRow.length <= 0 || selectedRow.length > 1) {
-            $(".alert").addClass("alert-danger").removeClass("alert-primary");
-            var currentHtml = $(".alert span").html();
-            $(".alert span").html("<i class='fa fa-exclamation pr10'></i><strong>Warning:</strong> You must select a campaign first.");
-            setTimeout(function(){
-              $(".alert").removeClass("alert-danger").addClass("alert-primary");
-              $(".alert span").html(currentHtml);
-            }, 3000);
-
-          } else {
-            
-            var activeCampaignAttributes = {
-              campaign_id: selectedRow.attr("data-campaign-id"),
-              name: selectedRow.text(),
-              lander_id: this.model.get("id"),
-            };
-            
-            Moonlander.trigger("landers:addCampaignToLander", activeCampaignAttributes);
-            this.$el.modal("hide");
-          }
-        },
-
         onRender: function() {
           var me = this;
 
