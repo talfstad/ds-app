@@ -7,7 +7,10 @@ define(["app",
     var LanderCollection = Backbone.Collection.extend({
       url: '/api/landers',
       model: LanderModel,
-      comparator: 'name'
+      comparator: function(doc) {
+        var str = doc.get('name') || '';
+        return str.toLowerCase();
+      },
     });
 
     var landerCollectionInstance = null;

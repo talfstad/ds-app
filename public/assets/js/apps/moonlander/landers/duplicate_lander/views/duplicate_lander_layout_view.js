@@ -1,13 +1,13 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/add_new_lander/templates/add_new_lander_layout.tpl",
+    "tpl!/assets/js/apps/moonlander/landers/duplicate_lander/templates/duplicate_lander_layout.tpl",
     "bootstrap.fileinput",
     "syphon"
   ],
-  function(Moonlander, AddNewLanderLayoutTpl) {
+  function(Moonlander, DuplicateLanderLayoutTpl) {
 
-    Moonlander.module("LandersApp.Landers.AddNewLander", function(AddNewLander, Moonlander, Backbone, Marionette, $, _) {
+    Moonlander.module("LandersApp.Landers.DuplicateLander", function(DuplicateLander, Moonlander, Backbone, Marionette, $, _) {
 
-      AddNewLander.Layout = Marionette.LayoutView.extend({
+      DuplicateLander.Layout = Marionette.LayoutView.extend({
 
         // id: "undeploy-lander-modal",
 
@@ -19,15 +19,15 @@ define(["app",
           "data-backdrop": "static"
         },
 
-        template: AddNewLanderLayoutTpl,
+        template: DuplicateLanderLayoutTpl,
 
         regions: {},
 
         events: {
-          "click .add-new-lander-confirm": "confirmedAddNewLander"
+          "click .duplicate-lander-confirm": "confirmedDuplicateLander"
         },
 
-        confirmedAddNewLander: function(e) {
+        confirmedDuplicateLander: function(e) {
 
           var me = this;
 
@@ -36,20 +36,10 @@ define(["app",
           //key fields are valid
           var newLanderData = Backbone.Syphon.serialize(this);
 
-          //on successful upload callback this function
-          $("#new-lander-file").on('fileuploaded', function(e, data, previewId, index) {
-            me.trigger("fileUploadComplete", data);
-          });
-
           //just a very small amount of validation, all really done on server
-          if (newLanderData.landerName != "" && newLanderData.landerFile != "") {
+          if (newLanderData.landerName != "") {
 
-            this.model.set("landerName", newLanderData.landerName);
-
-            //////save lander & add to collection
-
-            //1. trigger upload. server adds the lander to db, registers active job, and starts job
-            $("#new-lander-file").fileinput("upload");
+            this.trigger("duplicateLander", newLanderData.landerName);
 
           } else {
             var alert = this.$el.find(".new-lander-info-alert");
@@ -60,7 +50,7 @@ define(["app",
 
             alert.addClass("alert-danger");
             alert.removeClass("alert-default");
-            alert.html("You must add both a new lander name &amp; lander file to create a new lander");
+            alert.html("You must choose a new lander name before duplicating this lander");
 
 
             setTimeout(function() {
@@ -119,5 +109,5 @@ define(["app",
       });
 
     });
-    return Moonlander.LandersApp.Landers.AddNewLander.Layout;
+    return Moonlander.LandersApp.Landers.DuplicateLander.Layout;
   });

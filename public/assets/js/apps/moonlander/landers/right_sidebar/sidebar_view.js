@@ -23,7 +23,12 @@ define(["app",
 
         events: {
           "click button.lander-edit": "showEditLander",
-          "click .delete-lander-button": "showDeleteLanderModal"
+          "click .delete-lander-button": "showDeleteLanderModal",
+          "click .duplicate-lander-button": "showDuplicateLanderModal"
+        },
+        
+        showDuplicateLanderModal: function(){
+          Moonlander.trigger("landers:showDuplicateLanderModal", this.model);
         },
 
         showDeleteLanderModal: function() {

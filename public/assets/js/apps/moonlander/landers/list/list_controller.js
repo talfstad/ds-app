@@ -28,7 +28,7 @@ define(["app",
 
         filteredLanderCollection: null,
 
-        showLanders: function() {
+        showLanders: function(model) {
           //make layout for landers
           var me = this;
           var landersListLayout = new List.Layout();

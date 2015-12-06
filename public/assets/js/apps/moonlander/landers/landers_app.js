@@ -7,10 +7,12 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
   "/assets/js/apps/moonlander/landers/undeploy_lander/undeploy_controller.js",
   "/assets/js/apps/moonlander/landers/undeploy_campaign/undeploy_controller.js",
   "/assets/js/apps/moonlander/landers/add_new_lander/add_new_lander_controller.js",
-  "/assets/js/apps/moonlander/landers/delete_lander/delete_lander_controller.js"
+  "/assets/js/apps/moonlander/landers/delete_lander/delete_lander_controller.js",
+  "/assets/js/apps/moonlander/landers/duplicate_lander/duplicate_lander_controller.js"
   ], 
 function(Moonlander, ListController, CommonLogin, SidemenuController, EditController, DeployToDomainController, 
-  AddToCampaignController, UndeployLanderController, UndeployCampaignController, AddNewLanderController, DeleteLanderController){
+  AddToCampaignController, UndeployLanderController, UndeployCampaignController, AddNewLanderController, DeleteLanderController,
+  DuplicateLanderController){
   Moonlander.module("LandersApp", function(LandersApp, Moonlander, Backbone, Marionette, $, _){
 
     var landersAppAPI = {
@@ -28,6 +30,9 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
       },
       updateTopbarTotals: function(){
         ListController.updateTopbarTotals();
+      },
+      showDuplicateLanderModal: function(landerModelToDuplicate){
+        DuplicateLanderController.showDuplicateLander(landerModelToDuplicate);
       },
       addCampaignToLander: function(attr){
         ListController.addCampaignToLander(attr);
@@ -113,6 +118,10 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
     Moonlander.on("landers:removeCampaignFromLander", function(campaignModel){
       landersAppAPI.removeCampaignFromLander(campaignModel);
     });
+    Moonlander.on("landers:showDuplicateLanderModal", function(model){
+      landersAppAPI.showDuplicateLanderModal(model);
+    });
+
 
     Moonlander.on("landers:addCampaignToLander", function(attr){
       landersAppAPI.addCampaignToLander(attr);

@@ -35,8 +35,8 @@ define(["app",
           if (sortKey === "lander-name") {
             me.collection.comparator = function(a, b) {
 
-              var aLanderName = a.get("name"); 
-              var bLanderName = b.get("name");
+              var aLanderName = a.get("name").toLowerCase(); 
+              var bLanderName = b.get("name").toLowerCase();
 
               if(aLanderName === bLanderName) {
                 return 0;
