@@ -67,9 +67,10 @@ module.exports = function(db) {
 
       //param order: working_node_id, action, processing, lander_id, domain_id, campaign_id, user_id
       db.getConnection(function(err, connection) {
+
         connection.query("CALL save_new_lander(?, ?)", [landerName, user_id],
 
-          function(err, docs) {
+          function(err, docs) {            
             if (err) {
               console.log(err);
               errorCallback("Error registering new job in DB call");
@@ -233,7 +234,7 @@ module.exports = function(db) {
         //get all jobs attached to lander and make sure only select those. list is:
         // 1. addNewLander
         db.getConnection(function(err, connection) {
-          connection.query("SELECT id,action,processing,done,error FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addNewLander", "deleteLander", user_id, lander.id, true],
+          connection.query("SELECT id,action,processing,done,error FROM jobs WHERE ((action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addNewLander", "deleteLander", "ripNewLander", user_id, lander.id, true],
             function(err, dbActiveJobs) {
               callback(dbActiveJobs);
               connection.release();

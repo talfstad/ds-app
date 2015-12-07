@@ -10,7 +10,8 @@ define(["app"
         "processing": false,
         "lander_id": "",
         "campaign_id": "",
-        "domain_id": ""
+        "domain_id": "",
+        "lander_url": ""
       },
 
     });

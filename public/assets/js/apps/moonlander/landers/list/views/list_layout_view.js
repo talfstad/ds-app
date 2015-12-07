@@ -20,13 +20,20 @@ define(["app",
         },
 
         events: {
-          "click .add-new-lander-button": "showAddNewLander"
+          "click .add-new-lander-button": "showAddNewLander",
+          "click .rip-and-deploy-button": "showRipNewLander"
+        },
+
+        showRipNewLander: function(e){
+          e.preventDefault();
+
+          Moonlander.trigger("landers:showRipNewLanderModal");
         },
 
         showAddNewLander: function(e){
           e.preventDefault();
 
-          Moonlander.trigger("landers:showAddNewLander");
+          Moonlander.trigger("landers:showAddNewLanderModal");
         },
 
         filterLanders: function(filterValue) {

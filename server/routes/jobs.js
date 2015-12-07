@@ -35,7 +35,16 @@ module.exports = function(app, db, passport) {
         db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob, registerError)
       });
 
-    } else {
+    }
+    else if(jobModelAttributes.action === "ripNewLander"){
+      //need to save the lander first since its new to get an id before triggering register job
+      db.landers.saveNewLander(user, jobModelAttributes.lander_name, function(landerAttributes) {
+        jobModelAttributes.lander_id = landerAttributes.id;
+        jobModelAttributes.last_updated = landerAttributes.last_updated;
+        db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob, registerError)
+      });
+    }
+    else {
 
       //TODO: validate job model is valid to begin
       db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob, registerError)

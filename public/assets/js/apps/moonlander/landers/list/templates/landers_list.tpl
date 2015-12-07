@@ -95,7 +95,7 @@
         <div style="float: left; margin-left: 15px; margin-bottom: 10px">Landing Page Name</div>
         <div style="float: right; margin-right: 55px; margin-bottom: 10px">Deployed Domains</div>
         <div style="float: right; margin-right: 28px; margin-bottom: 10px">Active Campaigns</div>
-        <div style="float: right; margin-right: 68px; margin-bottom: 10px">Last Updated</div>
+        <div style="float: right; margin-right: 73px; margin-bottom: 10px">Last Updated</div>
         
 
         </div>

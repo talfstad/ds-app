@@ -2,27 +2,25 @@
     <div class=" modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Duplicate <%= name %></h4>
+            <h4 class="modal-title">Rip &amp; Deploy a New Lander</h4>
         </div>
 
         <div class="campaigns-list-region modal-body">
 
-
-            <!-- <div class="tab-content"> -->
-                <!-- <div role="tabpanel" class="tab-pane active" id="aws"> -->
-                    
+           
                 <div class="alert alert-micro alert-border-left alert-default new-lander-info-alert">
                   <i class="fa fa-info pr10"></i>
-                  Duplicating a lander helps you quickly make several versions to split test. Just select a new name and duplicate.
+                  To rip a new lander enter it's URL and give it a name. Have questions? <a href="#" class="alert-link">Check out this step by step guide.</a>
                 </div>
 
                 <div class="panel panel-primary top mb35">
                   <div class="panel-heading">
-                    <span class="panel-title">Duplicate Lander Information</span>
+                    <span class="panel-title">Rip New Lander Information</span>
                   </div>
                   <div class="panel-body bg-light dark">
-                
+              
                     <div class="admin-form">
+                      
                       <div class="section row mb10">
                         <label for="landerName" class="text-align-right field-label col-md-3 text-center">New Lander Name:</label>
                         <div class="col-md-9">
@@ -34,26 +32,28 @@
                           </label>
                         </div>
                       </div>
+                      <div class="section row mb10">
+                        <label for="landerUrl" class="text-align-right field-label col-md-3 text-center">Lander URL:</label>
+                        <div class="col-md-9">
+                          <label for="landerUrl" class="field prepend-icon">
+                            <input placeholder="http://" type="text" name="landerUrl" id="lander-url" class="lander-url gui-input" value="">
+                            <label for="landerUrl" class="field-icon">
+                              <i class="fa fa-map-marker"></i>
+                            </label>
+                          </label>
+                        </div>
+                      </div>
+
                     </div>
                     </div>
-                    <!-- <div class="panel-footer">
-                        <button type="button" class="update-aws-access-keys btn btn-primary btn-clipboard">Update Access Keys</button>
-                    </div>  -->
                 </div>
-
-
-                <!-- </div> -->
-                <!-- <div role="tabpanel" class="tab-pane" id="account">ACCOUNT</div> -->
-            <!-- </div> -->
-
-                
-
+              
         </div>
 
 
         <div class="modal-footer">
             <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Close</button>
-            <button type="button" class="duplicate-lander-confirm btn btn-primary btn-clipboard">Duplicate Lander</button>
+            <button type="button" class="rip-new-lander-confirm btn btn-primary btn-clipboard">Rip New Lander</button>
         </div> 
     </div>
 </div>

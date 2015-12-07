@@ -8,11 +8,8 @@ define(["app",
       DuplicateLander.Controller = {
 
         showDuplicateLander: function(landerModelToDuplicate) {
-          //remove all jobs from new lander & id to save as new
-          // delete landerModelToDuplicate.attributes.deployedLocations;
-          // delete landerModelToDuplicate.attributes.activeCampaigns;
-          // delete landerModelToDuplicate.attributes.activeJobs;
-          //empty all collection crap we dont want.
+          //take the lander model to dup and put it in a state to be re-initialized empty. setting attributes and
+          //not using .set doesnt trigger a render of the right sidebar even though its changing.. kind of a hack        
           landerModelToDuplicate.attributes.deployedLocations = [];
           landerModelToDuplicate.attributes.activeCampaigns = [];
           landerModelToDuplicate.attributes.activeJobs = [];

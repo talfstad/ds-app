@@ -22,11 +22,9 @@
                   </div>
                   <div class="panel-body bg-light dark">
                 
-
-
                     <div class="admin-form">
                       <div class="section row mb10">
-                        <label for="landerName" class="field-label col-md-3 text-center">New Lander Name:</label>
+                        <label for="landerName" class="text-align-right field-label col-md-3 text-center">New Lander Name:</label>
                         <div class="col-md-9">
                           <label for="landerName" class="field prepend-icon">
                             <input type="text" name="landerName" id="lander-name" class="lander-name gui-input" value="">
@@ -37,7 +35,7 @@
                         </div>
                       </div>
                       <div class="section row mb10">
-                        <label for="landerFile" class="field-label col-md-3 text-center">Select Lander:</label>
+                        <label for="landerFile" class="text-align-right field-label col-md-3 text-center">Select Lander:</label>
                         <div class="col-md-9">
                             <input type="file" name="landerFile" id="new-lander-file" class="file-loading" value="">
                         </div>

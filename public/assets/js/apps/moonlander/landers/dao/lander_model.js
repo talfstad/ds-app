@@ -31,7 +31,11 @@ define(["app",
                 //adding new lander so we're still initializing...
                 me.set("deploy_status", "initializing");
 
-              } else if (jobModel.get("action") === "deleteLander") {
+              }
+              else if(jobModel.get("action") === "ripNewLander"){
+                me.set("deploy_status", "initializing");
+              } 
+              else if (jobModel.get("action") === "deleteLander") {
                 me.set("deploy_status", "deleting");
               }
             })
@@ -41,7 +45,8 @@ define(["app",
 
         activeJobsCollection.on("finishedState", function(jobModel) {
 
-          if (jobModel.get("action") === "addNewLander") {
+          if (jobModel.get("action") === "addNewLander" ||
+              jobModel.get("action") === "ripNewLander") {
 
             //update lander status to not deployed
             me.set("deploy_status", "not_deployed");
@@ -187,7 +192,11 @@ define(["app",
           activeJobsCollection.each(function(job) {
             if (job.get("action") === "deletingLander") {
               deployStatus = "deleting";
-            } else if (job.get("action") === "addNewLander") {
+            } 
+            else if (job.get("action") === "addNewLander") {
+              deployStatus = "initializing";
+            }
+            else if (job.get("action") === "ripNewLander") {
               deployStatus = "initializing";
             }
           });

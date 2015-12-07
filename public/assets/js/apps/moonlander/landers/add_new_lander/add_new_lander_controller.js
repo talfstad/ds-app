@@ -8,7 +8,7 @@ define(["app",
 
       AddNewLander.Controller = {
 
-        showAddNewLander: function() {
+        showAddNewLanderModal: function() {
 
           //make new lander model for it
           var jobModel = new JobModel({

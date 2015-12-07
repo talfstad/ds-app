@@ -396,3 +396,7 @@ tr.warning input[type=select] {
 #domains-list-datatable > tbody > tr {
     cursor: pointer;
 }
+
+.text-align-right {
+    text-align: right !important;
+}

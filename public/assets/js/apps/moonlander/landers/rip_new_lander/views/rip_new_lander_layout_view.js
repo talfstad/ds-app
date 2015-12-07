@@ -1,13 +1,13 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/duplicate_lander/templates/duplicate_lander_layout.tpl",
+    "tpl!/assets/js/apps/moonlander/landers/rip_new_lander/templates/rip_new_lander_layout.tpl",
     "bootstrap.fileinput",
     "syphon"
   ],
-  function(Moonlander, DuplicateLanderLayoutTpl) {
+  function(Moonlander, RipNewLanderLayoutTpl) {
 
-    Moonlander.module("LandersApp.Landers.DuplicateLander", function(DuplicateLander, Moonlander, Backbone, Marionette, $, _) {
+    Moonlander.module("LandersApp.Landers.RipNewLander", function(RipNewLander, Moonlander, Backbone, Marionette, $, _) {
 
-      DuplicateLander.Layout = Marionette.LayoutView.extend({
+      RipNewLander.Layout = Marionette.LayoutView.extend({
 
         // id: "undeploy-lander-modal",
 
@@ -19,15 +19,15 @@ define(["app",
           "data-backdrop": "static"
         },
 
-        template: DuplicateLanderLayoutTpl,
+        template: RipNewLanderLayoutTpl,
 
         regions: {},
 
         events: {
-          "click .duplicate-lander-confirm": "confirmedDuplicateLander"
+          "click .rip-new-lander-confirm": "confirmedRipNewLander"
         },
 
-        confirmedDuplicateLander: function(e) {
+        confirmedRipNewLander: function(e) {
 
           var me = this;
 
@@ -37,9 +37,19 @@ define(["app",
           var newLanderData = Backbone.Syphon.serialize(this);
 
           //just a very small amount of validation, all really done on server
-          if (newLanderData.landerName != "") {
+          if (newLanderData.landerName != "" && newLanderData.landerUrl != "") {
 
-            this.trigger("duplicateLander", newLanderData.landerName);
+            //1. set the new values into the job model
+            this.model.set("lander_name", newLanderData.landerName);
+            this.model.set("lander_url", newLanderData.landerUrl);
+
+            //2. save the job
+            this.model.save({}, {
+              success: function(jobModel) {
+                me.trigger("ripLanderAddedAndProcessing", jobModel);
+              },
+              error: function() {}
+            });
 
           } else {
             var alert = this.$el.find(".new-lander-info-alert");
@@ -50,7 +60,7 @@ define(["app",
 
             alert.addClass("alert-danger");
             alert.removeClass("alert-default");
-            alert.html("You must choose a new lander name before duplicating this lander");
+            alert.html("You must add both a new lander name &amp; lander URL to rip a new lander");
 
 
             setTimeout(function() {
@@ -73,7 +83,7 @@ define(["app",
           });
 
           this.$el.on('shown.bs.modal', function(e) {
-              $(".lander-name").focus();
+            $(".lander-name").focus();
           });
 
           this.$el.modal('show');
@@ -85,10 +95,10 @@ define(["app",
         },
 
         onDomRefresh: function() {
-        
+
         }
       });
 
     });
-    return Moonlander.LandersApp.Landers.DuplicateLander.Layout;
+    return Moonlander.LandersApp.Landers.RipNewLander.Layout;
   });
