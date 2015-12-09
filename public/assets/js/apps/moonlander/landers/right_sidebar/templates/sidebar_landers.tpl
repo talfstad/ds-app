@@ -111,10 +111,10 @@
 
             <h5 class="title-divider text-muted mt30 mb0">
               Active JS Snippets 
-              <a style="float: right" href="#">
+              <a style="float: right" title="Help on using Snippets" href="#">
                 <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
               </a>
-              <a style="float: right" title="Add a new snippet" href="#">
+              <a class="add-snippet-button" style="float: right" title="Add a new snippet" href="#">
                 <i style="font-size: 18px !important" class="fa fa-plus text-info fs12 pl5 pr5"></i>
               </a>
             </h5>

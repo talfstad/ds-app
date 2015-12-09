@@ -51,12 +51,12 @@
                 <label class="ml5" for="last-updated">Last Updated</label>
               </a>
             </li>
-            <li>
+            <!-- <li>
               <a class="pl5 radio-custom radio-primary" href="#">
                 <input data-sortby-name="Deployed" data-sort-by="deployed" type="radio" id="deployed" name="sort-radio">
                 <label class="ml5" for="deployed">Deployed</label>
               </a>
-            </li>
+            </li> -->
             <li class="divider">
             </li>
             <div class="ptn pb5 p10">

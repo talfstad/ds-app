@@ -7,18 +7,21 @@ module.exports = function(db) {
     deleteLander: function(user_id, lander_id, successCallback, errorCallback) {
 
       db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("DELETE FROM landers WHERE user_id = ? AND id = ?", [user_id, lander_id], function(err, docs) {
 
-        connection.query("DELETE FROM landers WHERE user_id = ? AND id = ?", [user_id, lander_id], function(err, docs) {
+            if (err) {
+              console.log(err);
+              errorCallback();
+            } else {
+              successCallback();
+            }
+            connection.release();
 
-          if (err) {
-            console.log(err);
-            errorCallback();
-          } else {
-            successCallback();
-          }
-
-        });
-        connection.release();
+          });
+        }
       });
 
     },
@@ -33,28 +36,32 @@ module.exports = function(db) {
       var optimize_gzip = duplicateLanderAttributes.optimize_gzip;
 
       db.getConnection(function(err, connection) {
-        connection.query("CALL save_new_duplicate_lander(?, ?, ?, ?, ?, ?)", [lander_name, user_id, optimize_js, optimize_css, optimize_images, optimize_gzip],
-          function(err, docs) {
-            if (err) {
-              console.log(err);
-            } else {
-              //success
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("CALL save_new_duplicate_lander(?, ?, ?, ?, ?, ?)", [lander_name, user_id, optimize_js, optimize_css, optimize_images, optimize_gzip],
+            function(err, docs) {
+              if (err) {
+                console.log(err);
+              } else {
+                //success
 
-              //TODO copy all lander resources as well on duplicate lander (urlEndpoints, files, etc)
+                //TODO copy all lander resources as well on duplicate lander (urlEndpoints, files, etc)
 
 
-              duplicateLanderAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
-              duplicateLanderAttributes.last_updated = docs[1][0].last_updated;
-              //remove any attributes we dont want to overwrite
-              delete duplicateLanderAttributes.deployedLocations;
-              delete duplicateLanderAttributes.activeJobs;
-              delete duplicateLanderAttributes.activeCampaigns;
-              delete duplicateLanderAttributes.urlEndpoints;
+                duplicateLanderAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
+                duplicateLanderAttributes.last_updated = docs[1][0].last_updated;
+                //remove any attributes we dont want to overwrite
+                delete duplicateLanderAttributes.deployedLocations;
+                delete duplicateLanderAttributes.activeJobs;
+                delete duplicateLanderAttributes.activeCampaigns;
+                delete duplicateLanderAttributes.urlEndpoints;
 
-              successCallback(duplicateLanderAttributes);
-            }
-
-          });
+                successCallback(duplicateLanderAttributes);
+              }
+              connection.release();
+            });
+        }
       });
 
 
@@ -67,23 +74,26 @@ module.exports = function(db) {
 
       //param order: working_node_id, action, processing, lander_id, domain_id, campaign_id, user_id
       db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("CALL save_new_lander(?, ?)", [landerName, user_id],
 
-        connection.query("CALL save_new_lander(?, ?)", [landerName, user_id],
-
-          function(err, docs) {            
-            if (err) {
-              console.log(err);
-              errorCallback("Error registering new job in DB call");
-            } else {
-              var modelAttributes = {
-                name: landerName,
-                id: docs[0][0]["LAST_INSERT_ID()"],
-                last_updated: docs[1][0].last_updated
-              };
-              successCallback(modelAttributes);
-            }
-            connection.release();
-          });
+            function(err, docs) {
+              if (err) {
+                console.log(err);
+                errorCallback("Error registering new job in DB call");
+              } else {
+                var modelAttributes = {
+                  name: landerName,
+                  id: docs[0][0]["LAST_INSERT_ID()"],
+                  last_updated: docs[1][0].last_updated
+                };
+                successCallback(modelAttributes);
+              }
+              connection.release();
+            });
+        }
       });
 
     },
@@ -94,14 +104,18 @@ module.exports = function(db) {
       //insert into deployed_landers
 
       db.getConnection(function(err, connection) {
-        connection.query("INSERT INTO deployed_landers(user_id, lander_id, domain_id) VALUES (?, ?, ?);", [user_id, lander_id, domain_id], function(err, docs) {
-          if (err) {
-            console.log(err);
-          } else {
-            successCallback();
-          }
-          connection.release();
-        });
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("INSERT INTO deployed_landers(user_id, lander_id, domain_id) VALUES (?, ?, ?);", [user_id, lander_id, domain_id], function(err, docs) {
+            if (err) {
+              console.log(err);
+            } else {
+              successCallback();
+            }
+            connection.release();
+          });
+        }
       });
     },
 
@@ -109,14 +123,18 @@ module.exports = function(db) {
       var user_id = user.id;
 
       db.getConnection(function(err, connection) {
-        connection.query("DELETE FROM deployed_landers WHERE user_id = ? AND lander_id = ? AND domain_id = ?", [user_id, lander_id, domain_id], function(err, docs) {
-          if (err) {
-            console.log(err);
-          } else {
-            successCallback();
-          }
-          connection.release();
-        });
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("DELETE FROM deployed_landers WHERE user_id = ? AND lander_id = ? AND domain_id = ?", [user_id, lander_id, domain_id], function(err, docs) {
+            if (err) {
+              console.log(err);
+            } else {
+              successCallback();
+            }
+            connection.release();
+          });
+        }
       });
     },
 
@@ -126,6 +144,9 @@ module.exports = function(db) {
 
       getAllDomainIdsForCampaign = function(campaign, callback) {
         db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          }
           connection.query("SELECT a.domain_id,b.domain FROM campaigns_with_domains a JOIN domains b ON a.domain_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.id],
             function(err, dbDomainIdsForCampaign) {
               callback(dbDomainIdsForCampaign);
@@ -136,6 +157,9 @@ module.exports = function(db) {
 
       var getActiveCampaignsForLander = function(lander, callback) {
         db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          }
           connection.query("SELECT a.id, b.id AS active_campaign_id, a.name,b.lander_id from campaigns a JOIN landers_with_campaigns b ON a.id=b.campaign_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
             function(err, dbActiveCampaigns) {
 
@@ -165,6 +189,9 @@ module.exports = function(db) {
         // 1. deployLanderToDomain
         // 2. undeployLanderFromDomain
         db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          }
           connection.query("SELECT id,action,processing,done,error FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, deployedLocation.lander_id, deployedLocation.id, true],
             function(err, dbActiveJobs) {
               callback(dbActiveJobs);
@@ -175,6 +202,9 @@ module.exports = function(db) {
 
       var getDeployedLocationsForLander = function(lander, callback) {
         db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          }
           connection.query("SELECT a.id,a.domain,b.lander_id from domains a JOIN deployed_landers b ON a.id=b.domain_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
             function(err, dbDeployedLanders) {
               if (dbDeployedLanders.length <= 0) {
@@ -199,6 +229,9 @@ module.exports = function(db) {
 
       var getActiveSnippetsForUrlEndpoint = function(urlEndpoint, callback) {
         db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          }
           connection.query("SELECT a.id, b.name FROM active_snippets a JOIN snippets b ON a.snippet_id=b.id WHERE (a.user_id = ? AND a.url_endpoint_id = ? AND a.lander_id = ?)", [user_id, urlEndpoint.id, urlEndpoint.lander_id],
             function(err, dbActiveSnippets) {
               callback(dbActiveSnippets);
@@ -209,6 +242,9 @@ module.exports = function(db) {
 
       var getEndpointsForLander = function(lander, callback) {
         db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          }
           connection.query("SELECT id,name,lander_id from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.id],
             function(err, dbUrlEndpoints) {
               if (dbUrlEndpoints.length <= 0) {
@@ -234,6 +270,9 @@ module.exports = function(db) {
         //get all jobs attached to lander and make sure only select those. list is:
         // 1. addNewLander
         db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          }
           connection.query("SELECT id,action,processing,done,error FROM jobs WHERE ((action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addNewLander", "deleteLander", "ripNewLander", user_id, lander.id, true],
             function(err, dbActiveJobs) {
               callback(dbActiveJobs);
@@ -271,9 +310,12 @@ module.exports = function(db) {
 
       var getAllLandersDb = function(gotLandersCallback) {
         db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          }
           connection.query("SELECT id,name,optimize_css,optimize_js,optimize_images,optimize_gzip,DATE_FORMAT(last_updated, '%b %e, %Y %l:%i:%s %p') AS last_updated FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
             if (err) {
-              throw err;
+              console.log(err);
             } else {
               var idx = 0;
               for (var i = 0; i < dblanders.length; i++) {

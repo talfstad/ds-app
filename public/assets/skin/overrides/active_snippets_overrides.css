@@ -1,0 +1,60 @@
+.snippets-list .snippets-left-nav {}
+
+.snippets-list aside#snippets-sidebar-left {
+    transition: all 0.2s ease;
+    color: #666;
+    background-color: #fafafa;
+    border-right: 1px solid #DDD;
+    overflow: hidden;
+    float: left;
+    width: 230px;
+    font-size: 13px;
+}
+
+.snippets-list .search-widget {
+    background-color: #f2f2f2;
+    border-top: none;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.snippets-list .sidebar-left-content ul {
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 400px;
+}
+
+.snippets-list .sidebar-menu > li > a {
+    color: #666;
+}
+
+.snippets-list .sidebar-menu > li:first-child {
+    border-bottom: none !important;
+}
+
+.snippets-list .sidebar-menu > li {
+    border-bottom: 1px solid #eaeaea;
+}
+
+.snippets-list .code-pane {
+	margin-left: 0;
+}
+
+.snippets-list .code-area {
+	float: left;
+}
+
+.snippets-list .CodeMirror {
+	border: none;
+}
+
+.snippets-list .js-snippet-description {
+	height: 300px;
+	position: absolute;
+    z-index: 5;
+    background-color: #666;
+    opacity: .9;
+}
+
+.snippets-code-container {
+	overflow-x: hidden;
+}

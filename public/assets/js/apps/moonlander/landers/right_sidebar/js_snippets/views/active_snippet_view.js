@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/right_sidebar/jssnippets/templates/active_snippets_row.tpl"
+    "tpl!/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/templates/active_snippets_row.tpl"
     // "fancytree",
     // "bootstrap"
   ],

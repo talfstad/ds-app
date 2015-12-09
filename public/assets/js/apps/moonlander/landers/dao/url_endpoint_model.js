@@ -1,5 +1,5 @@
 define(["app",
-		"/assets/js/apps/moonlander/landers/right_sidebar/jssnippets/dao/js_snippet_collection.js"], 
+		"/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/dao/js_snippet_collection.js"], 
 function(Moonlander, ActiveSnippetCollection){
   var UrlEndpointModel = Backbone.Model.extend({
 

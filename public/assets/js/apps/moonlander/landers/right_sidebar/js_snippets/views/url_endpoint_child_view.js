@@ -1,6 +1,6 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/right_sidebar/jssnippets/templates/url_endpoint_active_snippet_list.tpl",
-    "/assets/js/apps/moonlander/landers/right_sidebar/jssnippets/views/active_snippet_view.js"
+    "tpl!/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/templates/url_endpoint_active_snippet_list.tpl",
+    "/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/views/active_snippet_view.js"
   ],
  function(Moonlander, UrlEndpointActiveSnippetListTpl, ActiveSnippetView) {
 

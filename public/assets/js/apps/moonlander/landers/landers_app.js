@@ -9,11 +9,12 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
   "/assets/js/apps/moonlander/landers/add_new_lander/add_new_lander_controller.js",
   "/assets/js/apps/moonlander/landers/delete_lander/delete_lander_controller.js",
   "/assets/js/apps/moonlander/landers/duplicate_lander/duplicate_lander_controller.js",
-  "/assets/js/apps/moonlander/landers/rip_new_lander/rip_new_lander_controller.js"
+  "/assets/js/apps/moonlander/landers/rip_new_lander/rip_new_lander_controller.js",
+  "/assets/js/apps/moonlander/landers/js_snippets/js_snippets_controller.js"
   ], 
 function(Moonlander, ListController, CommonLogin, SidemenuController, EditController, DeployToDomainController, 
   AddToCampaignController, UndeployLanderController, UndeployCampaignController, AddNewLanderController, DeleteLanderController,
-  DuplicateLanderController, RipNewLanderController){
+  DuplicateLanderController, RipNewLanderController, JsSnippetsController){
   Moonlander.module("LandersApp", function(LandersApp, Moonlander, Backbone, Marionette, $, _){
 
     var landersAppAPI = {
@@ -31,6 +32,9 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
       },
       deployLanderToNewDomain: function(attr){
         ListController.deployLanderToDomain(attr);
+      },
+      showJsSnippetsModal: function(model){
+        JsSnippetsController.showJsSnippetsModal(model);
       },
       updateTopbarTotals: function(){
         ListController.updateTopbarTotals();
@@ -143,6 +147,10 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
 
     Moonlander.on("landers:showDeployToDomain", function(model){
       landersAppAPI.showDeployToDomain(model);
+    });
+
+    Moonlander.on("landers:showJsSnippetsModal", function(model){
+      landersAppAPI.showJsSnippetsModal(model);
     });
 
     Moonlander.on("landers:showAddToCampaign", function(model){

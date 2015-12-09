@@ -5,6 +5,7 @@
   },
   "html": {
   	"indent_char": " ",
-  	"indent_size": 2
+  	"indent_size": 2,
+  	"allowed_file_extensions": ["html", "tpl"]
   }
 }

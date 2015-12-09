@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/right_sidebar/jssnippets/templates/empty.tpl"
+    "tpl!/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/templates/empty.tpl"
   ],
  function(Moonlander, EmptyViewTpl) {
 

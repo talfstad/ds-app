@@ -7,16 +7,20 @@ module.exports = function(db) {
       var user_id = user.id;
 
       db.getConnection(function(err, connection) {
-      connection.query("SELECT * FROM jobs WHERE processing = ? AND user_id = ?", [true, user.id], function(err, docs) {
         if (err) {
           console.log(err);
-          errorCallback("Error getting active jobs.");
         } else {
-          successCallback(docs);
+          connection.query("SELECT * FROM jobs WHERE processing = ? AND user_id = ?", [true, user.id], function(err, docs) {
+            if (err) {
+              console.log(err);
+              errorCallback("Error getting active jobs.");
+            } else {
+              successCallback(docs);
+            }
+            connection.release();
+          });
         }
-        connection.release();
       });
-    });
     }
 
 

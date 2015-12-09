@@ -83,6 +83,7 @@
     position: absolute;
     bottom: 0;
     right: 0;
+    min-width: 122px;
     margin-right: 240px;
 }
 

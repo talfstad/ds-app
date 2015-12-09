@@ -11,18 +11,22 @@ module.exports = function(db) {
       modelAttributes.processing = true;
       //param order: working_node_id, action, processing, lander_id, domain_id, campaign_id, user_id
       db.getConnection(function(err, connection) {
-        connection.query("CALL register_job(?, ?, ?, ?, ?, ?, ?, ?)", [config.id, modelAttributes.action, true, modelAttributes.lander_id, modelAttributes.domain_id, null, user_id, modelAttributes.lander_url || null],
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("CALL register_job(?, ?, ?, ?, ?, ?, ?, ?)", [config.id, modelAttributes.action, true, modelAttributes.lander_id, modelAttributes.domain_id, null, user_id, modelAttributes.lander_url || null],
 
-          function(err, docs) {
-            if (err) {
-              console.log(err);
-              errorCallback("Error registering new job in DB call");
-            } else {
-              modelAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
-              successCallback(modelAttributes);
-            }
-            connection.release();
-          });
+            function(err, docs) {
+              if (err) {
+                console.log(err);
+                errorCallback("Error registering new job in DB call");
+              } else {
+                modelAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
+                successCallback(modelAttributes);
+              }
+              connection.release();
+            });
+        }
       });
     },
 
@@ -51,6 +55,9 @@ module.exports = function(db) {
 
 
         db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          }
           connection.query(updateSql, finishedJobsValues, function(err, docs) {
             if (err) {
               console.log(err);
@@ -91,6 +98,9 @@ module.exports = function(db) {
         }
 
         db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          }
           connection.query(updateSql, finishedJobsValues, function(err, docs) {
             if (err) {
               console.log(err);
