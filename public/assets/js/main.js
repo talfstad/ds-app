@@ -57,7 +57,7 @@ var Core = function(options) {
          // }
 
          // Toggle sidebar state(open/close)
-         Body.toggleClass(options.collapse).toggleClass('sb-l-c').toggleClass('sb-l-o');
+         // Body.toggleClass(options.collapse).toggleClass('sb-l-c').toggleClass('sb-l-o');
          triggerResize();
       };
 
@@ -116,11 +116,11 @@ var Core = function(options) {
          // Upon the menu reopening the classes will be toggled
          // again, effectively restoring the menus state prior
          // to being hidden 
-         if (!Body.hasClass('mobile-view')) {
-            setTimeout(function() {
-               Body.toggleClass('sb-l-m sb-l-o');
-            }, 250);
-         }
+         // if (!Body.hasClass('mobile-view')) {
+         //    setTimeout(function() {
+         //       Body.toggleClass('sb-l-m sb-l-o');
+         //    }, 250);
+         // }
       });
 
       // Check window size on load
@@ -139,9 +139,9 @@ var Core = function(options) {
 
          // Check Body for classes indicating the state of Left and Right Sidebar.
          // If not found add default sidebar settings(sidebar left open, sidebar right closed).
-         if (!$('body.sb-l-o').length && !$('body.sb-l-m').length && !$('body.sb-l-c').length) {
-            $('body').addClass(options.sbl);
-         }
+         // if (!$('body.sb-l-o').length && !$('body.sb-l-m').length && !$('body.sb-l-c').length) {
+         //    $('body').addClass(options.sbl);
+         // }
          if (!$('body.sb-r-o').length && !$('body.sb-r-c').length) {
             $('body').addClass(options.sbr);
          }
@@ -722,7 +722,7 @@ var Core = function(options) {
             sbr: "sb-r-c", // sidebar right closed onload
             sbState: "save", //Enable localstorage for sidebar states
 
-            collapse: "sb-l-o", // sidebar left collapse style
+            // collapse: "sb-l-o", // sidebar left collapse style
             siblingRope: true
             // Setting this true will reopen the left sidebar
             // when the right sidebar is closed

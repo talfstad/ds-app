@@ -332,3 +332,7 @@ body.sb-l-o #topbar.affix,
 .kv-upload-progress .progress {
     display: none;
 }
+
+#content_wrapper, .sb-l-o #content_wrapper {
+    left: 0;
+}
