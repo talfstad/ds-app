@@ -23,6 +23,11 @@
     min-height: 400px;
 }
 
+.snippets-list .sidebar-menu-container {
+    overflow-y: scroll;
+    height: 100%;
+}
+
 .snippets-list .sidebar-menu > li > a {
     color: #666;
 }
@@ -47,12 +52,35 @@
 	border: none;
 }
 
+.snippets-header {
+    height: 40px;
+    background-color: #fafafa;
+    border-top: none;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.snippets-header .snippet-name-container {
+    float: left;
+    height: 100%;
+}
+
+.snippets-header .snippet-name {
+    float: left;
+    margin-left: 15px;
+    margin-right: 10px;
+}
+
+.snippets-header .control-buttons-container {
+    float: right;
+    margin-top: 4px;
+}
+
 .snippets-list .js-snippet-description {
-	height: 300px;
+    color: #000;
+    overflow: scroll;
 	position: absolute;
     z-index: 5;
-    background-color: #666;
-    opacity: .9;
+    background-color: rgba(255,255,255,0.5); /* opacity */
 }
 
 .snippets-code-container {

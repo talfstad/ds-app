@@ -44,14 +44,18 @@ define(["app",
 
           this.$el.on('show.bs.modal', function(e) {
             //resize width/height of modal to 80% of window
-            var modalHeight = $( window ).height()*0.7;
-            var modalWidth = $( window ).width()*0.8;
+            var modalHeight = $(window).height() * 0.7;
+            var modalWidth = $(window).width() * 0.8;
 
             me.$el.find('.modal-dialog').css('height', modalHeight);
             me.$el.find('.modal-dialog').css('width', modalWidth);
 
             var descriptionWidth = modalWidth - 229 - 3 //value is the width of the left nav - 3
+            me.$el.find(".snippets-header").css("width", descriptionWidth);
             me.$el.find(".js-snippet-description").css("width", descriptionWidth);
+
+            me.$el.find(".js-snippet-description").css("height", modalHeight - 160);
+            me.$el.find(".sidebar-menu-container").css("height", modalHeight - 160); //40 = width of search box
 
           });
 
@@ -59,7 +63,7 @@ define(["app",
 
           this.$el.on('shown.bs.modal', function(e) {
 
-            var codeAreaHeight = me.$el.find(".snippets-list").css("height");
+            var codeAreaHeight = parseInt(me.$el.find(".snippets-list").css("height")) - 40;
             var leftNavWidth = me.$el.find("#snippets-sidebar-left").css("width");
             var codeAreaWidth = parseInt(me.$el.find(".snippets-list").css("width")) - parseInt(leftNavWidth);
 
@@ -70,12 +74,15 @@ define(["app",
               lineNumbers: true,
               matchBrackets: true,
               // readOnly: "nocursor",
-              mode: "htmlmixed"
+              mode: "javascript"
             });
+            codeMirror.setValue("\n\n\n\n\n\n\n\n");
             //resize full height
             me.$el.find(".CodeMirror").css("height", codeAreaHeight);
             me.$el.find(".CodeMirror").css("width", codeAreaWidth);
             codeMirror.refresh();
+
+            me.$el.find(".CodeMirror-line").css("opacity", ".1");
 
 
           });
