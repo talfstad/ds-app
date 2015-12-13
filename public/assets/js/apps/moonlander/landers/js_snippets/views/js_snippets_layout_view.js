@@ -1,6 +1,7 @@
 define(["app",
     "tpl!/assets/js/apps/moonlander/landers/js_snippets/templates/js_snippets_layout.tpl",
-    "syphon"
+    "syphon",
+    "typewatch"
   ],
   function(Moonlander, JsSnippetsLayoutTpl) {
 
@@ -44,15 +45,6 @@ define(["app",
             me.$el.find('.modal-dialog').css('height', modalHeight);
             me.$el.find('.modal-dialog').css('width', modalWidth);
 
-           
-
-          });
-
-
-
-          this.$el.on('shown.bs.modal', function(e) {
-
-           
 
 
           });
@@ -62,11 +54,26 @@ define(["app",
 
         },
 
+        filterLanders: function(filterValue) {
+          this.trigger("jsSnippets:filterList", filterValue);
+        },
+
         onClose: function() {
           this.$el.modal('hide');
         },
 
         onDomRefresh: function() {
+          var me = this;
+          var typeWatchoptions = {
+            callback: function(value) {
+              me.filterLanders(value);
+            },
+            wait: 150,
+            highlight: false,
+            captureLength: 1
+          }
+
+          $("#js-snippet-sidebar-search").typeWatch(typeWatchoptions);
 
 
         }

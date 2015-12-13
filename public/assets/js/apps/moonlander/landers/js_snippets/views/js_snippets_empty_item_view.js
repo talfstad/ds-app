@@ -6,7 +6,8 @@ define(["app",
   Moonlander.module("LandersApp.Landers.JsSnippets.List", function(List, Moonlander, Backbone, Marionette, $, _) {
     List.EmptyView = Marionette.ItemView.extend({
       template: EmptyTpl,
-      tagName: "li"
+      tagName: "li",
+      className: "empty-js-snippets-list-view"
       
     });
   });

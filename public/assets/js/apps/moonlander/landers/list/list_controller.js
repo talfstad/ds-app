@@ -46,6 +46,7 @@ define(["app",
 
             me.filteredLanderCollection = FilteredPaginatedCollection({
               collection: landersCollection,
+              paginated: true,
               filterFunction: function(filterCriterion) {
                 var criterion = filterCriterion.toLowerCase();
                 return function(lander) {

@@ -1,10 +1,10 @@
 define(["app",
     "/assets/js/apps/moonlander/landers/js_snippets/views/js_snippets_list_item_view.js",
-    "tpl!/assets/js/apps/moonlander/landers/js_snippets/templates/js_snippets_empty_item_view.js"
+    "/assets/js/apps/moonlander/landers/js_snippets/views/js_snippets_empty_item_view.js"
   ],
   function(Moonlander, SnippetsListItem, SnippetsEmptyView) {
 
-    Moonlander.module("LandersApp.JsSnippets.LeftNavList", function(LeftNavList, Moonlander, Backbone, Marionette, $, _) {
+    Moonlander.module("LandersApp.Landers.JsSnippets.List", function(LeftNavList, Moonlander, Backbone, Marionette, $, _) {
       LeftNavList.View = Marionette.CollectionView.extend({
 
         id: "snippets-list-collection",
@@ -22,9 +22,11 @@ define(["app",
           var modalHeight = parseInt($(".modal-dialog").css("height"));
           me.$el.css("height", modalHeight - 160); //40 = width of search box
 
+          $("#js-snippet-sidebar-search").focus();
+          
         }
 
       });
     });
-    return Moonlander.LandersApp.JsSnippets.LeftNavList.View;
+    return Moonlander.LandersApp.Landers.JsSnippets.List.View;
   });

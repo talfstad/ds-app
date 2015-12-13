@@ -30,7 +30,7 @@
                     <span class="input-group-addon">
                 <i class="fa fa-search"></i>
               </span>
-                    <input type="text" id="sidebar-search" class="form-control" placeholder="Search...">
+                    <input type="text" id="js-snippet-sidebar-search" class="form-control" placeholder="Search...">
                   </div>
                 </div>
               </header>

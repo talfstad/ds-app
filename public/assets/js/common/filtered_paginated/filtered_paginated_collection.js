@@ -15,7 +15,7 @@ define(["app",
         filtered.filterFunction = options.filterFunction;
 
         filtered.state = {
-          paginated: true,
+          paginated: options.paginated,
           currentPage: 1,
           pageSize: 10
         };
@@ -27,14 +27,14 @@ define(["app",
           filtered.state.gui.set('current_page', 1);
           filtered.state.gui.set('num_pages', 1);
 
+
+
+          filtered.state.gui.set('total_not_deployed', 0);
+          filtered.state.gui.set('total_deploying', 0);
+          filtered.state.gui.set('total_landers', 0);
+          filtered.state.gui.set('total_initializing', 0);
+          filtered.state.gui.set('total_deleting', 0);
         }
-
-        filtered.state.gui.set('total_not_deployed', 0);
-        filtered.state.gui.set('total_deploying', 0);
-        filtered.state.gui.set('total_landers', 0);
-        filtered.state.gui.set('total_initializing', 0);
-        filtered.state.gui.set('total_deleting', 0);
-
         filtered.state.currentFilter = "";
 
         filtered.currentFilteredCollection = [];
@@ -117,7 +117,7 @@ define(["app",
           return filtered;
         };
 
-        filtered.showPageWithModel = function(model){
+        filtered.showPageWithModel = function(model) {
           filtered.resetWithOriginals(filtered.state.currentFilter);
           //1. get page number that this model is on
           var pageSize = filtered.state.gui.get("page_size");
@@ -356,7 +356,7 @@ define(["app",
           //1. filter to reset it
           filtered.filter(filtered.state.currentFilter);
           //2. set current page = to what it was before
-          if(currentPage <= filtered.state.gui.get("num_pages")){
+          if (currentPage <= filtered.state.gui.get("num_pages")) {
             filtered.gotoPage(currentPage);
           }
         });
