@@ -32,9 +32,6 @@
     color: #666;
 }
 
-.snippets-list .sidebar-menu > li:first-child {
-    border-bottom: none !important;
-}
 
 .snippets-list .sidebar-menu > li {
     border-bottom: 1px solid #eaeaea;

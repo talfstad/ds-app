@@ -17,11 +17,10 @@ define(["app",
 
         },
 
-        //onRender builds the datatable object with our collection
         onRender: function() {
           var me = this;
-
-
+          var modalHeight = parseInt($(".modal-dialog").css("height"));
+          me.$el.css("height", modalHeight - 160); //40 = width of search box
 
         }
 

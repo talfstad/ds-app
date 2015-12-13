@@ -3,16 +3,19 @@ define(["app",
   ],
   function(Moonlander, JsSnippetItemView) {
 
-    Moonlander.module("LandersApp.JsSnippets.LeftNavList", function(LeftNavList, Moonlander, Backbone, Marionette, $, _) {
-      LeftNavList.ItemView = Marionette.ItemView.extend({
-
+    Moonlander.module("LandersApp.Landers.JsSnippets.List", function(List, Moonlander, Backbone, Marionette, $, _) {
+      List.ItemView = Marionette.ItemView.extend({
+        tagName: "li",
         template: JsSnippetItemView,
 
-        onBeforeRender: function() {
-
+        onRender: function(){
+          
         }
+
+
+
 
       });
     });
-    return Moonlander.LandersApp.JsSnippets.LeftNavList.ItemView;
+    return Moonlander.LandersApp.Landers.JsSnippets.List.ItemView;
   });

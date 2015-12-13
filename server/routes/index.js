@@ -9,6 +9,7 @@ module.exports = function(app, passport) {
     require('./landers')(app, passport);
     require('./campaigns')(app, passport);
     require('./domains')(app, passport);
+    require('./js_snippets')(app, passport);
     require('./live_updater')(app, passport);
     require('./jobs')(app, passport);
     require('./user')(app, passport);

@@ -1,10 +1,10 @@
 define(["app",
-    "tpl!/assets/js/apps/user/settings/templates/loading.tpl"
+    "tpl!/assets/js/apps/moonlander/landers/js_snippets/templates/loading.tpl"
   ],
   function(Moonlander, LoadingTpl) {
 
-    Moonlander.module("UserApp.Settings", function(Settings, Moonlander, Backbone, Marionette, $, _) {
-      Settings.LoadingView = Marionette.ItemView.extend({
+    Moonlander.module("LandersApp.JsSnippets", function(JsSnippets, Moonlander, Backbone, Marionette, $, _) {
+      JsSnippets.LoadingView = Marionette.ItemView.extend({
 
         template: LoadingTpl,
 
@@ -14,5 +14,5 @@ define(["app",
 
       });
     });
-    return Moonlander.UserApp.Settings.LoadingView;
+    return Moonlander.LandersApp.JsSnippets.LoadingView;
   });
