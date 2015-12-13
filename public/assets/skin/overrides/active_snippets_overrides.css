@@ -41,15 +41,15 @@
 }
 
 .snippets-list .code-pane {
-	margin-left: 0;
+    margin-left: 0;
 }
 
 .snippets-list .code-area {
-	float: left;
+    float: left;
 }
 
 .snippets-list .CodeMirror {
-	border: none;
+    border: none;
 }
 
 .snippets-header {
@@ -78,11 +78,45 @@
 .snippets-list .js-snippet-description {
     color: #000;
     overflow: scroll;
-	position: absolute;
+    position: absolute;
     z-index: 5;
-    background-color: rgba(255,255,255,0.5); /* opacity */
+    background-color: rgba(255, 255, 255, 0.5);
+    /* opacity */
 }
 
 .snippets-code-container {
-	overflow-x: hidden;
+    overflow-x: hidden;
+}
+
+.add-snippet-to-page-container {
+    float: left;
+}
+
+.snippets-list .select2-container--default .select2-selection--single {
+    border-radius: 0px;
+    border: 1px solid #e8e8e8;
+    height: 31px;
+    outline: none;
+    left: 4px;
+}
+
+.snippets-list .select2-container {
+    left: 4px;
+}
+
+.snippets-list .js-snippet-alert {
+    position: absolute;
+    z-index: 10;
+    display: none;
+    background: black;
+    height: 40px;
+}
+
+.snippet-list-title {
+    text-transform: uppercase;
+    color: #908885;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 10px;
+    margin-top: 5px;
 }

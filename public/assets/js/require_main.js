@@ -26,9 +26,13 @@ requirejs.config({
     "resizeReverse": '/vendor/plugins/jquery-ui.resizeReverse',
     "bootstrap.fileinput": '/vendor/bower_installed/bootstrap-fileinput/js/fileinput.min',
     jstz: "/vendor/bower_installed/jstz/jstz",
-    "moment-timezone": "/vendor/bower_installed/moment-timezone/builds/moment-timezone-with-data-2010-2020"
+    "moment-timezone": "/vendor/bower_installed/moment-timezone/builds/moment-timezone-with-data-2010-2020",
+    "select2": "/vendor/bower_installed/select2/dist/js/select2.full"
   },
   shim: {
+    "select2": {
+      deps: ['jquery']
+    },
     jstz: {
       deps: []
     },

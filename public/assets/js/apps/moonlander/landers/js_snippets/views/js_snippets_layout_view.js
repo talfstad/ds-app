@@ -4,7 +4,8 @@ define(["app",
     "vendor/bower_installed/codemirror/mode/htmlmixed/htmlmixed",
     "vendor/bower_installed/codemirror/mode/css/css",
     "vendor/bower_installed/codemirror/mode/javascript/javascript",
-    "syphon"
+    "syphon",
+    "select2"
   ],
   function(Moonlander, JsSnippetsLayoutTpl, CodeMirror) {
 
@@ -16,7 +17,7 @@ define(["app",
 
         className: "modal fade",
 
-        attributes: {
+        attrifes: {
           tabindex: "-1",
           role: "dialog",
           "data-backdrop": "static"
@@ -25,7 +26,8 @@ define(["app",
         template: JsSnippetsLayoutTpl,
 
         regions: {
-          // 'awsSettingsRegion': ".aws-settings-region"
+          'snippetsListRegion': ".snippets-list-region",
+          'snippetInfoRegion': ".snippet-info-region"
         },
 
         events: {
@@ -54,8 +56,15 @@ define(["app",
             me.$el.find(".snippets-header").css("width", descriptionWidth);
             me.$el.find(".js-snippet-description").css("width", descriptionWidth);
 
+            me.$el.find(".js-snippet-alert").css("width", descriptionWidth);
+
             me.$el.find(".js-snippet-description").css("height", modalHeight - 160);
             me.$el.find(".sidebar-menu-container").css("height", modalHeight - 160); //40 = width of search box
+
+            me.$el.find(".select2-single").select2({
+              placeholder: "Select a Page",
+              allowClear: false
+            });
 
           });
 
@@ -64,7 +73,7 @@ define(["app",
           this.$el.on('shown.bs.modal', function(e) {
 
             var codeAreaHeight = parseInt(me.$el.find(".snippets-list").css("height")) - 40;
-            var leftNavWidth = me.$el.find("#snippets-sidebar-left").css("width");
+            var leftNavWidth = parseInt(me.$el.find("#snippets-sidebar-left").css("width")) + 1; //for a border
             var codeAreaWidth = parseInt(me.$el.find(".snippets-list").css("width")) - parseInt(leftNavWidth);
 
             //set description width

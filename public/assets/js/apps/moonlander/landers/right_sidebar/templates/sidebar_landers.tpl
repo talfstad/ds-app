@@ -8,8 +8,8 @@
           <div class="panel-menu">
             <div class="btn-group">
               <button type="button" style="width: 97px" class="duplicate-lander-button btn btn-default btn-gradient dark"><span class="fa fa-copy pr5"></span>Duplicate</button>
-              <button type="button" style="width: 71px" class="lander-edit btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Edit</button>
-              <button type="button" style="width: 87px" class="save disabled btn btn-default btn-gradient dark"><span class="fa fa-save pr5"></span>Update</button>
+              <button type="button" style="width: 80px" class="lander-edit btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Edit</button>
+              <button type="button" style="width: 78px" class="save disabled btn btn-default btn-gradient dark"><span class="fa fa-save pr5"></span>Save</button>
             </div>
           </div>
           
@@ -110,7 +110,7 @@
             </div>
 
             <h5 class="title-divider text-muted mt30 mb0">
-              Active JS Snippets 
+              Javascript Snippets 
               <a style="float: right" title="Help on using Snippets" href="#">
                 <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
               </a>

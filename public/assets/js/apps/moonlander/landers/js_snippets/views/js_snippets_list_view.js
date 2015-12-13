@@ -1,27 +1,31 @@
 define(["app",
-    "tpl!/assets/js/apps/user/settings/templates/aws_settings_list.tpl",
-    "bootstrap.datatables"
+    "/assets/js/apps/moonlander/landers/js_snippets/views/js_snippets_list_item_view.js",
+    "tpl!/assets/js/apps/moonlander/landers/js_snippets/templates/js_snippets_empty_item_view.js"
   ],
-  function(Moonlander, SettingsListTpl) {
+  function(Moonlander, SnippetsListItem, SnippetsEmptyView) {
 
-    Moonlander.module("UserApp.Settings", function(Settings, Moonlander, Backbone, Marionette, $, _) {
-      Settings.View = Marionette.ItemView.extend({
+    Moonlander.module("LandersApp.JsSnippets.LeftNavList", function(LeftNavList, Moonlander, Backbone, Marionette, $, _) {
+      LeftNavList.View = Marionette.CollectionView.extend({
 
-        template: SettingsListTpl,
+        id: "snippets-list-collection",
+        tagName: "ul",
+        className: "nav sidebar-menu",
+        emptyView: SnippetsEmptyView,
+        childView: SnippetsListItem,
 
         initialize: function() {
-       
+
         },
 
         //onRender builds the datatable object with our collection
         onRender: function() {
           var me = this;
-   
+
 
 
         }
 
       });
     });
-    return Moonlander.UserApp.Settings.View;
+    return Moonlander.LandersApp.JsSnippets.LeftNavList.View;
   });
