@@ -40,8 +40,8 @@ define(["app",
 
         toggleEditingMode: function(e) {
           e.preventDefault();
-         
-         this.model.set({
+
+          this.model.set({
             "editing": true
           });
 

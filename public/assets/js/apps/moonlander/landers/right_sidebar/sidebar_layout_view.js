@@ -10,16 +10,14 @@ define(["app",
       RightSidebar.View = Marionette.LayoutView.extend({
 
         regions: {
-          snippetsRegion: "#jssnippets-tree"
+          snippetsRegion: "#jssnippets-tree",
+          nameAndOptimizationsRegion: ".name-and-optimizations-region"
         },
 
         template: sidebarLanders,
         tagName: "aside",
         id: "sidebar_right",
         className: "nano affix",
-        modelEvents: {
-          "change": "render"
-        },
 
         events: {
           "click button.lander-edit": "showEditLander",
