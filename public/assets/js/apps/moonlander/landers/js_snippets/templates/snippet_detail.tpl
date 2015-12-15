@@ -22,9 +22,13 @@
     <div class="btn-group">
       <div class="add-snippet-to-page-container">
         <select class="select2-single form-control">
-          <option value="CA">index.html</option>
-          <option value="AL">index2.html</option>
-          <option value="WY">jose2.html</option>
+        
+          <% _.each(availableUrlEndpoints, function(endpoint) { %>
+        
+          <option value="<%= endpoint.id %>"><%= endpoint.name %></option>
+        
+          <% }) %>
+        
         </select>
         <button type="button" style="border-left:none" class="mr10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
           <span class="fa fa-plus pr5"></span>Add to Page

@@ -82,6 +82,30 @@ define(["app",
           }
         },
 
+        onBeforeRender: function() {
+          //set the urlendpoints this snippet can be added to!
+          var availableUrlEndpoints = [];
+          var showingSnippetId = this.model.get("id");
+
+          var urlEndpointCollection = this.model.get("urlEndpoints");
+          urlEndpointCollection.each(function(endpoint) {
+            var isAvailable = true;
+            var activeSnippetCollection = endpoint.get("activeSnippets");
+
+            activeSnippetCollection.each(function(snippet) {
+              if (snippet.get("snippet_id") == showingSnippetId) {
+                isAvailable = false;
+              }
+            });
+
+            if (isAvailable)
+              availableUrlEndpoints.push({
+                id: endpoint.get("id"),
+                name: endpoint.get("name")
+              });
+          });
+          this.model.set("availableUrlEndpoints", availableUrlEndpoints);
+        },
 
         onRender: function() {
           var me = this;
@@ -100,7 +124,13 @@ define(["app",
 
           me.$el.find(".select2-single").select2({
             placeholder: "Select a Page",
-            allowClear: false
+            allowClear: false,
+
+            "language": {
+              "noResults": function() {
+                return "All pages already have this snippet";
+              }
+            },
           });
 
 

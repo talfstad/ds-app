@@ -32,8 +32,6 @@ define(["app",
           var deferredJsSnippetCollection = Moonlander.request("landers:jsSnippetCollection");
           $.when(deferredJsSnippetCollection).done(function(jsSnippetCollection) {
 
-
-
             //TODO: create filterable collection from jsSnippetCollection
             var filteredSnippetCollection = FilteredPaginatedCollection({
               collection: jsSnippetCollection,
@@ -49,6 +47,8 @@ define(["app",
                 };
               }
             });
+
+            filteredSnippetCollection.urlEndpoints = landerModel.get("urlEndpoints");
 
             filteredSnippetCollection.on("add remove", function(){
               jsSnippetsLayoutView.model.set("totalNumJsSnippets", filteredSnippetCollection.length);
@@ -67,7 +67,7 @@ define(["app",
 
             leftNavSnippetsView.on("childview:showSnippet", function(childView) {
               //1. set all active = false for collection
-              filteredSnippetCollection.each(function(snippet) {
+              jsSnippetCollection.each(function(snippet) {
                 snippet.set("active", false);
               });
               childView.model.set("active", true);

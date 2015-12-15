@@ -13,6 +13,10 @@ define(["app",
         emptyView: SnippetsEmptyView,
         childView: SnippetsListItem,
 
+        childViewOptions: function(model) {
+          model.set("urlEndpoints", this.collection.urlEndpoints);
+        },
+
         initialize: function() {
 
         },
