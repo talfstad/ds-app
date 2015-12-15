@@ -8,6 +8,7 @@ define(["app",
       template: EmptyTpl,
       tagName: "li",
       className: "empty-js-snippets-list-view"
+
       
     });
   });

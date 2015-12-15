@@ -218,7 +218,8 @@ define(["app",
         activeCampaigns: [],
         //gui update attributes
         deploy_status: 'not_deployed',
-        active_campaigns_count: 0
+        active_campaigns_count: 0,
+        totalNumJsSnippets: 0
       }
 
     });

@@ -32,7 +32,6 @@
     color: #666;
 }
 
-
 .snippets-list .sidebar-menu > li {
     border-bottom: 1px solid #eaeaea;
 }
@@ -77,7 +76,7 @@
     overflow: scroll;
     position: absolute;
     z-index: 5;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.9);
     /* opacity */
 }
 
@@ -102,11 +101,17 @@
 }
 
 .snippets-list .js-snippet-alert {
-    position: absolute;
     z-index: 10;
     display: none;
-    background: black;
+    background-color: #f6bb42 !important;
     height: 40px;
+    border-radius: 0;
+    line-height: 0.5;
+    text-align: center;
+    margin-bottom: 0;
+    color: #4f4f4f;
+    font-size: 13px;
+    position: relative;
 }
 
 .snippet-list-title {
@@ -120,4 +125,11 @@
 
 .empty-js-snippets-list-view {
     margin-top: 10px !important;
+    padding-bottom: 10px !important;
 }
+
+.snippets-list .snippet-info-content {
+    float: left;
+    width: 100%
+}
+

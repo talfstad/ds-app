@@ -26,6 +26,10 @@ define(["app",
           'snippetDetailRegion': ".snippet-detail-region"
         },
 
+        modelEvents: {
+          "change:totalNumJsSnippets": "render"
+        },
+
         events: {
           // "click .update-aws-access-keys": "confirmUpdateAwsAccessKeys"
         },

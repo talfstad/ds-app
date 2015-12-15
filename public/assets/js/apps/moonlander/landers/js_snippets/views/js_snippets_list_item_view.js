@@ -8,11 +8,25 @@ define(["app",
         tagName: "li",
         template: JsSnippetItemView,
 
-        onRender: function(){
-          
+        modelEvents: {
+          "change": "render"
+        },
+
+        events: {
+          "click .snippet-link": "showSnippet"
+        },
+
+        showSnippet: function() {
+          this.trigger("showSnippet", this.model);
+        },
+
+        onRender: function() {
+          if (this.model.get("active")) {
+            this.$el.addClass("active")
+          } else {
+            this.$el.removeClass("active")
+          }
         }
-
-
 
 
       });
