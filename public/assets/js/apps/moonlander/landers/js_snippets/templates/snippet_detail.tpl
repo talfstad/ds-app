@@ -80,7 +80,7 @@
                     <label  style="margin-top: 15px" class="col-lg-12 control-label" for="textArea2">Description:</label>
                     <div class="col-lg-12">
                       <div class="bs-component">
-                        <textarea class="form-control" id="textArea2" rows="3"><%= description %></textarea>
+                        <textarea style="resize: none" class="form-control" id="textArea2" rows="4"><%= description %></textarea>
                       </div>
                     </div>
                   </div>

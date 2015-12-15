@@ -24,7 +24,6 @@
 }
 
 .snippets-list .sidebar-menu-container {
-    overflow-y: scroll;
     height: 100%;
 }
 
@@ -73,11 +72,9 @@
 
 .snippets-list .js-snippet-description {
     color: #000;
-    overflow: scroll;
     position: absolute;
     z-index: 5;
     background-color: rgba(255, 255, 255, 0.9);
-    /* opacity */
 }
 
 .snippets-code-container {
