@@ -2,12 +2,13 @@ define(["app",
     "/assets/js/apps/moonlander/landers/js_snippets/views/js_snippets_layout_view.js",
     "/assets/js/apps/moonlander/landers/js_snippets/views/loading_view.js",
     "/assets/js/apps/moonlander/landers/js_snippets/views/js_snippets_list_view.js",
+    "/assets/js/apps/moonlander/landers/dao/js_snippet_model.js",
     "/assets/js/apps/moonlander/landers/js_snippets/views/js_snippets_detail_view.js",
     "/assets/js/common/filtered_paginated/filtered_paginated_collection.js",
     "/assets/js/apps/moonlander/landers/dao/js_snippet_collection.js"
   ],
   function(Moonlander, JsSnippetsLayoutView, LoadingView,
-    LeftNavSnippetsView, JsSnippetDetailView, FilteredPaginatedCollection) {
+    LeftNavSnippetsView, SnippetModel, JsSnippetDetailView, FilteredPaginatedCollection) {
     Moonlander.module("LandersApp.JsSnippets", function(JsSnippets, Moonlander, Backbone, Marionette, $, _) {
 
       JsSnippets.Controller = {
@@ -74,32 +75,66 @@ define(["app",
               model.set("active", true);
               model.set("editing", false);
 
-              //2. show the new detail view with the model that was clicked
+              //2. figure out the available urlEndpoints
+              var availableUrlEndpoints = [];
+              var showingSnippetId = model.get("snippet_id");
+
+              var urlEndpointCollection = landerModel.get("urlEndpoints");
+              urlEndpointCollection.each(function(endpoint) {
+                var isAvailable = true;
+                var activeSnippetCollection = endpoint.get("activeSnippets");
+
+                activeSnippetCollection.each(function(snippet) {
+                  if (snippet.get("snippet_id") == showingSnippetId) {
+                    isAvailable = false;
+                  }
+                });
+
+                if (isAvailable)
+                  availableUrlEndpoints.push({
+                    id: endpoint.get("id"),
+                    name: endpoint.get("name")
+                  });
+              });
+              model.set("availableUrlEndpoints", availableUrlEndpoints);
+
+
+              //3. show the new detail view with the model that was clicked
               var newSnippetDetailView = new JsSnippetDetailView({
                 model: model
               });
 
-              newSnippetDetailView.on("addToLander", function(attr) {
+              newSnippetDetailView.on("addSnippetToUrlEndpoint", function(attr) {
                 var snippetModel = attr.model;
                 var urlEndpointId = attr.urlEndpointId;
 
-                var urlEndpointCollection = landerModel.get("urlEndpoints");
-                var endpointToAddTo = urlEndpointCollection.get(urlEndpointId);
 
-                var endpointsActiveSnippetCollection = endpointToAddTo.get("activeSnippets");
                 //snippet models need a snippet_id because active snippet id is the actual id
-                snippetModel.set("snippet_id", snippetModel.get("id"));
-                endpointsActiveSnippetCollection.add(snippetModel);
+                snippetModel.set({
+                  "urlEndpointId": urlEndpointId,
+                  "action": "addSnippetToUrlEndpoint"
+                });
 
-                //remove available
-                var endpoints = this.model.get("availableUrlEndpoints");
-                var newEndpointList = [];
-                $.each(endpoints, function(idx, endpoint) {
-                  if (endpoint.id != urlEndpointId) {
-                    newEndpointList.push(endpoint);
+
+                //remove nested urlEndpoints since we're saving the snippet to a urlEndpoint it will
+                //create circular structure
+                snippetModel.save({}, {
+                  success: function(savedModel, two, three) {
+
+                    // add it to the colleciton
+                    var urlEndpointCollection = landerModel.get("urlEndpoints");
+                    var endpointToAddTo = urlEndpointCollection.get(urlEndpointId);
+
+                    var endpointsActiveSnippetCollection = endpointToAddTo.get("activeSnippets");
+                    endpointsActiveSnippetCollection.add(snippetModel);
+
+                    // trigger a render by changing a value that triggers it
+                    leftNavSnippetsView.trigger("childview:showSnippet", savedModel);
+                  },
+                  error: function() {
+
                   }
                 });
-                this.model.set("availableUrlEndpoints", newEndpointList);
 
               });
 

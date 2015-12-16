@@ -4,7 +4,6 @@ function(Moonlander, ActiveSnippetCollection){
   var UrlEndpointModel = Backbone.Model.extend({
 
     initialize: function(){
-	  //build active SNIPPETS collection
 
       var activeSnippetsAttributes = this.get("activeSnippets");
       var activeSnippetsCollection = new ActiveSnippetCollection(activeSnippetsAttributes);

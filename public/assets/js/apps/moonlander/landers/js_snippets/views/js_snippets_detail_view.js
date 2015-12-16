@@ -26,16 +26,19 @@ define(["app",
           "click .show-description-button": "toggleDescription",
           "click .change-snippet-info-button": "showEditSnippetInfo",
           "click .cancel-edit-info-button": "cancelEditSnippetInfo",
-          "click .add-to-lander": "addToLander"
+          "click .add-to-lander": "addSnippetToUrlEndpoint"
         },
 
-        addToLander: function(e){
+        addSnippetToUrlEndpoint: function(e) {
 
           //validate we should be able to add it
           var urlEndpointId = $(".snippets-endpoint-select").val();
 
-          if(urlEndpointId){
-            this.trigger("addToLander", {model: this.model, urlEndpointId: urlEndpointId });
+          if (urlEndpointId) {
+            this.trigger("addSnippetToUrlEndpoint", {
+              model: this.model,
+              urlEndpointId: urlEndpointId
+            });
           }
 
         },
@@ -93,31 +96,6 @@ define(["app",
               silent: true
             });
           }
-        },
-
-        onBeforeRender: function() {
-          //set the urlendpoints this snippet can be added to!
-          var availableUrlEndpoints = [];
-          var showingSnippetId = this.model.get("id");
-
-          var urlEndpointCollection = this.model.get("urlEndpoints");
-          urlEndpointCollection.each(function(endpoint) {
-            var isAvailable = true;
-            var activeSnippetCollection = endpoint.get("activeSnippets");
-
-            activeSnippetCollection.each(function(snippet) {
-              if (snippet.get("snippet_id") == showingSnippetId) {
-                isAvailable = false;
-              }
-            });
-
-            if (isAvailable)
-              availableUrlEndpoints.push({
-                id: endpoint.get("id"),
-                name: endpoint.get("name")
-              });
-          });
-          this.model.set("availableUrlEndpoints", availableUrlEndpoints);
         },
 
         onRender: function() {
@@ -214,8 +192,8 @@ define(["app",
 
               setTimeout(function() {
                 me.codeMirror.refresh();
-  
-                if(!me.model.get("editing"))
+
+                if (!me.model.get("editing"))
                   me.$el.find(".CodeMirror-line").css("opacity", ".1");
 
               }, 10);

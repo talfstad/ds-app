@@ -232,7 +232,7 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT a.id, b.name, a.snippet_id FROM active_snippets a JOIN snippets b ON a.snippet_id=b.id WHERE (a.user_id = ? AND a.url_endpoint_id = ? AND a.lander_id = ?)", [user_id, urlEndpoint.id, urlEndpoint.lander_id],
+          connection.query("SELECT a.id, b.name, a.snippet_id FROM active_snippets a JOIN snippets b ON a.snippet_id=b.id WHERE (a.user_id = ? AND a.url_endpoint_id = ?)", [user_id, urlEndpoint.id],
             function(err, dbActiveSnippets) {
               callback(dbActiveSnippets);
               connection.release();
