@@ -1,6 +1,5 @@
 define(["app",
     "tpl!/assets/js/apps/moonlander/landers/right_sidebar/templates/sidebar_landers.tpl",
-    "fancytree",
     "bootstrap"
   ],
   function(Moonlander, sidebarLanders) {

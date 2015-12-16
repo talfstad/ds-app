@@ -23,9 +23,8 @@ function(Moonlander, SidebarLayoutView, NameAndOptimizationsView, SidebarModel, 
         
         //create the view here
         //only give it urlEndpoints with active snippets
-        var urlEndpointsWithActiveSnippets = model.get("urlEndpoints").filterWithActiveSnippets();
         var activeSnippetsView = new ActiveJsSnippetsListView({
-          collection: urlEndpointsWithActiveSnippets
+          collection: model.get("urlEndpoints")
         });
 
         var nameAndOptimizationView = new NameAndOptimizationsView({

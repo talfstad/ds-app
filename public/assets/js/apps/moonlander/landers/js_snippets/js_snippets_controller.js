@@ -50,7 +50,7 @@ define(["app",
 
             filteredSnippetCollection.urlEndpoints = landerModel.get("urlEndpoints");
 
-            filteredSnippetCollection.on("add remove", function(){
+            filteredSnippetCollection.on("add remove", function() {
               jsSnippetsLayoutView.model.set("totalNumJsSnippets", filteredSnippetCollection.length);
             });
             jsSnippetsLayoutView.model.set("totalNumJsSnippets", filteredSnippetCollection.length);
@@ -65,18 +65,44 @@ define(["app",
               collection: filteredSnippetCollection
             });
 
-            leftNavSnippetsView.on("childview:showSnippet", function(childView) {
+            leftNavSnippetsView.on("childview:showSnippet", function(childViewOrModel) {
+              var model = childViewOrModel.model || childViewOrModel;
               //1. set all active = false for collection
               jsSnippetCollection.each(function(snippet) {
                 snippet.set("active", false);
               });
-              childView.model.set("active", true);
-              childView.model.set("editing", false);
+              model.set("active", true);
+              model.set("editing", false);
 
               //2. show the new detail view with the model that was clicked
               var newSnippetDetailView = new JsSnippetDetailView({
-                model: childView.model
+                model: model
               });
+
+              newSnippetDetailView.on("addToLander", function(attr) {
+                var snippetModel = attr.model;
+                var urlEndpointId = attr.urlEndpointId;
+
+                var urlEndpointCollection = landerModel.get("urlEndpoints");
+                var endpointToAddTo = urlEndpointCollection.get(urlEndpointId);
+
+                var endpointsActiveSnippetCollection = endpointToAddTo.get("activeSnippets");
+                //snippet models need a snippet_id because active snippet id is the actual id
+                snippetModel.set("snippet_id", snippetModel.get("id"));
+                endpointsActiveSnippetCollection.add(snippetModel);
+
+                //remove available
+                var endpoints = this.model.get("availableUrlEndpoints");
+                var newEndpointList = [];
+                $.each(endpoints, function(idx, endpoint) {
+                  if (endpoint.id != urlEndpointId) {
+                    newEndpointList.push(endpoint);
+                  }
+                });
+                this.model.set("availableUrlEndpoints", newEndpointList);
+
+              });
+
               jsSnippetsLayoutView.snippetDetailRegion.show(newSnippetDetailView);
 
             });
@@ -88,11 +114,7 @@ define(["app",
             //show initial snippets detail view/info/tutorial
             var firstModel = filteredSnippetCollection.models[0];
             firstModel.set("active", true);
-            var snippetDetailView = new JsSnippetDetailView({
-              model: firstModel
-            });
-
-            jsSnippetsLayoutView.snippetDetailRegion.show(snippetDetailView);
+            leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
 
           });
 

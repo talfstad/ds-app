@@ -21,7 +21,7 @@
   <div class="control-buttons-container">
     <div class="btn-group">
       <div class="add-snippet-to-page-container">
-        <select class="select2-single form-control">
+        <select class="snippets-endpoint-select select2-single form-control">
         
           <% _.each(availableUrlEndpoints, function(endpoint) { %>
         
@@ -30,7 +30,7 @@
           <% }) %>
         
         </select>
-        <button type="button" style="border-left:none" class="mr10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
+        <button type="button" style="border-left:none" class="<% if(availableUrlEndpoints.length <= 0) { %>disabled <% } %>add-to-lander mr10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
           <span class="fa fa-plus pr5"></span>Add to Page
         </button>
       </div>
@@ -50,7 +50,7 @@
     <%= snippetAlertMsg %>
   </div>
   <div class="js-snippet-description">
-    <div style="margin-left: 45px; margin-top: 45px;">
+    <div style="margin-left: 45px; margin-top: 20px;">
       <% if(!showEditInfo) { %>
         <div class="snippet-info-content">
           <h3>Description:</h3>

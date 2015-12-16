@@ -17,14 +17,27 @@ define(["app",
 
         modelEvents: {
           "change:editing": "render",
-          "change:showEditInfo": "render"
+          "change:showEditInfo": "render",
+          "change:availableUrlEndpoints": "render"
         },
 
         events: {
           "click .edit-snippet-button": "toggleEditingMode",
           "click .show-description-button": "toggleDescription",
           "click .change-snippet-info-button": "showEditSnippetInfo",
-          "click .cancel-edit-info-button": "cancelEditSnippetInfo"
+          "click .cancel-edit-info-button": "cancelEditSnippetInfo",
+          "click .add-to-lander": "addToLander"
+        },
+
+        addToLander: function(e){
+
+          //validate we should be able to add it
+          var urlEndpointId = $(".snippets-endpoint-select").val();
+
+          if(urlEndpointId){
+            this.trigger("addToLander", {model: this.model, urlEndpointId: urlEndpointId });
+          }
+
         },
 
         cancelEditSnippetInfo: function(e) {
@@ -201,6 +214,10 @@ define(["app",
 
               setTimeout(function() {
                 me.codeMirror.refresh();
+  
+                if(!me.model.get("editing"))
+                  me.$el.find(".CodeMirror-line").css("opacity", ".1");
+
               }, 10);
             }
 
