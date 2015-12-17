@@ -15,8 +15,8 @@ define(["app",
 
         initialize: function() {
           var originalCode = this.model.get("originalSnippetCode")
-          
-          if(!originalCode){
+
+          if (!originalCode) {
             this.model.set("originalSnippetCode", this.model.get("code"));
           }
         },
@@ -152,7 +152,7 @@ define(["app",
             msg = "<span style='font-weight: 600'>Attention</span>: Successfully added snippet to page"
             setTimeout(function() {
               me.model.set("addingToPage", false);
-            }, 2000);
+            }, 5000);
           } else if (codeChanged) {
             jsAlertEl.addClass("alert-warning");
             jsAlertEl.removeClass("alert-info");
@@ -194,7 +194,23 @@ define(["app",
 
               }, 10);
             });
+            //disable the save bc there are no changes
+            me.$el.find(".snippet-save").addClass("disabled");
           }
+        },
+
+        refreshSelect2: function(){
+          var me = this;
+          me.$el.find(".select2-single").select2({
+            placeholder: "Select a Page",
+            allowClear: false,
+
+            "language": {
+              "noResults": function() {
+                return "All pages already have this snippet";
+              }
+            },
+          });
         },
 
         onRender: function() {
@@ -212,16 +228,7 @@ define(["app",
           me.$el.find(".js-snippet-description").css("height", descriptionHeight);
 
 
-          me.$el.find(".select2-single").select2({
-            placeholder: "Select a Page",
-            allowClear: false,
-
-            "language": {
-              "noResults": function() {
-                return "All pages already have this snippet";
-              }
-            },
-          });
+          me.refreshSelect2();
 
 
 
@@ -305,6 +312,10 @@ define(["app",
           this.showAlerts(true);
 
         },
+
+        onDomRefresh: function(){
+          this.refreshSelect2();
+        }
 
 
       });

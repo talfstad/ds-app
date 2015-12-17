@@ -9,7 +9,8 @@ define(["app",
         template: JsSnippetItemView,
 
         modelEvents: {
-          "change": "render"
+          "change:name": "render",
+          "change:active": "render"
         },
 
         events: {

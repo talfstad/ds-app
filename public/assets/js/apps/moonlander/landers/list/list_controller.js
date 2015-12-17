@@ -89,6 +89,10 @@ define(["app",
             });
 
             me.filteredLanderCollection.on("reset", function(collection) {
+              
+              //on reset we're always going to want to close the sidebar
+              //this is important so we dont get weird states
+              Moonlander.trigger('landers:closesidebar');
 
               var filteredCollection = this;
 
@@ -192,23 +196,18 @@ define(["app",
               model: me.filteredLanderCollection.state.gui
             });
             paginatedButtonView.on("landers:firstPage", function(page) {
-              Moonlander.trigger('landers:closesidebar');
               me.filteredLanderCollection.getFirstPage();
             });
             paginatedButtonView.on("landers:previousPage", function(page) {
-              Moonlander.trigger('landers:closesidebar');
               me.filteredLanderCollection.getPreviousPage();
             });
             paginatedButtonView.on("landers:nextPage", function(page) {
-              Moonlander.trigger('landers:closesidebar');
               me.filteredLanderCollection.getNextPage();
             });
             paginatedButtonView.on("landers:lastPage", function(page) {
-              Moonlander.trigger('landers:closesidebar');
               me.filteredLanderCollection.getLastPage();
             });
             paginatedButtonView.on("landers:gotoPage", function(page) {
-              Moonlander.trigger('landers:closesidebar');
               me.filteredLanderCollection.gotoPage(page);
             });
 
