@@ -164,7 +164,9 @@ define(["app",
                     Moonlander.trigger("landers:updateAllActiveSnippetNames", savedModel);
                    
                     
+                    savedModel.set("showEditInfo", false);
                     savedModel.set("savingEditInfo", "finished");
+                    
                   },
                   error: function(){
 
