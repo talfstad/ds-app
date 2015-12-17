@@ -74,7 +74,7 @@
                     <label for="inputStandard" class="col-lg-12 control-label">Name:</label>
                     <div class="col-lg-12">
                       <div class="bs-component">
-                        <input type="text" id="inputStandard" class="form-control" value="<%= name %>">
+                        <input type="text" name="name" id="inputStandard" class="form-control" value="<%= name %>">
                       <div id="source-button" class="btn btn-primary btn-xs" style="display: none;">&lt; &gt;</div></div>
                     </div>
                   </div>
@@ -84,7 +84,7 @@
                     <label  style="margin-top: 15px" class="col-lg-12 control-label" for="textArea2">Description:</label>
                     <div class="col-lg-12">
                       <div class="bs-component">
-                        <textarea style="resize: none" class="form-control" id="textArea2" rows="4"><%= description %></textarea>
+                        <textarea style="resize: none" name="description" class="form-control" id="textArea2" rows="4"><%= description %></textarea>
                       </div>
                     </div>
                   </div>

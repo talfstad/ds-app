@@ -17,13 +17,14 @@ module.exports = function(app, db, passport) {
     var params = req.body;
     var action = params.action;
 
-
     //if set adds snippet to the urlEndpoint
     if (action === "addSnippetToUrlEndpoint") {
       db.js_snippets.addSnippetToUrlEndpoint(user, params, function(returnObj) {
-
         res.json(returnObj);
-
+      });
+    } else if (action === "saveEditInfo") {
+      db.js_snippets.saveEditInfo(user, params, function(returnObj) {
+        res.json(returnObj);
       });
     }
 

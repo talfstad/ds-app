@@ -142,6 +142,30 @@ define(["app",
 
               });
 
+              
+              newSnippetDetailView.on("saveEditInfo", function(attr){
+                var snippetModel = attr.model;
+                var name = attr.name;
+                var description = attr.description;
+
+                snippetModel.set({
+                  "name": name,
+                  "description": description,
+                  "action": "saveEditInfo"
+                });
+
+                snippetModel.set("savingEditInfo", true);
+
+                snippetModel.save({}, {
+                  success: function(savedModel, two, three){
+                    savedModel.set("savingEditInfo", "finished");
+                  },
+                  error: function(){
+
+                  }
+                })
+              });
+
               jsSnippetsLayoutView.snippetDetailRegion.show(newSnippetDetailView);
 
             });

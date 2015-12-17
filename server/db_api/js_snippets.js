@@ -34,6 +34,32 @@ module.exports = function(db) {
 
     },
 
+    saveEditInfo: function(user, params, successCallback){
+      var description = params.description;
+      var name = params.name;
+      var snippet_id = params.snippet_id;
+      var user_id = user.id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("UPDATE snippets SET name = ?, description = ? WHERE id = ? AND user_id = ?", [name, description, snippet_id, user.id],
+            function(err, docs) {
+              if (err) {
+                console.log(err);
+                errorCallback("\nError updating snippet information.");
+              } else {
+                successCallback(docs);
+              }
+              //release connection
+              connection.release();
+            });
+        }
+      });
+
+    },
+
 
     //add this snippet to active snippets
     addSnippetToUrlEndpoint: function(user, params, successCallback) {

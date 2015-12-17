@@ -4,8 +4,8 @@ define(["app",
     "vendor/bower_installed/codemirror/mode/htmlmixed/htmlmixed",
     "vendor/bower_installed/codemirror/mode/css/css",
     "vendor/bower_installed/codemirror/mode/javascript/javascript",
-    "select2"
-
+    "select2",
+    "syphon"
   ],
   function(Moonlander, SnippetDetailTpl, CodeMirror) {
 
@@ -29,7 +29,8 @@ define(["app",
           "change:availableUrlEndpoints": "render",
           "change:saving": "render",
           "change:changed": "showAlerts",
-          "change:addingToPage": "showAlerts"
+          "change:addingToPage": "showAlerts",
+          "change:savingEditInfo": "showAlerts"
         },
 
         events: {
@@ -37,8 +38,19 @@ define(["app",
           "click .show-description-button": "toggleDescription",
           "click .change-snippet-info-button": "showEditSnippetInfo",
           "click .cancel-edit-info-button": "cancelEditSnippetInfo",
+          "click .save-edit-info-button": "saveEditSnippetInfo",
           "click .add-to-lander": "addSnippetToUrlEndpoint",
           "click .reset-to-original-code-button": "resetToOriginalCode"
+        },
+
+        saveEditSnippetInfo: function(e) {
+          e.preventDefault();
+
+          //get the info from the form
+          var inputVals = Backbone.Syphon.serialize(this);
+          inputVals.model = this.model;
+          //trigger the save
+          this.trigger("saveEditInfo", inputVals);
         },
 
         resetToOriginalCode: function() {
@@ -59,7 +71,7 @@ define(["app",
         },
 
         addSnippetToUrlEndpoint: function(e) {
-
+          e.preventDefault();
           //validate we should be able to add it
           var urlEndpointId = $(".snippets-endpoint-select").val();
 
@@ -128,10 +140,10 @@ define(["app",
         },
 
         //shows alerts on render or on change in the order of importance
-        // importance levels:
-        //   1. adding to lander
-        //   2. saving change to name/description
-        //   3. saving snippet code
+        // importance levels: show longest duration ones last bc short ones will finish
+        //   1. saving change to name/description
+        //   2. saving snippet code
+        //   3. adding to lander
         //   4. code has been changed
         showAlerts: function(isOnRender) {
           var me = this;
@@ -139,8 +151,22 @@ define(["app",
           var msg = "";
           var jsAlertEl = me.$el.find(".js-snippet-alert")
           var addingToPageVal = this.model.get("addingToPage")
+          var savingEditInfo = this.model.get("savingEditInfo")
           var codeChanged = this.model.get("changed")
-          if (addingToPageVal == true) {
+          if (savingEditInfo == true) {
+            showAlert = true;
+            jsAlertEl.addClass("alert-info");
+            jsAlertEl.removeClass("alert-warning");
+            msg = "<span style='position: absolute; top: 12px' class='glyphicon mr5 glyphicon-refresh glyphicon-refresh-animate'></span><span style='padding-left: 20px'> Saving Snippet Information</span>"
+          } else if (savingEditInfo == "finished") {
+            showAlert = true;
+            jsAlertEl.addClass("alert-info");
+            jsAlertEl.removeClass("alert-warning");
+            msg = "<span style='font-weight: 600'>Attention</span>: Successfully saved snippet information"
+            setTimeout(function() {
+              me.model.set("savingEditInfo", false);
+            }, 5000);
+          } else if (addingToPageVal == true) {
             showAlert = true;
             jsAlertEl.addClass("alert-info");
             jsAlertEl.removeClass("alert-warning");
@@ -199,7 +225,7 @@ define(["app",
           }
         },
 
-        refreshSelect2: function(){
+        refreshSelect2: function() {
           var me = this;
           me.$el.find(".select2-single").select2({
             placeholder: "Select a Page",
@@ -252,23 +278,6 @@ define(["app",
             if (cm.getValue().trim() !== me.model.get("code").trim()) {
               me.$el.find(".snippet-save").removeClass("disabled");
               me.model.set("changed", true);
-
-
-              // if (!me.model.get("hasShownCodeChangedAlert")) {
-              //   //resize code area and show must save alert
-              //   var msg = "<span style='font-weight: 600'>Attention</span>: This Snippet Code has been modified. Save your work or <a href='#'>reset the code</a>."
-              //   me.model.set("snippetAlertMsg", msg);
-              //   me.$el.find(".js-snippet-alert").html(msg)
-              //   me.$el.find(".js-snippet-alert").fadeIn();
-
-              //   var currentCmHeight = parseInt(me.$el.find(".CodeMirror").css("height"));
-              //   me.$el.find(".CodeMirror").css("height", currentCmHeight - 40); //40 = height of alert
-              //   me.model.set("hasShownCodeChangedAlert", true);
-              //   setTimeout(function() {
-              //     me.codeMirror.refresh();
-              //   }, 10);
-              // }
-
             }
           });
 
@@ -289,23 +298,6 @@ define(["app",
               me.$el.find(".CodeMirror-line").css("opacity", ".1");
             }
 
-            // if (me.model.get("changed")) {
-            //   me.$el.find(".js-snippet-alert").show();
-            //   var currentCmHeight = parseInt(me.$el.find(".CodeMirror").css("height"));
-
-            //   me.$el.find(".CodeMirror").css("height", currentCmHeight - 40);
-
-            //   me.$el.find(".js-snippet-description").css("height", currentCmHeight - 40);
-
-            //   setTimeout(function() {
-            //     me.codeMirror.refresh();
-
-            //     if (!me.model.get("editing"))
-            //       me.$el.find(".CodeMirror-line").css("opacity", ".1");
-
-            //   }, 10);
-            // }
-
 
           }, 1)
 
@@ -313,7 +305,7 @@ define(["app",
 
         },
 
-        onDomRefresh: function(){
+        onDomRefresh: function() {
           this.refreshSelect2();
         }
 

@@ -1,17 +1,16 @@
-<h5 class="title-divider text-muted mt20 mb10">Test Link
+<h5 class="title-divider text-muted mt20 mb10"><span>Lander Links</span>
+              <a style="float: right" href="#">
+                <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
+              </a>
             </h5>
 <div class="btn-group">
   <div class="select-with-button" style="width: 190px">
     <select class="test-link-endpoints-select select2-single form-control">
-     
-    <% _.each(urlEndpointsJSON, function(endpoint){ %>
-
-      <option value="">
-        <%= endpoint.name %>
-      </option>
-
-    <% }) %>
-
+      <% _.each(urlEndpointsJSON, function(endpoint){ %>
+        <option value="">
+          <%= endpoint.name %>
+        </option>
+        <% }) %>
     </select>
   </div>
   <button type="button" style="border-left:none; height: 39px" class="open-test-link pl10 pt5 pb5 btn btn-default btn-gradient dark">
