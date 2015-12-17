@@ -116,8 +116,9 @@ define(["app",
                 });
 
 
-                //remove nested urlEndpoints since we're saving the snippet to a urlEndpoint it will
-                //create circular structure
+                //1. show that we are addingToPage, set addingToPage=true causes render
+                snippetModel.set("addingToPage", true);
+
                 snippetModel.save({}, {
                   success: function(savedModel, two, three) {
 
@@ -127,6 +128,9 @@ define(["app",
 
                     var endpointsActiveSnippetCollection = endpointToAddTo.get("activeSnippets");
                     endpointsActiveSnippetCollection.add(snippetModel);
+
+                    //set addingToPage to 'finished' to show the finished message and remove
+                    savedModel.set("addingToPage", "finished");
 
                     // trigger a render by changing a value that triggers it
                     leftNavSnippetsView.trigger("childview:showSnippet", savedModel);

@@ -18,7 +18,10 @@ define(["app",
         modelEvents: {
           "change:editing": "render",
           "change:showEditInfo": "render",
-          "change:availableUrlEndpoints": "render"
+          "change:availableUrlEndpoints": "render",
+          "change:saving": "render",
+          "change:changed": "showAlerts",
+          "change:addingToPage": "showAlerts"
         },
 
         events: {
@@ -98,6 +101,76 @@ define(["app",
           }
         },
 
+        //shows alerts on render or on change in the order of importance
+        // importance levels:
+        //   1. adding to lander
+        //   2. saving change to name/description
+        //   3. saving snippet code
+        //   4. code has been changed
+        showAlerts: function(isOnRender) {
+          var me = this;
+          var showAlert = false;
+          var msg = "";
+          var jsAlertEl = me.$el.find(".js-snippet-alert")
+          var addingToPageVal = this.model.get("addingToPage")
+          var codeChanged = this.model.get("changed")
+          if (addingToPageVal == true) {
+            showAlert = true;
+            jsAlertEl.addClass("alert-info");
+            jsAlertEl.removeClass("alert-warning");
+            msg = "<span style='position: absolute; top: 12px' class='glyphicon mr5 glyphicon-refresh glyphicon-refresh-animate'></span><span style='padding-left: 20px'> Adding Snippet to Page</span>"
+          } else if (addingToPageVal == "finished") {
+            showAlert = true;
+            jsAlertEl.addClass("alert-info");
+            jsAlertEl.removeClass("alert-warning");
+            msg = "<span style='font-weight: 600'>Attention</span>: Successfully added snippet to page"
+            setTimeout(function() {
+              me.model.set("addingToPage", false);
+            }, 2000);
+          } else if (codeChanged) {
+            jsAlertEl.addClass("alert-warning");
+            jsAlertEl.removeClass("alert-info");
+            showAlert = true;
+            msg = "<span style='font-weight: 600'>Attention</span>: This Snippet Code has been modified. Save your work or <a href='#'>reset the code</a>."
+          }
+
+          //resize cm & display alert
+          if (showAlert) {
+            //if visible dont resize
+            if (!jsAlertEl.is(":visible")) {
+              var currentCmHeight = parseInt(me.$el.find(".CodeMirror").css("height"));
+              me.$el.find(".js-snippet-description").css("height", currentCmHeight - 40);
+              me.$el.find(".CodeMirror").css("height", currentCmHeight - 40); //40 = height of alert
+
+              setTimeout(function() {
+                me.codeMirror.refresh();
+
+                if (!me.model.get("editing"))
+                  me.$el.find(".CodeMirror-line").css("opacity", ".1");
+
+              }, 10);
+            }
+
+            me.model.set("snippetAlertMsg", msg)
+            jsAlertEl.html(msg)
+            jsAlertEl.fadeIn();
+          } else {
+            jsAlertEl.fadeOut("fast", function(){
+              var height = parseInt($(".snippets-list").css("height"));
+              me.$el.find(".js-snippet-description").css("height", height - 40);
+              me.$el.find(".CodeMirror").css("height", height - 40); //40 = height of alert
+
+              setTimeout(function() {
+                me.codeMirror.refresh();
+
+                if (!me.model.get("editing"))
+                  me.$el.find(".CodeMirror-line").css("opacity", ".1");
+
+              }, 10);
+            });
+          }
+        },
+
         onRender: function() {
           var me = this;
           var modalWidth = parseInt($(".modal-dialog").css("width"));
@@ -148,20 +221,21 @@ define(["app",
               me.model.set("changed", true);
 
 
-              if (!me.model.get("hasShownCodeChangedAlert")) {
-                //resize code area and show must save alert
-                var msg = "<span style='font-weight: 600'>Attention</span>: This Snippet Code has been modified. Save your work or <a href='#'>reset the code</a>."
-                me.model.set("snippetAlertMsg", msg);
-                me.$el.find(".js-snippet-alert").html(msg)
-                me.$el.find(".js-snippet-alert").fadeIn();
+              // if (!me.model.get("hasShownCodeChangedAlert")) {
+              //   //resize code area and show must save alert
+              //   var msg = "<span style='font-weight: 600'>Attention</span>: This Snippet Code has been modified. Save your work or <a href='#'>reset the code</a>."
+              //   me.model.set("snippetAlertMsg", msg);
+              //   me.$el.find(".js-snippet-alert").html(msg)
+              //   me.$el.find(".js-snippet-alert").fadeIn();
 
-                var currentCmHeight = parseInt(me.$el.find(".CodeMirror").css("height"));
-                me.$el.find(".CodeMirror").css("height", currentCmHeight - 40); //40 = height of alert
-                me.model.set("hasShownCodeChangedAlert", true);
-              }
-              setTimeout(function() {
-                me.codeMirror.refresh();
-              }, 10);
+              //   var currentCmHeight = parseInt(me.$el.find(".CodeMirror").css("height"));
+              //   me.$el.find(".CodeMirror").css("height", currentCmHeight - 40); //40 = height of alert
+              //   me.model.set("hasShownCodeChangedAlert", true);
+              //   setTimeout(function() {
+              //     me.codeMirror.refresh();
+              //   }, 10);
+              // }
+
             }
           });
 
@@ -182,25 +256,27 @@ define(["app",
               me.$el.find(".CodeMirror-line").css("opacity", ".1");
             }
 
-            if (me.model.get("changed")) {
-              me.$el.find(".js-snippet-alert").show();
-              var currentCmHeight = parseInt(me.$el.find(".CodeMirror").css("height"));
+            // if (me.model.get("changed")) {
+            //   me.$el.find(".js-snippet-alert").show();
+            //   var currentCmHeight = parseInt(me.$el.find(".CodeMirror").css("height"));
 
-              me.$el.find(".CodeMirror").css("height", currentCmHeight - 40);
+            //   me.$el.find(".CodeMirror").css("height", currentCmHeight - 40);
 
-              me.$el.find(".js-snippet-description").css("height", currentCmHeight - 40);
+            //   me.$el.find(".js-snippet-description").css("height", currentCmHeight - 40);
 
-              setTimeout(function() {
-                me.codeMirror.refresh();
+            //   setTimeout(function() {
+            //     me.codeMirror.refresh();
 
-                if (!me.model.get("editing"))
-                  me.$el.find(".CodeMirror-line").css("opacity", ".1");
+            //     if (!me.model.get("editing"))
+            //       me.$el.find(".CodeMirror-line").css("opacity", ".1");
 
-              }, 10);
-            }
+            //   }, 10);
+            // }
 
 
-          }, 1);
+          }, 1)
+
+          this.showAlerts(true);
 
         },
 

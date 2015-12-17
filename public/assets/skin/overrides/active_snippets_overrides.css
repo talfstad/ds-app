@@ -100,7 +100,6 @@
 .snippets-list .js-snippet-alert {
     z-index: 10;
     display: none;
-    background-color: #f6bb42 !important;
     height: 40px;
     border-radius: 0;
     line-height: 0.5;

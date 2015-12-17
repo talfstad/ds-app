@@ -217,8 +217,8 @@ define(["app",
 
             landersListLayout.topbarRegion.show(topbarView);
 
-
-            me.filteredLanderCollection.filter("");
+            var filterVal = $(".lander-search").val() || "";
+            me.filteredLanderCollection.filter(filterVal);
           });
         },
 
