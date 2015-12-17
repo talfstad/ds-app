@@ -13,6 +13,10 @@ define(["app",
       List.DetailView = Marionette.ItemView.extend({
         template: SnippetDetailTpl,
 
+        initialize: function() {
+          this.model.set("originalSnippetCode", this.model.get("code"));
+        },
+
         codeMirror: null,
 
         modelEvents: {
@@ -29,7 +33,25 @@ define(["app",
           "click .show-description-button": "toggleDescription",
           "click .change-snippet-info-button": "showEditSnippetInfo",
           "click .cancel-edit-info-button": "cancelEditSnippetInfo",
-          "click .add-to-lander": "addSnippetToUrlEndpoint"
+          "click .add-to-lander": "addSnippetToUrlEndpoint",
+          "click .reset-to-original-code-button": "resetToOriginalCode"
+        },
+
+        resetToOriginalCode: function() {
+          var me = this;
+          var originalCode = this.model.get("originalSnippetCode");
+          this.model.set("code", originalCode);
+
+          this.codeMirror.setValue(originalCode);
+          setTimeout(function() {
+            me.codeMirror.refresh();
+
+            if (!me.model.get("editing"))
+              me.$el.find(".CodeMirror-line").css("opacity", ".1");
+
+            me.model.set("changed", false);
+          }, 10);
+
         },
 
         addSnippetToUrlEndpoint: function(e) {
@@ -131,7 +153,7 @@ define(["app",
             jsAlertEl.addClass("alert-warning");
             jsAlertEl.removeClass("alert-info");
             showAlert = true;
-            msg = "<span style='font-weight: 600'>Attention</span>: This Snippet Code has been modified. Save your work or <a href='#'>reset the code</a>."
+            msg = "<span style='font-weight: 600'>Attention</span>: This Snippet Code has been modified. Save your work or <a class='reset-to-original-code-button' href='#'>reset the code</a>."
           }
 
           //resize cm & display alert
@@ -155,7 +177,7 @@ define(["app",
             jsAlertEl.html(msg)
             jsAlertEl.fadeIn();
           } else {
-            jsAlertEl.fadeOut("fast", function(){
+            jsAlertEl.fadeOut("fast", function() {
               var height = parseInt($(".snippets-list").css("height"));
               me.$el.find(".js-snippet-description").css("height", height - 40);
               me.$el.find(".CodeMirror").css("height", height - 40); //40 = height of alert
