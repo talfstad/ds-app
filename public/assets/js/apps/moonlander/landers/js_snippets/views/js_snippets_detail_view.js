@@ -14,7 +14,11 @@ define(["app",
         template: SnippetDetailTpl,
 
         initialize: function() {
-          this.model.set("originalSnippetCode", this.model.get("code"));
+          var originalCode = this.model.get("originalSnippetCode")
+          
+          if(!originalCode){
+            this.model.set("originalSnippetCode", this.model.get("code"));
+          }
         },
 
         codeMirror: null,
