@@ -113,7 +113,6 @@
     border: none;
 }*/
 
-
 .snippets-container .fancytree-title a.trash-link {
     position: absolute;
     right: 0;
@@ -131,7 +130,8 @@
     padding-right: 5px !important;
 }
 
-.btn.delete-lander-button, .btn.center {
+.btn.delete-lander-button,
+.btn.center {
     margin: 0 auto;
     display: block;
 }
@@ -148,7 +148,11 @@ span.fancytree-node:hover {
 span.fancytree-title {
     /*cursor: inherit;*/
     color: #626262;
+    max-width: 150px;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
 }
+
 ul.fancytree-container {
     font-family: inherit !important;
 }
@@ -195,7 +199,6 @@ tr.alert .domain-endpoint-select {
     width: inherit;
     height: inherit;
 }
-
 
 .domain-endpoint-select:hover {
     /*color: #1d6fa5;
@@ -290,7 +293,6 @@ input.lander-search {
     padding-right: 2px
 }
 
-
 .landers-list-content {
     padding: 20px 20px 35px 21px !important;
 }
@@ -299,6 +301,7 @@ input.lander-search {
     margin-top: 7px;
     float: right;
 }
+
 .topbar-left .right-stats div {
     display: inline;
     margin-right: 10px;
@@ -315,12 +318,15 @@ tr.alert td {
 tr.warning a {
     color: #c88a0a;
 }
+
 tr.dark a {
     color: #3b3f4f;
 }
+
 tr.info a {
     color: #1c7393;
 }
+
 tr.info > td {
     line-height: 1.49 !important;
 }
@@ -333,11 +339,11 @@ tr.success input[type=select] {
     /*height: 21px !important;*/
     background: inherit;
 }
+
 tr.warning input[type=select] {
     /*height: 21px !important;*/
     background: inherit;
 }
-
 
 .CodeMirror {
     border: 1px solid #ddd;
@@ -377,22 +383,20 @@ tr.warning input[type=select] {
 .snippets-empty {
     list-style-type: none;
     margin-top: 15px;
-    margin-left:30px;
+    margin-left: 30px;
 }
 
 .disabled-link {
-   cursor: not-allowed;
+    cursor: not-allowed;
 }
 
 .inactive-link {
-   pointer-events: none;
+    pointer-events: none;
 }
-
 
 .campaign-status-tab-handle {
     width: 120px !important;
 }
-
 
 #domains-list-datatable > tbody > tr {
     cursor: pointer;

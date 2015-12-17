@@ -24,6 +24,7 @@ define(["app",
         codeMirror: null,
 
         modelEvents: {
+          "change:name": "render",
           "change:editing": "render",
           "change:showEditInfo": "render",
           "change:availableUrlEndpoints": "render",

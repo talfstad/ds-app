@@ -158,6 +158,12 @@ define(["app",
 
                 snippetModel.save({}, {
                   success: function(savedModel, two, three){
+
+                    //get the actual snippet model and change the name/description of it
+                    //those models are different than the actual snippet models
+                    Moonlander.trigger("landers:updateAllActiveSnippetNames", savedModel);
+                   
+                    
                     savedModel.set("savingEditInfo", "finished");
                   },
                   error: function(){

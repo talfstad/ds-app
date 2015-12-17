@@ -11,6 +11,10 @@ define(["app",
         template: ActiveSnippetRowTpl,
         tagName: "li",
 
+        modelEvents: {
+          "change:name":"render"
+        },
+
         onRender: function() {
 
         },

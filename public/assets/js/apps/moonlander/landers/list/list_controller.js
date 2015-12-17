@@ -28,6 +28,29 @@ define(["app",
 
         filteredLanderCollection: null,
 
+        updateAllActiveSnippetNames: function(savedModel) {
+
+          if (this.filteredLanderCollection) {
+
+            this.filteredLanderCollection.each(function(landerModel) {
+
+              var urlEndpointCollection = landerModel.get("urlEndpoints");
+              urlEndpointCollection.each(function(endpoint) {
+                
+                var activeSnippetsCollection = endpoint.get("activeSnippets");
+                activeSnippetsCollection.each(function(snippet) {
+                  if (snippet.get("snippet_id") == savedModel.get("snippet_id")) {
+                    snippet.set("name", savedModel.get("name"));
+                  }
+                });
+
+              });
+
+            });
+          }
+
+        },
+
         showLanders: function(model) {
           //make layout for landers
           var me = this;
@@ -84,12 +107,12 @@ define(["app",
             });
 
             //these lines only if we're rendering children not in reset...
-            landersListView.on("childview:updateCollectionTotals", function(){
+            landersListView.on("childview:updateCollectionTotals", function() {
               me.filteredLanderCollection.updateTotals();
             });
 
             me.filteredLanderCollection.on("reset", function(collection) {
-              
+
               //on reset we're always going to want to close the sidebar
               //this is important so we dont get weird states
               Moonlander.trigger('landers:closesidebar');
@@ -153,7 +176,7 @@ define(["app",
                     landerView.$el.find("a[href=#campaigns-tab-id-" + landerView.model.get("id") + "]").tab('show')
                   });
 
-                 
+
                   //update view information on model change
                   landerView.model.on("change:deploy_status", function() {
                     Moonlander.trigger("landers:updateTopbarTotals")
@@ -350,7 +373,7 @@ define(["app",
           landerModel.trigger("view:expand");
         },
 
-        addNewDuplicatedLander: function(landerModel){
+        addNewDuplicatedLander: function(landerModel) {
 
           Moonlander.trigger('landers:closesidebar');
           this.filteredLanderCollection.add(landerModel);
@@ -358,7 +381,7 @@ define(["app",
           this.filteredLanderCollection.showPageWithModel(landerModel);
           //2. expand new lander
           landerModel.trigger("view:expand");
-          
+
         },
 
         deleteLander: function(model) {
