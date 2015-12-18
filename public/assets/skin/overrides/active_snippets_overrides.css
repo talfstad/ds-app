@@ -98,6 +98,7 @@
 .select-with-button {
     float: left;
 }
+
 .select-with-button .select2-container--default .select2-selection--single {
     /*border-radius: 0px;*/
     border: 1px solid #e8e8e8;
@@ -105,9 +106,10 @@
     outline: none;
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
-    width: 190px;
+    width: 179px;
     left: 4px;
 }
+
 
 /*
     select2 corrections for right sidebar heights...
@@ -120,6 +122,7 @@
 .select-with-button .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 35px;
 }
+
 .select-with-button .select2-container--default .select2-selection--single .select2-selection__rendered {
     line-height: 39px;
 }
@@ -127,7 +130,6 @@
 .snippets-list .select2-container {
     left: 4px;
 }
-
 
 .snippets-list .js-snippet-alert {
     z-index: 10;
@@ -161,6 +163,7 @@
     width: 100%
 }
 
-.name-and-optimizations-region .input-group-addon-default{
+.name-and-optimizations-region .input-group-addon-default {
     color: #BBB !important;
 }
+

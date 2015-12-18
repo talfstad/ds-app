@@ -1,6 +1,6 @@
 <!-- Start: Sidebar Right Content -->
 <div class="sidebar-right-content nano-content p10">
-  <div class="panel" id="p5">
+  <div class="panel">
     <div class="panel-heading">
       <span class="panel-title">Lander Edit &amp; Optimization</span>
       <span class="close-right-sidebar panel-controls"><a href="#" class="panel-control-loader"></a><a href="#" class="panel-control-remove"></a></span>
@@ -12,9 +12,24 @@
         <button type="button" style="width: 78px" class="save disabled btn btn-default btn-gradient dark"><span class="fa fa-save pr5"></span>Save</button>
       </div>
     </div>
+    <div class="panel-menu">
+      <div class="btn-group">
+        <div class="select-with-button" style="width: 179px">
+          <select class="test-link-endpoints-select select2-single form-control">
+            <% _.each(urlEndpointsJSON, function(endpoint){ %>
+              <option value="">
+                <%= endpoint.name %>
+              </option>
+              <% }) %>
+          </select>
+        </div>
+        <button type="button" style="border-left:none; height: 39px" class="open-test-link pl10 pt5 pb5 btn btn-default btn-gradient dark">
+          <span class="text-info fa fa-link pr5"></span>Open
+        </button>
+      </div>
+    </div>
     <div class="admin-form panel-body pn pb25" style="font-size: 13px">
       <div class="name-and-optimizations-region">
-        
       </div>
       <h5 class="title-divider text-muted mt30 mb0">
               Javascript Snippets 

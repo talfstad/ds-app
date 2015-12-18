@@ -35,7 +35,7 @@
         </button>
       </div>
       <div class="btn-group">
-        <button type="button" style="width: 80px" class="<% if(!changed) { %>disabled <% } %> snippet-save pl10 pt5 pb5 btn btn-default btn-gradient dark">
+        <button type="button" style="width: 80px" class="<% if(!changed) { %>disabled <% } %> save-snippet-code-button pl10 pt5 pb5 btn btn-default btn-gradient dark">
           <span class="fa fa-save pr5"></span>Save
         </button>
         <button type="button" style="width: 80px" class="pl10 pt5 mr10 pb5 btn btn-danger btn-gradient dark">

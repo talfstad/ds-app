@@ -142,8 +142,29 @@ define(["app",
 
               });
 
-              
-              newSnippetDetailView.on("saveEditInfo", function(attr){
+              newSnippetDetailView.on("saveCode", function(code) {
+                var snippetModel = this.model;
+
+                snippetModel.set({
+                  "code": code,
+                  "action": "saveCode"
+                });
+
+                snippetModel.set("savingCode", true);
+
+                snippetModel.save({}, {
+                  success: function(savedModel, two, three) {
+                    savedModel.set("originalSnippetCode", savedModel.get("code"));
+                    savedModel.set("savingCode", "finished");
+                  },
+                  error: function() {
+
+                  }
+                })
+              });
+
+
+              newSnippetDetailView.on("saveEditInfo", function(attr) {
                 var snippetModel = attr.model;
                 var name = attr.name;
                 var description = attr.description;
@@ -157,18 +178,18 @@ define(["app",
                 snippetModel.set("savingEditInfo", true);
 
                 snippetModel.save({}, {
-                  success: function(savedModel, two, three){
+                  success: function(savedModel, two, three) {
 
                     //get the actual snippet model and change the name/description of it
                     //those models are different than the actual snippet models
                     Moonlander.trigger("landers:updateAllActiveSnippetNames", savedModel);
-                   
-                    
+
+
                     savedModel.set("showEditInfo", false);
                     savedModel.set("savingEditInfo", "finished");
-                    
+
                   },
-                  error: function(){
+                  error: function() {
 
                   }
                 })

@@ -31,7 +31,8 @@ define(["app",
           "change:saving": "render",
           "change:changed": "showAlerts",
           "change:addingToPage": "showAlerts",
-          "change:savingEditInfo": "showAlerts"
+          "change:savingEditInfo": "showAlerts",
+          "change:savingCode": "showAlerts"
         },
 
         events: {
@@ -41,7 +42,16 @@ define(["app",
           "click .cancel-edit-info-button": "cancelEditSnippetInfo",
           "click .save-edit-info-button": "saveEditSnippetInfo",
           "click .add-to-lander": "addSnippetToUrlEndpoint",
-          "click .reset-to-original-code-button": "resetToOriginalCode"
+          "click .reset-to-original-code-button": "resetToOriginalCode",
+          "click .save-snippet-code-button": "saveSnippetCode"
+        },
+
+        saveSnippetCode: function(e) {
+          e.preventDefault();
+
+          var code = this.codeMirror.getValue();
+
+          this.trigger("saveCode", code);
         },
 
         saveEditSnippetInfo: function(e) {
@@ -146,15 +156,34 @@ define(["app",
         //   2. saving snippet code
         //   3. adding to lander
         //   4. code has been changed
-        showAlerts: function(isOnRender) {
+        showAlerts: function() {
           var me = this;
           var showAlert = false;
           var msg = "";
-          var jsAlertEl = me.$el.find(".js-snippet-alert")
-          var addingToPageVal = this.model.get("addingToPage")
-          var savingEditInfo = this.model.get("savingEditInfo")
-          var codeChanged = this.model.get("changed")
-          if (savingEditInfo == true) {
+          var jsAlertEl = me.$el.find(".js-snippet-alert");
+          var addingToPageVal = this.model.get("addingToPage");
+          var savingEditInfo = this.model.get("savingEditInfo");
+          var savingCode = this.model.get("savingCode");
+          var codeChanged = this.model.get("changed");
+
+          if (savingCode == true) {
+            showAlert = true;
+            jsAlertEl.addClass("alert-info");
+            jsAlertEl.removeClass("alert-warning");
+            msg = "<span style='position: absolute; top: 12px' class='glyphicon mr5 glyphicon-refresh glyphicon-refresh-animate'></span><span style='padding-left: 20px'> Saving Snippet Code</span>"
+          } else if (savingCode == "finished") {
+            showAlert = true;
+            jsAlertEl.addClass("alert-info");
+            jsAlertEl.removeClass("alert-warning");
+            msg = "<span style='font-weight: 600'>Attention</span>: Successfully saved snippet code"
+            setTimeout(function() {
+              var code = me.codeMirror.getValue();
+              if (code === me.model.get("code")) {
+                me.model.set("changed", false);
+              }
+              me.model.set("savingCode", false);
+            }, 5000);
+          } else if (savingEditInfo == true) {
             showAlert = true;
             jsAlertEl.addClass("alert-info");
             jsAlertEl.removeClass("alert-warning");
@@ -222,7 +251,7 @@ define(["app",
               }, 10);
             });
             //disable the save bc there are no changes
-            me.$el.find(".snippet-save").addClass("disabled");
+            me.$el.find(".save-snippet-code-button").addClass("disabled");
           }
         },
 
@@ -277,7 +306,7 @@ define(["app",
 
           me.codeMirror.on("change", function(cm, change) {
             if (cm.getValue().trim() !== me.model.get("code").trim()) {
-              me.$el.find(".snippet-save").removeClass("disabled");
+              me.$el.find(".save-snippet-code-button").removeClass("disabled");
               me.model.set("changed", true);
             }
           });

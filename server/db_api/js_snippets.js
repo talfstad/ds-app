@@ -44,7 +44,7 @@ module.exports = function(db) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("UPDATE snippets SET name = ?, description = ? WHERE id = ? AND user_id = ?", [name, description, snippet_id, user.id],
+          connection.query("UPDATE snippets SET name = ?, description = ? WHERE id = ? AND user_id = ?", [name, description, snippet_id, user_id],
             function(err, docs) {
               if (err) {
                 console.log(err);
@@ -60,6 +60,31 @@ module.exports = function(db) {
 
     },
 
+    saveCode: function(user, params, successCallback){
+      var user_id = user.id;
+      var code = params.code;
+      var snippet_id = params.snippet_id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("UPDATE snippets SET code = ? WHERE id = ? AND user_id = ?", [code, snippet_id, user_id],
+            function(err, docs) {
+              if (err) {
+                console.log(err);
+                errorCallback("\nError updating snippet code.");
+              } else {
+                successCallback(docs);
+              }
+              //release connection
+              connection.release();
+            });
+        }
+      });
+
+
+    },
 
     //add this snippet to active snippets
     addSnippetToUrlEndpoint: function(user, params, successCallback) {

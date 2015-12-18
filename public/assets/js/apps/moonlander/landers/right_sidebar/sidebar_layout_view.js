@@ -25,20 +25,40 @@ define(["app",
           "click .add-snippet-button": "showJsSnippetsModal"
         },
 
-        showJsSnippetsModal: function(e){
+        showJsSnippetsModal: function(e) {
           Moonlander.trigger("landers:showJsSnippetsModal", this.model);
         },
-        
-        showDuplicateLanderModal: function(){
+
+        showDuplicateLanderModal: function() {
           Moonlander.trigger("landers:showDuplicateLanderModal", this.model);
         },
 
         showDeleteLanderModal: function() {
           Moonlander.trigger("landers:showDeleteLanderModal", this.model);
         },
-        
+
         showEditLander: function(e) {
           Moonlander.trigger("landers:showEdit", this.model);
+        },
+
+        onBeforeRender: function() {
+          urlEndpoints = this.model.get("urlEndpoints")
+          var urlEndpointsJSON;
+          if (urlEndpoints) {
+            urlEndpointsJSON = urlEndpoints.toJSON();
+          } else {
+            urlEndpointsJSON = [];
+          }
+          this.model.set("urlEndpointsJSON", urlEndpointsJSON);
+        },
+
+        onRender: function() {
+          this.$el.find(".test-link-endpoints-select").select2();
+
+          //disable open test link if no endpoints
+          if (this.model.get("urlEndpointsJSON").length <= 0) {
+            this.$el.find(".open-test-link").addClass("disabled");
+          }
         },
 
         onDomRefresh: function() {
