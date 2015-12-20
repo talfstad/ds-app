@@ -13,7 +13,10 @@ define(["app",
 
       JsSnippets.Controller = {
 
-        showJsSnippetsModal: function(landerModel) {
+
+
+        initAndShowSnippetsModal: function(landerModel) {
+          var defer = $.Deferred();
 
           var jsSnippetsLayoutView = new JsSnippetsLayoutView({
             model: landerModel
@@ -73,7 +76,6 @@ define(["app",
                 snippet.set("active", false);
               });
               model.set("active", true);
-              model.set("editing", false);
 
               //2. figure out the available urlEndpoints
               var availableUrlEndpoints = [];
@@ -184,7 +186,6 @@ define(["app",
                     //those models are different than the actual snippet models
                     Moonlander.trigger("landers:updateAllActiveSnippetNames", savedModel);
 
-
                     savedModel.set("showEditInfo", false);
                     savedModel.set("savingEditInfo", "finished");
 
@@ -203,15 +204,52 @@ define(["app",
             //show actual views
             jsSnippetsLayoutView.leftNavSnippetListRegion.show(leftNavSnippetsView)
 
+            defer.resolve({
+              filteredSnippetCollection: filteredSnippetCollection,
+              leftNavSnippetsView: leftNavSnippetsView
+            });
+
+          });
+          var promise = defer.promise();
+          return promise;
+
+        },
+
+        showJsSnippetsModal: function(landerModel) {
+
+          var deferInitJsSnippetsModal = this.initAndShowSnippetsModal(landerModel);
+
+          $.when(deferInitJsSnippetsModal).done(function(attr) {
+
+            var filteredSnippetCollection = attr.filteredSnippetCollection;
+            var leftNavSnippetsView = attr.leftNavSnippetsView;
+
             //show initial snippets detail view/info/tutorial
             var firstModel = filteredSnippetCollection.models[0];
             firstModel.set("active", true);
+            firstModel.set("editing", false);
             leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
 
           });
+        },
 
+        showEditJsSnippetsModal: function(landerModel, snippet_id) {
+          var deferInitJsSnippetsModal = this.initAndShowSnippetsModal(landerModel);
 
-        }
+          $.when(deferInitJsSnippetsModal).done(function(attr) {
+
+            var filteredSnippetCollection = attr.filteredSnippetCollection;
+            var leftNavSnippetsView = attr.leftNavSnippetsView;
+
+            //show initial snippets detail view/info/tutorial
+            var modelToEdit = filteredSnippetCollection.get(snippet_id);
+            modelToEdit.set("active", true);
+            modelToEdit.set("editing", true);
+            leftNavSnippetsView.trigger("childview:showSnippet", modelToEdit);
+
+          });
+
+        },
 
       }
     });

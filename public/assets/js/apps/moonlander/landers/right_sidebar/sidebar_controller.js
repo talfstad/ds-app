@@ -21,11 +21,21 @@ function(Moonlander, SidebarLayoutView, NameAndOptimizationsView, SidebarModel, 
           model: model
         });
         
+
         //create the view here
         //only give it urlEndpoints with active snippets
+        var urlEndpointsCollection = model.get("urlEndpoints");
         var activeSnippetsView = new ActiveJsSnippetsListView({
-          collection: model.get("urlEndpoints")
+          collection: urlEndpointsCollection
         });
+
+        //weird looking but bc the views are nested its a double childview
+        activeSnippetsView.on("childview:childview:editJsSnippetsModal", function(urlEndpointView, snippetView, snippet_id){
+          Moonlander.trigger("landers:showEditJsSnippetsModal", {
+            "landerModel": model, 
+            "snippet_id": snippet_id
+          });
+        }); 
 
         var nameAndOptimizationView = new NameAndOptimizationsView({
           model: model

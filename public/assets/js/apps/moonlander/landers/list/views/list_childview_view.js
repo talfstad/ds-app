@@ -163,12 +163,7 @@ define(["app",
 
               $(e.currentTarget).parent().find(".panel").addClass(".panel-info");
 
-              //pass a clone not the real model so everyone gets their own. no references for
-              //right sidebar, interferes with active snippets
-              var sidebarModel = new SidebarModel(me.model.attributes);
-              
-
-              Moonlander.trigger('landers:opensidebar', sidebarModel);
+              Moonlander.trigger('landers:opensidebar', me.model);
 
             });
 

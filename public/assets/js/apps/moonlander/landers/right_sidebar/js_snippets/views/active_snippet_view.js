@@ -12,7 +12,11 @@ define(["app",
         tagName: "li",
 
         modelEvents: {
-          "change:name":"render"
+          "change:name": "render"
+        },
+
+        showEditSnippet: function(snippet_id) {
+          this.trigger("editJsSnippetsModal", snippet_id);
         },
 
         onRender: function() {
@@ -20,10 +24,20 @@ define(["app",
         },
 
         onDomRefresh: function(e) {
+          var me = this;
           this.drawFancyTree();
+
+          //has to be after drawing fancy tree..
+          var id = this.model.get("id");
+          $("#edit-snippet-" + id).click(function(e) {
+            e.preventDefault();
+
+            me.showEditSnippet();
+          });
         },
 
         drawFancyTree: function() {
+          var me = this;
           //only fancy tree if have children
           $("#jssnippets-tree").fancytree({
             click: function(event, data) {
@@ -32,6 +46,9 @@ define(["app",
               if (data.node.isFolder()) {
                 return false;
               }
+
+              var snippet_id = $(data.node.li).find('a.edit-snippet').attr("data-snippet-id");
+              me.showEditSnippet(snippet_id);
             },
             renderNode: function(event, data) {
               // Optionally tweak data.node.span
