@@ -18,6 +18,7 @@ define(["app",
         },
 
         showSnippet: function() {
+          this.model.set("editing", false);
           this.trigger("showSnippet", this.model);
         },
 

@@ -21,7 +21,6 @@ function(Moonlander, SidebarLayoutView, NameAndOptimizationsView, SidebarModel, 
           model: model
         });
         
-
         //create the view here
         //only give it urlEndpoints with active snippets
         var urlEndpointsCollection = model.get("urlEndpoints");

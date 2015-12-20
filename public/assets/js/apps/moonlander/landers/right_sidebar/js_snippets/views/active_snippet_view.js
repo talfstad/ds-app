@@ -47,13 +47,19 @@ define(["app",
                 return false;
               }
 
-              var snippet_id = $(data.node.li).find('a.edit-snippet').attr("data-snippet-id");
-              me.showEditSnippet(snippet_id);
             },
             renderNode: function(event, data) {
               // Optionally tweak data.node.span
               var node = data.node;
               var $span = $(node.span);
+
+
+              //EDIT EVENT FOR ON CLICK !
+              // add all on click events
+              $(data.node.li).find('a.edit-snippet').click(function(e) {
+                var snippet_id = $(this).attr("data-snippet-id");
+                me.showEditSnippet(snippet_id);
+              });
 
 
               if ($span.hasClass("fancytree-page")) {
