@@ -135,7 +135,7 @@ span.fancytree-icon-folder {
 }
 
 .snippets-container span.fancytree-node {
-    padding: 5px 0 5px 0;
+    padding: 5px 0 0px 0;
 }
 
 span.fancytree-node:hover {

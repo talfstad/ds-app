@@ -11,7 +11,8 @@ define(["app",
 
         emptyView: emptyView,
         childView: listItemView,
-        tagName: "ul"
+        tagName: "ul",
+        className: "url-endpoints-list"
               
       });
     });

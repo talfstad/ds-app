@@ -1,5 +1,6 @@
 requirejs.config({
   baseUrl: "/",
+  waitSeconds: 0,
   paths: {
     app: "/assets/js/app",
     vendor: "/vendor",
