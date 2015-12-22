@@ -8,10 +8,10 @@
 		<%= name %>
 	</span>
 	<span>
-		<a data-id="<%= id %>" class="delete-active-snippet trash-link" href="#">
+		<a class="delete-active-snippet trash-link" href="#">
 			<i class="pull-right ml15 mt3 fa fa-trash-o"></i>
 		</a>
-		<a data-snippet-id="<%= snippet_id %>" class="edit-snippet" href="#">
+		<a class="edit-snippet" href="#">
 			<i class="pull-right ml15 mt3 fa fa-pencil-square-o"></i>
 		</a>
 	</span>

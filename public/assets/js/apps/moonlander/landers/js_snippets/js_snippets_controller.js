@@ -5,8 +5,8 @@ define(["app",
     "/assets/js/apps/moonlander/landers/dao/js_snippet_model.js",
     "/assets/js/apps/moonlander/landers/js_snippets/views/js_snippets_detail_view.js",
     "/assets/js/common/filtered_paginated/filtered_paginated_collection.js",
-    "/assets/js/apps/moonlander/landers/dao/js_snippet_collection.js",
-    "/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/dao/active_js_snippet_model.js"
+    "/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/dao/active_js_snippet_model.js",
+    "/assets/js/apps/moonlander/landers/dao/js_snippet_collection.js"
   ],
   function(Moonlander, JsSnippetsLayoutView, LoadingView,
     LeftNavSnippetsView, SnippetModel, JsSnippetDetailView, FilteredPaginatedCollection,
@@ -109,34 +109,37 @@ define(["app",
                 var snippetModel = attr.model;
                 var urlEndpointId = attr.urlEndpointId;
 
-
                 //snippet models need a snippet_id because active snippet id is the actual id
-                snippetModel.set({
-                  "urlEndpointId": urlEndpointId,
-                  "action": "addSnippetToUrlEndpoint"
-                });
-
-
+                snippetModel.set("urlEndpointId", urlEndpointId)
+                
                 //1. show that we are addingToPage, set addingToPage=true causes render
                 snippetModel.set("addingToPage", true);
 
-                snippetModel.save({}, {
-                  success: function(savedModel, two, three) {
+                //create an active snippet model for this
+                var newActiveSnippetModel = new ActiveSnippetModel({
+                  "name": snippetModel.get("name"),
+                  "snippet_id": snippetModel.get("snippet_id"),
+                  "id": snippetModel.get("id"),
+                  "action": "addSnippetToUrlEndpoint"
+                });
+
+                newActiveSnippetModel.save({}, {
+                  success: function(activeSnippetModel, two, three) {
 
                     // add it to the colleciton
                     var urlEndpointCollection = landerModel.get("urlEndpoints");
                     var endpointToAddTo = urlEndpointCollection.get(urlEndpointId);
 
                     var endpointsActiveSnippetCollection = endpointToAddTo.get("activeSnippets");
-                    //create an active snippet model for this
-                    var newActiveSnippetModel = new ActiveSnippetModel(snippetModel.attributes);
-                    endpointsActiveSnippetCollection.add(snippetModel);
 
+                    endpointsActiveSnippetCollection.add(newActiveSnippetModel);
+
+                    Moonlander.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerModel);
                     //set addingToPage to 'finished' to show the finished message and remove
-                    savedModel.set("addingToPage", "finished");
+                    snippetModel.set("addingToPage", "finished");
 
                     // trigger a render by changing a value that triggers it
-                    leftNavSnippetsView.trigger("childview:showSnippet", savedModel);
+                    leftNavSnippetsView.trigger("childview:showSnippet", snippetModel);
                   },
                   error: function() {
 

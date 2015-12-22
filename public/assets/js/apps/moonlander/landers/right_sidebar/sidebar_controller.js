@@ -21,44 +21,7 @@ define(["app",
           Moonlander.landers.sidebarView = new SidebarLayoutView({
             model: model
           });
-
-          //create the view here
-          //only give it urlEndpoints with active snippets
-          var urlEndpointsCollection = model.get("urlEndpoints");
-          var activeSnippetsView = new ActiveJsSnippetsListView({
-            collection: urlEndpointsCollection.filterWithActiveSnippets()
-          });
-
-          activeSnippetsView.on("childview:editJsSnippetsModal", function(childView, snippet_id) {
-            Moonlander.trigger("landers:showEditJsSnippetsModal", {
-              "landerModel": model,
-              "snippet_id": snippet_id
-            });
-          });
-
-          activeSnippetsView.on("childview:deleteActiveJsSnippet", function(childView, active_snippet_id) {
-
-            //1. get the correct urlEndpoint model
-            var snippetToDestroy = null;
-            urlEndpointsCollection.each(function(endpoint) {
-              var activeSnippetsCollection = endpoint.get("activeSnippets");
-              activeSnippetsCollection.each(function(snippet) {
-                if (active_snippet_id == snippet.get("id")) {
-                  //this is the correct endpoint and active snippet to remove
-                  //2. remove the active snippet from it
-                  snippetToDestroy = snippet;
-                }
-              });
-            });
-            
-            if(snippetToDestroy){
-              snippetToDestroy.destroy();
-            }
-
-
-
-          });
-
+          
           var nameAndOptimizationView = new NameAndOptimizationsView({
             model: model
           });
@@ -66,10 +29,57 @@ define(["app",
           //show it
           Moonlander.rootRegion.currentView.rightSidebarRegion.show(Moonlander.landers.sidebarView);
 
-          Moonlander.rootRegion.currentView.rightSidebarRegion.currentView.snippetsRegion.show(activeSnippetsView)
+          this.showAndReFilterActiveSnippetsView(model);
+
           Moonlander.rootRegion.currentView.rightSidebarRegion.currentView.nameAndOptimizationsRegion.show(nameAndOptimizationView)
             //open
           setTimeout(Moonlander.landers.sidebarView.openSidebar, 20);
+        },
+
+        showAndReFilterActiveSnippetsView: function(model) {
+          //create the view here
+          //only give it urlEndpoints with active snippets
+          var urlEndpointsCollection = model.get("urlEndpoints");
+          var activeSnippetsView = new ActiveJsSnippetsListView({
+            collection: urlEndpointsCollection.filterWithActiveSnippets()
+          });
+
+          activeSnippetsView.on("childview:childview:editJsSnippetsModal", function(childView, childChildView, snippet_id) {
+            Moonlander.trigger("landers:showEditJsSnippetsModal", {
+              "landerModel": model,
+              "snippet_id": snippet_id
+            });
+          });
+
+          activeSnippetsView.on("childview:childview:deleteActiveJsSnippet", function(childView, childChildView, active_snippet_id) {
+
+            //1. get the correct urlEndpoint model
+            var snippetToDestroy = null;
+            var endpointThisIsOn = null;
+
+            urlEndpointsCollection.filterWithActiveSnippets().each(function(endpoint) {
+              var activeSnippetsCollection = endpoint.get("activeSnippets");
+              activeSnippetsCollection.each(function(snippet) {
+                if (active_snippet_id == snippet.get("id")) {
+                  //this is the correct endpoint and active snippet to remove
+                  //2. remove the active snippet from it
+                  endpointThisIsOn = endpoint;
+                  snippetToDestroy = snippet;
+                }
+              });
+            });
+
+            if (snippetToDestroy) {
+              snippetToDestroy.destroy();
+            }
+
+            //3. if no more active snippets on this, destroy it
+            Moonlander.trigger("landers:sidebar:showSidebarActiveSnippetsView", model);
+
+          });
+
+          Moonlander.rootRegion.currentView.rightSidebarRegion.currentView.snippetsRegion.show(activeSnippetsView)
+
         },
 
         closeSidebar: function() {

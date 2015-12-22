@@ -12,7 +12,27 @@ module.exports = function(app, db, passport) {
     });
   });
 
+
   app.put('/api/js_snippets/:snippet_id', function(req, res) {
+    var user = req.user;
+    var params = req.body;
+    var action = params.action;
+
+    //if set adds snippet to the urlEndpoint
+    if (action === "saveEditInfo") {
+      db.js_snippets.saveEditInfo(user, params, function(returnObj) {
+        res.json(returnObj);
+      });
+    } else if (action === "saveCode") {
+      db.js_snippets.saveCode(user, params, function(returnObj) {
+        res.json(returnObj);
+      });
+    }
+
+  });
+  
+
+  app.put('/api/active_snippets/:snippet_id', function(req, res) {
     var user = req.user;
     var params = req.body;
     var action = params.action;
@@ -31,7 +51,6 @@ module.exports = function(app, db, passport) {
         res.json(returnObj);
       });
     }
-
 
   });
 
