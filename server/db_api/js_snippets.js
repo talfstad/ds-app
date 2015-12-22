@@ -34,6 +34,30 @@ module.exports = function(db) {
 
     },
 
+    removeActiveSnippet: function(user, active_snippet_id, successCallback) {
+      var user_id = user.id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("DELETE FROM active_snippets WHERE id = ? AND user_id = ?", [active_snippet_id, user_id],
+            function(err, docs) {
+              if (err) {
+                console.log(err);
+                errorCallback("\nError remove active snippet id: " + active_snippet_id + " for user: " + user_id + ".");
+              } else {
+                successCallback({});
+              }
+              //release connection
+              connection.release();
+            });
+        }
+      });
+
+
+    },
+
     saveEditInfo: function(user, params, successCallback){
       var description = params.description;
       var name = params.name;

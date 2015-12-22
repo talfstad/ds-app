@@ -167,3 +167,9 @@
     color: #BBB !important;
 }
 
+
+
+#jssnippets-tree ul {
+    list-style-type: none;
+    padding-left: 5px;
+}

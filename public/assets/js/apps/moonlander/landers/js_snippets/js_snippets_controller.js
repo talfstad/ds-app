@@ -5,15 +5,15 @@ define(["app",
     "/assets/js/apps/moonlander/landers/dao/js_snippet_model.js",
     "/assets/js/apps/moonlander/landers/js_snippets/views/js_snippets_detail_view.js",
     "/assets/js/common/filtered_paginated/filtered_paginated_collection.js",
-    "/assets/js/apps/moonlander/landers/dao/js_snippet_collection.js"
+    "/assets/js/apps/moonlander/landers/dao/js_snippet_collection.js",
+    "/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/dao/active_js_snippet_model.js"
   ],
   function(Moonlander, JsSnippetsLayoutView, LoadingView,
-    LeftNavSnippetsView, SnippetModel, JsSnippetDetailView, FilteredPaginatedCollection) {
+    LeftNavSnippetsView, SnippetModel, JsSnippetDetailView, FilteredPaginatedCollection,
+    ActiveSnippetModel) {
     Moonlander.module("LandersApp.JsSnippets", function(JsSnippets, Moonlander, Backbone, Marionette, $, _) {
 
       JsSnippets.Controller = {
-
-
 
         initAndShowSnippetsModal: function(landerModel) {
           var defer = $.Deferred();
@@ -24,7 +24,6 @@ define(["app",
 
 
           jsSnippetsLayoutView.render();
-
 
           Moonlander.rootRegion.currentView.modalRegion.show(jsSnippetsLayoutView);
 
@@ -129,6 +128,8 @@ define(["app",
                     var endpointToAddTo = urlEndpointCollection.get(urlEndpointId);
 
                     var endpointsActiveSnippetCollection = endpointToAddTo.get("activeSnippets");
+                    //create an active snippet model for this
+                    var newActiveSnippetModel = new ActiveSnippetModel(snippetModel.attributes);
                     endpointsActiveSnippetCollection.add(snippetModel);
 
                     //set addingToPage to 'finished' to show the finished message and remove

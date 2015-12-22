@@ -2,8 +2,6 @@ define(["app",
     "/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/views/url_endpoint_child_view.js",
     "/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/views/url_endpoint_empty_view.js",
     "tpl!/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/templates/list.tpl",
-    "fancytree"
-    // "bootstrap"
   ],
   function(Moonlander, listItemView, emptyView, listTpl) {
 
@@ -14,7 +12,7 @@ define(["app",
         emptyView: emptyView,
         childView: listItemView,
         tagName: "ul"
-
+              
       });
     });
 

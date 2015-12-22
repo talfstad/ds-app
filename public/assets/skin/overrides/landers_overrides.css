@@ -50,6 +50,11 @@
     color: #222 !important;
 }
 
+
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-focused {
+  border-color: #fff;
+}
+
 .snippets-container .fancytree-container {
     border: none !important;
 }
@@ -102,24 +107,17 @@
     background-position: 0 0;
 }
 
-
-/*span.fancytree-node.fancytree-active, span.fancytree-node.fancytree-selected {
-    background: none;
-    border: none;
+span.fancytree-icon-folder {
+    color: #999;
 }
 
-.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active {
-    background: none;
-    border: none;
-}*/
-
-.snippets-container .fancytree-title a.trash-link {
+.snippets-container a.trash-link {
     position: absolute;
     right: 0;
     margin-right: 15px;
 }
 
-.snippets-container .fancytree-title a.edit-snippet {
+.snippets-container a.edit-snippet {
     position: absolute;
     right: 0;
     margin-right: 35px;
@@ -148,9 +146,11 @@ span.fancytree-node:hover {
 span.fancytree-title {
     /*cursor: inherit;*/
     color: #626262;
-    max-width: 150px;
-    overflow-x: hidden;
+    max-width: 170px;
+    padding-left: 0;
+    overflow: hidden;
     text-overflow: ellipsis;
+    min-height: 17px;
 }
 
 ul.fancytree-container {
@@ -382,8 +382,8 @@ tr.warning input[type=select] {
 
 .snippets-empty {
     list-style-type: none;
-    margin-top: 15px;
-    margin-left: 30px;
+    margin-top: 10px;
+    margin-left: 60px;
 }
 
 .disabled-link {
@@ -405,3 +405,6 @@ tr.warning input[type=select] {
 .text-align-right {
     text-align: right !important;
 }
+
+
+

@@ -12,28 +12,31 @@ define(["app",
         tagName: "li",
 
         modelEvents: {
-          "change:name": "render"
+          // "change:name": "render"
         },
 
+        //method doesn't have state, model wont be correct here
         showEditSnippet: function(snippet_id) {
           this.trigger("editJsSnippetsModal", snippet_id);
         },
 
-        onRender: function() {
-
+        //method doesn't have state, model wont be correct here
+        deleteActiveSnippet: function(active_snippet_id) {
+          this.trigger("deleteActiveJsSnippet", active_snippet_id);
         },
 
+        onRender: function() {
+          
+        },
+
+        // onDestroy: function() {
+        //   //remove from the dom so fancy tree refresh works
+        //   this.$el.remove()
+        //   this.drawFancyTree();
+        // },
+
         onDomRefresh: function(e) {
-          var me = this;
-          this.drawFancyTree();
-
-          //has to be after drawing fancy tree..
-          var id = this.model.get("id");
-          $("#edit-snippet-" + id).click(function(e) {
-            e.preventDefault();
-
-            me.showEditSnippet();
-          });
+          // this.drawFancyTree();
         },
 
         drawFancyTree: function() {
@@ -59,6 +62,11 @@ define(["app",
               $(data.node.li).find('a.edit-snippet').click(function(e) {
                 var snippet_id = $(this).attr("data-snippet-id");
                 me.showEditSnippet(snippet_id);
+              });
+              // DELETE event for on click :D
+              $(data.node.li).find('a.delete-active-snippet').click(function(e) {
+                var active_snippet_id = $(this).attr("data-id");
+                me.deleteActiveSnippet(active_snippet_id);
               });
 
 
