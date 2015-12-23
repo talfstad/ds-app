@@ -2,14 +2,14 @@
 <div class="sidebar-right-content nano-content p10">
   <div class="panel">
     <div class="panel-heading">
-      <span class="panel-title">Lander Edit &amp; Optimization</span>
+      <span class="panel-title">Preview, Edit &amp; Optimize</span>
       <span class="close-right-sidebar panel-controls"><a href="#" class="panel-control-loader"></a><a href="#" class="panel-control-remove"></a></span>
     </div>
     <div class="panel-menu">
       <div class="btn-group">
         <button type="button" style="width: 97px" class="duplicate-lander-button btn btn-default btn-gradient dark"><span class="fa fa-copy pr5"></span>Duplicate</button>
-        <button type="button" style="width: 80px" class="lander-edit btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Edit</button>
-        <button type="button" style="width: 78px" class="save disabled btn btn-default btn-gradient dark"><span class="fa fa-save pr5"></span>Save</button>
+        <button type="button" style="width: 70px" class="lander-edit btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Edit</button>
+        <button type="button" style="width: 88px" class="save disabled btn btn-default btn-gradient dark"><span class="fa fa-upload pr5"></span>Deploy</button>
       </div>
     </div>
     <div class="panel-menu">

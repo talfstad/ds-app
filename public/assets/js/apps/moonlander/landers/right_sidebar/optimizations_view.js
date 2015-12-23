@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/right_sidebar/templates/name_optimizations.tpl",
+    "tpl!/assets/js/apps/moonlander/landers/right_sidebar/templates/optimizations.tpl",
     "select2"
   ],
   function(Moonlander, NameOptimizationsTpl) {

@@ -10,17 +10,17 @@ define(["app",
         showDuplicateLander: function(landerModelToDuplicate) {
           //take the lander model to dup and put it in a state to be re-initialized empty. setting attributes and
           //not using .set doesnt trigger a render of the right sidebar even though its changing.. kind of a hack        
-          landerModelToDuplicate.attributes.deployedLocations = [];
-          landerModelToDuplicate.attributes.activeCampaigns = [];
-          landerModelToDuplicate.attributes.activeJobs = [];
-          landerModelToDuplicate.attributes.active_campaigns_count = 0;
-          landerModelToDuplicate.attributes.urlEndpoints = landerModelToDuplicate.get("urlEndpoints").toJSON();
+          
+          var duplicatedLanderModel = new LanderModel({
+            
+          })
 
-          $.each(landerModelToDuplicate.attributes.urlEndpoints, function(idx, endpoint) {
+          duplicatedLanderModel.attributes.active_campaigns_count = 0;
+
+          $.each(duplicatedLanderModel.get("urlEndpointsJSON"), function(idx, endpoint) {
             endpoint.activeSnippets = []; //no active snippets carried over
           });
 
-          var duplicatedLanderModel = new LanderModel(landerModelToDuplicate.attributes)
           delete duplicatedLanderModel.attributes.id;
 
 

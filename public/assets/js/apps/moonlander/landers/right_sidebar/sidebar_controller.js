@@ -1,6 +1,6 @@
 define(["app",
     "/assets/js/apps/moonlander/landers/right_sidebar/sidebar_layout_view.js",
-    "/assets/js/apps/moonlander/landers/right_sidebar/name_optimizations_view.js",
+    "/assets/js/apps/moonlander/landers/right_sidebar/optimizations_view.js",
     "/assets/js/apps/moonlander/landers/dao/sidebar_model.js",
     "/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/views/active_snippets_list_view.js"
   ],

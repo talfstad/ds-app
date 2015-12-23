@@ -209,6 +209,7 @@ define(["app",
       defaults: {
         name: "",
         last_updated: "",
+        urlEndpointsJSON: [],
         optimize_js: false,
         optimize_css: false,
         optimize_images: false,
