@@ -108,9 +108,6 @@ define(["app",
               newSnippetDetailView.on("addSnippetToUrlEndpoint", function(attr) {
                 var snippetModel = attr.model;
                 var urlEndpointId = attr.urlEndpointId;
-
-                //snippet models need a snippet_id because active snippet id is the actual id
-                snippetModel.set("urlEndpointId", urlEndpointId)
                 
                 //1. show that we are addingToPage, set addingToPage=true causes render
                 snippetModel.set("addingToPage", true);
@@ -120,7 +117,8 @@ define(["app",
                   "name": snippetModel.get("name"),
                   "snippet_id": snippetModel.get("snippet_id"),
                   "id": snippetModel.get("id"),
-                  "action": "addSnippetToUrlEndpoint"
+                  "action": "addSnippetToUrlEndpoint",
+                  "urlEndpointId": urlEndpointId
                 });
 
                 newActiveSnippetModel.save({}, {

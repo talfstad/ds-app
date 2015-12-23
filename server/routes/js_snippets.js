@@ -28,7 +28,6 @@ module.exports = function(app, db, passport) {
         res.json(returnObj);
       });
     }
-
   });
   
 
@@ -42,16 +41,7 @@ module.exports = function(app, db, passport) {
       db.js_snippets.addSnippetToUrlEndpoint(user, params, function(returnObj) {
         res.json(returnObj);
       });
-    } else if (action === "saveEditInfo") {
-      db.js_snippets.saveEditInfo(user, params, function(returnObj) {
-        res.json(returnObj);
-      });
-    } else if (action === "saveCode") {
-      db.js_snippets.saveCode(user, params, function(returnObj) {
-        res.json(returnObj);
-      });
     }
-
   });
 
 

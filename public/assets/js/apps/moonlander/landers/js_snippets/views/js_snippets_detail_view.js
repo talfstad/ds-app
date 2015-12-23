@@ -156,6 +156,16 @@ define(["app",
         //   2. saving snippet code
         //   3. adding to lander
         //   4. code has been changed
+        setAlertType: function(className) {
+          //remove all classes
+          var jsAlertEl = this.$el.find(".js-snippet-alert");
+
+          jsAlertEl.removeClass("alert-info");
+          jsAlertEl.removeClass("alert-warning");
+          jsAlertEl.removeClass("alert-success");
+          //add classname
+          jsAlertEl.addClass(className);
+        },
         showAlerts: function() {
           var me = this;
           var showAlert = false;
@@ -168,13 +178,11 @@ define(["app",
 
           if (savingCode == true) {
             showAlert = true;
-            jsAlertEl.addClass("alert-info");
-            jsAlertEl.removeClass("alert-warning");
+            me.setAlertType("alert-info");
             msg = "<span style='position: absolute; top: 12px' class='glyphicon mr5 glyphicon-refresh glyphicon-refresh-animate'></span><span style='padding-left: 20px'> Saving Snippet Code</span>"
           } else if (savingCode == "finished") {
             showAlert = true;
-            jsAlertEl.addClass("alert-info");
-            jsAlertEl.removeClass("alert-warning");
+            me.setAlertType("alert-success");
             msg = "<span style='font-weight: 600'>Attention</span>: Successfully saved snippet code"
             setTimeout(function() {
               var code = me.codeMirror.getValue();
@@ -185,33 +193,28 @@ define(["app",
             }, 5000);
           } else if (savingEditInfo == true) {
             showAlert = true;
-            jsAlertEl.addClass("alert-info");
-            jsAlertEl.removeClass("alert-warning");
+            me.setAlertType("alert-info");
             msg = "<span style='position: absolute; top: 12px' class='glyphicon mr5 glyphicon-refresh glyphicon-refresh-animate'></span><span style='padding-left: 20px'> Saving Snippet Information</span>"
           } else if (savingEditInfo == "finished") {
             showAlert = true;
-            jsAlertEl.addClass("alert-info");
-            jsAlertEl.removeClass("alert-warning");
+            me.setAlertType("alert-success");
             msg = "<span style='font-weight: 600'>Attention</span>: Successfully saved snippet information"
             setTimeout(function() {
               me.model.set("savingEditInfo", false);
             }, 5000);
           } else if (addingToPageVal == true) {
             showAlert = true;
-            jsAlertEl.addClass("alert-info");
-            jsAlertEl.removeClass("alert-warning");
+            me.setAlertType("alert-info");
             msg = "<span style='position: absolute; top: 12px' class='glyphicon mr5 glyphicon-refresh glyphicon-refresh-animate'></span><span style='padding-left: 20px'> Adding Snippet to Page</span>"
           } else if (addingToPageVal == "finished") {
             showAlert = true;
-            jsAlertEl.addClass("alert-info");
-            jsAlertEl.removeClass("alert-warning");
+            me.setAlertType("alert-success");
             msg = "<span style='font-weight: 600'>Attention</span>: Successfully added snippet to page"
             setTimeout(function() {
               me.model.set("addingToPage", false);
             }, 5000);
           } else if (codeChanged) {
-            jsAlertEl.addClass("alert-warning");
-            jsAlertEl.removeClass("alert-info");
+            me.setAlertType("alert-warning");
             showAlert = true;
             msg = "<span style='font-weight: 600'>Attention</span>: This Snippet Code has been modified. Save your work or <a class='reset-to-original-code-button' href='#'>reset the code</a>."
           }
