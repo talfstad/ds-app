@@ -1,10 +1,10 @@
-module.exports = function(app, db, passport) {
+module.exports = function(app, passport) {
   var module = {};
 
   var db = require("../db_api");
 
 
-  app.get('/api/js_snippets', function(req, res) {
+  app.get('/api/js_snippets', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
 
     db.js_snippets.getAll(user, function(rows) {
@@ -13,7 +13,7 @@ module.exports = function(app, db, passport) {
   });
 
 
-  app.put('/api/js_snippets/:snippet_id', function(req, res) {
+  app.put('/api/js_snippets/:snippet_id', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
     var params = req.body;
     var action = params.action;
@@ -31,7 +31,7 @@ module.exports = function(app, db, passport) {
   });
   
 
-  app.put('/api/active_snippets/:snippet_id', function(req, res) {
+  app.put('/api/active_snippets/:snippet_id', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
     var params = req.body;
     var action = params.action;
@@ -46,7 +46,7 @@ module.exports = function(app, db, passport) {
 
 
 
-  app.delete('/api/active_snippets/:active_snippet_id', function(req, res) {
+  app.delete('/api/active_snippets/:active_snippet_id', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
     var active_snippet_id = req.params.active_snippet_id
 

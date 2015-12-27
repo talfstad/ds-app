@@ -1,11 +1,11 @@
-module.exports = function(app, db, passport) {
+module.exports = function(app, passport) {
   var module = {};
 
   var db = require("../db_api");
   var WorkerController = require("../workers")(app, db);
 
   //start a new job
-  app.post('/api/jobs', function(req, res) {
+  app.post('/api/jobs', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
 
     var jobModelAttributes = req.body;

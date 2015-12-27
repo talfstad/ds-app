@@ -6,13 +6,12 @@ function(Moonlander, LoginCheckModel){
   Moonlander.CommonLogin.Check = function(cb, args){
     var loginCheckModel = new LoginCheckModel();
 
-    if(Moonlander.loginModel.get("logged_in") /*|| Moonlander.loginModel.get("currently_checking")*/) {
+    if(Moonlander.loginModel.get("logged_in")) {
       return cb(args);
     } else {
-      // Moonlander.loginModel.set("currently_checking", true);
       loginCheckModel.fetch({
         success: function(userObject){
-          // Moonlander.loginModel.set("currently_checking", false);
+          
           if(userObject.get("logged_in")) {
             Moonlander.loginModel.set(userObject.attributes);
             cb(args);

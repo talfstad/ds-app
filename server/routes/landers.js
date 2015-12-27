@@ -1,4 +1,4 @@
-module.exports = function(app, db, passport) {
+module.exports = function(app, passport) {
   var module = {};
 
   var config = require("../config");
@@ -6,7 +6,7 @@ module.exports = function(app, db, passport) {
   var utils = require('../utils/utils.js')();
   var db = require("../db_api");
 
-  app.post('/api/lander', function(req, res) {
+  app.post('/api/lander', passport.isAuthenticated(), function(req, res) {
     var lander_name = req.body.lander_name;
     var zip_full_path = req.files.myFile.path;
     var zip_name = req.files.myFile.originalname;
@@ -35,7 +35,7 @@ module.exports = function(app, db, passport) {
 
   });
 
-  app.get('/api/landers', function(req, res) {
+  app.get('/api/landers', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
     db.landers.getAll(user, function(rows) {
       res.json(rows);
@@ -45,7 +45,7 @@ module.exports = function(app, db, passport) {
 
   //called when adding a DUPLICATE lander! not a new lander. this is because adding a new lander
   //takes a JOB worth of work where as this is just copying db fields
-  app.post('/api/landers', function(req, res) {
+  app.post('/api/landers', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
     var duplicateLanderData = req.body;
     db.landers.addNewDuplicateLander(user, duplicateLanderData, function(duplicateLanderWithIdAttributes){
@@ -56,15 +56,15 @@ module.exports = function(app, db, passport) {
 
   });
 
-  app.get('/api/lander', function(req, res) {
+  app.get('/api/lander', passport.isAuthenticated(), function(req, res) {
 
   });
 
-  app.put('/api/lander', function(req, res) {
+  app.put('/api/lander', passport.isAuthenticated(), function(req, res) {
 
   });
 
-  app.delete('/api/landers/:id', function(req, res) {
+  app.delete('/api/landers/:id', passport.isAuthenticated(), function(req, res) {
     res.json({})
   });
 

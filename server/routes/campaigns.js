@@ -1,11 +1,11 @@
-module.exports = function(app, db, passport) {
+module.exports = function(app, passport) {
   var module = {};
 
   var db = require("../db_api");
 
 
 ////ACTIVE CAMPS BELONGING TO A LANDER!
-  app.post('/api/active_campaigns', function(req, res) {
+  app.post('/api/active_campaigns', passport.isAuthenticated(), function(req, res) {
     // campaign_id: "2"
     // lander_id: 1
     // name: "camp1"
@@ -21,7 +21,7 @@ module.exports = function(app, db, passport) {
 
   });
 
-  app.delete('/api/active_campaigns/:id', function(req, res) {
+  app.delete('/api/active_campaigns/:id', passport.isAuthenticated(), function(req, res) {
     
     //remove this by id from the landers with campaigns table
 
@@ -38,22 +38,22 @@ module.exports = function(app, db, passport) {
 
 
 ////CAMPAIGNS
-  app.get('/api/campaigns', function(req, res) {
+  app.get('/api/campaigns', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
     db.campaigns.getAll(user, function(rows) {
       res.json(rows);
     });
   });
 
-  app.post('/api/campaigns', function(req, res) {
+  app.post('/api/campaigns', passport.isAuthenticated(), function(req, res) {
 
   });
 
-  app.put('/api/campaigns', function(req, res) {
+  app.put('/api/campaigns', passport.isAuthenticated(), function(req, res) {
 
   });
 
-  app.delete('/api/campaigns', function(req, res) {
+  app.delete('/api/campaigns', passport.isAuthenticated(), function(req, res) {
 
   });
 

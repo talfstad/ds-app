@@ -1,4 +1,4 @@
-module.exports = function(app, db, passport) {
+module.exports = function(app, passport) {
   var module = {};
 
   var db = require("../db_api");
@@ -10,7 +10,7 @@ module.exports = function(app, db, passport) {
 
 
   //update aws access keys for user
-  app.post('/api/updateAccessKeys', function(req, res) {
+  app.post('/api/updateAccessKeys', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
     var user_id = user.id;
 
@@ -23,7 +23,7 @@ module.exports = function(app, db, passport) {
     });
   });
 
-  app.get('/api/updateAccessKeys', function(req, res){
+  app.get('/api/updateAccessKeys', passport.isAuthenticated(), function(req, res){
 
     var user = req.user;
 

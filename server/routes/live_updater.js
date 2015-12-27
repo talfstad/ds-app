@@ -1,4 +1,4 @@
-module.exports = function(app, db, passport) {
+module.exports = function(app, passport) {
   var module = {};
 
   var config = require("../config");
@@ -6,7 +6,7 @@ module.exports = function(app, db, passport) {
   var utils = require('../utils/utils.js')();
   var db = require("../db_api");
 
-  app.post('/api/updater', function(req, res) {
+  app.post('/api/updater', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
 
     var modelsAttributes = req.body;

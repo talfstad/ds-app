@@ -90,6 +90,14 @@ exports.authenticate = function() {
 
 }
 
-exports.ensureLoggedIn = function() {
-  return ensure.ensureLoggedIn();
+exports.isAuthenticated = function() {
+  return function(req, res, next) {
+    if (req.isAuthenticated()) {
+      next();
+    } else {
+      res.redirect('/login');
+    }
+  }
 }
+
+return module;

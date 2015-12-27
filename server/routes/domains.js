@@ -1,10 +1,10 @@
-module.exports = function(app, db, passport) {
+module.exports = function(app, passport) {
     var module = {};
     
     var db = require("../db_api");
 
 
-    app.get('/api/domains', function(req,res){
+    app.get('/api/domains', passport.isAuthenticated(), function(req,res){
       var user = req.user;
       db.domains.getAll(user, function(rows) {
         res.json(rows);
@@ -12,11 +12,11 @@ module.exports = function(app, db, passport) {
     });
 
 
-    app.post('/api/domains', function(req, res) {
+    app.post('/api/domains', passport.isAuthenticated(), function(req, res) {
       //call insertDomain on db_api
     });
 
-    app.put('/api/domains/:domain_id', function(req, res) {
+    app.put('/api/domains/:domain_id', passport.isAuthenticated(), function(req, res) {
       var user = req.user;
       
       var modelAtributes = req.body;
@@ -27,7 +27,7 @@ module.exports = function(app, db, passport) {
 
     });
 
-    app.delete('/api/domains', function(req, res) {
+    app.delete('/api/domains', passport.isAuthenticated(), function(req, res) {
      
     });
 
