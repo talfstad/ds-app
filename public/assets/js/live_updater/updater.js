@@ -1,5 +1,5 @@
-define(["app"], function(Moonlander){
-  
+define(["app"], function(Moonlander) {
+
   Moonlander.updater = {
 
     updateCollection: null,
@@ -17,7 +17,7 @@ define(["app"], function(Moonlander){
       //collection wrapper to save collection at once
       var UpdateCollectionBulkSaveModelWrapper = Backbone.Model.extend({
         urlRoot: '/api/updater',
-        toJSON: function(){
+        toJSON: function() {
           return me.updateCollection.toJSON();
         }
       });
@@ -28,16 +28,13 @@ define(["app"], function(Moonlander){
 
       //callbacks
       var removeIfFinishedProcessing = function(model, modelData, other) {
-        if(me.updateCollection.length <= 0) return;
+        if (me.updateCollection.length <= 0) return;
 
-        $.each(modelData, function(idx, modelAttributes){
-          if(!modelAttributes.processing){
+        $.each(modelData, function(idx, modelAttributes) {
+          if (!modelAttributes.processing) {
             //done, update original model
             var actualJobModel = me.updateCollection.get(modelAttributes.id);
             actualJobModel.trigger("finishedState", actualJobModel);
-            //hack to get it to not send DELETE XHR
-            delete actualJobModel.attributes.id;
-            actualJobModel.destroy();
           }
         });
       };
@@ -45,35 +42,63 @@ define(["app"], function(Moonlander){
       var intervalLength = 10000;
 
       this.poll = function() {
-        setTimeout(function(){
-      
+        setTimeout(function() {
+
           updateCollectionBulkSaveModelWrapper.save({}, {
             success: function(model, modelData, other) {
               removeIfFinishedProcessing(model, modelData, other);
-              if(me.updateCollection.length >= 1) {
-                  me.poll();
+              if (me.updateCollection.length >= 1) {
+                me.poll();
               } else {
                 me.pollNotStarted = true;
               }
             }
-          });        
+          });
         }, intervalLength);
       };
     },
 
     //adds a model to the updater
     add: function(model) {
-      this.updateCollection.add(model);
-      model.trigger("startState");
-      //start polling if first one.
-      //function is self perpetuating so no need to call it for more than 1 model
-      if(this.pollNotStarted) {
-        this.pollNotStarted = false;
-        this.poll();
+
+      var hasConflict = false;
+
+      this.updateCollection.each(function(job) {
+        if (model.get("action") == "undeployLanderFromDomain") {
+          //add only if no job with domain & lander ids already active
+          if (job.get("action") == "deployLanderToDomain" &&
+            job.get("domain_id") == model.get("domain_id") &&
+            job.get("lander_id") == model.get("lander_id")) {
+            hasConflict = true;
+          }
+        } else if (model.get("action") == "deployLanderToDomain") {
+          //add only if no job with domain & lander ids already active
+          if (job.get("action") == "undeployLanderFromDomain" &&
+            job.get("domain_id") == model.get("domain_id") &&
+            job.get("lander_id") == model.get("lander_id")) {
+            hasConflict = true;
+          }
+        }
+      });
+
+      if (!hasConflict) {
+        
+        this.updateCollection.add(model);
+        model.trigger("startState");
+
+        //start polling if first one.
+        //function is self perpetuating so no need to call it for more than 1 model
+        if (this.pollNotStarted) {
+          this.pollNotStarted = false;
+          this.poll();
+        }
+
       }
+
+
     },
 
-    remove: function(model){
+    remove: function(model) {
       this.updateCollection.remove(model);
     }
 
@@ -82,4 +107,3 @@ define(["app"], function(Moonlander){
 
   return Moonlander.updater;
 });
-

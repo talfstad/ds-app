@@ -18,11 +18,10 @@ module.exports = function(app, passport) {
       }
       //send response
       res.json(registeredJobAttributes);
-      //start job
+
       WorkerController.startJob(registeredJobAttributes.action, user, registeredJobAttributes);
     };
     var registerError = function() {};
-
 
     //special logic for add lander
     if (jobModelAttributes.action === "addNewLander") {

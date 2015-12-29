@@ -36,7 +36,7 @@ define(["app",
 
               var urlEndpointCollection = landerModel.get("urlEndpoints");
               urlEndpointCollection.each(function(endpoint) {
-                
+
                 var activeSnippetsCollection = endpoint.get("activeSnippets");
                 activeSnippetsCollection.each(function(snippet) {
                   if (snippet.get("snippet_id") == savedModel.get("snippet_id")) {
@@ -262,23 +262,40 @@ define(["app",
           //create job and add to models activeJobs
           var jobModel = new JobModel(jobAttributes);
 
-          //can pass lander optional
           var landerModel = modelAttributes.lander_model;
           if (!landerModel) {
             landerModel = this.filteredLanderCollection.get(modelAttributes.lander_id);
           }
           if (!landerModel) return false;
 
-          //create the deployed location model
-          var domainModel = new DeployedLocationModel(modelAttributes);
-
-          var activeJobs = domainModel.get("activeJobs");
-
-          activeJobs.add(jobModel);
-          Moonlander.trigger("job:start", jobModel);
+          //check if this domain_id is already there, if it is instead of adding a new domain_model
+          //just add this job to it
 
           var deployedLocations = landerModel.get("deployedLocations");
-          deployedLocations.add(domainModel);
+
+          //search deployedlocations for the domain_id if found use that
+          var existingDeployedLocationModel = null;
+          deployedLocations.each(function(location) {
+            if (location.get("id") == modelAttributes.id) {
+              existingDeployedLocationModel = location;
+            }
+          });
+
+          if (existingDeployedLocationModel) {
+            var activeJobs = existingDeployedLocationModel.get("activeJobs");
+            activeJobs.add(jobModel);
+          } else {
+
+            //create the deployed location model
+            var domainModel = new DeployedLocationModel(modelAttributes);
+            var activeJobs = domainModel.get("activeJobs");
+            activeJobs.add(jobModel);
+            deployedLocations.add(domainModel);
+          }
+
+          Moonlander.trigger("job:start", jobModel);
+
+
 
         },
 

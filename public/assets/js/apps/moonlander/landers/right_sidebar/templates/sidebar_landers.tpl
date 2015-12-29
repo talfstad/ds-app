@@ -2,7 +2,7 @@
 <div class="sidebar-right-content nano-content p10">
   <div class="panel">
     <div class="panel-heading">
-      <span class="panel-title">Preview, Edit &amp; Optimize</span>
+      <span class="panel-title">Lander Edit &amp; Optimization</span>
       <span class="close-right-sidebar panel-controls"><a href="#" class="panel-control-loader"></a><a href="#" class="panel-control-remove"></a></span>
     </div>
     <div class="panel-menu">
@@ -14,7 +14,7 @@
     </div>
     <div class="panel-menu">
       <div class="btn-group">
-        <div class="select-with-button" style="width: 179px">
+        <div class="select-with-button" style="width: 165px">
           <select class="test-link-endpoints-select select2-single form-control">
             <% _.each(urlEndpointsJSON, function(endpoint){ %>
               <option value="">
@@ -24,7 +24,7 @@
           </select>
         </div>
         <button type="button" style="border-left:none; height: 39px" class="open-test-link pl10 pt5 pb5 btn btn-default btn-gradient dark">
-          <span class="text-info fa fa-link pr5"></span>Open
+          <span class="text-info fa fa-link pr5"></span>Preview
         </button>
       </div>
     </div>

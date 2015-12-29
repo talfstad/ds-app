@@ -21,6 +21,8 @@ module.exports = function(db) {
                 console.log(err);
                 errorCallback("Error registering new job in DB call");
               } else {
+                // console.log(JSON.stringify("TREVYAAA: " + docs[1][0]["created_on"]));
+                modelAttributes.created_on = docs[1][0]["created_on"];
                 modelAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
                 successCallback(modelAttributes);
               }
@@ -119,3 +121,22 @@ module.exports = function(db) {
   }
 
 };
+
+
+// [
+//   [{
+//     "LAST_INSERT_ID()": 6
+//   }],
+//   [{
+//     "created_on": "2015-12-30T02:11:19.000Z"
+//   }], {
+//     "fieldCount": 0,
+//     "affectedRows": 0,
+//     "insertId": 0,
+//     "serverStatus": 2,
+//     "warningCount": 0,
+//     "message": "",
+//     "protocol41": true,
+//     "changedRows": 0
+//   }
+// ]

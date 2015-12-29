@@ -7,7 +7,7 @@
 
         
 
-    	<div class="domains-list-region modal-body">
+    	<div class="domains-list-region">
 
                 
 

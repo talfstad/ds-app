@@ -108,7 +108,7 @@ define(["app",
               newSnippetDetailView.on("addSnippetToUrlEndpoint", function(attr) {
                 var snippetModel = attr.model;
                 var urlEndpointId = attr.urlEndpointId;
-                
+
                 //1. show that we are addingToPage, set addingToPage=true causes render
                 snippetModel.set("addingToPage", true);
 
@@ -165,6 +165,15 @@ define(["app",
 
                   }
                 })
+              });
+
+              newSnippetDetailView.on("deleteSnippet", function(){
+                var snippetModel = this.model;
+
+                //set delete snippet = true to trigger a show of the initial alert
+                snippetModel.set("deletingSnippet", true);
+
+
               });
 
 
@@ -235,7 +244,7 @@ define(["app",
           });
         },
 
-        showEditJsSnippetsModal: function(landerModel, snippet_id) {
+        showEditJsSnippetsModal: function(landerModel, snippet_id, showDescription) {
           var deferInitJsSnippetsModal = this.initAndShowSnippetsModal(landerModel);
 
           $.when(deferInitJsSnippetsModal).done(function(attr) {
@@ -246,7 +255,12 @@ define(["app",
             //show initial snippets detail view/info/tutorial
             var modelToEdit = filteredSnippetCollection.get(snippet_id);
             modelToEdit.set("active", true);
-            modelToEdit.set("editing", true);
+            if (showDescription) {
+              modelToEdit.set("editing", false);
+            } else {
+              modelToEdit.set("editing", true);
+            }
+
             leftNavSnippetsView.trigger("childview:showSnippet", modelToEdit);
 
           });

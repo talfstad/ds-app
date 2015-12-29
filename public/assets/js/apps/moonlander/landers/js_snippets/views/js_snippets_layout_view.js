@@ -46,6 +46,14 @@ define(["app",
             var modalHeight = $(window).height() * 0.7;
             var modalWidth = $(window).width() * 0.8;
 
+            //min widths
+            var minWidth = 1000;
+            var minHeight = 500;
+            
+            modalHeight < minHeight ? modalHeight = minHeight : null;
+            modalWidth <= minWidth ? modalWidth = minWidth : null;
+
+
             me.$el.find('.modal-dialog').css('height', modalHeight);
             me.$el.find('.modal-dialog').css('width', modalWidth);
 

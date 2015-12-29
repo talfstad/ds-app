@@ -32,7 +32,8 @@ define(["app",
           "change:changed": "showAlerts",
           "change:addingToPage": "showAlerts",
           "change:savingEditInfo": "showAlerts",
-          "change:savingCode": "showAlerts"
+          "change:savingCode": "showAlerts",
+          "change:deletingSnippet": "showAlerts"
         },
 
         events: {
@@ -43,7 +44,16 @@ define(["app",
           "click .save-edit-info-button": "saveEditSnippetInfo",
           "click .add-to-lander": "addSnippetToUrlEndpoint",
           "click .reset-to-original-code-button": "resetToOriginalCode",
-          "click .save-snippet-code-button": "saveSnippetCode"
+          "click .save-snippet-code-button": "saveSnippetCode",
+          "click .delete-snippet": "deleteSnippetPrompt"
+        },
+
+        deleteSnippetPrompt: function(e) {
+          this.model.set("deletingSnippet", "prompt");
+        },
+
+        deleteSnippet: function(e) {
+          this.trigger("deleteSnippet");
         },
 
         saveSnippetCode: function(e) {
@@ -163,6 +173,7 @@ define(["app",
           jsAlertEl.removeClass("alert-info");
           jsAlertEl.removeClass("alert-warning");
           jsAlertEl.removeClass("alert-success");
+          jsAlertEl.removeClass("alert-danger");
           //add classname
           jsAlertEl.addClass(className);
         },
@@ -175,8 +186,21 @@ define(["app",
           var savingEditInfo = this.model.get("savingEditInfo");
           var savingCode = this.model.get("savingCode");
           var codeChanged = this.model.get("changed");
+          var deletingSnippet = this.model.get("deletingSnippet");
 
-          if (savingCode == true) {
+          if (deletingSnippet == "prompt") {
+            showAlert = true;
+            me.setAlertType("alert-warning");
+            msg = "<span style='padding-left: 20px'>Are you sure you want to delete this snippet? <span style='font-weight: 600'>Note:</span> All landers with this snippet will automatically re-deploy.</span>"
+                + "<div class='btn-group' style='position: relative; margin-top: -11px; float: right'><button type='button' class='pl10 pt5 pb5 btn btn-default btn-gradient dark'>"
+                + "<span class='fa fa-check pr5'></span>Confirm</button><button type='button' class='pl10 pt5 pb5 btn btn-default btn-gradient dark'>"
+                + "<span class='fa fa-close pr5'></span>Cancel</button></div>";
+
+          } else if (deletingSnippet == true) {
+
+          } else if (deletingSnippet == "finishing") {
+
+          } else if (savingCode == true) {
             showAlert = true;
             me.setAlertType("alert-info");
             msg = "<span style='position: absolute; top: 12px' class='glyphicon mr5 glyphicon-refresh glyphicon-refresh-animate'></span><span style='padding-left: 20px'> Saving Snippet Code</span>"
@@ -236,8 +260,14 @@ define(["app",
               }, 10);
             }
 
-            me.model.set("snippetAlertMsg", msg)
-            jsAlertEl.html(msg)
+            me.model.set("snippetAlertMsg", msg);
+            jsAlertEl.html(msg);
+
+            //if prompt add listeners for button
+            if (deletingSnippet == "prompt") {
+
+            }
+            //
             jsAlertEl.fadeIn();
           } else {
             jsAlertEl.fadeOut("fast", function() {

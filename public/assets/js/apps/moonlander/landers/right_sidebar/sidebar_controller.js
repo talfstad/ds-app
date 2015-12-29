@@ -44,10 +44,11 @@ define(["app",
             collection: urlEndpointsCollection.filterWithActiveSnippets()
           });
 
-          activeSnippetsView.on("childview:childview:editJsSnippetsModal", function(childView, childChildView, snippet_id) {
+          activeSnippetsView.on("childview:childview:editJsSnippetsModal", function(childView, childChildView, snippet_id, showDescription) {
             Moonlander.trigger("landers:showEditJsSnippetsModal", {
               "landerModel": model,
-              "snippet_id": snippet_id
+              "snippet_id": snippet_id, 
+              "showDescription": showDescription
             });
           });
 

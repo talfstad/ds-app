@@ -31,11 +31,9 @@ define(["app",
                 //adding new lander so we're still initializing...
                 me.set("deploy_status", "initializing");
 
-              }
-              else if(jobModel.get("action") === "ripNewLander"){
+              } else if (jobModel.get("action") === "ripNewLander") {
                 me.set("deploy_status", "initializing");
-              } 
-              else if (jobModel.get("action") === "deleteLander") {
+              } else if (jobModel.get("action") === "deleteLander") {
                 me.set("deploy_status", "deleting");
               }
             })
@@ -46,7 +44,7 @@ define(["app",
         activeJobsCollection.on("finishedState", function(jobModel) {
 
           if (jobModel.get("action") === "addNewLander" ||
-              jobModel.get("action") === "ripNewLander") {
+            jobModel.get("action") === "ripNewLander") {
 
             //update lander status to not deployed
             me.set("deploy_status", "not_deployed");
@@ -57,6 +55,12 @@ define(["app",
             me.destroy();
             Moonlander.trigger("landers:updateTopbarTotals");
           }
+
+          delete jobModel.attributes.id;
+          jobModel.destroy();
+
+          //trigger to start the next job on the list
+          Moonlander.trigger("job:startNext", activeJobsCollection);
 
         });
 
@@ -95,11 +99,20 @@ define(["app",
           $.each(campaignModel.get("currentDomains"), function(idx, currentDomain) {
 
             var isDeployed = false;
-
+            var isUndeploying = false;
+            var isDeploying = false;
             deployedDomainsCollection.each(function(deployLocationModel) {
 
               if (currentDomain.domain_id == deployLocationModel.id) {
                 isDeployed = true;
+
+                deployLocationModel.get("activeJobs").each(function(job) {
+                  if (job.get("action") == "undeployLanderFromDomain") {
+                    isUndeploying = true;
+                  } else if (job.get("action") == "deployLanderToDomain") {
+                    isDeploying = true;
+                  }
+                });
 
                 //add this campaign info to the deployed location so we can see that it belongs to
                 //this campaign in the deployed tab
@@ -109,7 +122,7 @@ define(["app",
             });
 
             //if currentDomain is deployed do nothing, if not trigger a deploy on it
-            if (!isDeployed) {
+            if (!isDeployed || isUndeploying || isDeploying) {
               //trigger deploy
               var attr = {
                 lander_id: me.get("id"),
@@ -150,7 +163,7 @@ define(["app",
             });
 
             //catch if there are no models, set to not_deployed
-            if(deployedDomainsCollection.length <= 0){
+            if (deployedDomainsCollection.length <= 0) {
               deployStatus = "not_deployed"
             }
 
@@ -192,11 +205,9 @@ define(["app",
           activeJobsCollection.each(function(job) {
             if (job.get("action") === "deletingLander") {
               deployStatus = "deleting";
-            } 
-            else if (job.get("action") === "addNewLander") {
+            } else if (job.get("action") === "addNewLander") {
               deployStatus = "initializing";
-            }
-            else if (job.get("action") === "ripNewLander") {
+            } else if (job.get("action") === "ripNewLander") {
               deployStatus = "initializing";
             }
           });

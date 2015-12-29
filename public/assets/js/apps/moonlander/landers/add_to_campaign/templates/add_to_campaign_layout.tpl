@@ -7,7 +7,7 @@
 
         
 
-    	<div class="campaigns-list-region modal-body">
+    	<div class="campaigns-list-region">
 
                 
 

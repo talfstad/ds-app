@@ -9,8 +9,10 @@ module.exports = function(app, db) {
 
     console.log("now working delete lander job");
 
+    // 1. undeploy from all domains
+    // 2. delete from s3 preview bucket
+    // 3. remove lander from DB, cascade all related to delete as well
 
-    /* 1. remove lander from DB, cascade all related to delete as well */
     var user_id = user.id;
     var lander_id = attr.lander_id;
 

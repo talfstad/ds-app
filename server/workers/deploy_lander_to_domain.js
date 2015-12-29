@@ -4,7 +4,9 @@ module.exports = function(app, db) {
 
   var config = require("../config");
 
-  module.deployLanderToDomain = function(user, attr) {
+  //must call statNextJobCallback when success/fail happens
+  //this triggers the next job to fire
+  module.deployLanderToDomain = function(user, attr, startNextJobCallback) {
     //add to deployed_landers table
     console.log(JSON.stringify(attr));
     var user_id = user.id;
@@ -12,15 +14,18 @@ module.exports = function(app, db) {
     var domain_id = attr.domain_id;
 
     //1. add to deployed_landers
-    db.landers.deployLanderToDomain(user, lander_id, domain_id, function(){
+    db.landers.deployLanderToDomain(user, lander_id, domain_id, function() {
 
-      //2. 
-      console.log("successfully added to deployed landers");
+      var finishedJobs = [attr.id];
 
-      var jobs = [attr.id];
-      db.jobs.finishedJobSuccessfully(user, jobs, function(){
+      //updates db which the updater pulls from to update the GUI
+      //to the next job
+      db.jobs.finishedJobSuccessfully(user, finishedJobs, function() {
         console.log("updated job to finished")
-      }); 
+
+        startNextJobCallback("deployLanderToDomain", user, attr);
+
+      });
 
     });
 

@@ -9,7 +9,7 @@
                 </a> -->
       <div class="btn-group">
         <% if(!editing) { %>
-          <button type="button" class="edit-snippet-button ml10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
+          <button type="button" style="width: 80px" class="edit-snippet-button ml10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
             <span class="fa fa-file-code-o pr5"></span>Edit
           </button>
           <% } else { %>
@@ -20,7 +20,7 @@
               <button type="button" style="width: 80px" class="<% if(!changed) { %>disabled <% } %> save-snippet-code-button pl10 pt5 pb5 btn btn-default btn-gradient dark">
                 <span class="fa fa-save pr5"></span>Save
               </button>
-              <button type="button" style="width: 80px" class="pl10 pt5 mr10 pb5 btn btn-default btn-gradient dark">
+              <button type="button" style="width: 80px" class="delete-snippet pl10 pt5 mr10 pb5 btn btn-default btn-gradient dark">
                 <span class="fa fa-trash-o pr5"></span>Delete
               </button>
       </div>
@@ -94,8 +94,8 @@
               </div>
             </form>
             <div class="btn-group ml10">
-              <button type="button" class="mt10 save-edit-info-button btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Save</button>
-              <button type="button" class="mt10 cancel-edit-info-button btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Cancel</button>
+              <button type="button" style="width: 85px" class="mt10 save-edit-info-button btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Save</button>
+              <button type="button" style="width: 85px" class="mt10 cancel-edit-info-button btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Cancel</button>
             </div>
           </div>
           <% } %>

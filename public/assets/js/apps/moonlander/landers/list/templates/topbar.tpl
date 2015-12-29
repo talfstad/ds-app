@@ -75,7 +75,7 @@
       <span class="badge-success badge">45</span> Deployed
     </div> -->
     <div>
-      <span class="badge-success badge"><%= total_landers %></span> Total <%= totalLander %>
+      <span class="badge-light badge"><%= total_landers %></span> Total <%= totalLander %>
     </div>
   </div>
 </div>

@@ -10,11 +10,19 @@ function(Moonlander, JobsController, CommonLogin){
         CommonLogin.Check(function(){
           JobsController.startJob(jobModel);
         });
+      },
+      startNextJob: function(jobCollection){
+        CommonLogin.Check(function(){
+          JobsController.startNextJob(jobCollection);
+        });
       }
     };
 
     Moonlander.on("job:start", function(jobModel){
       jobsAppAPI.startJob(jobModel);
+    });
+    Moonlander.on("job:startNext", function(jobCollection){
+      jobsAppAPI.startNextJob(jobCollection);
     });
   });
 
