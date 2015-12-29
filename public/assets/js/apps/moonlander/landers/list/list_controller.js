@@ -141,7 +141,7 @@ define(["app",
 
                   var activeCampaignsView = new ActiveCampaignsView({
                     collection: activeCampaignsCollection
-                  })
+                  });
 
                   activeCampaignsView.on("childview:updateParentLayout", function(childView, options) {
                     //update the campaign count for lander

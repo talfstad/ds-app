@@ -22,21 +22,29 @@ define(["app",
             //1. if we have a deploy to do
             var moreJobsToDo = false;
             activeJobsCollection.each(function(job) {
-              if(job.get("action") == "deployLanderToDomain") {
+              if (job.get("action") == "deployLanderToDomain") {
                 moreJobsToDo = true;
               }
             });
             if (!moreJobsToDo) {
               me.trigger('destroy', me, me.collection);
             }
+            
+            //hack to get it to not send DELETE XHR
+            delete jobModel.attributes.id;
+            jobModel.destroy();
+
           } else if (jobModel.get("action") === "deployLanderToDomain") {
+
             //finished with this job so destroy the jobModel
+            //hack to get it to not send DELETE XHR
+            delete jobModel.attributes.id;
+            jobModel.destroy();
+
             me.set("deploy_status", "deployed");
           }
 
-          //hack to get it to not send DELETE XHR
-          delete jobModel.attributes.id;
-          jobModel.destroy();
+
 
           //trigger to start the next job on the list
           Moonlander.trigger("job:startNext", activeJobsCollection);
