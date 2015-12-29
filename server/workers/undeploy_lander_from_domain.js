@@ -22,9 +22,11 @@ module.exports = function(app, db) {
         console.log("updated job to finished");
 
         startNextJobCallback("deployLanderToDomain", user, attr);
+
       });
 
     });
+
 
 
 

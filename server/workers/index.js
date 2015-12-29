@@ -1,4 +1,8 @@
 module.exports = function(app, db) {
+
+  var moment = require("moment");
+
+
   var module = {};
 
   module.undeployLanderFromDomain = require('./undeploy_lander_from_domain')(app, db);
@@ -34,8 +38,41 @@ module.exports = function(app, db) {
     //start job
     console.log("\nACTION: " + action);
     try {
-      //startNextJob is the callback the job should fire when finished
-      module[action](user, attr, module.startNextJob);
+
+      //get all jobs for user with lander_id and domain_id
+      db.jobs.getAllProcessingForLanderDomain(user, attr, function(jobs) {
+
+        var startJob = true;
+
+        if (action == "deployLanderToDomain") {
+          console.log("jobs: " + JSON.stringify(jobs))
+
+          for (var i = 0; i < jobs.length; i++) {
+            console.log("jobs: " + jobs[i].action)
+            if (jobs[i].action == "undeployLanderFromDomain") {
+              startJob = false;
+            }
+          }
+        }
+
+        if (action == "undeployLanderFromDomain") {
+          for (var i = 0; i < jobs.length; i++) {
+            console.log("jobs: " + jobs[i].action)
+            if (jobs[i].action == "deployLanderToDomain") {
+              startJob = false;
+            }
+          }
+        }
+
+        if (startJob) {
+          //startNextJob is the callback the job should fire when finished
+          module[action](user, attr, module.startNextJob);
+        } else {
+          console.log("NOT STARTING JOB HERE. will start when blocking job finishes")
+        }
+
+      });
+
     } catch (e) {
       console.log("job worker method does not exist!!!! must implement it.")
     }
@@ -52,16 +89,36 @@ module.exports = function(app, db) {
   // 2. deploy to domain
   //    a. if job params is deploy, look for an undeploy job on same lander, user, domain
   module.startNextJob = function(finishedJobAction, user, attr) {
-    console.log("ok ok: here in startnextjob")
-    if (finishedJobAction == "deployLanderToDomain") {
+    console.log("Looking for next job to start");
+
+    db.jobs.getAllProcessingForLanderDomain(user, attr, function(jobs) {
+
+      //get the next chronological job and start it
+      var earliestJob;
+      if (jobs) {
+        earliestJob = jobs[0];
+
+        for (var i = 0; i < jobs.length; i++) {
+
+          var earliestJobMillis = moment(earliestJob).unix();
+          var jobMillis = moment(jobs[i]).unix();
+
+          if (earliestJobMillis - jobMillis > 0) {
+            earliestJob = job[i];
+          }
+
+        }
+
+        if (earliestJob) {
+          module.startJob(earliestJob.action, user, earliestJob);
+        }
+      }
+
+
+    });
 
 
 
-    } else if (finishedJobAction == "undeployLanderFromDomain") {
-
-
-
-    }
   };
 
   return module;

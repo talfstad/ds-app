@@ -4,6 +4,35 @@ module.exports = function(db) {
 
   return {
 
+    //returns all jobs currently processing for user with specific domain and lander ids
+    getAllProcessingForLanderDomain: function(user, attr, successCallback) {
+      var user_id = user.id;
+      var lander_id = attr.lander_id;
+      var domain_id = attr.domain_id;
+
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+          
+          connection.query("SELECT * FROM jobs WHERE user_id = ? AND domain_id = ? AND lander_id = ? AND processing = ?", [user_id, domain_id, lander_id, true],
+
+            function(err, docs) {
+              if (err) {
+                console.log(err);
+              } else {
+                
+                successCallback(docs);
+              
+              }
+              connection.release();
+            });
+        }
+      });
+
+    },
+
     registerJob: function(user, modelAttributes, successCallback, errorCallback) {
       var user_id = user.id;
 
@@ -21,7 +50,6 @@ module.exports = function(db) {
                 console.log(err);
                 errorCallback("Error registering new job in DB call");
               } else {
-                // console.log(JSON.stringify("TREVYAAA: " + docs[1][0]["created_on"]));
                 modelAttributes.created_on = docs[1][0]["created_on"];
                 modelAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
                 successCallback(modelAttributes);
