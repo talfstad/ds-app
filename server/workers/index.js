@@ -60,6 +60,15 @@ module.exports = function(app, db) {
           }
         }
 
+        //if deploying wait for the deploy job to finish, it will trigger the delete after!
+        if(action == "deleteLander"){
+          for (var i = 0; i < jobs.length; i++) {
+            if (jobs[i].action == "deployLanderToDomain") {
+              startJob = false;
+            }
+          }
+        }
+
         if (startJob) {
           //startNextJob is the callback the job should fire when finished
           module[action](user, attr, module.startNextJob);
