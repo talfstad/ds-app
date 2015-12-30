@@ -28,11 +28,49 @@ define(["app",
 
         filteredLanderCollection: null,
 
+        removeSnippetFromAllLanders: function(attr) {
+          var snippetToRemoveFromLanders = attr.snippet;
+          var onSuccessCallback = attr.onSuccess;
+
+          //loop original lander collection to remove active snippet from all url endpoints
+          this.filteredLanderCollection.original.each(function(landerModel) {
+
+            //create a full list of snippets to remove
+            var urlEndpointsCollection = landerModel.get("urlEndpoints");
+            var activeSnippetsToRemove = [];
+            urlEndpointsCollection.each(function(endpoint) {
+              var activeSnippets = endpoint.get("activeSnippets");
+              activeSnippets.each(function(activeSnippet) {
+                if (activeSnippet.get("snippet_id") == snippetToRemoveFromLanders.get("snippet_id")) {
+                  activeSnippetsToRemove.push(activeSnippet);
+                }
+              });
+            });
+
+            //now we have a FULL list that we need to remove
+            var activeSnippetsCounter = 0;
+            $.each(activeSnippetsToRemove, function(idx, snippetToRemove) {
+              snippetToRemove.destroy({
+                success: function() {
+                  activeSnippetsCounter++;
+                  if (activeSnippetsCounter == activeSnippetsToRemove.length) {
+                    //trigger a redeploy for this lander! all snippets have been removed
+                    alert("ok")
+
+                  }
+
+                }
+              });
+            });
+
+          });
+        },
+
         updateAllActiveSnippetNames: function(savedModel) {
 
           if (this.filteredLanderCollection) {
 
-            this.filteredLanderCollection.each(function(landerModel) {
+            this.filteredLanderCollection.original.each(function(landerModel) {
 
               var urlEndpointCollection = landerModel.get("urlEndpoints");
               urlEndpointCollection.each(function(endpoint) {

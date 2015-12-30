@@ -179,23 +179,31 @@ define(["app",
                 //starting delete snippet
                 snippetModel.set("deletingSnippet", true);
 
-                //destroying model removes it from the collection
-                snippetModel.destroy({
-                  success: function() {
-                    jsSnippetTotalsView.trigger("updateSnippetTotals");
+                //trigger delete of snippet from all landers! on success run callback
+                Moonlander.trigger("landers:removeSnippetFromAllLanders", {
+                  snippet: snippetModel,
+                  onSuccess: function() {
 
-                    //once removed, show the first model if we have one, or the default view
-                    var firstModel = filteredSnippetCollection.models[0];
-                    if (!firstModel) {
-                      me.showEmptySnippetsDetailView();
-                    } else {
-                      //set alert delete to finished on this model so
-                      //when we show the new model it shows delete successful message
-                      firstModel.set("deletingSnippet", "finished");
+                    //destroying model removes it from the collection
+                    snippetModel.destroy({
+                      success: function() {
+                        jsSnippetTotalsView.trigger("updateSnippetTotals");
 
-                      leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
-                    }
+                        //once removed, show the first model if we have one, or the default view
+                        var firstModel = filteredSnippetCollection.models[0];
+                        if (!firstModel) {
+                          me.showEmptySnippetsDetailView();
+                        } else {
+                          //set alert delete to finished on this model so
+                          //when we show the new model it shows delete successful message
+                          firstModel.set("deletingSnippet", "finished");
+
+                          leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
+                        }
+                      }
+                    });
                   }
+
                 });
 
               });

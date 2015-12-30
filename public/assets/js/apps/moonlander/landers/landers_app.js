@@ -30,6 +30,9 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
       addNewDuplicatedLander: function(model){
         ListController.addNewDuplicatedLander(model);
       },
+      removeSnippetFromAllLanders: function(attr){
+        ListController.removeSnippetFromAllLanders(attr);
+      },
       showAndReFilterActiveSnippetsView: function(model){
         SidemenuController.showAndReFilterActiveSnippetsView(model);
       },
@@ -182,6 +185,10 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
 
     Moonlander.on("landers:updateTopbarTotals", function(landerModel){
       landersAppAPI.updateTopbarTotals();
+    });
+
+    Moonlander.on("landers:removeSnippetFromAllLanders", function(attr){
+      landersAppAPI.removeSnippetFromAllLanders(attr);
     });
 
     Moonlander.on("landers:showEditJsSnippetsModal", function(attr){
