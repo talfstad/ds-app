@@ -20281,25 +20281,25 @@ Media Queries. Theme Javscript will also add a a
 manipulation using an html class aswell */
 @media (max-width: 1100px) {
   /* Sidebar Left Open/Default */
-  #content_wrapper,
+  /*#content_wrapper,
   .sb-l-o #content_wrapper {
     margin-left: 0;
     left: 250px;
-  }
+  }*/
   /* Sidebar Left Minified */
-  .sb-l-m #content_wrapper {
+  /*.sb-l-m #content_wrapper {
     left: 0;
-  }
+  }*/
   /* Sidebar Left Closed */
-  .sb-l-c #content_wrapper {
+  /*.sb-l-c #content_wrapper {
     margin-left: 0;
     left: 0;
-  }
+  }*/
   /* Sidebar Right Open */
-  .sb-r-o #content_wrapper {
+  /*.sb-r-o #content_wrapper {
     margin-right: 0;
     left: -300px;
-  }
+  }*/
 }
 /* ==============================================
    Topbar
