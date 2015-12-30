@@ -7,22 +7,28 @@ define(["app",
     "/assets/js/common/filtered_paginated/filtered_paginated_collection.js",
     "/assets/js/apps/moonlander/landers/js_snippets/views/js_snippets_totals_view.js",
     "/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/dao/active_js_snippet_model.js",
+    "/assets/js/apps/moonlander/landers/js_snippets/views/empty_snippets_detail_view.js",
     "/assets/js/apps/moonlander/landers/dao/js_snippet_collection.js"
   ],
   function(Moonlander, JsSnippetsLayoutView, LoadingView,
     LeftNavSnippetsView, SnippetModel, JsSnippetDetailView, FilteredPaginatedCollection,
-    JsSnippetTotalsView, ActiveSnippetModel) {
+    JsSnippetTotalsView, ActiveSnippetModel, EmptySnippetsDetailView) {
     Moonlander.module("LandersApp.JsSnippets", function(JsSnippets, Moonlander, Backbone, Marionette, $, _) {
 
       JsSnippets.Controller = {
 
+        jsSnippetsLayoutView: {},
+
         initAndShowSnippetsModal: function(landerModel) {
+          var me = this;
           var defer = $.Deferred();
 
           var jsSnippetsLayoutView = new JsSnippetsLayoutView({
             model: landerModel
           });
 
+          //set to global
+          this.jsSnippetsLayoutView = jsSnippetsLayoutView;
 
           jsSnippetsLayoutView.render();
 
@@ -172,7 +178,7 @@ define(["app",
 
                 //starting delete snippet
                 snippetModel.set("deletingSnippet", true);
-                
+
                 //destroying model removes it from the collection
                 snippetModel.destroy({
                   success: function() {
@@ -181,15 +187,14 @@ define(["app",
                     //once removed, show the first model if we have one, or the default view
                     var firstModel = filteredSnippetCollection.models[0];
                     if (!firstModel) {
-                      //set default model here
+                      me.showEmptySnippetsDetailView();
+                    } else {
+                      //set alert delete to finished on this model so
+                      //when we show the new model it shows delete successful message
+                      firstModel.set("deletingSnippet", "finished");
+
+                      leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
                     }
-
-                    //set alert delete to finished on this model so
-                    //when we show the new model it shows delete successful message
-                    firstModel.set("deletingSnippet", "finished");
-
-                    leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
-
                   }
                 });
 
@@ -246,8 +251,16 @@ define(["app",
 
         },
 
-        showJsSnippetsModal: function(landerModel) {
+        //called to show the empty view for detailed area
+        showEmptySnippetsDetailView: function() {
 
+          var emptySnippetsDetailView = new EmptySnippetsDetailView();
+          this.jsSnippetsLayoutView.snippetDetailRegion.show(emptySnippetsDetailView);
+
+        },
+
+        showJsSnippetsModal: function(landerModel) {
+          var me = this;
           var deferInitJsSnippetsModal = this.initAndShowSnippetsModal(landerModel);
 
           $.when(deferInitJsSnippetsModal).done(function(attr) {
@@ -257,9 +270,13 @@ define(["app",
 
             //show initial snippets detail view/info/tutorial
             var firstModel = filteredSnippetCollection.models[0];
-            firstModel.set("active", true);
-            firstModel.set("editing", false);
-            leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
+            if (firstModel) {
+              firstModel.set("active", true);
+              firstModel.set("editing", false);
+              leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
+            } else {
+              me.showEmptySnippetsDetailView();
+            }
 
           });
         },
