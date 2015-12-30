@@ -23,17 +23,9 @@ define(["app",
 
         regions: {
           'leftNavSnippetListRegion': ".snippets-list-region",
-          'snippetDetailRegion': ".snippet-detail-region"
+          'snippetDetailRegion': ".snippet-detail-region",
+          'snippetTotalsRegion': ".snippet-totals-region"
         },
-
-        modelEvents: {
-          "change:totalNumJsSnippets": "render"
-        },
-
-        events: {
-          // "click .update-aws-access-keys": "confirmUpdateAwsAccessKeys"
-        },
-
 
         onRender: function() {
           var me = this;

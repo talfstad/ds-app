@@ -190,16 +190,21 @@ define(["app",
 
           if (deletingSnippet == "prompt") {
             showAlert = true;
-            me.setAlertType("alert-warning");
-            msg = "<span style='padding-left: 20px'>Are you sure you want to delete this snippet?</span>"
-                + "<div class='btn-group' style='position: relative; margin-top: -11px; float: right'><button type='button' class='pl10 pt5 pb5 btn btn-default btn-gradient dark'>"
-                + "<span class='fa fa-check pr5'></span>Confirm</button><button type='button' class='pl10 pt5 pb5 btn btn-default btn-gradient dark'>"
-                + "<span class='fa fa-close pr5'></span>Cancel</button></div>";
+            me.setAlertType("alert-danger");
+            msg = "<span style='padding-left: 20px'>Are you sure you want to delete this snippet?</span>" + "<div class='btn-group' style='position: relative; margin-top: -11px; float: right'><button type='button' class='confirm-delete-snippet-button pl10 pt5 pb5 btn btn-default btn-gradient dark'>" + "<span class='fa fa-check pr5'></span>Confirm</button><button type='button' class='cancel-delete-snippet-button pl10 pt5 pb5 btn btn-default btn-gradient dark'>" + "<span class='fa fa-close pr5'></span>Cancel</button></div>";
 
           } else if (deletingSnippet == true) {
-
-          } else if (deletingSnippet == "finishing") {
-
+            showAlert = true;
+            me.setAlertType("alert-danger");
+            msg = "<span style='position: absolute; top: 12px' class='glyphicon mr5 glyphicon-refresh glyphicon-refresh-animate'></span><span style='padding-left: 20px'> Deleting Snippet</span>";
+          
+          } else if (deletingSnippet == "finished") {
+            showAlert = true;
+            me.setAlertType("alert-success");
+            msg = "<span style='font-weight: 600'>Attention</span>: Successfully deleted snippet"
+            setTimeout(function() {
+              me.model.set("deletingSnippet", false);
+            }, 5000);
           } else if (savingCode == true) {
             showAlert = true;
             me.setAlertType("alert-info");
@@ -263,12 +268,25 @@ define(["app",
             me.model.set("snippetAlertMsg", msg);
             jsAlertEl.html(msg);
 
-            //if prompt add listeners for button
-            if (deletingSnippet == "prompt") {
 
-            }
             //
-            jsAlertEl.fadeIn();
+            jsAlertEl.fadeIn("fast", function() {
+              //if prompt add listeners for button
+              if (deletingSnippet == "prompt") {
+
+                $(".cancel-delete-snippet-button").off();
+                $(".cancel-delete-snippet-button").click(function(e) {
+                  me.model.set("deletingSnippet", false);
+                });
+
+                $(".confirm-delete-snippet-button").off();
+                $(".confirm-delete-snippet-button").click(function(e) {
+                  me.deleteSnippet();
+                });
+
+
+              }
+            });;
           } else {
             jsAlertEl.fadeOut("fast", function() {
               var height = parseInt($(".snippets-list").css("height"));

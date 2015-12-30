@@ -36,7 +36,8 @@
               </header>
               <!-- End: Sidebar Header -->
               <!-- Start: Sidebar Menu -->
-              <div class="snippet-list-title">(<%= totalNumJsSnippets %>) Javascript <% if(totalNumJsSnippets > 1 || totalNumJsSnippets == 0) { %>Snippets<% } else { %>Snippet<% } %></div>
+              <div class="snippet-totals-region"></div>
+
               <div class="snippets-list-region sidebar-menu-container">
                 
               </div>

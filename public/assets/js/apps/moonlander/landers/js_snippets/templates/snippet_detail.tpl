@@ -56,7 +56,7 @@
     <%= snippetAlertMsg %>
   </div>
   <div class="js-snippet-description">
-    <div style="margin-left: 45px; margin-top: 20px;">
+    <div class="clearfix" style="margin-left: 45px; margin-top: 20px;">
       <% if(!showEditInfo) { %>
         <div class="snippet-info-content">
           <h3>Description:</h3>

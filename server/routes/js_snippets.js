@@ -29,6 +29,12 @@ module.exports = function(app, passport) {
       });
     }
   });
+
+  app.delete('/api/js_snippets/:snippet_id', passport.isAuthenticated(), function(req, res){
+
+    res.json({})
+
+  });
   
 
   app.put('/api/active_snippets/:snippet_id', passport.isAuthenticated(), function(req, res) {

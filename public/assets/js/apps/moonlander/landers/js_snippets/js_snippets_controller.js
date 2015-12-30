@@ -5,12 +5,13 @@ define(["app",
     "/assets/js/apps/moonlander/landers/dao/js_snippet_model.js",
     "/assets/js/apps/moonlander/landers/js_snippets/views/js_snippets_detail_view.js",
     "/assets/js/common/filtered_paginated/filtered_paginated_collection.js",
+    "/assets/js/apps/moonlander/landers/js_snippets/views/js_snippets_totals_view.js",
     "/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/dao/active_js_snippet_model.js",
     "/assets/js/apps/moonlander/landers/dao/js_snippet_collection.js"
   ],
   function(Moonlander, JsSnippetsLayoutView, LoadingView,
     LeftNavSnippetsView, SnippetModel, JsSnippetDetailView, FilteredPaginatedCollection,
-    ActiveSnippetModel) {
+    JsSnippetTotalsView, ActiveSnippetModel) {
     Moonlander.module("LandersApp.JsSnippets", function(JsSnippets, Moonlander, Backbone, Marionette, $, _) {
 
       JsSnippets.Controller = {
@@ -53,11 +54,10 @@ define(["app",
 
             filteredSnippetCollection.urlEndpoints = landerModel.get("urlEndpoints");
 
-            filteredSnippetCollection.on("add remove", function() {
-              jsSnippetsLayoutView.model.set("totalNumJsSnippets", filteredSnippetCollection.length);
-            });
-            jsSnippetsLayoutView.model.set("totalNumJsSnippets", filteredSnippetCollection.length);
 
+            var jsSnippetTotalsView = new JsSnippetTotalsView({
+              snippet_collection: filteredSnippetCollection
+            });
 
             jsSnippetsLayoutView.on("jsSnippets:filterList", function(filterVal) {
               filteredSnippetCollection.filter(filterVal);
@@ -164,15 +164,34 @@ define(["app",
                   error: function() {
 
                   }
-                })
+                });
               });
 
-              newSnippetDetailView.on("deleteSnippet", function(){
+              newSnippetDetailView.on("deleteSnippet", function() {
                 var snippetModel = this.model;
 
-                //set delete snippet = true to trigger a show of the initial alert
+                //starting delete snippet
                 snippetModel.set("deletingSnippet", true);
+                
+                //destroying model removes it from the collection
+                snippetModel.destroy({
+                  success: function() {
+                    jsSnippetTotalsView.trigger("updateSnippetTotals");
 
+                    //once removed, show the first model if we have one, or the default view
+                    var firstModel = filteredSnippetCollection.models[0];
+                    if (!firstModel) {
+                      //set default model here
+                    }
+
+                    //set alert delete to finished on this model so
+                    //when we show the new model it shows delete successful message
+                    firstModel.set("deletingSnippet", "finished");
+
+                    leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
+
+                  }
+                });
 
               });
 
@@ -214,6 +233,7 @@ define(["app",
 
             //show actual views
             jsSnippetsLayoutView.leftNavSnippetListRegion.show(leftNavSnippetsView)
+            jsSnippetsLayoutView.snippetTotalsRegion.show(jsSnippetTotalsView);
 
             defer.resolve({
               filteredSnippetCollection: filteredSnippetCollection,

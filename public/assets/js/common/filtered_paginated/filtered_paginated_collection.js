@@ -352,13 +352,21 @@ define(["app",
         });
 
         original.on("destroy", function(models) {
-          var currentPage = filtered.state.gui.get("current_page");
+          
+          if (filtered.state.paginated) {
+            var currentPage = filtered.state.gui.get("current_page");
+          }
+          
           //1. filter to reset it
           filtered.filter(filtered.state.currentFilter);
+          
           //2. set current page = to what it was before
-          if (currentPage <= filtered.state.gui.get("num_pages")) {
-            filtered.gotoPage(currentPage);
+          if (filtered.state.paginated) {
+            if (currentPage <= filtered.state.gui.get("num_pages")) {
+              filtered.gotoPage(currentPage);
+            }
           }
+
         });
 
         filtered.on("add", function(models) {
