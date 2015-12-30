@@ -5,29 +5,29 @@ define(["app",
 
     Moonlander.module("LandersApp.Landers.List.Deployed", function(Deployed, Moonlander, Backbone, Marionette, $, _) {
       Deployed.DeployedRowView = Marionette.ItemView.extend({
-        
-        initialize: function(){
+
+        initialize: function() {
           var me = this;
 
           //listen for destroy/change events to active jobs
           var activeJobsCollection = this.model.get("activeJobs");
-          this.listenTo(activeJobsCollection, "change", function(){
+          this.listenTo(activeJobsCollection, "change", function() {
             me.render();
           });
-          this.listenTo(activeJobsCollection, "destroy", function(){
+          this.listenTo(activeJobsCollection, "destroy", function() {
             me.render();
           });
 
           //render on attached campaigns change/destroy. needs to be rendered because
           //changes the text
           var attachedCampaigns = this.model.get("attachedCampaigns");
-          this.listenTo(attachedCampaigns, "destroy", function(){
+          this.listenTo(attachedCampaigns, "destroy", function() {
             me.render();
           });
-          this.listenTo(attachedCampaigns, "add", function(){
+          this.listenTo(attachedCampaigns, "add", function() {
             me.render();
           });
-          
+
         },
 
         template: DeployedDomainRowTpl,
@@ -43,17 +43,17 @@ define(["app",
           "click .campaign-tab-link": "selectCampaignTab"
         },
 
-        selectCampaignTab: function(e){
+        selectCampaignTab: function(e) {
           e.preventDefault();
           this.trigger("selectCampaignTab");
         },
 
-        onBeforeRender: function(){
+        onBeforeRender: function() {
           //if we have active jobs we are deploying
-          if(this.model.get("activeJobs").length > 0 ) {
+          if (this.model.get("activeJobs").length > 0) {
             var deployStatus = "deploying";
-            this.model.get("activeJobs").each(function(job){
-              if(job.get("action") === "undeployLanderFromDomain") {
+            this.model.get("activeJobs").each(function(job) {
+              if (job.get("action") === "undeployLanderFromDomain") {
                 deployStatus = "undeploying";
               }
             });
@@ -65,20 +65,18 @@ define(["app",
 
           //set deploystatus for gui
           var deployStatus = this.model.get("deploy_status");
-          if(deployStatus === "deployed"){
+          if (deployStatus === "deployed") {
             this.model.set("deploy_status_gui", "");
-          }
-          else if(deployStatus === "deploying"){
+          } else if (deployStatus === "deploying") {
             this.model.set("deploy_status_gui", "<strong>DEPLOYING</strong> &mdash;");
-          }
-          else if(deployStatus === "undeploying"){
+          } else if (deployStatus === "undeploying") {
             this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong> &mdash;");
           }
 
 
           //add attached campaigns to template
           var attachedCampaignNamesArray = [];
-          this.model.get("attachedCampaigns").each(function(campaign){
+          this.model.get("attachedCampaigns").each(function(campaign) {
             attachedCampaignNamesArray.push(campaign.get("name"));
           });
           this.model.set("attached_campaigns_gui", attachedCampaignNamesArray);
@@ -95,6 +93,26 @@ define(["app",
             deployStatus === "undeploying") {
             this.$el.addClass("warning");
           }
+
+          this.$el.find(".domain-link").click(function(e) {
+            //get the val from select box
+            var domainEndpointSelectValue = $(e.currentTarget).parent().find("select").val();
+            var domainLinkHref = $(e.currentTarget).text();
+            //go to the full page
+            $(e.currentTarget).attr("href", "http://" + domainLinkHref + domainEndpointSelectValue);
+          });
+
+          this.$el.find(".domain-link").hover(function(e) {
+            //get next select
+            var domainEndpointSelect = $(e.currentTarget).parent().find("select");
+
+            //underline it or undo underline if already applied
+            if (domainEndpointSelect.hasClass("domain-link-hover")) {
+              domainEndpointSelect.removeClass("domain-link-hover");
+            } else {
+              domainEndpointSelect.addClass("domain-link-hover");
+            }
+          });
         },
 
         showUndeployLander: function(e) {

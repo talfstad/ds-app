@@ -35,8 +35,7 @@ module.exports = function(app, db) {
   //  a. immediately
 
   module.startJob = function(action, user, attr) {
-    //start job
-    console.log("\nACTION: " + action);
+    
     try {
 
       //get all jobs for user with lander_id and domain_id
@@ -45,10 +44,8 @@ module.exports = function(app, db) {
         var startJob = true;
 
         if (action == "deployLanderToDomain") {
-          console.log("jobs: " + JSON.stringify(jobs))
 
           for (var i = 0; i < jobs.length; i++) {
-            console.log("jobs: " + jobs[i].action)
             if (jobs[i].action == "undeployLanderFromDomain") {
               startJob = false;
             }
@@ -57,7 +54,6 @@ module.exports = function(app, db) {
 
         if (action == "undeployLanderFromDomain") {
           for (var i = 0; i < jobs.length; i++) {
-            console.log("jobs: " + jobs[i].action)
             if (jobs[i].action == "deployLanderToDomain") {
               startJob = false;
             }

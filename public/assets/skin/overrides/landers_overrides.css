@@ -50,9 +50,8 @@
     color: #222 !important;
 }
 
-
 .fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-focused {
-  border-color: #fff;
+    border-color: #fff;
 }
 
 .snippets-container .fancytree-container {
@@ -213,6 +212,10 @@ tr.alert .domain-endpoint-select {
 .domain-link-hover {
     color: #1d6fa5;
     text-decoration: underline;
+}
+
+.domain-link {
+    cursor: pointer;
 }
 
 .domains-nav-item {
@@ -405,6 +408,3 @@ tr.warning input[type=select] {
 .text-align-right {
     text-align: right !important;
 }
-
-
-
