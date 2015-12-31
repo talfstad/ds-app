@@ -187,6 +187,7 @@ define(["app",
                     //destroying model removes it from the collection
                     snippetModel.destroy({
                       success: function() {
+                        Moonlander.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerModel);
                         jsSnippetTotalsView.trigger("updateSnippetTotals");
 
                         //once removed, show the first model if we have one, or the default view

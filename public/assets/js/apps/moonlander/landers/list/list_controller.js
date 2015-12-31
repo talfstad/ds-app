@@ -29,41 +29,66 @@ define(["app",
         filteredLanderCollection: null,
 
         removeSnippetFromAllLanders: function(attr) {
+          var me = this;
           var snippetToRemoveFromLanders = attr.snippet;
           var onSuccessCallback = attr.onSuccess;
 
           //loop original lander collection to remove active snippet from all url endpoints
+          var landersToRedeploy = [];
+          var activeSnippetsToRemove = [];
+
           this.filteredLanderCollection.original.each(function(landerModel) {
 
             //create a full list of snippets to remove
             var urlEndpointsCollection = landerModel.get("urlEndpoints");
-            var activeSnippetsToRemove = [];
+            var tmpActiveSnippetsToRemove = [];
             urlEndpointsCollection.each(function(endpoint) {
               var activeSnippets = endpoint.get("activeSnippets");
               activeSnippets.each(function(activeSnippet) {
                 if (activeSnippet.get("snippet_id") == snippetToRemoveFromLanders.get("snippet_id")) {
-                  activeSnippetsToRemove.push(activeSnippet);
+                  tmpActiveSnippetsToRemove.push(activeSnippet);
                 }
               });
             });
 
-            //now we have a FULL list that we need to remove
-            var activeSnippetsCounter = 0;
-            $.each(activeSnippetsToRemove, function(idx, snippetToRemove) {
-              snippetToRemove.destroy({
-                success: function() {
-                  activeSnippetsCounter++;
-                  if (activeSnippetsCounter == activeSnippetsToRemove.length) {
-                    //trigger a redeploy for this lander! all snippets have been removed
-                    alert("ok")
+            if (tmpActiveSnippetsToRemove.length > 0) {
+              //merge this landers active snippets into the main active snippets list
+              $.merge(activeSnippetsToRemove, tmpActiveSnippetsToRemove);
+              landersToRedeploy.push(landerModel);
+            }
+          });
 
-                  }
-
+          //now we have a FULL list of active snippets and landers that we need to remove and redeploy
+          var activeSnippetsCounter = 0;
+          $.each(activeSnippetsToRemove, function(idx, snippetToRemove) {
+            snippetToRemove.destroy({
+              success: function() {
+                activeSnippetsCounter++;
+                if (activeSnippetsCounter == activeSnippetsToRemove.length) {
+                  //all snippets deleted! now redeploy all landers that need to be                  
+                  me.redeployLanders(landersToRedeploy, function() {
+                    onSuccessCallback();
+                  });
                 }
-              });
+              }
             });
+          });
+
+        },
+
+        redeployLanders: function(landerModelsArray, callback) {
+          //redeploy landers and call the callback when ALL jobs have been started!
+
+          $.each(landerModelsArray, function(idx, landerModel) {
+
+            //create a job to undeploy and redeploy for each deployed location
+            //and start the jobs
+
 
           });
+
+          callback();
+
         },
 
         updateAllActiveSnippetNames: function(savedModel) {
