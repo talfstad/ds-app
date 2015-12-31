@@ -59,38 +59,103 @@ define(["app",
           });
 
           //now we have a FULL list of active snippets and landers that we need to remove and redeploy
-          var activeSnippetsCounter = 0;
-          $.each(activeSnippetsToRemove, function(idx, snippetToRemove) {
-            snippetToRemove.destroy({
-              success: function() {
-                activeSnippetsCounter++;
-                if (activeSnippetsCounter == activeSnippetsToRemove.length) {
-                  //all snippets deleted! now redeploy all landers that need to be                  
-                  me.redeployLanders(landersToRedeploy, function() {
-                    onSuccessCallback();
-                  });
+          if (activeSnippetsToRemove.length <= 0) {
+            //none to remove!
+            onSuccessCallback();
+          } else {
+            var activeSnippetsCounter = 0;
+            $.each(activeSnippetsToRemove, function(idx, snippetToRemove) {
+              snippetToRemove.destroy({
+                success: function() {
+                  activeSnippetsCounter++;
+                  if (activeSnippetsCounter == activeSnippetsToRemove.length) {
+                    //all snippets deleted! now redeploy all landers that need to be                  
+                    me.redeployLanders(landersToRedeploy, function() {
+                      onSuccessCallback();
+                    });
+                  }
                 }
-              }
+              });
             });
-          });
+          }
 
         },
 
         //creates an undeploy job and a deploy job and starts them for each lander in the list
         //you pass in
-        redeployLanders: function(landerModelsArray, callback) {
+        redeployLanders: function(landerModelsArray, doneAddingAllRedeployJobsToAllLandersCallback) {
+
           //redeploy landers and call the callback when ALL jobs have been started!
+          var startRedeployJobs = function(deployedLocation, successCallback) {
+            var activeJobCollection = deployedLocation.get("activeJobs");
+            //create undeploy job, on callback success started call start deploy job on callback call success
+            var undeployAttr = {
+              lander_id: deployedLocation.get("lander_id"),
+              domain_id: deployedLocation.get("domain_id"),
+              action: "undeployLanderFromDomain"
+            }
 
+            //create job and add to models activeJobs
+            var undeployJobModel = new JobModel(undeployAttr);
+            activeJobCollection.add(undeployJobModel);
+
+            var undeployStartingAttr = {
+              jobModel: undeployJobModel,
+              onSuccess: function() {
+                //successfully added undeploy job now lets add deploy job
+                var deployAttr = {
+                  lander_id: deployedLocation.get("lander_id"),
+                  domain_id: deployedLocation.get("domain_id"),
+                  action: "deployLanderToDomain"
+                }
+
+                //create job and add to models activeJobs
+                var deployJobModel = new JobModel(deployAttr);
+                activeJobCollection.add(deployJobModel);
+
+                var deployStartingAttr = {
+                  jobModel: deployJobModel,
+                  onSuccess: function() {
+                    //successfully added the deploy job now we're good!
+                    successCallback();
+                  }
+                }
+                Moonlander.trigger("job:start", deployStartingAttr);
+              }
+            }
+            Moonlander.trigger("job:start", undeployStartingAttr);
+          };
+
+          //get list of all deployedlocations first
+          var deployedLocationsList = [];
           $.each(landerModelsArray, function(idx, landerModel) {
-
-            //create a job to undeploy and redeploy for each deployed location
-            //and start the jobs
-
-
+            //get list of all locations to 
+            var deployedLocationCollection = landerModel.get("deployedLocations");
+            deployedLocationCollection.each(function(deployedLocation) {
+              deployedLocationsList.push(deployedLocation);
+            });
           });
 
-          //call this once everything has been guaranteed started for every lander
-          callback();
+          //now i have the list, start the jobs for each, when completed call the
+          //callback
+          if (deployedLocationsList.length <= 0) {
+            //nothing to redeploy
+            doneAddingAllRedeployJobsToAllLandersCallback();
+          } else {
+            var deployedLocationsCount = 0;
+            $.each(deployedLocationsList, function(idx, deployedLocation) {
+              //create undeploy job
+              startRedeployJobs(deployedLocation, function() {
+                deployedLocationsCount++;
+
+                //if we're equal then we're done all jobs have finished async
+                if (deployedLocationsCount == deployedLocationsList.length) {
+                  //call this once everything has been guaranteed started for every lander
+                  doneAddingAllRedeployJobsToAllLandersCallback();
+                }
+              });
+            });
+          }
 
         },
 

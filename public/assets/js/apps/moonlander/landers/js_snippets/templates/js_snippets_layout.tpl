@@ -40,7 +40,7 @@
               <div class="snippets-list-region sidebar-menu-container">
               </div>
               <div class="create-snippet-container">
-                <button type="button" class="create-snippet-button mt5 mb5 pl10 pt5 pb5 btn btn-default btn-gradient dark">
+                <button type="button" class="create-snippet-button mt5 mb10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
                   <span class="fa fa-plus pr5"></span>Create New Snippet
                 </button>
               </div>

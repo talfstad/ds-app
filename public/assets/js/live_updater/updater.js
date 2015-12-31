@@ -39,7 +39,7 @@ define(["app"], function(Moonlander) {
         });
       };
 
-      var intervalLength = 10000;
+      var intervalLength = 5000;
 
       this.poll = function() {
         setTimeout(function() {
@@ -58,7 +58,10 @@ define(["app"], function(Moonlander) {
       };
     },
 
-    //adds a model to the updater
+    //adds a model to the updater only if it should add it! if the job its
+    //trying to add is in conflict with another job already being updated it won't
+    //add it to the updater. the job will be started when the conflicting job is
+    //finished in the finishedState function
     add: function(model) {
 
       var hasConflict = false;

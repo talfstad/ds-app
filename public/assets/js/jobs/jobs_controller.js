@@ -10,19 +10,19 @@ define(["app",
         // figure out which job is next and start it
         startNextJob: function(jobCollection) {
           var hasNextJob = false;
-          
+
           var earliestJobInList = jobCollection.models[0];
           jobCollection.each(function(job) {
             var currentEarliestJobMillis = moment(earliestJobInList.get("created_on")).unix();
             var jobMillis = moment(job.get("created_on")).unix();
-            
-            if(currentEarliestJobMillis - jobMillis > 0) {
+
+            if (currentEarliestJobMillis - jobMillis > 0) {
               //this job is earlier so do it
               earliestJobInList = job;
             }
           });
 
-          if(earliestJobInList) {
+          if (earliestJobInList) {
             this.startJob(earliestJobInList);
           }
 
@@ -30,7 +30,7 @@ define(["app",
 
         //register the job when its created and put it on the updater IF no jobs are already
         // on the updater that block it
-        startJob: function(jobModel) {
+        startJob: function(jobModel, newJobAddedCallback) {
 
           var addToUpdater = function(model) {
             Moonlander.updater.add(model || jobModel);
@@ -42,6 +42,9 @@ define(["app",
             jobModel.save({}, {
               success: function(model, response) {
                 addToUpdater(model, response);
+                if (newJobAddedCallback) {
+                  newJobAddedCallback();
+                }
               }
             });
           } else {
