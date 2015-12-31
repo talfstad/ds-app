@@ -76,6 +76,8 @@ define(["app",
 
         },
 
+        //creates an undeploy job and a deploy job and starts them for each lander in the list
+        //you pass in
         redeployLanders: function(landerModelsArray, callback) {
           //redeploy landers and call the callback when ALL jobs have been started!
 
@@ -87,6 +89,7 @@ define(["app",
 
           });
 
+          //call this once everything has been guaranteed started for every lander
           callback();
 
         },

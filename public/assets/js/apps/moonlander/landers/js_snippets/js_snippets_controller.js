@@ -184,7 +184,7 @@ define(["app",
                   snippet: snippetModel,
                   onSuccess: function() {
 
-                    //destroying model removes it from the collection
+                    //now actually remove the SNIPPET itself
                     snippetModel.destroy({
                       success: function() {
                         Moonlander.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerModel);

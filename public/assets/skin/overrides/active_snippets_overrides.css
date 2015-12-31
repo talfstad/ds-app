@@ -187,3 +187,12 @@
 .url-endpoints-list > li {
     padding-top: 15px;
 }
+
+.create-snippet-container {
+    text-align: center;
+    border-top: 1px solid #eaeaea;
+    background-color: #f2f2f2;
+}
+.create-snippet-button {
+
+}

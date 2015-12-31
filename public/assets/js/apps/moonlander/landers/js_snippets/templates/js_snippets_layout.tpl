@@ -37,16 +37,18 @@
               <!-- End: Sidebar Header -->
               <!-- Start: Sidebar Menu -->
               <div class="snippet-totals-region"></div>
-
               <div class="snippets-list-region sidebar-menu-container">
-                
+              </div>
+              <div class="create-snippet-container">
+                <button type="button" class="create-snippet-button mt5 mb5 pl10 pt5 pb5 btn btn-default btn-gradient dark">
+                  <span class="fa fa-plus pr5"></span>Create New Snippet
+                </button>
               </div>
               <!-- End: Sidebar Menu -->
             </div>
             <!-- End: Sidebar Left Content -->
           </aside>
           <aside style="float: left" class="clearfix snippet-detail-region">
-            
           </aside>
         </section>
       </div>
