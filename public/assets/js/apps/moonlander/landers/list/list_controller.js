@@ -55,6 +55,9 @@ define(["app",
               //merge this landers active snippets into the main active snippets list
               $.merge(activeSnippetsToRemove, tmpActiveSnippetsToRemove);
               landersToRedeploy.push(landerModel);
+              //need to set the deploy status here incase the view isn't currently showing
+              //we will still update correctly for topbartotals
+              landerModel.set("deploy_status","deploying");
             }
           });
 
@@ -91,7 +94,7 @@ define(["app",
             //create undeploy job, on callback success started call start deploy job on callback call success
             var undeployAttr = {
               lander_id: deployedLocation.get("lander_id"),
-              domain_id: deployedLocation.get("domain_id"),
+              domain_id: deployedLocation.get("id"),
               action: "undeployLanderFromDomain"
             }
 
@@ -105,7 +108,7 @@ define(["app",
                 //successfully added undeploy job now lets add deploy job
                 var deployAttr = {
                   lander_id: deployedLocation.get("lander_id"),
-                  domain_id: deployedLocation.get("domain_id"),
+                  domain_id: deployedLocation.get("id"),
                   action: "deployLanderToDomain"
                 }
 
@@ -235,11 +238,6 @@ define(["app",
             //this is the pagination pages totals and lander count totals view
             var topbarView = new TopbarView({
               model: me.filteredLanderCollection.state.gui
-            });
-
-            //these lines only if we're rendering children not in reset...
-            landersListView.on("childview:updateCollectionTotals", function() {
-              me.filteredLanderCollection.updateTotals();
             });
 
             me.filteredLanderCollection.on("reset", function(collection) {

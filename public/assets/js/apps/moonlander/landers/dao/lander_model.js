@@ -35,26 +35,27 @@ define(["app",
                 me.set("deploy_status", "initializing");
               } else if (jobModel.get("action") === "deleteLander") {
                 me.set("deploy_status", "deleting");
+              } else {
+                me.set("deploy_status", "deploying");
               }
-            })
+            });
           }
         });
 
-
         activeJobsCollection.on("finishedState", function(jobModel) {
-
+          var deployStatus = "deployed";
           if (jobModel.get("action") === "addNewLander" ||
             jobModel.get("action") === "ripNewLander") {
-
             //update lander status to not deployed
-            me.set("deploy_status", "not_deployed");
-
+            deployStatus = "not_deployed";
           } else if (jobModel.get("action") === "deleteLander") {
-
             //destroy the lander model
             me.destroy();
-            Moonlander.trigger("landers:updateTopbarTotals");
           }
+
+          me.set("deploy_status", deployStatus);
+          Moonlander.trigger("landers:updateTopbarTotals");
+
 
           delete jobModel.attributes.id;
           jobModel.destroy();
