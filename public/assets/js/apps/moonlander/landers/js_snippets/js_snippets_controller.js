@@ -8,11 +8,12 @@ define(["app",
     "/assets/js/apps/moonlander/landers/js_snippets/views/js_snippets_totals_view.js",
     "/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/dao/active_js_snippet_model.js",
     "/assets/js/apps/moonlander/landers/js_snippets/views/empty_snippets_detail_view.js",
+    "/assets/js/apps/moonlander/landers/js_snippets/views/create_new_snippet_view.js",
     "/assets/js/apps/moonlander/landers/dao/js_snippet_collection.js"
   ],
   function(Moonlander, JsSnippetsLayoutView, LoadingView,
     LeftNavSnippetsView, SnippetModel, JsSnippetDetailView, FilteredPaginatedCollection,
-    JsSnippetTotalsView, ActiveSnippetModel, EmptySnippetsDetailView) {
+    JsSnippetTotalsView, ActiveSnippetModel, EmptySnippetsDetailView, CreateNewSnippetView) {
     Moonlander.module("LandersApp.JsSnippets", function(JsSnippets, Moonlander, Backbone, Marionette, $, _) {
 
       JsSnippets.Controller = {
@@ -65,13 +66,39 @@ define(["app",
               snippet_collection: filteredSnippetCollection
             });
 
-            jsSnippetsLayoutView.on("jsSnippets:filterList", function(filterVal) {
-              filteredSnippetCollection.filter(filterVal);
+            jsSnippetsLayoutView.on("showCreateNewSnippetView", function() {
+              //remove 'active' from all snippets
+              filteredSnippetCollection.original.each(function(snippet) {
+                snippet.set("active", false);
+              });
+
+              //create a new snippet view and show it!
+              var newSnippetModel = new SnippetModel();
+              var createNewSnippetView = new CreateNewSnippetView({
+                model: newSnippetModel
+              });
+
+              createNewSnippetView.on("cancelNewSnippet", function() {
+                //once removed, show the first model if we have one, or the default view
+                var firstModel = filteredSnippetCollection.models[0];
+                if (!firstModel) {
+                  me.showEmptySnippetsDetailView();
+                } else {
+                  leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
+                }
+              });
+
+              me.jsSnippetsLayoutView.snippetDetailRegion.show(createNewSnippetView);
+
             });
 
             //create left nav list of snippets
             var leftNavSnippetsView = new LeftNavSnippetsView({
               collection: filteredSnippetCollection
+            });
+
+            jsSnippetsLayoutView.on("jsSnippets:filterList", function(filterVal) {
+              filteredSnippetCollection.filter(filterVal);
             });
 
             leftNavSnippetsView.on("childview:showSnippet", function(childViewOrModel) {

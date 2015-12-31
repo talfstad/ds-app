@@ -27,6 +27,16 @@ define(["app",
           'snippetTotalsRegion': ".snippet-totals-region"
         },
 
+        events: {
+          "click .create-snippet-button": "showCreateNewSnippetView"
+        },
+
+        showCreateNewSnippetView: function(e) {
+          e.preventDefault();
+
+          this.trigger("showCreateNewSnippetView");
+        },
+
         onRender: function() {
           var me = this;
 
@@ -41,7 +51,7 @@ define(["app",
             //min widths
             var minWidth = 1000;
             var minHeight = 500;
-            
+
             modalHeight < minHeight ? modalHeight = minHeight : null;
             modalWidth <= minWidth ? modalWidth = minWidth : null;
 
