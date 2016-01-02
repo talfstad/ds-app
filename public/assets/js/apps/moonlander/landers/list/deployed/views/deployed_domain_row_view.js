@@ -50,18 +50,18 @@ define(["app",
 
         onBeforeRender: function() {
           //if we have active jobs we are deploying
-          if (this.model.get("activeJobs").length > 0) {
-            var deployStatus = "deploying";
-            this.model.get("activeJobs").each(function(job) {
-              if (job.get("action") === "undeployLanderFromDomain") {
-                deployStatus = "undeploying";
-              }
-            });
+          // if (this.model.get("activeJobs").length > 0) {
+          //   var deployStatus = "deploying";
+          //   this.model.get("activeJobs").each(function(job) {
+          //     if (job.get("action") === "undeployLanderFromDomain") {
+          //       deployStatus = "undeploying";
+          //     }
+          //   });
 
-            this.model.set("deploy_status", deployStatus);
-          } else {
-            this.model.set("deploy_status", "deployed");
-          }
+          //   this.model.set("deploy_status", deployStatus);
+          // } else {
+          //   this.model.set("deploy_status", "deployed");
+          // }
 
           //set deploystatus for gui
           var deployStatus = this.model.get("deploy_status");

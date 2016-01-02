@@ -12,7 +12,6 @@ define(["app",
     "/assets/js/apps/moonlander/landers/list/active_campaigns/views/active_campaigns_collection_view.js",
     "/assets/js/apps/moonlander/landers/dao/deployed_location_model.js",
     "/assets/js/jobs/jobs_model.js",
-    "/assets/js/apps/moonlander/landers/dao/deploy_status_model.js",
     "/assets/js/apps/moonlander/landers/dao/active_campaign_model.js",
     "/assets/js/apps/moonlander/landers/list/views/deploy_to_new_domain_view.js",
     "/assets/js/apps/moonlander/landers/list/views/add_to_new_campaign_view.js",
@@ -21,7 +20,7 @@ define(["app",
   function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection,
     PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView,
     DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLocationModel,
-    JobModel, DeployStatusModel, ActiveCampaignModel, DeployToNewDomainView, AddToNewCampaignView) {
+    JobModel, ActiveCampaignModel, DeployToNewDomainView, AddToNewCampaignView) {
     Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
       List.Controller = {
@@ -55,9 +54,10 @@ define(["app",
               //merge this landers active snippets into the main active snippets list
               $.merge(activeSnippetsToRemove, tmpActiveSnippetsToRemove);
               landersToRedeploy.push(landerModel);
+
               //need to set the deploy status here incase the view isn't currently showing
               //we will still update correctly for topbartotals
-              landerModel.set("deploy_status","deploying");
+              // landerModel.set("deploy_status","deploying");
             }
           });
 
@@ -252,10 +252,6 @@ define(["app",
                 landersListView.children.each(function(landerView) {
 
                   var deployStatusView = new DeployStatusView({
-                    // model: new DeployStatusModel({
-                    //   id: landerView.model.get("id"),
-                    //   deploy_status: landerView.model.get("deploy_status")
-                    // })
                     model: landerView.model
                   });
 
@@ -281,8 +277,11 @@ define(["app",
 
                   var deployedDomainsCollection = landerView.model.get("deployedLocations");
 
-                  deployedDomainsCollection.deploy_status = landerView.model.get("deploy_status");
-
+                  //if this lander is initializing set the collection level variable to be picked up
+                  //by collections childviewoptions
+                  if (landerView.model.get("deploy_status") == "initializing") {
+                    deployedDomainsCollection.isInitializing = true;
+                  }
 
                   deployedDomainsCollection.on("destroy", function() {
                     deployedDomainsView.trigger("childview:updateParentLayout");
@@ -308,7 +307,12 @@ define(["app",
 
                   //update view information on model change
                   landerView.model.on("change:deploy_status", function() {
-                    Moonlander.trigger("landers:updateTopbarTotals")
+                    Moonlander.trigger("landers:updateTopbarTotals");
+
+                    //if not deployed make sure that the deployed
+                    if (this.get("deploy_status") == "not_deployed") {
+                      deployedDomainsCollection.isInitializing = false;
+                    }
 
                     // render if is showing AND EMPTY else dont (this logic meant for initializing state)
                     if (deployedDomainsView.isRendered && deployedDomainsCollection.length <= 0) {
@@ -403,24 +407,25 @@ define(["app",
           var deployedLocations = landerModel.get("deployedLocations");
 
           //search deployedlocations for the domain_id if found use that
-          var existingDeployedLocationModel = null;
+          var existingDomainModel = null;
           deployedLocations.each(function(location) {
             if (location.get("id") == modelAttributes.id) {
-              existingDeployedLocationModel = location;
+              existingDomainModel = location;
             }
           });
 
-          if (existingDeployedLocationModel) {
-            var activeJobs = existingDeployedLocationModel.get("activeJobs");
+          if (existingDomainModel) {
+            var activeJobs = existingDomainModel.get("activeJobs");
             activeJobs.add(jobModel);
           } else {
-
             //create the deployed location model
             var domainModel = new DeployedLocationModel(modelAttributes);
             var activeJobs = domainModel.get("activeJobs");
             activeJobs.add(jobModel);
             deployedLocations.add(domainModel);
           }
+
+          //set new lander to deploying by default
 
           Moonlander.trigger("job:start", jobModel);
 
@@ -552,7 +557,9 @@ define(["app",
         },
 
         updateTopbarTotals: function() {
-          this.filteredLanderCollection.updateTotals();
+          if (this.filteredLanderCollection) {
+            this.filteredLanderCollection.updateTotals();
+          }
         }
       }
     });

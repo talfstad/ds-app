@@ -17,7 +17,7 @@ define(["app",
 
 
         modelEvents: {
-          "change": "render"
+          "change:deploy_status": "render"
         },
         
         onRender: function() {

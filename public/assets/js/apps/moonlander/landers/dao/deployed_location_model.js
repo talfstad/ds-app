@@ -15,6 +15,24 @@ define(["app",
 
         //when job is destroyed must look to see if there are any more
         var activeJobsCollection = this.get("activeJobs");
+
+        activeJobsCollection.on("add remove", function() {
+
+          if (activeJobsCollection.length > 0) {
+            var deployStatus = "deploying";
+            activeJobsCollection.each(function(job) {
+              if (job.get("action") === "undeployLanderFromDomain") {
+                deployStatus = "undeploying";
+              }
+            });
+
+            me.set("deploy_status", deployStatus);
+          } else {
+            me.set("deploy_status", "deployed");
+          }
+
+        });
+
         activeJobsCollection.on("finishedState", function(jobModel) {
 
           if (jobModel.get("action") === "undeployLanderFromDomain") {
@@ -29,7 +47,7 @@ define(["app",
             if (!moreJobsToDo) {
               me.trigger('destroy', me, me.collection);
             }
-            
+
             //hack to get it to not send DELETE XHR
             delete jobModel.attributes.id;
             jobModel.destroy();
@@ -43,8 +61,6 @@ define(["app",
 
             me.set("deploy_status", "deployed");
           }
-
-
 
           //trigger to start the next job on the list
           Moonlander.trigger("job:startNext", activeJobsCollection);

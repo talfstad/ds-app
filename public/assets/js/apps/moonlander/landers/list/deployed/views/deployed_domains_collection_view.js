@@ -9,21 +9,25 @@ define(["app",
         tagName: "tbody",
         childView: DeployedDomainRowView,
         emptyView: EmptyView,
-        
+
 
         //pass the deployed list its rendered index for # column
         childViewOptions: function(model) {
-          model.set('viewIndex', parseInt(this.collection.indexOf(model))+1);
+          model.set('viewIndex', parseInt(this.collection.indexOf(model)) + 1);
           model.set('urlEndpoints', this.collection.urlEndpoints);
           model.set('landerName', this.collection.landerName);
-          model.set('deploy_status', this.collection.deploy_status);
+
+          //return options ONLY used by our empty view.
+          return {
+            isInitializing: this.collection.isInitializing || false
+          };
         },
 
-        onRender: function(){
+        onRender: function() {
 
-          
+
         }
-        
+
       });
     });
     return Moonlander.LandersApp.Landers.List.Deployed.ChildView;

@@ -54,8 +54,6 @@ define(["app",
           }
 
           me.set("deploy_status", deployStatus);
-          Moonlander.trigger("landers:updateTopbarTotals");
-
 
           delete jobModel.attributes.id;
           jobModel.destroy();
@@ -82,6 +80,33 @@ define(["app",
         deployedLocationsCollection.urlEndpoints = urlEndpointAttributes;
         deployedLocationsCollection.landerName = this.get("name");
 
+        var applyUpdatedDeployStatusToLander = function() {
+          //update deploy status view UNLESS we're initializing or deleting. if initializing needs to be changed
+          //to not_deployed by the lander job itself because we're adding a new lander. this logic is
+          // for when the lander is already added
+          if (me.get("deploy_status") !== "initializing" &&
+            me.get("deploy_status") !== "deleting") {
+            var deployStatus = "deployed";
+            deployedLocationsCollection.each(function(deployedDomainModel) {
+              if (deployedDomainModel.get("activeJobs").length > 0) {
+                deployStatus = "deploying";
+              }
+            });
+
+            //catch if there are no models, set to not_deployed
+            if (deployedLocationsCollection.length <= 0) {
+              deployStatus = "not_deployed"
+            }
+
+            me.set("deploy_status", deployStatus);
+          }
+        }
+
+        //whenever deployed domain coll updates deploy_status, update master lander deploy status
+        deployedLocationsCollection.on("add change:deploy_status", function(domainModel) {
+          applyUpdatedDeployStatusToLander();
+        });
+
         this.set("deployedLocations", deployedLocationsCollection);
 
         var urlEndpointCollection = new UrlEndpointCollection(urlEndpointAttributes);
@@ -92,7 +117,7 @@ define(["app",
         // when adding models to the active campaign collection, make sure that each
         // campaigns current domains is in deployedLocations. if not then trigger a deploy on
         // 
-        var deployedDomainsCollection = this.get("deployedLocations");
+        var deployedLocationsCollection = this.get("deployedLocations");
 
         activeCampaignsCollection.on("add", function(campaignModel, campaignCollection, options) {
           // check all deployed locations make sure all campaign model deployed domains is deployed if not then trigger
@@ -102,7 +127,7 @@ define(["app",
             var isDeployed = false;
             var isUndeploying = false;
             var isDeploying = false;
-            deployedDomainsCollection.each(function(deployLocationModel) {
+            deployedLocationsCollection.each(function(deployLocationModel) {
 
               if (currentDomain.domain_id == deployLocationModel.id) {
                 isDeployed = true;
@@ -138,46 +163,22 @@ define(["app",
 
         this.set("activeCampaigns", activeCampaignsCollection);
 
-
-
         activeCampaignsCollection.add(activeCampaignAttributes);
 
 
         //when lander changes its deploy status update the topbar totals
         this.on("change:deploy_status", function() {
+          Moonlander.trigger("landers:updateTopbarTotals");
+
           var deployStatus = this.get("deploy_status");
-          deployedDomainsCollection.deploy_status = deployStatus;
+          deployedLocationsCollection.deploy_status = deployStatus;
           activeCampaignsCollection.deploy_status = deployStatus;
+
         });
 
-        var applyUpdatedDeployStatusToLander = function() {
-          //update deploy status view UNLESS we're initializing or deleting. if initializing needs to be changed
-          //to not_deployed by the lander job itself because we're adding a new lander. this logic is
-          // for when the lander is already added
-          if (me.get("deploy_status") !== "initializing" &&
-            me.get("deploy_status") !== "deleting") {
-            var deployStatus = "deployed";
-            deployedDomainsCollection.each(function(deployedDomainModel) {
-              if (deployedDomainModel.get("activeJobs").length > 0) {
-                deployStatus = "deploying";
-              }
-            });
+        
 
-            //catch if there are no models, set to not_deployed
-            if (deployedDomainsCollection.length <= 0) {
-              deployStatus = "not_deployed"
-            }
-
-            me.set("deploy_status", deployStatus);
-          }
-        }
-
-        //whenever deployed domain coll updates deploy_status, update master lander deploy status
-        deployedDomainsCollection.on("change:deploy_status", function(domainModel) {
-          applyUpdatedDeployStatusToLander();
-        });
-
-        deployedDomainsCollection.on("destroy", function(domainModel) {
+        deployedLocationsCollection.on("destroy", function(domainModel) {
           applyUpdatedDeployStatusToLander();
         });
 
@@ -186,9 +187,9 @@ define(["app",
 
         //deployedLocation Jobs
         var deployStatus = "not_deployed";
-        if (deployedDomainsCollection.length > 0) {
+        if (deployedLocationsCollection.length > 0) {
           deployStatus = "deployed";
-          deployedDomainsCollection.each(function(location) {
+          deployedLocationsCollection.each(function(location) {
 
             location.get("activeJobs").each(function(job) {
               if (job.get("action") === "undeployLanderFromDomain") {
