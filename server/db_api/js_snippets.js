@@ -2,6 +2,31 @@ module.exports = function(db) {
 
   return {
 
+    saveNewSnippet: function(user, attr, successCallback) {
+      var user_id = user.id;
+
+      var code = "";
+      var name = attr.name;
+      var description = attr.description;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        }
+        connection.query("call add_new_snippet(?, ?, ?)", [user_id, name, description], function(err, docs) {
+          if (err) {
+            console.log(err);
+          } else {
+            successCallback({
+              id: docs[0][0]["LAST_INSERT_ID()"]
+            });
+          }
+          connection.release();
+        });
+      });
+
+    },
+
     getAll: function(user, successCallback) {
 
       var user_id = user.id;
@@ -15,7 +40,7 @@ module.exports = function(db) {
             if (err) {
               console.log(err);
             } else {
-              for(var i=0 ; i<dbsnippets.length ; i++){
+              for (var i = 0; i < dbsnippets.length; i++) {
                 var snippet = dbsnippets[i];
                 snippet.snippet_id = snippet.id
               }
@@ -58,7 +83,7 @@ module.exports = function(db) {
 
     },
 
-    saveEditInfo: function(user, params, successCallback){
+    saveEditInfo: function(user, params, successCallback) {
       var description = params.description;
       var name = params.name;
       var snippet_id = params.snippet_id;
@@ -84,7 +109,7 @@ module.exports = function(db) {
 
     },
 
-    saveCode: function(user, params, successCallback){
+    saveCode: function(user, params, successCallback) {
       var user_id = user.id;
       var code = params.code;
       var snippet_id = params.snippet_id;

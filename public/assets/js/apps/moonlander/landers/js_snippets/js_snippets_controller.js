@@ -61,7 +61,6 @@ define(["app",
 
             filteredSnippetCollection.urlEndpoints = landerModel.get("urlEndpoints");
 
-
             var jsSnippetTotalsView = new JsSnippetTotalsView({
               snippet_collection: filteredSnippetCollection
             });
@@ -76,6 +75,22 @@ define(["app",
               var newSnippetModel = new SnippetModel();
               var createNewSnippetView = new CreateNewSnippetView({
                 model: newSnippetModel
+              });
+
+              createNewSnippetView.on("saveNewSnippet", function() {
+                this.model.set("savingNewSnippet", true);
+
+                //now save it to the server
+                this.model.save({}, {
+                  success: function(savedModel) {
+                    //add to snippet list collection
+                    filteredSnippetCollection.add(savedModel);
+                    //trigger finishing on success
+                    savedModel.set("savingNewSnippet", "finished");
+                    //select it
+                    leftNavSnippetsView.trigger("childview:showSnippet", savedModel);
+                  }
+                });
               });
 
               createNewSnippetView.on("cancelNewSnippet", function() {

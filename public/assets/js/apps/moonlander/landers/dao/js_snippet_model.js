@@ -10,8 +10,9 @@ define(["app"],
        changed: false,
        showEditInfo: false,
        snippetAlertMsg: "",
-       hasShownCodeChangedAlert: false
-
+       hasShownCodeChangedAlert: false,
+       code: "",
+       trevor: "is awesome"
       },
 
     });

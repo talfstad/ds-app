@@ -13,7 +13,7 @@ define(["app",
 
         className: "modal fade",
 
-        attrifes: {
+        attributes: {
           tabindex: "-1",
           role: "dialog",
           "data-backdrop": "static"

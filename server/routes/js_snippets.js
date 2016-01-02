@@ -12,6 +12,16 @@ module.exports = function(app, passport) {
     });
   });
 
+  app.post('/api/js_snippets', passport.isAuthenticated(), function(req, res) {
+    var user = req.user;
+    var params = req.body;
+
+    db.js_snippets.saveNewSnippet(user, params, function(returnObj) {
+      console.log("snippet successfully saved");
+      res.json(returnObj);      
+    });
+
+  });
 
   app.put('/api/js_snippets/:snippet_id', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
@@ -30,12 +40,12 @@ module.exports = function(app, passport) {
     }
   });
 
-  app.delete('/api/js_snippets/:snippet_id', passport.isAuthenticated(), function(req, res){
+  app.delete('/api/js_snippets/:snippet_id', passport.isAuthenticated(), function(req, res) {
 
     res.json({})
 
   });
-  
+
 
   app.put('/api/active_snippets/:snippet_id', passport.isAuthenticated(), function(req, res) {
     var user = req.user;

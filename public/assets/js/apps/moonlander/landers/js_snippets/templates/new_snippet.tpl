@@ -7,11 +7,19 @@
 </header>
 <div class="code-pane resize-edit clearfix">
   <div class="code-pane resize-edit clearfix">
-    <div class="alert alert-micro alert-border-left alert-primary new-lander-info-alert" style="margin-bottom: 0">
+    <!-- <div class="alert alert-micro alert-border-left alert-default new-lander-info-alert" style="margin-bottom: 0">
       <i class="fa fa-info pr10"></i>To create a new snippet just enter a name and description. Once you've saved it, you can start editing the code.
-    </div>
+    </div> -->
+    <div class="create-snippet-alert js-snippet-alert alert alert-warning">
+    <%= snippetAlertMsg %>
+  </div>
     <div class="js-snippet-description">
       <div class="clearfix" style="margin-left: 45px;">
+        <div style="margin-top: 25px">
+          <p>
+            <i class="fa fa-info pr10"></i> To create a new snippet just enter a name and description. Once you've saved it, you can start editing the code.
+          </p>
+        </div>
         <div class="snippet-info-content" style="width: 90%">
           <form class="form-vertical" role="form">
             <div class="form-group">

@@ -33,7 +33,8 @@ define(["app",
           "change:addingToPage": "showAlerts",
           "change:savingEditInfo": "showAlerts",
           "change:savingCode": "showAlerts",
-          "change:deletingSnippet": "showAlerts"
+          "change:deletingSnippet": "showAlerts",
+          "change:savingNewSnippet": "showAlerts"
         },
 
         events: {
@@ -187,8 +188,16 @@ define(["app",
           var savingCode = this.model.get("savingCode");
           var codeChanged = this.model.get("changed");
           var deletingSnippet = this.model.get("deletingSnippet");
-
-          if (deletingSnippet == "prompt") {
+          var saveSnippet = this.model.get("savingNewSnippet");
+          
+          if (saveSnippet == "finished") {
+            showAlert = true;
+            me.setAlertType("alert-success");
+            msg = "<span style='font-weight: 600'>Attention</span>: Successfully saved snippet"
+            setTimeout(function() {
+              me.model.set("savingNewSnippet", false);
+            }, 5000);
+          } else if (deletingSnippet == "prompt") {
             showAlert = true;
             me.setAlertType("alert-danger");
             msg = "<span style='padding-left: 20px'>Are you sure you want to delete this snippet?</span>" + "<div class='btn-group' style='position: relative; margin-top: -11px; float: right'><button type='button' class='confirm-delete-snippet-button pl10 pt5 pb5 btn btn-default btn-gradient dark'>" + "<span class='fa fa-check pr5'></span>Confirm</button><button type='button' class='cancel-delete-snippet-button pl10 pt5 pb5 btn btn-default btn-gradient dark'>" + "<span class='fa fa-close pr5'></span>Cancel</button></div>";
@@ -197,7 +206,7 @@ define(["app",
             showAlert = true;
             me.setAlertType("alert-danger");
             msg = "<span style='position: absolute; top: 12px' class='glyphicon mr5 glyphicon-refresh glyphicon-refresh-animate'></span><span style='padding-left: 20px'> Deleting Snippet</span>";
-          
+
           } else if (deletingSnippet == "finished") {
             showAlert = true;
             me.setAlertType("alert-success");
@@ -286,7 +295,7 @@ define(["app",
 
 
               }
-            });;
+            });
           } else {
             jsAlertEl.fadeOut("fast", function() {
               var height = parseInt($(".snippets-list").css("height"));
