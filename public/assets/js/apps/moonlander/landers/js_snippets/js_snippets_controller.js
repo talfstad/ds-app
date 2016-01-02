@@ -85,6 +85,8 @@ define(["app",
                   success: function(savedModel) {
                     //add to snippet list collection
                     filteredSnippetCollection.add(savedModel);
+                    //update totals
+                    jsSnippetTotalsView.trigger("updateSnippetTotals");
                     //trigger finishing on success
                     savedModel.set("savingNewSnippet", "finished");
                     //select it
