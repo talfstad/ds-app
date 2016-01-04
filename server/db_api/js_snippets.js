@@ -18,7 +18,8 @@ module.exports = function(db) {
             console.log(err);
           } else {
             successCallback({
-              id: docs[0][0]["LAST_INSERT_ID()"]
+              id: docs[0][0]["LAST_INSERT_ID()"],
+              snippet_id: docs[0][0]["LAST_INSERT_ID()"]
             });
           }
           connection.release();

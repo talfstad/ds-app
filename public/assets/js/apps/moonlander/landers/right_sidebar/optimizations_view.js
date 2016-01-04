@@ -1,6 +1,7 @@
 define(["app",
     "tpl!/assets/js/apps/moonlander/landers/right_sidebar/templates/optimizations.tpl",
-    "select2"
+    "select2",
+    "syphon"
   ],
   function(Moonlander, NameOptimizationsTpl) {
 
@@ -9,10 +10,18 @@ define(["app",
 
         template: NameOptimizationsTpl,
 
-        modelEvents: {
-          'change': 'render'
-        }
+        events: {
+          "change #optimization-gzip": "landerIsModified",
+          "change #optimization-js": "landerIsModified",
+          "change #optimization-css": "landerIsModified",
+          "change #optimization-images": "landerIsModified"
+        },
 
+        landerIsModified: function() {
+          //set new vals to model
+          this.model.set(Backbone.Syphon.serialize(this));
+          this.trigger("modified");
+        }
 
       });
     });

@@ -16,8 +16,8 @@ define(["app",
         //when job is destroyed must look to see if there are any more
         var activeJobsCollection = this.get("activeJobs");
 
-        activeJobsCollection.on("add remove", function() {
-
+        //set initial deploy status
+        var setDeployStatusForLocation = function() {
           if (activeJobsCollection.length > 0) {
             var deployStatus = "deploying";
             activeJobsCollection.each(function(job) {
@@ -25,12 +25,16 @@ define(["app",
                 deployStatus = "undeploying";
               }
             });
-
             me.set("deploy_status", deployStatus);
           } else {
             me.set("deploy_status", "deployed");
           }
+        };
 
+        setDeployStatusForLocation();
+
+        activeJobsCollection.on("add remove", function() {
+          setDeployStatusForLocation();
         });
 
         activeJobsCollection.on("finishedState", function(jobModel) {

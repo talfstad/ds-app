@@ -71,8 +71,9 @@ define(["app",
             this.model.set("deploy_status_gui", "<strong>DEPLOYING</strong> &mdash;");
           } else if (deployStatus === "undeploying") {
             this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong> &mdash;");
+          } else if (deployStatus === "modified") {
+            this.model.set("deploy_status_gui", "<strong>MODIFIED</strong> &mdash;");
           }
-
 
           //add attached campaigns to template
           var attachedCampaignNamesArray = [];
@@ -86,11 +87,13 @@ define(["app",
           var me = this;
           //add correct classname
           var deployStatus = this.model.get("deploy_status");
-          this.$el.removeClass("success warning");
+          this.$el.removeClass("success alert warning");
           if (deployStatus === "deployed") {
             this.$el.addClass("success");
           } else if (deployStatus === "deploying" ||
             deployStatus === "undeploying") {
+            this.$el.addClass("alert");
+          } else if(deployStatus === "modified") {
             this.$el.addClass("warning");
           }
 

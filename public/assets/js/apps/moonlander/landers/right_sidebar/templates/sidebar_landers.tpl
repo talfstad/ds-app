@@ -5,12 +5,7 @@
       <span class="panel-title">Lander Edit &amp; Optimization</span>
       <span class="close-right-sidebar panel-controls"><a href="#" class="panel-control-loader"></a><a href="#" class="panel-control-remove"></a></span>
     </div>
-    <div class="panel-menu">
-      <div class="btn-group">
-        <button type="button" style="width: 97px" class="duplicate-lander-button btn btn-default btn-gradient dark"><span class="fa fa-copy pr5"></span>Duplicate</button>
-        <button type="button" style="width: 70px" class="lander-edit btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Edit</button>
-        <button type="button" style="width: 88px" class="save disabled btn btn-default btn-gradient dark"><span class="fa fa-upload pr5"></span>Deploy</button>
-      </div>
+    <div class="panel-menu menu-buttons-region">
     </div>
     <div class="panel-menu">
       <div class="btn-group">
@@ -28,6 +23,13 @@
         </button>
       </div>
     </div>
+
+    <div class="lander-modified-region"></div>
+    <div class="js-snippet-alert alert alert-warning lander-modified-alert">
+      <span style="font-weight: 600">Lander Modified</span>. Deploy is Required.
+    </div>
+    
+
     <div class="admin-form panel-body pn pb25" style="font-size: 13px">
       <div class="name-and-optimizations-region">
       </div>

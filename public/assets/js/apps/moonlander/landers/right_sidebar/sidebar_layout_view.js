@@ -9,8 +9,10 @@ define(["app",
       RightSidebar.View = Marionette.LayoutView.extend({
 
         regions: {
+          menuButtonsRegion: ".menu-buttons-region",
           snippetsRegion: "#jssnippets-tree",
-          nameAndOptimizationsRegion: ".name-and-optimizations-region"
+          nameAndOptimizationsRegion: ".name-and-optimizations-region",
+          landerModifiedRegion: ".lander-modified-region"
         },
 
         template: sidebarLanders,
@@ -23,6 +25,15 @@ define(["app",
           "click .delete-lander-button": "showDeleteLanderModal",
           "click .duplicate-lander-button": "showDuplicateLanderModal",
           "click .add-snippet-button": "showJsSnippetsModal"
+        },
+
+        modelEvents: {
+          "change:deploy_status": "showAlerts"
+        },
+
+        //show modified alert if 
+        showAlerts: function() {
+
         },
 
         showJsSnippetsModal: function(e) {
@@ -69,34 +80,15 @@ define(["app",
             me.closeSidebar();
             $(".collapse").collapse('hide');
           });
-
-
-          var enableSave = function() {
-            $("button.save").removeClass("disabled");
-            // $("button.save").removeClass("btn-default");
-            // $("button.save").addClass("btn-warning");
-          };
-          //check every element that can be saved for onchange
-          //so we can enable save button
-          $("input#lander-name-edit").keyup(function(e) {
-            enableSave();
-          });
-          $("table.optimizations-table input").change(function(e) {
-            enableSave();
-          });
         },
 
         openSidebar: function(model) {
-          //if we have a model we are showing completely new lander info
-          // if(model){
-          //   this.model.set(model.attributes);
-          // }
-
           var Body = $("body");
           if (!Body.hasClass('sb-r-o')) {
             Body.addClass('sb-r-o').removeClass("sb-r-c");
           }
         },
+
         closeSidebar: function() {
           var Body = $("body");
           // If sidebar is set to Horizontal we return

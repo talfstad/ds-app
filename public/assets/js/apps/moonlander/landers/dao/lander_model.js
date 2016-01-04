@@ -90,6 +90,8 @@ define(["app",
             deployedLocationsCollection.each(function(deployedDomainModel) {
               if (deployedDomainModel.get("activeJobs").length > 0) {
                 deployStatus = "deploying";
+              } else if(deployedDomainModel.get("deploy_status") === "modified") {
+                deployStatus = "modified";
               }
             });
 

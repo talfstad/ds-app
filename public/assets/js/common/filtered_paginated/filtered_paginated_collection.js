@@ -34,6 +34,7 @@ define(["app",
           filtered.state.gui.set('total_landers', 0);
           filtered.state.gui.set('total_initializing', 0);
           filtered.state.gui.set('total_deleting', 0);
+          filtered.state.gui.set('total_modified', 0);
         }
         filtered.state.currentFilter = "";
 
@@ -178,6 +179,7 @@ define(["app",
           var totalLanders = 0;
           var initializing = 0;
           var deleting = 0;
+          var modified = 0;
           //loop through all landers to count the totals
           original.each(function(model) {
             totalLanders++;
@@ -190,6 +192,8 @@ define(["app",
               initializing++;
             } else if (deployStatus === "deleting") {
               deleting++;
+            } else if (deployStatus === "modified") {
+              modified++;
             }
           });
           filtered.state.gui.set("total_not_deployed", notDeployedTotal);
@@ -197,6 +201,7 @@ define(["app",
           filtered.state.gui.set("total_landers", totalLanders);
           filtered.state.gui.set("total_initializing", initializing);
           filtered.state.gui.set("total_deleting", deleting);
+          filtered.state.gui.set("total_modified", modified);
         }
 
         filtered.setPageSize = function(pageSize) {
@@ -352,14 +357,14 @@ define(["app",
         });
 
         original.on("destroy", function(models) {
-          
+
           if (filtered.state.paginated) {
             var currentPage = filtered.state.gui.get("current_page");
           }
-          
+
           //1. filter to reset it
           filtered.filter(filtered.state.currentFilter);
-          
+
           //2. set current page = to what it was before
           if (filtered.state.paginated) {
             if (currentPage <= filtered.state.gui.get("num_pages")) {

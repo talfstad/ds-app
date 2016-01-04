@@ -20,9 +20,9 @@
       <td>
         <label class="switch switch-success switch-round block mn">
           <% if(optimize_gzip) { %>
-            <input type="checkbox" checked name="gzip" id="optimization-gzip" value="angular">
+            <input type="checkbox" checked name="optimize_gzip" id="optimization-gzip" value="angular">
             <% } else { %>
-              <input type="checkbox" name="gzip" id="optimization-gzip" value="angular">
+              <input type="checkbox" name="optimize_gzip" id="optimization-gzip" value="angular">
               <% } %>
                 <label for="optimization-gzip" data-on="ON" data-off="OFF"></label>
         </label>
@@ -34,9 +34,9 @@
       <td>
         <label class="switch switch-success switch-round block mn">
           <% if(optimize_js) { %>
-            <input type="checkbox" checked name="optimize-js" id="optimization-js" value="angular">
+            <input type="checkbox" checked name="optimize_js" id="optimization-js" value="angular">
             <% } else { %>
-              <input type="checkbox" name="optimize-js" id="optimization-js" value="angular">
+              <input type="checkbox" name="optimize_js" id="optimization-js" value="angular">
               <% } %>
                 <label for="optimization-js" data-on="ON" data-off="OFF"></label>
         </label>
@@ -48,9 +48,9 @@
       <td>
         <label class="switch switch-success switch-round block mn">
           <% if(optimize_css) { %>
-            <input type="checkbox" checked name="optimize-css" id="optimization-css" value="angular">
+            <input type="checkbox" checked name="optimize_css" id="optimization-css" value="angular">
             <% } else { %>
-              <input type="checkbox" name="optimize-css" id="optimization-css" value="angular">
+              <input type="checkbox" name="optimize_css" id="optimization-css" value="angular">
               <% } %>
                 <label for="optimization-css" data-on="ON" data-off="OFF"></label>
         </label>
@@ -62,9 +62,9 @@
       <td>
         <label class="switch switch-success switch-round block mn">
           <% if(optimize_images) { %>
-            <input type="checkbox" checked name="optimize-images" id="optimization-images" value="angular">
+            <input type="checkbox" checked name="optimize_images" id="optimization-images" value="angular">
             <% } else { %>
-              <input type="checkbox" name="optimize-images" id="optimization-images" value="angular">
+              <input type="checkbox" name="optimize_images" id="optimization-images" value="angular">
               <% } %>
                 <label for="optimization-images" data-on="ON" data-off="OFF"></label>
         </label>

@@ -28,15 +28,11 @@
       if(total_deleting > 1){
         deletingLanderText = "Landers"
       }
+      var modifiedLanderText = "Lander"
+      if(total_modified > 1){
+        modifiedLanderText = "Landers"
+      }
     %>
-
-    <% if(total_not_deployed == 0 && total_deploying == 0) { %>
-
-    <!-- <div>
-      <span class="badge-success badge"><%= total_landers %></span> Deployed
-    </div> -->
-
-    <% } else { %>
 
       <% if(total_deleting > 0) { %>
       
@@ -65,11 +61,18 @@
       <% if(total_deploying > 0) { %>
 
       <div>
-        <span class="badge-warning badge"><%= total_deploying %></span> <%= totalDeployingLander %> Working
+        <span class="badge-alert badge"><%= total_deploying %></span> <%= totalDeployingLander %> Working
       </div>
        <% } %>
-    
-    <% } %>
+
+       <% if(total_modified > 0) { %>
+
+      <div>
+        <span class="badge-warning badge"><%= total_modified %></span> <%= modifiedLanderText %> Modified
+      </div>
+
+       <% } %>
+   
 
     <!-- <div>
       <span class="badge-success badge">45</span> Deployed

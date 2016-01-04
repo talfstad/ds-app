@@ -270,6 +270,9 @@ define(["app",
                 snippetModel.save({}, {
                   success: function(savedModel, two, three) {
 
+                    //sort it now that the name probably changed
+                    filteredSnippetCollection.sort();
+                    
                     //get the actual snippet model and change the name/description of it
                     //those models are different than the actual snippet models
                     Moonlander.trigger("landers:updateAllActiveSnippetNames", savedModel);
