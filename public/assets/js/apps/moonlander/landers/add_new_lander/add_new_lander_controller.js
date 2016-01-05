@@ -38,6 +38,8 @@ define(["app",
 
             //5. trigger add lander model on the landers collection
             Moonlander.trigger("landers:list:addLander", landerModel);
+
+            addNewLanderLayout.onClose();
           });
 
 

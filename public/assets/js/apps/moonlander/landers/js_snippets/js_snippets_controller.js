@@ -210,6 +210,11 @@ define(["app",
                   success: function(savedModel, two, three) {
                     savedModel.set("originalSnippetCode", savedModel.get("code"));
                     savedModel.set("savingCode", "finished");
+
+
+                    //TODO: saved snippet now need to redeploy all landers that have it!
+                    
+
                   },
                   error: function() {
 

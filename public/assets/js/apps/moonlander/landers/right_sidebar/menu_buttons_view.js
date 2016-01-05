@@ -18,9 +18,15 @@ define(["app",
           var me = this;
           e.preventDefault();
 
+          
+          var deployedLocationCollection = me.model.get("deployedLocations");
+          deployedLocationCollection.each(function(location) {
+            location.set("shouldSetModifiedWhenJobsFinish", false);
+          });
+
           var attr = {
             landersArray: [this.model],
-            successCallback: function(){
+            successCallback: function() {
               me.model.set("modified", false);
               me.model.save({});
             }
@@ -29,7 +35,7 @@ define(["app",
           Moonlander.trigger("landers:redeploy", attr);
         },
 
-          modelEvents: {
+        modelEvents: {
           'change:deploy_status': 'render'
         }
 
