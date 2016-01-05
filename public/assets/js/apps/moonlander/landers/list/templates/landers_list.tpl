@@ -47,8 +47,8 @@
             </li>
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
-                <input data-sortby-name="Last Updated" data-sort-by="last-updated" type="radio" id="last-updated" name="sort-radio">
-                <label class="ml5" for="last-updated">Last Updated</label>
+                <input data-sortby-name="Created On" data-sort-by="last-updated" type="radio" id="last-updated" name="sort-radio">
+                <label class="ml5" for="last-updated">Created On</label>
               </a>
             </li>
             <!-- <li>
@@ -95,7 +95,7 @@
         <div style="float: left; margin-left: 15px; margin-bottom: 10px">Landing Page Name</div>
         <div style="float: right; margin-right: 55px; margin-bottom: 10px">Deployed Domains</div>
         <div style="float: right; margin-right: 28px; margin-bottom: 10px">Active Campaigns</div>
-        <div style="float: right; margin-right: 73px; margin-bottom: 10px">Last Updated</div>
+        <div style="float: right; margin-right: 87px; margin-bottom: 10px">Created On</div>
         
 
         </div>
