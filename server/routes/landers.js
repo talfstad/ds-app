@@ -48,7 +48,7 @@ module.exports = function(app, passport) {
   app.post('/api/landers', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
     var duplicateLanderData = req.body;
-    db.landers.addNewDuplicateLander(user, duplicateLanderData, function(duplicateLanderWithIdAttributes){
+    db.landers.addNewDuplicateLander(user, duplicateLanderData, function(duplicateLanderWithIdAttributes) {
 
       res.json(duplicateLanderWithIdAttributes);
 
@@ -56,11 +56,19 @@ module.exports = function(app, passport) {
 
   });
 
+
   app.get('/api/lander', passport.isAuthenticated(), function(req, res) {
 
   });
 
-  app.put('/api/lander', passport.isAuthenticated(), function(req, res) {
+  //save lander optimizations & modified
+  app.put('/api/landers/:id', passport.isAuthenticated(), function(req, res) {
+    var user = req.user;
+    var modelAttributes = req.body;
+
+    db.landers.updateLanderData(user, modelAttributes, function(returnModelAttributes) {
+      res.json(returnModelAttributes);
+    });
 
   });
 

@@ -4,6 +4,39 @@ module.exports = function(db) {
 
   return {
 
+    //save optimzations and modified
+    updateLanderData: function(user, attr, successCallback) {
+
+      var user_id = user.id;
+      var lander_id = attr.id;
+      var optimize_gzip = attr.optimize_gzip;
+      var optimize_css = attr.optimize_css;
+      var optimize_js = attr.optimize_js;
+      var optimize_images = attr.optimize_images;
+      var modified = attr.modified;
+      //values for query
+      var attrArr = [optimize_gzip, optimize_css, optimize_js, optimize_images, modified, user_id, lander_id];
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("UPDATE landers SET optimize_gzip = ?, optimize_css = ?, optimize_js = ?, optimize_images = ?, modified = ? WHERE user_id = ? AND id = ?", attrArr,
+            function(err, docs) {
+
+              if (err) {
+                console.log(err);
+                errorCallback();
+              } else {
+                successCallback({id: attr.id});
+              }
+              connection.release();
+
+            });
+        }
+      });
+    },
+
     deleteLander: function(user_id, lander_id, successCallback, errorCallback) {
 
       db.getConnection(function(err, connection) {
@@ -312,7 +345,7 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT id,name,optimize_css,optimize_js,optimize_images,optimize_gzip,DATE_FORMAT(last_updated, '%b %e, %Y %l:%i:%s %p') AS last_updated FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
+          connection.query("SELECT id,name,optimize_css,optimize_js,optimize_images,optimize_gzip,modified,DATE_FORMAT(last_updated, '%b %e, %Y %l:%i:%s %p') AS last_updated FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
             if (err) {
               console.log(err);
             } else {

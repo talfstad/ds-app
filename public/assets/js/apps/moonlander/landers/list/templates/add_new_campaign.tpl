@@ -1,5 +1,5 @@
       
-<% if(deploy_status !== "initializing") { %>
+<% if(deploy_status !== "initializing" && deploy_status !== "modified") { %>
 
 <button type="button" class="add-to-campaign btn btn-default btn-gradient dark"><span class="fa fa-plus pr5"></span>Add to New Campaign</button>
 

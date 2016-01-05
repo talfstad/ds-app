@@ -14,18 +14,52 @@ define(["app",
 
         sidebarView: null,
 
+        landerModel: null,
+
         //needed to make animations correct sets width etc. for initial opening
         loadLandersSideMenu: function() {
+          this.landerModel = new SidebarModel();
+
           this.sidebarView = new SidebarLayoutView({
-            model: new SidebarModel()
+            model: this.landerModel
           });
+
           Moonlander.rootRegion.currentView.rightSidebarRegion.show(this.sidebarView);
         },
 
+        //save even if not modified because it might not be deployed
+        //in which case we would want to save it anyway
+        updateToModifiedAndSave: function() {
+
+          var deployedLocationCollection = this.landerModel.get("deployedLocations");
+
+          //1. set modified if it is deployed
+          if (deployedLocationCollection.length > 0) {
+            this.landerModel.set("modified", true);
+          }
+          //2. save it no matter what
+          this.landerModel.save({}, {
+            success: function() {
+              deployedLocationCollection.each(function(location) {
+                var deployStatus = location.get("deploy_status");
+                if (deployStatus != "undeploying" && deployStatus != "deploying") {
+                  location.set("deploy_status", "modified");
+                } else {
+                  location.set("shouldSetModifiedWhenJobsFinish", true);
+                }
+              });
+            }
+          });
+
+        },
 
         //whenever sidebar is open it has the real lander model as its model not a stupid sidebar model
         //sidebar model is just a mock thing to make loading work
         openSidebar: function(model) {
+          var me = this;
+
+          this.landerModel = model;
+
           this.sidebarView = new SidebarLayoutView({
             model: model
           });
@@ -39,11 +73,8 @@ define(["app",
           //it will propogate up to the lander model
           optimizationView.on("modified", function() {
 
-            var deployedLocationCollection = model.get("deployedLocations");
+            me.updateToModifiedAndSave();
 
-            deployedLocationCollection.each(function(location) {
-              location.set("deploy_status", "modified");
-            });
 
           });
 
@@ -71,6 +102,7 @@ define(["app",
         },
 
         showAndReFilterActiveSnippetsView: function(model) {
+          var me = this;
           //create the view here
           //only give it urlEndpoints with active snippets
           var urlEndpointsCollection = model.get("urlEndpoints");
@@ -107,6 +139,8 @@ define(["app",
             if (snippetToDestroy) {
               snippetToDestroy.destroy();
             }
+
+            me.updateToModifiedAndSave();
 
             //3. if no more active snippets on this, destroy it
             Moonlander.trigger("landers:sidebar:showSidebarActiveSnippetsView", model);

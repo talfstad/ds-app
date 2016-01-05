@@ -181,7 +181,7 @@ define(["app",
                     var endpointsActiveSnippetCollection = endpointToAddTo.get("activeSnippets");
 
                     endpointsActiveSnippetCollection.add(newActiveSnippetModel);
-
+                    Moonlander.trigger("landers:updateToModifiedAndSave");
                     Moonlander.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerModel);
                     //set addingToPage to 'finished' to show the finished message and remove
                     snippetModel.set("addingToPage", "finished");

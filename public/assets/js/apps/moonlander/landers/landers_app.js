@@ -84,6 +84,9 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
       loadLandersSideMenu: function(d){
         SidemenuController.loadLandersSideMenu();
       },
+      updateToModifiedAndSave: function(){
+        SidemenuController.updateToModifiedAndSave();
+      },
       deleteLander: function(model){
         ListController.deleteLander(model);
       },
@@ -112,6 +115,10 @@ function(Moonlander, ListController, CommonLogin, SidemenuController, EditContro
 
     Moonlander.on("landers:closesidebar", function(){
       landersAppAPI.closeSidebar();
+    });
+
+    Moonlander.on("landers:updateToModifiedAndSave", function(){
+      landersAppAPI.updateToModifiedAndSave();
     });
 
     Moonlander.on("landers:showEdit", function(model){

@@ -218,6 +218,11 @@ define(["app",
         }
         this.set("deploy_status", deployStatus);
 
+        if(this.get("modified")) {
+          deployedLocationsCollection.each(function(location){
+            location.set("deploy_status", "modified");
+          });
+        }
 
       },
 
@@ -235,7 +240,8 @@ define(["app",
         //gui update attributes
         deploy_status: 'not_deployed',
         active_campaigns_count: 0,
-        totalNumJsSnippets: 0
+        totalNumJsSnippets: 0,
+        modified: false
       }
 
     });

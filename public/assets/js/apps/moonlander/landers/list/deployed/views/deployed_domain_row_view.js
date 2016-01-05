@@ -72,7 +72,7 @@ define(["app",
           } else if (deployStatus === "undeploying") {
             this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong> &mdash;");
           } else if (deployStatus === "modified") {
-            this.model.set("deploy_status_gui", "<strong>MODIFIED</strong> &mdash;");
+            this.model.set("deploy_status_gui", "<strong>DEPLOY REQUIRED</strong> &mdash;");
           }
 
           //add attached campaigns to template

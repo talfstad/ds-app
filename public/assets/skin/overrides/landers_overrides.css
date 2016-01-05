@@ -314,6 +314,10 @@ tr.success a {
     color: #3f9532;
 }
 
+tr.alert a {
+    color: #542fb2;
+}
+
 tr.alert td {
     font-size: 13px;
 }

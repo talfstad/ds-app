@@ -14,11 +14,11 @@ define(["app",
           'change:deploy_status': 'render'
         },
 
-        onBeforeRender: function() {
+        onRender: function() {
           if (this.model.get("deploy_status") != "modified") {
             this.$el.hide();
           } else {
-            this.$el.show();
+            this.$el.fadeIn();
           }
         }
 
