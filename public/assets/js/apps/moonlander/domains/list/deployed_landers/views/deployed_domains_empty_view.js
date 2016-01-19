@@ -7,25 +7,8 @@ define(["app",
       List.EmptyView = Marionette.ItemView.extend({
         template: EmptyTpl,
         tagName: "tr",
-        className: "primary",
+        className: "dark"
 
-        isInitializing: false,
-
-        initialize: function(options){
-          this.isInitializing = options.isInitializing || false;
-        },
-
-        onRender: function() {
-          if (this.isInitializing) {
-            this.$el.removeClass("primary").addClass("alert");
-          }
-        },
-
-        serializeData: function() {
-          return {
-            isInitializing: this.isInitializing
-          };
-        }
 
       });
     });

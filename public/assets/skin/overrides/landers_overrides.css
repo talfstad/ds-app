@@ -178,6 +178,26 @@ tr.success .domain-endpoint-select {
     height: inherit;
 }
 
+tr.info .domain-endpoint-select {
+    height: 21px;
+    display: inherit;
+    color: #1c7393;
+    width: inherit;
+    height: inherit;
+}
+
+tr.dark .domain-endpoint-select {
+    /*height: 21px;*/
+    display: inherit;
+    color: #3b3f4f;
+    width: auto;
+    height: inherit;
+}
+
+.table > tbody > tr.dark > td {
+    background-color: #cdcfde;
+}
+
 tr.warning .domain-endpoint-select {
     display: inherit;
     color: #c88a0a;
@@ -417,3 +437,12 @@ tr.warning input[type=select] {
 .deployed-domains-region .alert {
     border: none !important;
 }
+
+.table > tbody > tr > td.absorbing-column {
+    width: 100%;
+}
+
+.table > tbody > tr > td.absorbing-column > .domain-link {
+    margin-left: 15px;
+}
+

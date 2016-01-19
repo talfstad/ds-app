@@ -6,7 +6,7 @@
           <%= name %>
        
         <div class="widget-menu domain-campaign-notification">
-           <span class="fs11 text-muted" title="Currently deployed on 2 domains"><%= last_updated_gui %></span>
+           <span class="fs11 text-muted"><%= last_updated_gui %></span>
         </div>
          </a>
        
@@ -20,9 +20,10 @@
           <div class="tab-pane " role="tabpanel" id="domains-tab-id-<%= id %>">
             <div class="panel-menu clearfix">
               <div class="row" style="margin-left: 0px; margin-right: 0px;">
-                <div style="margin-left: 5px; padding-top: 10px; float: left;" class="clearfix">
+                <div class="clearfix deployed-landers-header-container">
                   <span style="width: 20px">#</span>
                   <span style="margin-left: 15px">Deployed Landers</span>
+                  <span class="deployed-landers-header">Lander Links</span>
                 </div>
                 <div style="float: right;" class="deploy-to-new-domain-region clearfix">
                   

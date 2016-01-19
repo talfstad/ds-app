@@ -22,8 +22,9 @@ define(["app",
             isInitializing: this.collection.isInitializing || false
           };
         },
-
+        
         onRender: function() {
+
 
 
         }

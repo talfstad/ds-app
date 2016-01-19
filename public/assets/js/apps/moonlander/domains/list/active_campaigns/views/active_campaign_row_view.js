@@ -8,7 +8,7 @@ define(["app",
 
         template: ActiveCampaignRowTpl,
         tagName: "tr",
-        className: "info pb13",
+        className: "dark pb13",
 
         events: {
           "click .remove-campaign": "showRemoveLanderFromCampaignDialog"

@@ -6,7 +6,7 @@ define(["app",
     "/assets/js/common/filtered_paginated/paginated_button_view.js",
     "/assets/js/apps/moonlander/domains/list/views/topbar_view.js",
     "/assets/js/apps/moonlander/domains/list/views/loading_view.js",
-    "/assets/js/apps/moonlander/domains/list/views/deploy_status_view.js",
+    "/assets/js/apps/moonlander/domains/list/views/lander_tab_handle_view.js",
     "/assets/js/apps/moonlander/domains/list/views/campaign_tab_handle_view.js",
     "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_domains_collection_view.js",
     "/assets/js/apps/moonlander/domains/dao/domain_collection.js",
@@ -19,7 +19,7 @@ define(["app",
     "/assets/js/apps/moonlander/domains/list/views/list_layout_view.js"
   ],
   function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
-    PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView,
+    PaginatedButtonView, TopbarView, LoadingView, LanderTabHandleView, CampaignTabHandleView,
     DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLocationModel,
     JobModel, ActiveCampaignModel, DeployToNewDomainView, AddToNewCampaignView) {
     Moonlander.module("DomainsApp.Domains.List", function(List, Moonlander, Backbone, Marionette, $, _) {
@@ -273,7 +273,7 @@ define(["app",
               if (this.length > 0) {
                 landersListView.children.each(function(landerView) {
 
-                  var deployStatusView = new DeployStatusView({
+                  var landerTabHandleView = new LanderTabHandleView({
                     model: landerView.model
                   });
 
@@ -365,7 +365,7 @@ define(["app",
 
 
 
-                  landerView.lander_tab_handle_region.show(deployStatusView);
+                  landerView.lander_tab_handle_region.show(landerTabHandleView);
                   landerView.campaign_tab_handle_region.show(campaignTabHandleView);
                   landerView.deployed_domains_region.show(deployedDomainsView);
                   landerView.active_campaigns_region.show(activeCampaignsView);

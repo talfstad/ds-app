@@ -32,7 +32,7 @@ define(["app",
 
         template: DeployedDomainRowTpl,
         tagName: "tr",
-        className: "success",
+        className: "dark",
 
         modelEvents: {
           "change": "render"

@@ -2,3 +2,14 @@
 .lander-status-tab-handle {
     width: 120px !important;
 }
+
+.deployed-landers-header {
+	margin-left: 30px;
+}
+
+.deployed-landers-header-container {
+	margin-left: 5px; 
+	padding-top: 10px; 
+	float: left;
+	display: none;
+}
