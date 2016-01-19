@@ -240,6 +240,7 @@ define(["app",
         //gui update attributes
         deploy_status: 'not_deployed',
         active_campaigns_count: 0,
+        active_landers_count: 0,
         totalNumJsSnippets: 0,
         modified: false
       }

@@ -2,12 +2,13 @@ define(["app",
     "/assets/js/apps/moonlander/domains/list/views/list_view.js",
     "/assets/js/apps/moonlander/domains/dao/lander_collection.js",
     "/assets/js/common/filtered_paginated/filtered_paginated_collection.js",
+    "/assets/js/common/filtered_paginated/paginated_model.js",
     "/assets/js/common/filtered_paginated/paginated_button_view.js",
     "/assets/js/apps/moonlander/domains/list/views/topbar_view.js",
     "/assets/js/apps/moonlander/domains/list/views/loading_view.js",
     "/assets/js/apps/moonlander/domains/list/views/deploy_status_view.js",
     "/assets/js/apps/moonlander/domains/list/views/campaign_tab_handle_view.js",
-    "/assets/js/apps/moonlander/domains/list/deployed/views/deployed_domains_collection_view.js",
+    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_domains_collection_view.js",
     "/assets/js/apps/moonlander/domains/dao/domain_collection.js",
     "/assets/js/apps/moonlander/domains/list/active_campaigns/views/active_campaigns_collection_view.js",
     "/assets/js/apps/moonlander/domains/dao/deployed_location_model.js",
@@ -17,7 +18,7 @@ define(["app",
     "/assets/js/apps/moonlander/domains/list/views/add_to_new_campaign_view.js",
     "/assets/js/apps/moonlander/domains/list/views/list_layout_view.js"
   ],
-  function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection,
+  function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
     PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView,
     DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLocationModel,
     JobModel, ActiveCampaignModel, DeployToNewDomainView, AddToNewCampaignView) {
@@ -196,6 +197,27 @@ define(["app",
           var loadingView = new LoadingView();
           landersListLayout.landersCollectionRegion.show(loadingView);
 
+
+          //set initial topbar view crap reloads when data loads
+          var topbarView = new TopbarView({
+            model: new PaginatedModel({
+              current_page: 1,
+              num_pages: 0,
+              showing_high: 0,
+              showing_low: 0,
+              showing_total: 0,
+              total_deleting: 0,
+              total_deploying: 0,
+              total_initializing: 0,
+              total: 0,
+              total_modified: 0,
+              total_not_deployed: 0,
+              total_num_items: 0
+            })
+          });
+
+          landersListLayout.topbarRegion.show(topbarView);
+
           //request landers collection
           var deferredLandersCollection = Moonlander.request("domains:landersCollection");
 
@@ -283,9 +305,7 @@ define(["app",
                     deployedDomainsCollection.isInitializing = true;
                   }
 
-                  deployedDomainsCollection.on("destroy", function() {
-                    deployedDomainsView.trigger("childview:updateParentLayout");
-                  });
+                  
 
                   var deployToNewDomainView = new DeployToNewDomainView({
                     model: landerView.model
@@ -298,6 +318,17 @@ define(["app",
                   var deployedDomainsView = new DeployedDomainsView({
                     collection: deployedDomainsCollection
                   });
+
+                  deployedDomainsView.on("childview:updateParentLayout", function(childView, options) {
+                    //update the campaign count for lander
+                    var length = this.children.length;
+                    if (childView.isDestroyed) --length;
+                    campaignTabHandleView.model.set("active_landers_count", length);
+                  });
+
+                  // deployedDomainsCollection.on("destroy", function() {
+                  //   deployedDomainsView.trigger("childview:updateParentLayout");
+                  // });
 
                   //when campaign link selected go to camp tab (this is from deployed domains campaign name link)
                   deployedDomainsView.on("childview:selectCampaignTab", function(one, two, three) {
@@ -334,7 +365,7 @@ define(["app",
 
 
 
-                  landerView.deploy_status_region.show(deployStatusView);
+                  landerView.lander_tab_handle_region.show(deployStatusView);
                   landerView.campaign_tab_handle_region.show(campaignTabHandleView);
                   landerView.deployed_domains_region.show(deployedDomainsView);
                   landerView.active_campaigns_region.show(activeCampaignsView);

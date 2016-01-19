@@ -1,13 +1,13 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/domains/rip_new_lander/templates/rip_new_lander_layout.tpl",
+    "tpl!/assets/js/apps/moonlander/domains/add_new_domain/templates/add_new_domain_layout.tpl",
     "bootstrap.fileinput",
     "syphon"
   ],
   function(Moonlander, RipNewLanderLayoutTpl) {
 
-    Moonlander.module("DomainsApp.Domains.RipNewLander", function(RipNewLander, Moonlander, Backbone, Marionette, $, _) {
+    Moonlander.module("DomainsApp.Domains.AddNewDomain", function(AddNewDomain, Moonlander, Backbone, Marionette, $, _) {
 
-      RipNewLander.Layout = Marionette.LayoutView.extend({
+      AddNewDomain.Layout = Marionette.LayoutView.extend({
 
         // id: "undeploy-lander-modal",
 
@@ -24,7 +24,7 @@ define(["app",
         regions: {},
 
         events: {
-          "click .rip-new-lander-confirm": "confirmedRipNewLander"
+          "click .add-new-domain-confirm": "confirmedRipNewLander"
         },
 
         confirmedRipNewLander: function(e) {
@@ -34,25 +34,24 @@ define(["app",
           e.preventDefault();
 
           //key fields are valid
-          var newLanderData = Backbone.Syphon.serialize(this);
+          var newDomainData = Backbone.Syphon.serialize(this);
 
           //just a very small amount of validation, all really done on server
-          if (newLanderData.landerName != "" && newLanderData.landerUrl != "") {
+          if (newDomainData.domainName != "") {
 
             //1. set the new values into the job model
-            this.model.set("lander_name", newLanderData.landerName);
-            this.model.set("lander_url", newLanderData.landerUrl);
+            this.model.set("domain", newLanderData.landerName);
 
             //2. save the job
-            this.model.save({}, {
-              success: function(jobModel) {
-                me.trigger("ripLanderAddedAndProcessing", jobModel);
-              },
-              error: function() {}
-            });
+            // this.model.save({}, {
+            //   success: function(jobModel) {
+            //     me.trigger("ripLanderAddedAndProcessing", jobModel);
+            //   },
+            //   error: function() {}
+            // });
 
           } else {
-            var alert = this.$el.find(".new-lander-info-alert");
+            var alert = this.$el.find(".new-domain-info-alert");
             var adminForm = this.$el.find(".admin-form");
             var currentHtml = alert.html();
 
@@ -60,7 +59,7 @@ define(["app",
 
             alert.addClass("alert-danger");
             alert.removeClass("alert-default");
-            alert.html("You must add both a new lander name &amp; lander URL to rip a new lander");
+            alert.html("You must enter a domain name before adding it.");
 
 
             setTimeout(function() {
@@ -83,7 +82,7 @@ define(["app",
           });
 
           this.$el.on('shown.bs.modal', function(e) {
-            $(".lander-name").focus();
+            $(".domain-name").focus();
           });
 
           this.$el.modal('show');
@@ -100,5 +99,5 @@ define(["app",
       });
 
     });
-    return Moonlander.DomainsApp.Domains.RipNewLander.Layout;
+    return Moonlander.DomainsApp.Domains.AddNewDomain.Layout;
   });

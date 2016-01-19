@@ -14,29 +14,21 @@ define(["app",
         id: "content_wrapper",
 
         regions: {
-          landersCollectionRegion: "#landers-region",
+          landersCollectionRegion: "#domains-region",
           footerRegion: "#footer-region",
           topbarRegion: "#first-topbar"
         },
 
         events: {
-          "click .add-new-lander-button": "showAddNewLander",
-          "click .rip-and-deploy-button": "showRipNewLander"
+          "click .add-new-domain-button": "showAddNewDomain",
         },
 
-        showRipNewLander: function(e){
+        showAddNewDomain: function(e){
           e.preventDefault();
-
-          Moonlander.trigger("domains:showRipNewLanderModal");
+          Moonlander.trigger("domains:showAddNewDomainModal");
         },
 
-        showAddNewLander: function(e){
-          e.preventDefault();
-
-          Moonlander.trigger("domains:showAddNewLanderModal");
-        },
-
-        filterLanders: function(filterValue) {
+        filterDomains: function(filterValue) {
           this.trigger("domains:filterList", filterValue);
           Moonlander.trigger('domains:closesidebar');
         },
@@ -66,8 +58,6 @@ define(["app",
             Moonlander.trigger('domains:closesidebar');
             me.trigger("domains:sort");
           });
-
-       
 
           // Prevents a dropdown menu from closing when
           // a btn-group nav menu it contains is clicked
@@ -103,7 +93,7 @@ define(["app",
 
           var typeWatchoptions = {
             callback: function(value) {
-              me.filterLanders(value);
+              me.filterDomains(value);
             },
             wait: 150,
             highlight: false,

@@ -13,14 +13,14 @@ define(["app",
       },
     });
 
-    var landerCollectionInstance = null;
+    // var landerCollectionInstance = null;
 
     var API = {
       getLandersCollection: function() {
         var me = this;
         var defer = $.Deferred();
 
-        if (!this.landerCollectionInstance) {
+        // if (!this.landerCollectionInstance) {
 
           this.landerCollectionInstance = new LanderCollection();
 
@@ -29,12 +29,12 @@ define(["app",
               defer.resolve(landers);
             }
           });
-        } else {
-          //async hack to still return defer
-          setTimeout(function() {
-            defer.resolve(me.landerCollectionInstance);
-          }, 200);
-        }
+        // } else {
+        //   //async hack to still return defer
+        //   setTimeout(function() {
+        //     defer.resolve(me.landerCollectionInstance);
+        //   }, 200);
+        // }
 
         var promise = defer.promise();
         return promise;

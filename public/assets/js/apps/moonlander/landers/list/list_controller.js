@@ -2,6 +2,7 @@ define(["app",
     "/assets/js/apps/moonlander/landers/list/views/list_view.js",
     "/assets/js/apps/moonlander/landers/dao/lander_collection.js",
     "/assets/js/common/filtered_paginated/filtered_paginated_collection.js",
+    "/assets/js/common/filtered_paginated/paginated_model.js",
     "/assets/js/common/filtered_paginated/paginated_button_view.js",
     "/assets/js/apps/moonlander/landers/list/views/topbar_view.js",
     "/assets/js/apps/moonlander/landers/list/views/loading_view.js",
@@ -17,7 +18,7 @@ define(["app",
     "/assets/js/apps/moonlander/landers/list/views/add_to_new_campaign_view.js",
     "/assets/js/apps/moonlander/landers/list/views/list_layout_view.js"
   ],
-  function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection,
+  function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
     PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView,
     DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLocationModel,
     JobModel, ActiveCampaignModel, DeployToNewDomainView, AddToNewCampaignView) {
@@ -195,6 +196,27 @@ define(["app",
 
           var loadingView = new LoadingView();
           landersListLayout.landersCollectionRegion.show(loadingView);
+
+          //set initial topbar view crap reloads when data loads
+          var topbarView = new TopbarView({
+            model: new PaginatedModel({
+              current_page: 1,
+              num_pages: 0,
+              showing_high: 0,
+              showing_low: 0,
+              showing_total: 0,
+              total_deleting: 0,
+              total_deploying: 0,
+              total_initializing: 0,
+              total: 0,
+              total_modified: 0,
+              total_not_deployed: 0,
+              total_num_items: 0
+            })
+          });
+
+          landersListLayout.topbarRegion.show(topbarView);
+
 
           //request landers collection
           var deferredLandersCollection = Moonlander.request("landers:landersCollection");

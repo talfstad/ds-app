@@ -1,13 +1,13 @@
 define(["app",
     "tpl!/assets/js/apps/moonlander/domains/list/templates/landers_child_item.tpl",
-    "/assets/js/apps/moonlander/domains/list/deployed/views/deployed_domains_collection_view.js",
-    "/assets/js/apps/moonlander/domains/list/deployed/views/deployed_domains_empty_view.js",
+    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_domains_collection_view.js",
+    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_domains_empty_view.js",
     "/assets/js/apps/moonlander/domains/dao/sidebar_model.js",
     "moment-timezone",
     "/assets/js/apps/moonlander/domains/list/views/deploy_status_view.js",
     "/assets/js/apps/moonlander/domains/list/views/campaign_tab_handle_view.js",
     "/assets/js/apps/moonlander/domains/list/active_campaigns/views/active_campaigns_collection_view.js",
-    "/assets/js/apps/moonlander/domains/list/deployed/views/deployed_domains_collection_view.js",
+    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_domains_collection_view.js",
     "bootstrap",
     "jstz"
   ],
@@ -37,7 +37,7 @@ define(["app",
         },
 
         regions: {
-          'deploy_status_region': '.deploy-status-region',
+          'lander_tab_handle_region': '.lander-tab-handle-region',
           'deployed_domains_region': '.deployed-domains-region',
           'campaign_tab_handle_region': '.campaign-tab-handle-region',
           'active_campaigns_region': '.active_campaigns_region',
@@ -74,7 +74,7 @@ define(["app",
 
           this.$el.find(".campaign-tab-handle-region").off();
           this.$el.find(".accordion-toggle").off();
-          this.$el.find(".deploy-status-region").off()
+          this.$el.find(".lander-tab-handle-region").off()
           this.$el.off();
           this.$el.find(".nav.panel-tabs").off();
 
@@ -116,7 +116,7 @@ define(["app",
               $(e.currentTarget).attr("data-currently-hovering", false);
             });
 
-            this.$el.find(".deploy-status-region").hover(function(e) {
+            this.$el.find(".lander-tab-handle-region").hover(function(e) {
               $(e.currentTarget).attr("data-currently-hovering", true);
             }, function(e) {
               $(e.currentTarget).attr("data-currently-hovering", false);
@@ -141,7 +141,7 @@ define(["app",
               $(".accordion-toggle").addClass("inactive-link");
 
               //first dont show any tabs then show correct tab
-              $(e.currentTarget).find("li.deploy-status-region").removeClass("active");
+              $(e.currentTarget).find("li.lander-tab-handle-region").removeClass("active");
               $(e.currentTarget).find("div[id^='domains-tab']").removeClass("active");
               $(e.currentTarget).find("li.campaign-tab-handle-region").removeClass("active");
               $(e.currentTarget).find("div[id^='campaigns-tab']").removeClass("active");
@@ -154,7 +154,7 @@ define(["app",
                 currentTabData.addClass("active");
               } else {
                 //no tab show domains tab
-                $(e.currentTarget).find("li.deploy-status-region").addClass("active");
+                $(e.currentTarget).find("li.lander-tab-handle-region").addClass("active");
                 $(e.currentTarget).find("div[id^='domains-tab']").addClass("active");
               }
 

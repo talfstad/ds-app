@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/apps/moonlander/domains/list/deployed/views/deployed_domain_row_view.js",
-    "/assets/js/apps/moonlander/domains/list/deployed/views/deployed_domains_empty_view.js"
+    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_domain_row_view.js",
+    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_domains_empty_view.js"
   ],
   function(Moonlander, DeployedDomainRowView, EmptyView) {
 

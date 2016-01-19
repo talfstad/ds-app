@@ -18,21 +18,10 @@ define(["app",
         className: "nano affix",
 
         events: {
-          "click button.lander-edit": "showEditLander",
           "click .delete-lander-button": "showDeleteLanderModal",
-          "click .duplicate-lander-button": "showDuplicateLanderModal",
-          "click .add-snippet-button": "showJsSnippetsModal"
         },
 
-        modelEvents: {
-          "change:deploy_status": "showAlerts"
-        },
-
-        //show modified alert if 
-        showAlerts: function() {
-
-        },
-
+      
         showJsSnippetsModal: function(e) {
           Moonlander.trigger("domains:showJsSnippetsModal", this.model);
         },

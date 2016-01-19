@@ -12,7 +12,7 @@
        
         <ul class="nav panel-tabs">
           <li class="campaign-tab-handle-region" data-tab-target="campaigns-tab-id-<%= id %>"></li>
-          <li class="deploy-status-region" data-tab-target="domains-tab-id-<%= id %>"></li>
+          <li class="lander-tab-handle-region" data-tab-target="domains-tab-id-<%= id %>"></li>
         </ul>
       </div>
       <div id="accord<%= id %>" class="panel-collapse collapse" style="height: auto;">
@@ -22,7 +22,7 @@
               <div class="row" style="margin-left: 0px; margin-right: 0px;">
                 <div style="margin-left: 5px; padding-top: 10px; float: left;" class="clearfix">
                   <span style="width: 20px">#</span>
-                  <span style="margin-left: 15px">Deployed Domains</span>
+                  <span style="margin-left: 15px">Deployed Landers</span>
                 </div>
                 <div style="float: right;" class="deploy-to-new-domain-region clearfix">
                   

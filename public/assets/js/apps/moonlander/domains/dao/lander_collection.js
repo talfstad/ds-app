@@ -13,28 +13,21 @@ define(["app",
       },
     });
 
-    var landerCollectionInstance = null;
 
     var API = {
       getLandersCollection: function() {
         var me = this;
         var defer = $.Deferred();
 
-        if (!this.landerCollectionInstance) {
 
-          this.landerCollectionInstance = new LanderCollection();
+        this.landerCollectionInstance = new LanderCollection();
 
-          this.landerCollectionInstance.fetch({
-            success: function(landers) {
-              defer.resolve(landers);
-            }
-          });
-        } else {
-          //async hack to still return defer
-          setTimeout(function() {
-            defer.resolve(me.landerCollectionInstance);
-          }, 200);
-        }
+        this.landerCollectionInstance.fetch({
+          success: function(landers) {
+            defer.resolve(landers);
+          }
+        });
+
 
         var promise = defer.promise();
         return promise;

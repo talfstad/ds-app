@@ -28,7 +28,7 @@ define(["app",
         },
 
         modelEvents: {
-          "change": "render"
+          "change:active_campaigns_count": "render"
         }
       });
     });

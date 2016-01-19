@@ -12,13 +12,13 @@
           <ul class="dropdown-menu dropdown-menu-left pt5" role="menu">
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
-                <input checked data-sort-by="lander-name" value="10" id="10-pages-radio" type="radio" name="pages-radio">
+                <input checked data-sort-by="domain-name" value="10" id="10-pages-radio" type="radio" name="pages-radio">
                 <label class="ml5" for="10-pages-radio">10 Rows Per Page</label>
               </a>
             </li>
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
-                <input value="20" data-sort-by="lander-name" id="20-pages-radio" type="radio" name="pages-radio">
+                <input value="20" data-sort-by="domain-name" id="20-pages-radio" type="radio" name="pages-radio">
                 <label class="ml5" for="20-pages-radio">20 Rows Per Page</label>
               </a>
             </li>
@@ -35,14 +35,14 @@
           <button data-toggle="dropdown" style="text-align: left" role="button" aria-expanded="false" type="button" class="ml10 w200 pl10 pt5 pb5 btn btn-default btn-gradient dark">
             <span class="fa fa-caret-down pr5"></span>
             Sort By: 
-            <span class="sortbyname">Lander Name</span> 
+            <span class="sortbyname">Domain Name</span> 
             <span class="sortbyorder">Asc</span>
           </button>
           <ul class="topbar dropdown-menu dropdown-menu-left pt5" role="menu">
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
-                <input checked data-sortby-name="Lander Name" data-sort-by="lander-name" type="radio" id="lander-name" name="sort-radio">
-                <label class="ml5" for="lander-name">Lander Name</label>
+                <input checked data-sortby-name="Domain Name" data-sort-by="domain-name" type="radio" id="domain-name" name="sort-radio">
+                <label class="ml5" for="domain-name">Domain Name</label>
               </a>
             </li>
             <li>
@@ -71,14 +71,14 @@
         <ul class="nav nav-list nav-list-topbar pull-left">
           <form class="navbar-form navbar-search pull-left mtn mbn" role="search">
             <div class=" mt10 form-group">
-              <input type="text" class="lander-search w250 form-control" placeholder="Search Lander Name..." value="">
+              <input type="text" class="lander-search w250 form-control" placeholder="Search Domain Name..." value="">
             </div>
           </form>
         </ul>
 
         <div class="topbar-right hidden-xs hidden-sm">
            <div class="bs-component btn-group ml15">
-            <button type="button" class="rip-and-deploy-button pl10 pt5 pb5 btn btn-default btn-gradient dark">
+            <button type="button" class="add-new-domain-button pl10 pt5 pb5 btn btn-default btn-gradient dark">
               <span class="fa fa-plus pr5"></span>Add New Domain
             </button>
           </div>
@@ -96,7 +96,7 @@
         
 
         </div>
-        <div id="landers-region" style="margin-top: 25px" class="ph10 landers-list-items">
+        <div id="domains-region" style="margin-top: 25px" class="ph10 landers-list-items">
           
         </div>
       </section>

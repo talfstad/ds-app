@@ -31,7 +31,7 @@ define(["app",
 
           filtered.state.gui.set('total_not_deployed', 0);
           filtered.state.gui.set('total_deploying', 0);
-          filtered.state.gui.set('total_landers', 0);
+          filtered.state.gui.set('total', 0);
           filtered.state.gui.set('total_initializing', 0);
           filtered.state.gui.set('total_deleting', 0);
           filtered.state.gui.set('total_modified', 0);
@@ -198,7 +198,7 @@ define(["app",
           });
           filtered.state.gui.set("total_not_deployed", notDeployedTotal);
           filtered.state.gui.set("total_deploying", deployingTotal);
-          filtered.state.gui.set("total_landers", totalLanders);
+          filtered.state.gui.set("total", totalLanders);
           filtered.state.gui.set("total_initializing", initializing);
           filtered.state.gui.set("total_deleting", deleting);
           filtered.state.gui.set("total_modified", modified);

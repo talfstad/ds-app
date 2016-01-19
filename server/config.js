@@ -10,7 +10,7 @@ module.exports = {
     host : '52.88.173.62',
     // host : 'localhost',
     user : 'root',
-    password : 'wewillwinintheend123!@#',
+    password : 'Wewillrockyou1986!',
     database : 'moonlander',
     multipleStatements: true,
     connectionLimit: 10

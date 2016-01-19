@@ -1,6 +1,6 @@
 <td style="width: 20px"><%= viewIndex %></td>
 <td>
-  <%= deploy_status_gui %> 
+  
 
       <% if(deploy_status === "deployed") { %>
       
@@ -16,15 +16,11 @@
       
       </select>
       
-      <% } else { %>
-
-      <a class="domain-link" target="_blank"><%= domain %></a> 
-
       <% } %>
 
       <div style="float: right; margin-right: 10px">
 
-        <% if(attached_campaigns_gui.length > 0 && deploy_status === "deployed") { %>
+        <% if(attached_campaigns_gui.length > 0) { %>
 
           <% _.each(attached_campaigns_gui, function(campaignName, i){ %>
           
@@ -33,7 +29,7 @@
           <% }); %>
 
 
-        <% } else if(deploy_status === "deployed") { %>
+        <% } else { %>
         
         <a class="undeploy" href="#">
           <span class="fa fa-trash-o"></span>

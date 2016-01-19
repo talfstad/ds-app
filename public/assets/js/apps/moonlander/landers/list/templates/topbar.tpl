@@ -9,27 +9,27 @@
   <div class="right-stats"> 
     <% 
       var lander = "Lander"
-      if(total_not_deployed > 1) {
+      if(total_not_deployed > 1 || total_not_deployed < 1) {
         var lander = "Landers"
       } 
       var totalLander = "Lander"
-      if(total_landers > 1) {
+      if(total > 1 || total < 1) {
         totalLander = "Landers"
       }
       var totalDeployingLander = "Lander"
-      if(total_deploying > 1) {
+      if(total_deploying > 1 || total_deploying < 1) {
         totalDeployingLander = "Landers"
       }
       var initializingLanderText = "Lander"
-      if(total_initializing > 1){ 
+      if(total_initializing > 1 || total_initializing < 1){ 
         initializingLanderText = "Landers"
       }
       var deletingLanderText = "Lander"
-      if(total_deleting > 1){
+      if(total_deleting > 1 || total_deleting < 1){
         deletingLanderText = "Landers"
       }
       var modifiedLanderText = "Lander"
-      if(total_modified > 1){
+      if(total_modified > 1 || total_modified < 1){
         modifiedLanderText = "Landers"
       }
     %>
@@ -78,7 +78,7 @@
       <span class="badge-success badge">45</span> Deployed
     </div> -->
     <div>
-      <span class="badge-light badge"><%= total_landers %></span> Total <%= totalLander %>
+      <span class="badge-light badge"><%= total %></span> Total <%= totalLander %>
     </div>
   </div>
 </div>

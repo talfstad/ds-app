@@ -1,14 +1,14 @@
 define(["app",
-    "/assets/js/apps/moonlander/domains/rip_new_lander/views/rip_new_lander_layout_view.js",
+    "/assets/js/apps/moonlander/domains/add_new_domain/views/add_new_domain_layout_view.js",
     "/assets/js/jobs/jobs_model.js",
     "/assets/js/apps/moonlander/domains/dao/lander_model.js"
   ],
   function(Moonlander, RipNewLanderLayoutView, JobModel, LanderModel) {
-    Moonlander.module("DomainsApp.Domains.RipNewLander", function(RipNewLander, Moonlander, Backbone, Marionette, $, _) {
+    Moonlander.module("DomainsApp.Domains.AddNewDomain", function(AddNewDomain, Moonlander, Backbone, Marionette, $, _) {
 
-      RipNewLander.Controller = {
+      AddNewDomain.Controller = {
 
-        showRipNewLanderModal: function() {
+        showAddNewDomainModal: function() {
 
           //make new lander model for it
           var jobModel = new JobModel({
@@ -19,7 +19,7 @@ define(["app",
             model: jobModel
           });
 
-          ripNewLanderLayout.on("ripLanderAddedAndProcessing", function(jobModel){
+          ripNewLanderLayout.on("confirmAddDomain", function(jobModel) {
             //1. create a new lander model
             var landerModel = new LanderModel({
               id: jobModel.get("lander_id"),
@@ -40,11 +40,11 @@ define(["app",
           ripNewLanderLayout.render();
 
           Moonlander.rootRegion.currentView.modalRegion.show(ripNewLanderLayout);
-        
+
         }
 
       }
     });
 
-    return Moonlander.DomainsApp.Domains.RipNewLander.Controller;
+    return Moonlander.DomainsApp.Domains.AddNewDomain.Controller;
   });

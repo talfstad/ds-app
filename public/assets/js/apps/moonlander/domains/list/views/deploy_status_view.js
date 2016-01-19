@@ -1,11 +1,11 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/domains/list/templates/deploy_status_tab_handle.tpl"
+    "tpl!/assets/js/apps/moonlander/domains/list/templates/landers_tab_handle.tpl"
   ],
-  function(Moonlander, deployStatusTpl) {
+  function(Moonlander, landersStatusTpl) {
 
     Moonlander.module("DomainsApp.Domains.List", function(List, Moonlander, Backbone, Marionette, $, _) {
       List.DeployStatus = Marionette.ItemView.extend({
-
+        className: "lander-status-tab-handle",
         tagName: "a",
         attributes: function() {
           return {
@@ -13,12 +13,9 @@ define(["app",
             "data-toggle": "tab"
           }
         },
-        template: deployStatusTpl,
+        
+        template: landersStatusTpl,
 
-
-        modelEvents: {
-          "change:deploy_status": "render"
-        },
         
         onRender: function() {
           //remove tab capability if deleting
@@ -31,6 +28,10 @@ define(["app",
             e.preventDefault();
           });
 
+        },
+
+        modelEvents: {
+          "change:active_landers_count": "render"
         }
 
 

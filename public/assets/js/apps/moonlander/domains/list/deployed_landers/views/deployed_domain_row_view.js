@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/domains/list/deployed/templates/deployed_domain_row.tpl"
+    "tpl!/assets/js/apps/moonlander/domains/list/deployed_landers/templates/deployed_domain_row.tpl"
   ],
   function(Moonlander, DeployedDomainRowTpl) {
 
@@ -49,32 +49,7 @@ define(["app",
         },
 
         onBeforeRender: function() {
-          //if we have active jobs we are deploying
-          // if (this.model.get("activeJobs").length > 0) {
-          //   var deployStatus = "deploying";
-          //   this.model.get("activeJobs").each(function(job) {
-          //     if (job.get("action") === "undeployLanderFromDomain") {
-          //       deployStatus = "undeploying";
-          //     }
-          //   });
-
-          //   this.model.set("deploy_status", deployStatus);
-          // } else {
-          //   this.model.set("deploy_status", "deployed");
-          // }
-
-          //set deploystatus for gui
-          var deployStatus = this.model.get("deploy_status");
-          if (deployStatus === "deployed") {
-            this.model.set("deploy_status_gui", "");
-          } else if (deployStatus === "deploying") {
-            this.model.set("deploy_status_gui", "<strong>DEPLOYING</strong> &mdash;");
-          } else if (deployStatus === "undeploying") {
-            this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong> &mdash;");
-          } else if (deployStatus === "modified") {
-            this.model.set("deploy_status_gui", "<strong>DEPLOY REQUIRED</strong> &mdash;");
-          }
-
+         
           //add attached campaigns to template
           var attachedCampaignNamesArray = [];
           this.model.get("attachedCampaigns").each(function(campaign) {
@@ -83,20 +58,15 @@ define(["app",
           this.model.set("attached_campaigns_gui", attachedCampaignNamesArray);
         },
 
-        onRender: function() {
-          var me = this;
-          //add correct classname
-          var deployStatus = this.model.get("deploy_status");
-          this.$el.removeClass("success alert warning");
-          if (deployStatus === "deployed") {
-            this.$el.addClass("success");
-          } else if (deployStatus === "deploying" ||
-            deployStatus === "undeploying") {
-            this.$el.addClass("alert");
-          } else if(deployStatus === "modified") {
-            this.$el.addClass("warning");
-          }
+        onDestroy: function(){
+          this.trigger("updateParentLayout", this.model);
+        },
 
+        onRender: function() {
+          this.trigger("updateParentLayout", this.model);
+
+          var me = this;
+         
           this.$el.find(".domain-link").click(function(e) {
             //get the val from select box
             var domainEndpointSelectValue = $(e.currentTarget).parent().find("select").val();
