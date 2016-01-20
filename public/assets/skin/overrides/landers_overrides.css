@@ -195,7 +195,9 @@ tr.dark .domain-endpoint-select {
 }
 
 .table > tbody > tr.dark > td {
-    background-color: #cdcfde;
+    /*background-color: #cdcfde;*/
+    /*background-color: #d5d6dc;*/
+    background-color: #e2e2e2;
 }
 
 tr.warning .domain-endpoint-select {

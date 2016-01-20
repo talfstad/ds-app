@@ -140,7 +140,7 @@ module.exports = function(db) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("INSERT INTO deployed_landers(user_id, lander_id, domain_id) VALUES (?, ?, ?);", [user_id, lander_id, domain_id], function(err, docs) {
+          connection.query("INSERT IGNORE INTO deployed_landers(user_id, lander_id, domain_id) VALUES (?, ?, ?);", [user_id, lander_id, domain_id], function(err, docs) {
             if (err) {
               console.log(err);
             } else {
