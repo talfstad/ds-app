@@ -3,10 +3,10 @@
     <div class="panel">
       <div class="panel-heading">
         <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#landers-collection" href="#accord<%= id %>">
-          <%= name %>
+          <%= domain %>
        
         <div class="widget-menu domain-campaign-notification">
-           <span class="fs11 text-muted"><%= last_updated_gui %></span>
+           <span class="fs11 text-muted"><%= created_on_gui %></span>
         </div>
          </a>
        
@@ -22,7 +22,7 @@
               <div class="row" style="margin-left: 0px; margin-right: 0px;">
                 <div class="clearfix deployed-landers-header-container">
                   <span style="width: 20px">#</span>
-                  <span style="margin-left: 15px">Deployed Landers</span>
+                  <span style="margin-left: 15px">Lander Name</span>
                   <span class="deployed-landers-header">Lander Links</span>
                 </div>
                 <div style="float: right;" class="deploy-to-new-domain-region clearfix">

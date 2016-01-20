@@ -1,13 +1,9 @@
 define(["app",
     "/assets/js/apps/moonlander/domains/right_sidebar/sidebar_layout_view.js",
-    "/assets/js/apps/moonlander/domains/right_sidebar/optimizations_view.js",
     "/assets/js/apps/moonlander/domains/dao/sidebar_model.js",
-    "/assets/js/apps/moonlander/domains/right_sidebar/js_snippets/views/active_snippets_list_view.js",
-    "/assets/js/apps/moonlander/domains/right_sidebar/menu_buttons_view.js",
-    "/assets/js/apps/moonlander/domains/right_sidebar/lander_modified_view.js"
+    "/assets/js/apps/moonlander/domains/right_sidebar/nameservers_view.js" 
   ],
-  function(Moonlander, SidebarLayoutView, OptimizationsView, SidebarModel, ActiveJsSnippetsListView,
-    SidebarMenuButtonsView, LanderModifiedView) {
+  function(Moonlander, SidebarLayoutView, SidebarModel, NameserversView) {
     Moonlander.module("DomainsApp.RightSidebar", function(RightSidebar, Moonlander, Backbone, Marionette, $, _) {
 
       RightSidebar.Controller = {
@@ -64,14 +60,14 @@ define(["app",
             model: model
           });
 
-          var optimizationView = new OptimizationsView({
+          var nameserversView = new NameserversView({
             model: model
           });
 
           //when optimizations modified save them and set correct deploy status
           //when changing deploy status must start with the deployed locations status
           //it will propogate up to the lander model
-          optimizationView.on("modified", function() {
+          nameserversView.on("modified", function() {
 
             me.updateToModifiedAndSave();
 
@@ -80,9 +76,9 @@ define(["app",
 
           //show it
           Moonlander.rootRegion.currentView.rightSidebarRegion.show(this.sidebarView);
-         
+
           //optimization region view
-          Moonlander.rootRegion.currentView.rightSidebarRegion.currentView.nameAndOptimizationsRegion.show(optimizationView);
+          Moonlander.rootRegion.currentView.rightSidebarRegion.currentView.nameAndOptimizationsRegion.show(nameserversView);
 
           //open
           setTimeout(this.sidebarView.openSidebar, 20);

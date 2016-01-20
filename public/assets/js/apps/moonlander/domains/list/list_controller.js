@@ -1,6 +1,6 @@
 define(["app",
     "/assets/js/apps/moonlander/domains/list/views/list_view.js",
-    "/assets/js/apps/moonlander/domains/dao/lander_collection.js",
+    "/assets/js/apps/moonlander/domains/dao/domain_collection.js",
     "/assets/js/common/filtered_paginated/filtered_paginated_collection.js",
     "/assets/js/common/filtered_paginated/paginated_model.js",
     "/assets/js/common/filtered_paginated/paginated_button_view.js",
@@ -8,10 +8,10 @@ define(["app",
     "/assets/js/apps/moonlander/domains/list/views/loading_view.js",
     "/assets/js/apps/moonlander/domains/list/views/lander_tab_handle_view.js",
     "/assets/js/apps/moonlander/domains/list/views/campaign_tab_handle_view.js",
-    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_domains_collection_view.js",
+    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_landers_collection_view.js",
     "/assets/js/apps/moonlander/domains/dao/domain_collection.js",
     "/assets/js/apps/moonlander/domains/list/active_campaigns/views/active_campaigns_collection_view.js",
-    "/assets/js/apps/moonlander/domains/dao/deployed_location_model.js",
+    "/assets/js/apps/moonlander/domains/dao/deployed_lander_model.js",
     "/assets/js/jobs/jobs_model.js",
     "/assets/js/apps/moonlander/domains/dao/active_campaign_model.js",
     "/assets/js/apps/moonlander/domains/list/views/deploy_to_new_domain_view.js",
@@ -20,7 +20,7 @@ define(["app",
   ],
   function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
     PaginatedButtonView, TopbarView, LoadingView, LanderTabHandleView, CampaignTabHandleView,
-    DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLocationModel,
+    DeployedLandersView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLocationModel,
     JobModel, ActiveCampaignModel, DeployToNewDomainView, AddToNewCampaignView) {
     Moonlander.module("DomainsApp.Domains.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
@@ -239,7 +239,7 @@ define(["app",
             });
 
             //make landers view and display data
-            var landersListView = new ListView({
+            var domainsListView = new ListView({
               collection: me.filteredLanderCollection
             });
 
@@ -248,14 +248,14 @@ define(["app",
             });
 
             landersListLayout.on("domains:sort", function() {
-              landersListView.trigger("domains:sort");
+              domainsListView.trigger("domains:sort");
             });
 
             landersListLayout.on("domains:changepagesize", function(pageSize) {
               me.filteredLanderCollection.setPageSize(pageSize);
             });
 
-            landersListLayout.landersCollectionRegion.show(landersListView);
+            landersListLayout.landersCollectionRegion.show(domainsListView);
 
             //this is the pagination pages totals and lander count totals view
             var topbarView = new TopbarView({
@@ -267,24 +267,25 @@ define(["app",
               //on reset we're always going to want to close the sidebar
               //this is important so we dont get weird states
               Moonlander.trigger('domains:closesidebar');
+              Moonlander.trigger('landers:closesidebar');
 
               var filteredCollection = this;
 
               if (this.length > 0) {
-                landersListView.children.each(function(landerView) {
+                domainsListView.children.each(function(domainView) {
 
                   var landerTabHandleView = new LanderTabHandleView({
-                    model: landerView.model
+                    model: domainView.model
                   });
 
                   var campaignTabHandleView = new CampaignTabHandleView({
-                    model: landerView.model
+                    model: domainView.model
                   });
 
-                  var activeCampaignsCollection = landerView.model.get("activeCampaigns");
+                  var activeCampaignsCollection = domainView.model.get("activeCampaigns");
                   //set landername to be used by campaign models dialog
-                  activeCampaignsCollection.landerName = landerView.model.get("name");
-                  activeCampaignsCollection.deploy_status = landerView.model.get("deploy_status");
+                  activeCampaignsCollection.landerName = domainView.model.get("name");
+                  activeCampaignsCollection.deploy_status = domainView.model.get("deploy_status");
 
                   var activeCampaignsView = new ActiveCampaignsView({
                     collection: activeCampaignsCollection
@@ -297,29 +298,24 @@ define(["app",
                     campaignTabHandleView.model.set("active_campaigns_count", length);
                   });
 
-                  var deployedDomainsCollection = landerView.model.get("deployedLocations");
+                  var deployedLandersCollection = domainView.model.get("deployedLanders");
+                  //set the domain for child views
+                  deployedLandersCollection.domain = domainView.model.get("domain");
 
-                  //if this lander is initializing set the collection level variable to be picked up
-                  //by collections childviewoptions
-                  if (landerView.model.get("deploy_status") == "initializing") {
-                    deployedDomainsCollection.isInitializing = true;
-                  }
-
-                  
 
                   var deployToNewDomainView = new DeployToNewDomainView({
-                    model: landerView.model
+                    model: domainView.model
                   });
 
                   var addToNewCampaignView = new AddToNewCampaignView({
-                    model: landerView.model
+                    model: domainView.model
                   })
 
-                  var deployedDomainsView = new DeployedDomainsView({
-                    collection: deployedDomainsCollection
+                  var deployedLandersView = new DeployedLandersView({
+                    collection: deployedLandersCollection
                   });
 
-                  deployedDomainsView.on("childview:updateParentLayout", function(childView, options) {
+                  deployedLandersView.on("childview:updateParentLayout", function(childView, options) {
                     //update the campaign count for lander
                     var length = this.children.length;
                     if (childView.isDestroyed) --length;
@@ -331,31 +327,31 @@ define(["app",
                   // });
 
                   //when campaign link selected go to camp tab (this is from deployed domains campaign name link)
-                  deployedDomainsView.on("childview:selectCampaignTab", function(one, two, three) {
-                    landerView.$el.find("a[href=#campaigns-tab-id-" + landerView.model.get("id") + "]").tab('show')
+                  deployedLandersView.on("childview:selectCampaignTab", function(one, two, three) {
+                    domainView.$el.find("a[href=#campaigns-tab-id-" + domainView.model.get("id") + "]").tab('show')
                   });
 
 
                   //update view information on model change
-                  landerView.model.on("change:deploy_status", function() {
+                  domainView.model.on("change:deploy_status", function() {
                     Moonlander.trigger("domains:updateTopbarTotals");
 
                     //if not deployed make sure that the deployed
                     if (this.get("deploy_status") == "not_deployed") {
-                      deployedDomainsCollection.isInitializing = false;
+                      deployedLandersCollection.isInitializing = false;
                     }
 
                     // render if is showing AND EMPTY else dont (this logic meant for initializing state)
-                    if (deployedDomainsView.isRendered && deployedDomainsCollection.length <= 0) {
-                      deployedDomainsView.render();
+                    if (deployedLandersView.isRendered && deployedLandersCollection.length <= 0) {
+                      deployedLandersView.render();
                     }
                     if (activeCampaignsView.isRendered && activeCampaignsCollection.length <= 0) {
                       activeCampaignsView.render();
                     }
 
-                    //if deleting then trigger delete state on landerView
-                    if (landerView.isRendered && this.get("deploy_status") === "deleting") {
-                      landerView.disableAccordionPermanently();
+                    //if deleting then trigger delete state on domainView
+                    if (domainView.isRendered && this.get("deploy_status") === "deleting") {
+                      domainView.disableAccordionPermanently();
                       //close sidebar
                       Moonlander.trigger('domains:closesidebar');
 
@@ -363,14 +359,12 @@ define(["app",
                   });
 
 
-
-
-                  landerView.lander_tab_handle_region.show(landerTabHandleView);
-                  landerView.campaign_tab_handle_region.show(campaignTabHandleView);
-                  landerView.deployed_domains_region.show(deployedDomainsView);
-                  landerView.active_campaigns_region.show(activeCampaignsView);
-                  landerView.deploy_to_new_domain_region.show(deployToNewDomainView);
-                  landerView.add_to_new_campaign_region.show(addToNewCampaignView);
+                  domainView.lander_tab_handle_region.show(landerTabHandleView);
+                  domainView.campaign_tab_handle_region.show(campaignTabHandleView);
+                  domainView.deployed_domains_region.show(deployedLandersView);
+                  domainView.active_campaigns_region.show(activeCampaignsView);
+                  domainView.deploy_to_new_domain_region.show(deployToNewDomainView);
+                  domainView.add_to_new_campaign_region.show(addToNewCampaignView);
                 });
               }
 
@@ -435,11 +429,11 @@ define(["app",
           //check if this domain_id is already there, if it is instead of adding a new domain_model
           //just add this job to it
 
-          var deployedLocations = landerModel.get("deployedLocations");
+          var deployedLanders = landerModel.get("deployedLanders");
 
           //search deployedlocations for the domain_id if found use that
           var existingDomainModel = null;
-          deployedLocations.each(function(location) {
+          deployedLanders.each(function(location) {
             if (location.get("id") == modelAttributes.id) {
               existingDomainModel = location;
             }
@@ -453,7 +447,7 @@ define(["app",
             var domainModel = new DeployedLocationModel(modelAttributes);
             var activeJobs = domainModel.get("activeJobs");
             activeJobs.add(jobModel);
-            deployedLocations.add(domainModel);
+            deployedLanders.add(domainModel);
           }
 
           //set new lander to deploying by default
@@ -473,13 +467,13 @@ define(["app",
             var activeCampaignsCollection = lander.get("activeCampaigns");
             activeCampaignsCollection.add(activeCampaignModel);
 
-            var deployedLocations = lander.get("deployedLocations");
+            var deployedLanders = lander.get("deployedLanders");
 
             //add the model to the attachedCampaigns for the campaigns currentDomains
             $.each(activeCampaignModel.get("currentDomains"), function(idx, domain) {
               var domain_id = domain.domain_id;
 
-              var deployedDomainModel = deployedLocations.get(domain_id);
+              var deployedDomainModel = deployedLanders.get(domain_id);
 
               var attachedCampaigns = deployedDomainModel.get("attachedCampaigns");
               attachedCampaigns.add(activeCampaignModel);
@@ -509,14 +503,14 @@ define(["app",
           var lander_id = campaignModel.get("lander_id");
 
           var lander = me.filteredLanderCollection.get(lander_id);
-          var deployedLocations = lander.get("deployedLocations");
+          var deployedLanders = lander.get("deployedLanders");
 
 
           //trigger undeploy job on each deployed domain that belongs to this campaign
           $.each(campaignModel.get("currentDomains"), function(idx, domain) {
             var domain_id = domain.domain_id;
 
-            var deployedDomainModel = deployedLocations.get(domain_id);
+            var deployedDomainModel = deployedLanders.get(domain_id);
             var activeJobsCollection = deployedDomainModel.get("activeJobs");
 
 
@@ -597,3 +591,4 @@ define(["app",
 
     return Moonlander.DomainsApp.Domains.List.Controller;
   });
+

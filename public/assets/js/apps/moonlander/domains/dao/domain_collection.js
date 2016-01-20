@@ -1,59 +1,41 @@
 define(["app",
-    "/assets/js/apps/moonlander/domains/dao/domain_model.js"
+    "/assets/js/apps/moonlander/domains/dao/domain_model.js",
+    "/assets/js/apps/moonlander/domains/dao/active_campaign_collection.js",
+    "/assets/js/apps/moonlander/domains/dao/url_endpoint_collection.js"
   ],
-  function(Moonlander, DomainModel) {
+  function(Moonlander, LanderModel, ActiveCampaignCollection, UrlEndpointCollection) {
     var DomainCollection = Backbone.Collection.extend({
       url: '/api/domains',
-      model: DomainModel,
-      comparator: 'domain',
-
-      filterOutDomains: function(domainsToFilterOutCollection) {
-
-        var items = new DomainCollection();
-
-        this.each(function(domain){
-          domainId = domain.get("id");
-
-          if(!domainsToFilterOutCollection.get(domainId)) {
-            items.add(domain);
-          }
-        });
-
-        return items;
-      }
-
+      model: LanderModel,
+      comparator: function(doc) {
+        var str = doc.get('domain') || '';
+        return str.toLowerCase();
+      },
     });
 
-    var domainCollectionInstance = null;
 
     var API = {
-      getDomainsCollection: function() {
+      getLandersCollection: function() {
         var me = this;
         var defer = $.Deferred();
 
-        if (!this.domainCollectionInstance) {
 
-          this.domainCollectionInstance = new DomainCollection();
+        this.landerCollectionInstance = new DomainCollection();
 
-          this.domainCollectionInstance.fetch({
-            success: function(domains) {
-              defer.resolve(domains);
-            }
-          });
-        } else {
-          //async hack to still return defer
-          setTimeout(function() {
-            defer.resolve(me.domainCollectionInstance);
-          }, 100);
-        }
+        this.landerCollectionInstance.fetch({
+          success: function(landers) {
+            defer.resolve(landers);
+          }
+        });
+
 
         var promise = defer.promise();
         return promise;
       }
     };
 
-    Moonlander.reqres.setHandler("domains:domainsCollection", function() {
-      return API.getDomainsCollection();
+    Moonlander.reqres.setHandler("domains:landersCollection", function() {
+      return API.getLandersCollection();
     });
 
     return DomainCollection;

@@ -1,18 +1,17 @@
 define(["app",
     "tpl!/assets/js/apps/moonlander/domains/list/templates/landers_child_item.tpl",
-    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_domains_collection_view.js",
-    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_domains_empty_view.js",
+    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_landers_collection_view.js",
+    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_landers_empty_view.js",
     "/assets/js/apps/moonlander/domains/dao/sidebar_model.js",
     "moment-timezone",
     "/assets/js/apps/moonlander/domains/list/views/lander_tab_handle_view.js",
     "/assets/js/apps/moonlander/domains/list/views/campaign_tab_handle_view.js",
     "/assets/js/apps/moonlander/domains/list/active_campaigns/views/active_campaigns_collection_view.js",
-    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_domains_collection_view.js",
     "bootstrap",
     "jstz"
   ],
   function(Moonlander, LandersListItemTpl, DeployedListChildView, DeployedListEmptyView, SidebarModel, moment,
-    DeployStatusView, CampaignTabHandleView, ActiveCampaignsView, DeployedDomainsView) {
+    DeployStatusView, CampaignTabHandleView, ActiveCampaignsView) {
 
     Moonlander.module("DomainsApp.Domains.List", function(List, Moonlander, Backbone, Marionette, $, _) {
       List.childView = Marionette.LayoutView.extend({
@@ -54,10 +53,10 @@ define(["app",
         },
 
         onBeforeRender: function() {
-          var lastUpdatedRawMysqlDateTime = this.model.get("last_updated");
+          var createdOnRawMysqlDateTime = this.model.get("created_on");
           var timezoneName = new jstz().timezone_name;
-          var formattedTime = moment.utc(lastUpdatedRawMysqlDateTime, "MMM DD, YYYY h:mm A").tz(timezoneName).format("MMM DD, YYYY h:mm A");
-          this.model.set("last_updated_gui", formattedTime);
+          var formattedTime = moment.utc(createdOnRawMysqlDateTime, "MMM DD, YYYY h:mm A").tz(timezoneName).format("MMM DD, YYYY h:mm A");
+          this.model.set("created_on_gui", formattedTime);
         },
 
         expandAccordion: function() {
@@ -141,7 +140,7 @@ define(["app",
 
               //set the correct margin for the top headers
               var landersColumnWidth = me.$el.find(".table-lander-name").width();
-              var newLanderLinkMargin = landersColumnWidth - 80;
+              var newLanderLinkMargin = landersColumnWidth - 55;
               if (newLanderLinkMargin > 0) {
                 me.$el.find(".deployed-landers-header").css("margin-left", newLanderLinkMargin);
               } else {

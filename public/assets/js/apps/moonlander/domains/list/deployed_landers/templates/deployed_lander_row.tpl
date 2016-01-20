@@ -1,6 +1,6 @@
 <td><%= viewIndex %></td>
 <td class="table-lander-name" style="white-space: nowrap; min-width: 145px">
-      <span>asdfasdfasdfasdf1122TREVY dup</span>
+      <span><%= name %></span>
 </td>
 
 <td class="absorbing-column">  

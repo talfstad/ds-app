@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_domain_row_view.js",
-    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_domains_empty_view.js"
+    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_lander_row_view.js",
+    "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_landers_empty_view.js"
   ],
   function(Moonlander, DeployedDomainRowView, EmptyView) {
 
@@ -14,8 +14,7 @@ define(["app",
         //pass the deployed list its rendered index for # column
         childViewOptions: function(model) {
           model.set('viewIndex', parseInt(this.collection.indexOf(model)) + 1);
-          model.set('urlEndpoints', this.collection.urlEndpoints);
-          model.set('landerName', this.collection.landerName);
+          model.set('domain', this.collection.domain);
 
           //return options ONLY used by our empty view.
           return {

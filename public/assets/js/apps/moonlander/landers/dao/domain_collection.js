@@ -1,5 +1,5 @@
 define(["app",
-    "/assets/js/apps/moonlander/domains/dao/lander_model.js"
+    "/assets/js/apps/moonlander/landers/dao/domain_model.js"
   ],
   function(Moonlander, DomainModel) {
     var DomainCollection = Backbone.Collection.extend({
@@ -31,7 +31,7 @@ define(["app",
         var me = this;
         var defer = $.Deferred();
 
-        if (!this.domainCollectionInstance) {
+        // if (!this.domainCollectionInstance) {
 
           this.domainCollectionInstance = new DomainCollection();
 
@@ -40,19 +40,19 @@ define(["app",
               defer.resolve(domains);
             }
           });
-        } else {
-          //async hack to still return defer
-          setTimeout(function() {
-            defer.resolve(me.domainCollectionInstance);
-          }, 100);
-        }
+        // } else {
+        //   //async hack to still return defer
+        //   setTimeout(function() {
+        //     defer.resolve(me.domainCollectionInstance);
+        //   }, 100);
+        // }
 
         var promise = defer.promise();
         return promise;
       }
     };
 
-    Moonlander.reqres.setHandler("landers:landersCollection", function() {
+    Moonlander.reqres.setHandler("domains:domainsCollection", function() {
       return API.getDomainsCollection();
     });
 
