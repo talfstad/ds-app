@@ -1,7 +1,5 @@
 module.exports = function(db) {
 
-  var utils = require('../utils/utils.js')();
-
   return {
 
     updateAccessKeys: function(user, accessKeyId, secretAccessKey, successCallback) {
@@ -24,7 +22,6 @@ module.exports = function(db) {
             });
         }
       });
-
 
 
     },

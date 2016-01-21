@@ -6,10 +6,6 @@ define(["app",
     var DomainModel = Backbone.Model.extend({
       urlRoot: "/api/domains",
 
-      //init has 3 steps.
-      //1. initialize the activeJobs collection in parent class
-      //2. now do stuff for this specific type
-      //3. start the jobs from the parent class
       initialize: function() {
 
         var me = this;

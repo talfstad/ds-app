@@ -3,7 +3,7 @@ define(["app",
     "bootstrap.fileinput",
     "syphon"
   ],
-  function(Moonlander, RipNewLanderLayoutTpl) {
+  function(Moonlander, AddNewDomainLayoutTpl) {
 
     Moonlander.module("DomainsApp.Domains.AddNewDomain", function(AddNewDomain, Moonlander, Backbone, Marionette, $, _) {
 
@@ -19,15 +19,15 @@ define(["app",
           "data-backdrop": "static"
         },
 
-        template: RipNewLanderLayoutTpl,
+        template: AddNewDomainLayoutTpl,
 
         regions: {},
 
         events: {
-          "click .add-new-domain-confirm": "confirmedRipNewLander"
+          "click .add-new-domain-confirm": "confirmedAddNewDomain"
         },
 
-        confirmedRipNewLander: function(e) {
+        confirmedAddNewDomain: function(e) {
 
           var me = this;
 
@@ -40,15 +40,9 @@ define(["app",
           if (newDomainData.domainName != "") {
 
             //1. set the new values into the job model
-            this.model.set("domain", newLanderData.landerName);
+            this.model.set("domain", newDomainData.domainName);
 
-            //2. save the job
-            // this.model.save({}, {
-            //   success: function(jobModel) {
-            //     me.trigger("ripLanderAddedAndProcessing", jobModel);
-            //   },
-            //   error: function() {}
-            // });
+            this.trigger("confirmAddDomain", this.model);
 
           } else {
             var alert = this.$el.find(".new-domain-info-alert");

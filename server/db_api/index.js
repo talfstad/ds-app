@@ -13,5 +13,4 @@
   exports.js_snippets = require('./js_snippets')(db);
   exports.updater = require('./updater')(db);
   exports.jobs = require('./jobs')(db);
-  exports.worker = require('./workers')(db);
   exports.aws = require('./aws')(db);
