@@ -25,17 +25,20 @@ module.exports = function(db) {
 
     // 1. Bucket names must be at least 3 and no more than 63 characters long.
     // 2. Bucket names must be a series of one or more labels. Adjacent labels are 
-        //separated by a single period (.). Bucket names can contain lowercase letters, 
-        //numbers, and hyphens. Each label must start and end with a lowercase letter or a number.
+    //separated by a single period (.). Bucket names can contain lowercase letters, 
+    //numbers, and hyphens. Each label must start and end with a lowercase letter or a number.
     // 3. Bucket names must not be formatted as an IP address (e.g., 192.168.5.4).
     // 4. When using virtual hosted–style buckets with SSL, the SSL wild card certificate 
-        //only matches buckets that do not contain periods. To work around this, use HTTP or write 
-        //your own certificate verification logic.
+    //only matches buckets that do not contain periods. To work around this, use HTTP or write 
+    //your own certificate verification logic.
     createBucket: function(credentials, bucketName, callback) {
-      
-      //set keys before every action
-      AWS.config.region = 'us-west-2';
 
+
+
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
       AWS.config.update(credentials);
 
       var aws_s3_client = new AWS.S3();
@@ -62,6 +65,38 @@ module.exports = function(db) {
           console.log("successfully created bucket"); // successful response
           callback(false, data);
         }
+      });
+
+    },
+
+    deleteBucket: function(credentials, bucketName, callback) {
+
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+      AWS.config.update(credentials);
+
+      var aws_s3_client = new AWS.S3();
+
+      var params = {
+        Bucket: bucketName
+      };
+
+      aws_s3_client.deleteBucket(params, function(err, data) {
+
+        if (err) {
+
+          console.log(err, err.stack); // an error occurred
+          callback("Failure deleting bucket: " + bucketName)
+
+        } else {
+
+          console.log("successfully deleted bucket" + bucketName); // successful response
+          callback(false, data);
+
+        }
+
       });
 
     }

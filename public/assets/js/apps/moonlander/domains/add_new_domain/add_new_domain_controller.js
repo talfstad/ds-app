@@ -19,8 +19,25 @@ define(["app",
 
           addNewDomainLayout.on("confirmAddDomain", function(domainModel) {
 
+            //show loading
+            domainModel.set("alertLoading", true);
+
             domainModel.save({}, {
-              success: function(one, two, three) {
+              success: function(model, serverResponse, options) {
+                //remove loading
+                domainModel.set("alertLoading", false);
+
+                if (serverResponse.error) {
+                  
+                  if (serverResponse.error.code === "couldNotCreateCloudfrontDistribution") {
+                    domainModel.set("domainAlreadyAdded", true);
+                  } else {
+                    //other error
+                    
+                  }
+              
+                }
+
 
               },
               error: function() {

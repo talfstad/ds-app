@@ -27,6 +27,72 @@ define(["app",
           "click .add-new-domain-confirm": "confirmedAddNewDomain"
         },
 
+        modelEvents: {
+          "change:alertLoading": "alertLoading",
+          "change:domainInputError": "alertEnterDomain",
+          "change:domainAlreadyAdded": "alertDomainAlreadyAdded"
+        },
+
+        alertLoading: function() {
+          if (this.model.get("alertLoading")) {
+            this.$el.find(".alert-loading").fadeIn();
+
+          } else {
+            this.$el.find(".alert-loading").hide();
+          }
+        },
+
+        alertDomainAlreadyAdded: function() {
+          var me = this;
+          
+          var domainAlreadyAdded = this.model.get("domainAlreadyAdded");
+
+          if (domainAlreadyAdded) {
+            var alert = this.$el.find(".new-domain-info-alert");
+            var adminForm = this.$el.find(".admin-form");
+            var currentHtml = alert.html();
+
+            adminForm.addClass("has-error");
+
+            alert.addClass("alert-danger");
+            alert.removeClass("alert-default");
+            alert.html("Error: You have already added this domain.");
+
+
+            setTimeout(function() {
+              adminForm.removeClass("has-error");
+              alert.removeClass("alert-danger").addClass("alert-default");
+              alert.html(currentHtml);
+
+              me.model.set("domainAlreadyAdded", false);
+
+            }, 10000);
+          }
+
+        },
+
+        alertEnterDomain: function() {
+          if (this.model.get("domainInputError")) {
+            var alert = this.$el.find(".new-domain-info-alert");
+            var adminForm = this.$el.find(".admin-form");
+            var currentHtml = alert.html();
+
+            adminForm.addClass("has-error");
+
+            alert.addClass("alert-danger");
+            alert.removeClass("alert-default");
+            alert.html("Error: You must enter a domain name before adding it.");
+
+
+            setTimeout(function() {
+              adminForm.removeClass("has-error");
+              alert.removeClass("alert-danger").addClass("alert-default");
+              alert.html(currentHtml);
+            }, 10000);
+          }
+
+        },
+
         confirmedAddNewDomain: function(e) {
 
           var me = this;
@@ -45,23 +111,7 @@ define(["app",
             this.trigger("confirmAddDomain", this.model);
 
           } else {
-            var alert = this.$el.find(".new-domain-info-alert");
-            var adminForm = this.$el.find(".admin-form");
-            var currentHtml = alert.html();
-
-            adminForm.addClass("has-error");
-
-            alert.addClass("alert-danger");
-            alert.removeClass("alert-default");
-            alert.html("You must enter a domain name before adding it.");
-
-
-            setTimeout(function() {
-              adminForm.removeClass("has-error");
-              alert.removeClass("alert-danger").addClass("alert-default");
-              alert.html(currentHtml);
-            }, 10000);
-
+            this.model.set("domainInputError", true);
           }
         },
 

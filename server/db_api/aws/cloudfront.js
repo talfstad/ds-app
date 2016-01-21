@@ -10,7 +10,10 @@ module.exports = function(db) {
 
     makeCloudfrontDistribution: function(credentials, domain, bucketName, callback) {      
       //set keys before every action
-      AWS.config.region = 'us-west-2';
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
       AWS.config.update(credentials);
       var cloudfront_client = new AWS.CloudFront();
 
