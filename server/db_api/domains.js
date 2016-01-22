@@ -2,6 +2,44 @@ module.exports = function(db) {
 
   return {
 
+    addNewDomain: function(user, newDomainAttributes, successCallback, errorCallback) {
+      // console.log(newDomainAttributes);
+      // {
+      //   bucketUrl: 'http://f2e569da-f6d7-47af-bffb-486bcac07d67.s3.amazonaws.com/',
+      //   cloudfrontDomainName: 'd1euhkwq20z1me.cloudfront.net',
+      //   nameservers: ['ns-1177.awsdns-19.org',
+      //     'ns-1715.awsdns-22.co.uk',
+      //     'ns-800.awsdns-36.net',
+      //     'ns-325.awsdns-40.com'
+      //   ]
+      // }
+
+      //insert a new domain 
+      var user_id = user.id;
+      var domain = newDomainAttributes.domain;
+      var bucket_url = newDomainAttributes.bucketUrl;
+      var cloudfront_domain = newDomainAttributes.cloudfrontDomainName;
+      var cloudfront_id = newDomainAttributes.cloudfrontId;
+      var nameservers = newDomainAttributes.nameservers;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        }
+        connection.query("call insert_new_domain(?, ?, ?, ?, ?, ?)", [user_id, nameservers, domain, bucket_url, cloudfront_domain, cloudfront_id],
+          function(err, docs) {
+            if (err) {
+              console.log(err);
+              errorCallback("Error inserting new domain in DB call");
+            } else {
+              newDomainAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
+              successCallback(newDomainAttributes);
+            }
+            connection.release();
+          });
+      });
+    },
+
     getAll: function(user, successCallback) {
 
       var user_id = user.id;
@@ -145,7 +183,7 @@ module.exports = function(db) {
                   var nameserversArray = dbdomains[i].nameservers.split(',');
                   dbdomains[i].nameservers = nameserversArray;
                 }
-              
+
 
                 getExtraNestedForDomain(dbdomains[i], function() {
 

@@ -25,9 +25,11 @@ module.exports = function(app, passport) {
       return domain.match(re);
     }
 
-    //cut off the http or https if its there
+    //cut off the http or https & www if its there
     domain = domain.replace('https://', '');
     domain = domain.replace('http://', '');
+    domain = domain.replace('www.', '');
+
     if (!checkIsValidDomain(domain)) {
 
       console.log("domain invalid");
@@ -47,6 +49,7 @@ module.exports = function(app, passport) {
       //used to gather all new attributes before saving to db
       //during aws calls
       var newDomainData = {};
+      newDomainData.domain = domain;
 
       //0. get AWS credentials
       db.aws.keys.getAmazonApiKeys(user, function(awsKeyData) {
@@ -77,8 +80,8 @@ module.exports = function(app, passport) {
             var bucketUrl = responseData.Location;
             newDomainData.bucketUrl = bucketUrl;
 
-            //2. create a cloud front for domain
-            db.aws.cloudfront.makeCloudfrontDistribution(credentials, domain, bucketName, function(err, cloudfrontDomainName) {
+            //2. add website configuration to the bucket
+            db.aws.s3.createBucketWebsite(credentials, bucketName, function(err, data) {
               if (err) {
                 //if fail remove bucket
                 db.aws.s3.deleteBucket(credentials, bucketName, function(errDeleteBucket, responseData) {
@@ -102,50 +105,102 @@ module.exports = function(app, passport) {
                 });
 
               } else {
-                console.log("successfully created cloudfront distribution")
 
-                //3. create the route 53 for that
+                //2. create a cloud front for domain
+                db.aws.cloudfront.makeCloudfrontDistribution(credentials, domain, bucketName, function(err, cloudfrontDomainName, cloudfrontId) {
+                  if (err) {
+                    //if fail remove bucket
+                    db.aws.s3.deleteBucket(credentials, bucketName, function(errDeleteBucket, responseData) {
+                      if (errDeleteBucket) {
+                        //oh shit error
+                        res.json({
+                          error: {
+                            code: "couldNotDeleteS3Bucket",
+                            msg: errDeleteBucket
+                          }
+                        });
+                      } else {
+                        //normal error
+                        res.json({
+                          error: {
+                            code: "couldNotCreateCloudfrontDistribution",
+                            msg: err
+                          }
+                        });
+                      }
+                    });
 
+                  } else {
+                    console.log("successfully created cloudfront distribution " + cloudfrontDomainName + " id: " + cloudfrontId);
+
+                    //store this for adding to domain table later
+                    newDomainData.cloudfrontDomainName = cloudfrontDomainName;
+                    newDomainData.cloudfrontId = cloudfrontId;
+
+                    //3. create the route 53 for that
+                    db.aws.route53.createHostedZone(credentials, domain, cloudfrontDomainName, function(err, nameservers) {
+                      if (err) {
+                        //if fail remove bucket & cloud front
+                        db.aws.s3.deleteBucket(credentials, bucketName, function(errDeleteBucket) {
+                          if (errDeleteBucket) {
+                            //oh shit error
+                            res.json({
+                              error: {
+                                code: "couldNotDeleteS3Bucket",
+                                msg: errDeleteBucket
+                              }
+                            });
+                          } else {
+                            //delete cloud front
+                            console.log("trying ot delete cloudfront");
+                            db.aws.cloudfront.deleteCloudfrontDistribution(credentials, cloudfrontId, function(errDeleteCloudfront) {
+                              console.log("successfully deleted cloudfront distribution " + cloudfrontId);
+                              if (errDeleteCloudfront) {
+                                //oh shit error
+                                res.json({
+                                  error: {
+                                    code: "errDeleteCloudfront",
+                                    msg: errDeleteCloudfront
+                                  }
+                                });
+                              } else {
+                                //normal error
+                                res.json({
+                                  error: {
+                                    code: "couldNotCreateHostedZone",
+                                    msg: err
+                                  }
+                                });
+                              }
+                            });
+                          }
+                        });
+                      } else {
+                        console.log("successfully created hosted zone " + nameservers);
+
+                        newDomainData.nameservers = nameservers.join();
+
+                        //4. save it all to db for reference
+                        db.domains.addNewDomain(user, newDomainData, function(responseData) {
+
+                          console.log("added domain to database");
+
+                          console.log(responseData);
+
+                          //5. return the data with an id, etc to the gui model
+                          res.json(responseData);
+
+                        });
+                      }
+                    });
+                  }
+                });
               }
-
-
             });
-
-
           }
-
-
         });
-
-
-
-        
-
-        
-        //if fail remove bucket & cloud front
-
-        //4. save it all to db for reference
-
-
-        //5. return the data to the gui
-
-
       });
-
-
-
-
-
-
-
     }
-
-
-
-
-
-
-
   });
 
   app.put('/api/domains/:domain_id', passport.isAuthenticated(), function(req, res) {

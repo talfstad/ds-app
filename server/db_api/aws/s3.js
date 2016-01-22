@@ -33,8 +33,6 @@ module.exports = function(db) {
     //your own certificate verification logic.
     createBucket: function(credentials, bucketName, callback) {
 
-
-
       AWS.config.update({
         region: 'us-west-2',
         maxRetries: 0
@@ -63,6 +61,43 @@ module.exports = function(db) {
 
         } else {
           console.log("successfully created bucket"); // successful response
+          callback(false, data);
+        }
+      });
+
+    },
+
+    //creates the website configuration for a bucket
+    createBucketWebsite: function(credentials, bucketName, callback) {
+
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+      AWS.config.update(credentials);
+
+      var aws_s3_client = new AWS.S3();
+
+      var params = {
+        Bucket: bucketName,
+        /* required */
+        WebsiteConfiguration: { /* required */
+          ErrorDocument: {
+            Key: 'error.html' /* required */
+          },
+          IndexDocument: {
+            Suffix: 'index.html' /* required */
+          },
+        }
+      };
+
+      aws_s3_client.putBucketWebsite(params, function(err, data){
+        if(err){
+          console.log(err, err.stack);
+          callback("Failure deleting bucket: " + bucketName)
+
+        } else {
+          console.log("successfully configured bucket for website " + bucketName); // successful response
           callback(false, data);
         }
       });

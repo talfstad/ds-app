@@ -8,7 +8,7 @@ module.exports = function(db) {
 
   return {
 
-    makeCloudfrontDistribution: function(credentials, domain, bucketName, callback) {      
+    makeCloudfrontDistribution: function(credentials, domain, bucketName, callback) {
       //set keys before every action
       AWS.config.update({
         region: 'us-west-2',
@@ -70,7 +70,8 @@ module.exports = function(db) {
             },
             DefaultTTL: 86400,
             MaxTTL: 31536000,
-            SmoothStreaming: false
+            SmoothStreaming: false,
+            Compress: true
           },
           Enabled: true,
           /* required */
@@ -91,10 +92,11 @@ module.exports = function(db) {
             ]
           },
           Aliases: {
-            Quantity: 1,
+            Quantity: 2,
             /* required */
             Items: [
-              domain
+              domain,
+              'www.' + domain
               /* more items */
             ]
           },
@@ -109,9 +111,35 @@ module.exports = function(db) {
           error = "Error creating cloudfront distribution from bucket: " + bucketName;
           callback(error, {});
         } else {
-          callback(error, data.DomainName);
+          callback(error, data.DomainName, data.Id);
         }
       });
+    },
+
+    deleteCloudfrontDistribution: function(credentials, domain, bucketName, callback) {
+      //set keys before every action
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+      AWS.config.update(credentials);
+      var cloudfront_client = new AWS.CloudFront();
+
+      var params = {
+        Id: 'STRING_VALUE',
+        /* required */
+        IfMatch: 'STRING_VALUE'
+      };
+      cloudfront.deleteDistribution(params, function(err, data) {
+        if (err) {
+        console.log(err, err.stack); // an error occurred
+      } else {
+        console.log(data); // successful response
+        callback(false);
+      }
+      });
+
+
     }
 
   }
