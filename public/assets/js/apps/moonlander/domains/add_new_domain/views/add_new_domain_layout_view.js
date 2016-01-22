@@ -30,7 +30,8 @@ define(["app",
         modelEvents: {
           "change:alertLoading": "alertLoading",
           "change:domainInputError": "alertEnterDomain",
-          "change:domainAlreadyAdded": "alertDomainAlreadyAdded"
+          "change:domainAlreadyAdded": "alertDomainAlreadyAdded",
+          "change:domainInvalid": "alertDomainInvalid"
         },
 
         alertLoading: function() {
@@ -42,9 +43,37 @@ define(["app",
           }
         },
 
+        alertDomainInvalid: function() {
+          var me = this;
+
+          var domainInvalid = this.model.get("domainInvalid");
+
+          if (domainInvalid) {
+            var alert = this.$el.find(".new-domain-info-alert");
+            var adminForm = this.$el.find(".admin-form");
+            var currentHtml = alert.html();
+
+            adminForm.addClass("has-error");
+
+            alert.addClass("alert-danger");
+            alert.removeClass("alert-default");
+            alert.html("Error: You must enter a valid domain name.");
+
+
+            setTimeout(function() {
+              adminForm.removeClass("has-error");
+              alert.removeClass("alert-danger").addClass("alert-default");
+              alert.html(currentHtml);
+
+              me.model.set("domainInvalid", false);
+
+            }, 10000);
+          }
+        },
+
         alertDomainAlreadyAdded: function() {
           var me = this;
-          
+
           var domainAlreadyAdded = this.model.get("domainAlreadyAdded");
 
           if (domainAlreadyAdded) {

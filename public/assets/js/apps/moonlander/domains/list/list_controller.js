@@ -255,7 +255,9 @@ define(["app",
               me.filteredLanderCollection.setPageSize(pageSize);
             });
 
-            landersListLayout.landersCollectionRegion.show(domainsListView);
+            if (landersListLayout.isRendered) {
+              landersListLayout.landersCollectionRegion.show(domainsListView);
+            }
 
             //this is the pagination pages totals and lander count totals view
             var topbarView = new TopbarView({
@@ -392,10 +394,11 @@ define(["app",
               me.filteredLanderCollection.gotoPage(page);
             });
 
-            landersListLayout.footerRegion.show(paginatedButtonView);
 
-
-            landersListLayout.topbarRegion.show(topbarView);
+            if (landersListLayout.isRendered) {
+              landersListLayout.footerRegion.show(paginatedButtonView);
+              landersListLayout.topbarRegion.show(topbarView);
+            }
 
             var filterVal = $(".lander-search").val() || "";
             me.filteredLanderCollection.filter(filterVal);
@@ -591,4 +594,3 @@ define(["app",
 
     return Moonlander.DomainsApp.Domains.List.Controller;
   });
-
