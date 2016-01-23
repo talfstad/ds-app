@@ -74,15 +74,39 @@ module.exports = function(db) {
       };
 
 
-      var getActiveJobsForLander = function(lander, domain, callback) {
-        //get all jobs attached to lander and make sure only select those. list is:
-        // 1. deployLanderToDomain
-        // 2. undeployLanderFromDomain
+      var getActiveJobsForDomain = function(domain, callback) {
+        //get all jobs attached to domain and make sure only select those. list is:
+        // 1. deleteDomain
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, lander.lander_id, domain.id, true],
+          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE action = ? AND user_id = ? AND domain_id = ? AND processing = ?", ["deleteDomain", user_id, domain.id, true],
+            function(err, dbActiveJobs) {
+              if (err) {
+                console.log(err);
+              } else {
+                if (dbActiveJobs <= 0) {
+                  callback([]);
+                } else {
+                  callback(dbActiveJobs);
+                }
+              }
+
+              connection.release();
+            });
+        });
+      };
+
+      getActiveJobsForLander = function(lander, callback) {
+        //get all jobs attached to lander and make sure only select those. list is:
+        // 1. addNewLander
+        // 2. deleteLander
+        db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          }
+          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addNewLander", "deleteLander", "ripNewLander", user_id, lander.id, true],
             function(err, dbActiveJobs) {
               callback(dbActiveJobs);
               connection.release();
@@ -113,7 +137,7 @@ module.exports = function(db) {
 
           lander.urlEndpoints = endpoints;
 
-          getActiveJobsForLander(lander, domain, function(activeJobs) {
+          getActiveJobsForLander(lander, function(activeJobs) {
 
             lander.activeJobs = activeJobs;
 
@@ -160,7 +184,13 @@ module.exports = function(db) {
 
             domain.activeCampaigns = activeCampaigns;
 
-            callback();
+            getActiveJobsForDomain(domain, function(activeJobs) {
+
+              domain.activeJobs = activeJobs;
+
+              callback();
+
+            });
           });
 
         });
@@ -177,7 +207,6 @@ module.exports = function(db) {
             } else {
               var idx = 0;
               for (var i = 0; i < dbdomains.length; i++) {
-
 
                 //set nameservers obj/parse correctly to ARRAY
                 if (dbdomains[i].nameservers) {

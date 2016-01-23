@@ -50,6 +50,7 @@ define(["app",
             deployStatus = "not_deployed";
           } else if (jobModel.get("action") === "deleteLander") {
             //destroy the lander model
+            delete me.attributes.id;
             me.destroy();
           }
 

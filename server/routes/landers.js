@@ -72,9 +72,6 @@ module.exports = function(app, passport) {
 
   });
 
-  app.delete('/api/landers/:id', passport.isAuthenticated(), function(req, res) {
-    res.json({})
-  });
 
   return module;
 

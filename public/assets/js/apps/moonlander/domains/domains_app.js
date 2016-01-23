@@ -1,13 +1,14 @@
 define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
     "/assets/js/common/login/common_login.js",
     "/assets/js/apps/moonlander/domains/right_sidebar/sidebar_controller.js",
-    "/assets/js/apps/moonlander/domains/add_new_domain/add_new_domain_controller.js"
+    "/assets/js/apps/moonlander/domains/add_new_domain/add_new_domain_controller.js",
+    "/assets/js/apps/moonlander/domains/delete_domain/delete_domain_controller.js"
   ],
-  function(Moonlander, ListController, CommonLogin, SidemenuController, AddNewDomainController, JsSnippetsController) {
+  function(Moonlander, ListController, CommonLogin, SidemenuController, AddNewDomainController, DeleteDomainController) {
     Moonlander.module("DomainsApp", function(DomainsApp, Moonlander, Backbone, Marionette, $, _) {
 
       var landersAppAPI = {
-        showLanders: function(d) {
+        showDomains: function(d) {
           Moonlander.domains = {};
 
           Moonlander.navigate("domains");
@@ -19,12 +20,27 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
         showAddNewDomainModal: function(model) {
           AddNewDomainController.showAddNewDomainModal(model);
         },
+        showDeleteDomainModal: function(model) {
+          DeleteDomainController.showDeleteDomainModal(model);
+        },
 
         openSidebar: function(model) {
           SidemenuController.openSidebar(model);
         },
         closeSidebar: function() {
           SidemenuController.closeSidebar();
+        },
+
+        addDomain: function(domainModel) {
+          ListController.addDomain(domainModel);
+        },
+
+        loadDomainsSideMenu: function(d) {
+          SidemenuController.loadDomainsSideMenu();
+        },
+
+        deleteDomain: function(model) {
+          ListController.deleteDomain(model);
         },
 
         //above functions are certain, below not sure we need yet
@@ -57,24 +73,18 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
         removeCampaignFromLander: function(campaignModel) {
           ListController.removeCampaignFromLander(campaignModel);
         },
-        loadLandersSideMenu: function(d) {
-          SidemenuController.loadLandersSideMenu();
-        },
+        
         updateToModifiedAndSave: function() {
           SidemenuController.updateToModifiedAndSave();
         },
-        deleteLander: function(model) {
-          ListController.deleteLander(model);
-        },
+        
 
-        addDomain: function(domainModel) {
-          ListController.addDomain(domainModel);
-        }
+        
       };
 
       Moonlander.on("domains:list", function() {
-        landersAppAPI.showLanders();
-        landersAppAPI.loadLandersSideMenu();
+        landersAppAPI.showDomains();
+        landersAppAPI.loadDomainsSideMenu();
       });
 
       Moonlander.on("domains:opensidebar", function(model) {
@@ -89,8 +99,16 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
         landersAppAPI.showAddNewDomainModal(model);
       });
 
+      Moonlander.on("domains:showDeleteDomainModal", function(model) {
+        landersAppAPI.showDeleteDomainModal(model);
+      });
+
       Moonlander.on("domains:list:addDomain", function(domainModel) {
         landersAppAPI.addDomain(domainModel);
+      });
+
+      Moonlander.on("domains:list:deleteDomain", function(domainModel) {
+        landersAppAPI.deleteDomain(domainModel);
       });
 
 

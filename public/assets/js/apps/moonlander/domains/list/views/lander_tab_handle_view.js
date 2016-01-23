@@ -31,7 +31,8 @@ define(["app",
         },
 
         modelEvents: {
-          "change:active_landers_count": "render"
+          "change:active_landers_count": "render",
+          "change:deploy_status": "render"
         }
 
 

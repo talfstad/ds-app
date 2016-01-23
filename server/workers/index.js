@@ -10,6 +10,7 @@ module.exports = function(app, db) {
   module.addNewLander = require('./add_new_lander')(app, db);
   module.ripNewLander = require('./rip_new_lander')(app, db);
   module.deleteLander = require('./delete_lander')(app, db);
+  module.deleteDomain = require('./delete_domain')(app, db);
 
 
   //starts job only if:

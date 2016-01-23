@@ -13,3 +13,8 @@
 	float: left;
 	display: none;
 }
+
+.btn.delete-domain-button {
+	margin: 0 auto;
+	display: block;
+}

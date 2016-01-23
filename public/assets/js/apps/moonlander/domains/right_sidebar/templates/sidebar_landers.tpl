@@ -12,6 +12,6 @@
       </div>
     </div>
     <div class="panel-footer">
-      <button type="button" class="delete-lander-button btn btn-danger btn-gradient dark"><span class="fa fa-trash pr5"></span>Delete Domain</button>
+      <button type="button" class="delete-domain-button btn btn-danger btn-gradient dark"><span class="fa fa-trash pr5"></span>Delete Domain</button>
     </div>
   </div>

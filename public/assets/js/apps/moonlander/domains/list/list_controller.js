@@ -552,25 +552,20 @@ define(["app",
           domainModel.trigger("view:expand");
         },
 
-        //TODO
+        //remove the domain from the landers list by starting a delete job!
         deleteDomain: function(model) {
-          var lander_id = model.get("id");
-          var landerModel = this.filteredDomainCollection.get(lander_id);
-
-          //model is a clone not 'the' model in filtered collection
-          // var filteredCollectionLanderModel = this.filteredDomainCollection.get(model.get("id"));
-          // filteredCollectionLanderModel.set("deploy_status", "deleting");
+          var domain_id = model.get("id");
+          var domainModel = this.filteredDomainCollection.get(domain_id);
 
           var jobAttributes = {
-            action: "deleteLander",
-            lander_id: landerModel.get("id")
+            action: "deleteDomain",
+            domain_id: domainModel.get("id")
           }
           var jobModel = new JobModel(jobAttributes);
 
-          var activeJobCollection = landerModel.get("activeJobs");
+          var activeJobCollection = domainModel.get("activeJobs");
           activeJobCollection.add(jobModel);
           Moonlander.trigger("job:start", jobModel);
-
 
         },
 

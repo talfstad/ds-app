@@ -96,110 +96,114 @@ define(["app",
 
           var me = this;
 
+          //if deleting need to show delet state (which is disabling the whole thing)
+          if (this.model.get("deploy_status") === "deleting") {
+            this.disableAccordionPermanently();
+          } else {
 
-          //add/remove hovering attribute so we can correctly animate closing of the right sidebar
-          this.$el.find(".accordion-toggle").hover(function(e) {
+            //add/remove hovering attribute so we can correctly animate closing of the right sidebar
+            this.$el.find(".accordion-toggle").hover(function(e) {
+                $(e.currentTarget).attr("data-currently-hovering", true);
+              },
+              function(e) {
+                $(e.currentTarget).attr("data-currently-hovering", false);
+              });
+
+            this.$el.find(".campaign-tab-handle-region").hover(function(e) {
               $(e.currentTarget).attr("data-currently-hovering", true);
-            },
-            function(e) {
+            }, function(e) {
               $(e.currentTarget).attr("data-currently-hovering", false);
             });
 
-          this.$el.find(".campaign-tab-handle-region").hover(function(e) {
-            $(e.currentTarget).attr("data-currently-hovering", true);
-          }, function(e) {
-            $(e.currentTarget).attr("data-currently-hovering", false);
-          });
+            this.$el.find(".lander-tab-handle-region").hover(function(e) {
+              $(e.currentTarget).attr("data-currently-hovering", true);
+            }, function(e) {
+              $(e.currentTarget).attr("data-currently-hovering", false);
+            });
 
-          this.$el.find(".lander-tab-handle-region").hover(function(e) {
-            $(e.currentTarget).attr("data-currently-hovering", true);
-          }, function(e) {
-            $(e.currentTarget).attr("data-currently-hovering", false);
-          });
+            this.$el.on('hide.bs.collapse', function(e) {
 
-          this.$el.on('hide.bs.collapse', function(e) {
+              //hide the header so it can fade in on next open
+              // $(".deployed-landers-header-container").hide();
 
-            //hide the header so it can fade in on next open
-            // $(".deployed-landers-header-container").hide();
+              //close right sidebar if closing all domain accordions
+              if ($(e.currentTarget).find("a[data-currently-hovering='true']").length > 0) {
+                Moonlander.trigger('domains:closesidebar');
+              }
 
-            //close right sidebar if closing all domain accordions
-            if ($(e.currentTarget).find("a[data-currently-hovering='true']").length > 0) {
-              Moonlander.trigger('domains:closesidebar');
-            }
+              $(e.currentTarget).find("li.active").removeClass("active");
+              $(e.currentTarget).find(".accordion-toggle").removeClass('active');
+            });
 
-            $(e.currentTarget).find("li.active").removeClass("active");
-            $(e.currentTarget).find(".accordion-toggle").removeClass('active');
-          });
-
-          this.$el.on('show.bs.collapse', function(e) {
+            this.$el.on('show.bs.collapse', function(e) {
 
 
-            //setTimeout is used to let dom set to visible to extract widths/heights!
-            //run this after a very little bit so we can have the items VISIBLE!!!
-            setTimeout(function() {
+              //setTimeout is used to let dom set to visible to extract widths/heights!
+              //run this after a very little bit so we can have the items VISIBLE!!!
+              setTimeout(function() {
 
-              //set the correct margin for the top headers
-              var landersColumnWidth = me.$el.find(".table-lander-name").width();
-              var newLanderLinkMargin = landersColumnWidth - 55;
-              if (newLanderLinkMargin > 0) {
-                me.$el.find(".deployed-landers-header").css("margin-left", newLanderLinkMargin);
+                //set the correct margin for the top headers
+                var landersColumnWidth = me.$el.find(".table-lander-name").width();
+                var newLanderLinkMargin = landersColumnWidth - 55;
+                if (newLanderLinkMargin > 0) {
+                  me.$el.find(".deployed-landers-header").css("margin-left", newLanderLinkMargin);
+                } else {
+                  me.$el.find(".deployed-landers-header").hide();
+                }
+
+
+                //fade  in the headers fast
+                $(".deployed-landers-header-container").show();
+
+              }, 10);
+
+              //collapse ALL others so we get an accordian effect !IMPORTANT for design
+              $("#landers-collection .collapse").collapse("hide");
+
+              //disable the controls until shown (fixes multiple showing bug if clicked too fast)
+              $(".accordion-toggle").addClass("inactive-link");
+
+              //first dont show any tabs then show correct tab
+              $(e.currentTarget).find("li.lander-tab-handle-region").removeClass("active");
+              $(e.currentTarget).find("div[id^='domains-tab']").removeClass("active");
+              $(e.currentTarget).find("li.campaign-tab-handle-region").removeClass("active");
+              $(e.currentTarget).find("div[id^='campaigns-tab']").removeClass("active");
+              //show the correct tab
+              var currentTab = $(e.currentTarget).find("li[data-currently-hovering='true']");
+              var currentTabData = $("#" + currentTab.attr("data-tab-target"));
+              if (currentTab.length > 0) {
+                //show clicked on tab
+                currentTab.addClass("active");
+                currentTabData.addClass("active");
               } else {
-                me.$el.find(".deployed-landers-header").hide();
+                //no tab show domains tab
+                $(e.currentTarget).find("li.lander-tab-handle-region").addClass("active");
+                $(e.currentTarget).find("div[id^='domains-tab']").addClass("active");
               }
 
 
-              //fade  in the headers fast
-              $(".deployed-landers-header-container").show();
+              $(e.currentTarget).find(".accordion-toggle").addClass('active')
 
-            }, 10);
+              $(e.currentTarget).parent().find(".panel").addClass(".panel-info");
 
-            //collapse ALL others so we get an accordian effect !IMPORTANT for design
-            $("#landers-collection .collapse").collapse("hide");
+              Moonlander.trigger('domains:opensidebar', me.model);
 
-            //disable the controls until shown (fixes multiple showing bug if clicked too fast)
-            $(".accordion-toggle").addClass("inactive-link");
+            });
 
-            //first dont show any tabs then show correct tab
-            $(e.currentTarget).find("li.lander-tab-handle-region").removeClass("active");
-            $(e.currentTarget).find("div[id^='domains-tab']").removeClass("active");
-            $(e.currentTarget).find("li.campaign-tab-handle-region").removeClass("active");
-            $(e.currentTarget).find("div[id^='campaigns-tab']").removeClass("active");
-            //show the correct tab
-            var currentTab = $(e.currentTarget).find("li[data-currently-hovering='true']");
-            var currentTabData = $("#" + currentTab.attr("data-tab-target"));
-            if (currentTab.length > 0) {
-              //show clicked on tab
-              currentTab.addClass("active");
-              currentTabData.addClass("active");
-            } else {
-              //no tab show domains tab
-              $(e.currentTarget).find("li.lander-tab-handle-region").addClass("active");
-              $(e.currentTarget).find("div[id^='domains-tab']").addClass("active");
-            }
-
-
-            $(e.currentTarget).find(".accordion-toggle").addClass('active')
-
-            $(e.currentTarget).parent().find(".panel").addClass(".panel-info");
-
-            Moonlander.trigger('domains:opensidebar', me.model);
-
-          });
-
-          this.$el.on('shown.bs.collapse', function(e) {
+            this.$el.on('shown.bs.collapse', function(e) {
 
 
 
 
-            //enable the anchor tags
-            $(".accordion-toggle").removeClass("inactive-link");
+              //enable the anchor tags
+              $(".accordion-toggle").removeClass("inactive-link");
 
-          });
+            });
 
-          this.$el.find(".nav.panel-tabs").click(function(e) {
-            $(e.currentTarget).parent().parent().find(".panel-collapse").collapse('show');
-          });
-
+            this.$el.find(".nav.panel-tabs").click(function(e) {
+              $(e.currentTarget).parent().parent().find(".panel-collapse").collapse('show');
+            });
+          }
 
         }
       });

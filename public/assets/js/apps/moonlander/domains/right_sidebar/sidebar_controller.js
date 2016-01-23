@@ -10,14 +10,14 @@ define(["app",
 
         sidebarView: null,
 
-        landerModel: null,
+        domainModel: null,
 
         //needed to make animations correct sets width etc. for initial opening
-        loadLandersSideMenu: function() {
-          this.landerModel = new SidebarModel();
+        loadDomainsSideMenu: function() {
+          this.domainModel = new SidebarModel();
 
           this.sidebarView = new SidebarLayoutView({
-            model: this.landerModel
+            model: this.domainModel
           });
 
           Moonlander.rootRegion.currentView.rightSidebarRegion.show(this.sidebarView);
@@ -27,14 +27,14 @@ define(["app",
         //in which case we would want to save it anyway
         updateToModifiedAndSave: function() {
 
-          var deployedLocationCollection = this.landerModel.get("deployedLocations");
+          var deployedLocationCollection = this.domainModel.get("deployedLocations");
 
           //1. set modified if it is deployed
           if (deployedLocationCollection.length > 0) {
-            this.landerModel.set("modified", true);
+            this.domainModel.set("modified", true);
           }
           //2. save it no matter what
-          this.landerModel.save({}, {
+          this.domainModel.save({}, {
             success: function() {
               deployedLocationCollection.each(function(location) {
                 var deployStatus = location.get("deploy_status");
@@ -54,7 +54,7 @@ define(["app",
         openSidebar: function(model) {
           var me = this;
 
-          this.landerModel = model;
+          this.domainModel = model;
 
           this.sidebarView = new SidebarLayoutView({
             model: model
@@ -82,56 +82,6 @@ define(["app",
 
           //open
           setTimeout(this.sidebarView.openSidebar, 20);
-        },
-
-        showAndReFilterActiveSnippetsView: function(model) {
-          var me = this;
-          //create the view here
-          //only give it urlEndpoints with active snippets
-          var urlEndpointsCollection = model.get("urlEndpoints");
-          var activeSnippetsView = new ActiveJsSnippetsListView({
-            collection: urlEndpointsCollection.filterWithActiveSnippets()
-          });
-
-          activeSnippetsView.on("childview:childview:editJsSnippetsModal", function(childView, childChildView, snippet_id, showDescription) {
-            Moonlander.trigger("domains:showEditJsSnippetsModal", {
-              "landerModel": model,
-              "snippet_id": snippet_id,
-              "showDescription": showDescription
-            });
-          });
-
-          activeSnippetsView.on("childview:childview:deleteActiveJsSnippet", function(childView, childChildView, active_snippet_id) {
-
-            //1. get the correct urlEndpoint model
-            var snippetToDestroy = null;
-            var endpointThisIsOn = null;
-
-            urlEndpointsCollection.filterWithActiveSnippets().each(function(endpoint) {
-              var activeSnippetsCollection = endpoint.get("activeSnippets");
-              activeSnippetsCollection.each(function(snippet) {
-                if (active_snippet_id == snippet.get("id")) {
-                  //this is the correct endpoint and active snippet to remove
-                  //2. remove the active snippet from it
-                  endpointThisIsOn = endpoint;
-                  snippetToDestroy = snippet;
-                }
-              });
-            });
-
-            if (snippetToDestroy) {
-              snippetToDestroy.destroy();
-            }
-
-            me.updateToModifiedAndSave();
-
-            //3. if no more active snippets on this, destroy it
-            Moonlander.trigger("domains:sidebar:showSidebarActiveSnippetsView", model);
-
-          });
-
-          Moonlander.rootRegion.currentView.rightSidebarRegion.currentView.snippetsRegion.show(activeSnippetsView)
-
         },
 
         closeSidebar: function() {

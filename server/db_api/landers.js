@@ -301,6 +301,7 @@ module.exports = function(db) {
       getActiveJobsForLander = function(lander, callback) {
         //get all jobs attached to lander and make sure only select those. list is:
         // 1. addNewLander
+        // 2. deleteLander
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);

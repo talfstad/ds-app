@@ -18,7 +18,7 @@ define(["app",
         className: "nano affix",
 
         events: {
-          "click .delete-lander-button": "showDeleteLanderModal",
+          "click .delete-domain-button": "showDeleteDomainModal",
         },
 
       
@@ -30,8 +30,8 @@ define(["app",
           Moonlander.trigger("domains:showDuplicateLanderModal", this.model);
         },
 
-        showDeleteLanderModal: function() {
-          Moonlander.trigger("domains:showDeleteLanderModal", this.model);
+        showDeleteDomainModal: function() {
+          Moonlander.trigger("domains:showDeleteDomainModal", this.model);
         },
 
         showEditLander: function(e) {
