@@ -69,7 +69,7 @@ define(["app",
 
       defaults: {
         name: "",
-        last_updated: "",
+        created_on: "",
         deployedLanders: [],
         activeCampaigns: [],
 

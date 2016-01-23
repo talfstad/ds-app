@@ -23,7 +23,7 @@ define(["app",
             domainModel.set("alertLoading", true);
 
             domainModel.save({}, {
-              success: function(model, serverResponse, options) {
+              success: function(savedDomainModel, serverResponse, options) {
                 //remove loading
                 domainModel.set("alertLoading", false);
 
@@ -37,7 +37,12 @@ define(["app",
                     //other error
                     
                   }
-              
+                } else {
+                  //successfully saved new domain
+                  addNewDomainLayout.onClose();
+
+                  //now add it to the collection
+                  Moonlander.trigger("domains:list:addDomain", savedDomainModel);
                 }
 
 
@@ -46,10 +51,6 @@ define(["app",
 
               }
             });
-
-            //add the domain to the domains list
-            // Moonlander.trigger("domains:list:addLander", landerModel);
-
           });
 
 

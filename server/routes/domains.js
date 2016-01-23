@@ -178,14 +178,12 @@ module.exports = function(app, passport) {
                       } else {
                         console.log("successfully created hosted zone " + nameservers);
 
-                        newDomainData.nameservers = nameservers.join();
+                        newDomainData.nameservers = nameservers;
 
                         //4. save it all to db for reference
                         db.domains.addNewDomain(user, newDomainData, function(responseData) {
 
                           console.log("added domain to database");
-
-                          console.log(responseData);
 
                           //5. return the data with an id, etc to the gui model
                           res.json(responseData);

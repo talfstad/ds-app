@@ -543,27 +543,17 @@ define(["app",
         },
 
         //add the lander model to the list
-        addLander: function(landerModel) {
+        addDomain: function(domainModel) {
           Moonlander.trigger('domains:closesidebar');
-          this.filteredLanderCollection.add(landerModel);
+          this.filteredLanderCollection.add(domainModel);
           //1. goto page with new lander on it
-          this.filteredLanderCollection.showPageWithModel(landerModel);
+          this.filteredLanderCollection.showPageWithModel(domainModel);
           //2. expand new lander
-          landerModel.trigger("view:expand");
+          domainModel.trigger("view:expand");
         },
 
-        addNewDuplicatedLander: function(landerModel) {
-
-          Moonlander.trigger('domains:closesidebar');
-          this.filteredLanderCollection.add(landerModel);
-          //1. goto page with new lander on it
-          this.filteredLanderCollection.showPageWithModel(landerModel);
-          //2. expand new lander
-          landerModel.trigger("view:expand");
-
-        },
-
-        deleteLander: function(model) {
+        //TODO
+        deleteDomain: function(model) {
           var lander_id = model.get("id");
           var landerModel = this.filteredLanderCollection.get(lander_id);
 

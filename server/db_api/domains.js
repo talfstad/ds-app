@@ -20,7 +20,7 @@ module.exports = function(db) {
       var bucket_url = newDomainAttributes.bucketUrl;
       var cloudfront_domain = newDomainAttributes.cloudfrontDomainName;
       var cloudfront_id = newDomainAttributes.cloudfrontId;
-      var nameservers = newDomainAttributes.nameservers;
+      var nameservers = newDomainAttributes.nameservers.join();
 
       db.getConnection(function(err, connection) {
         if (err) {
@@ -32,6 +32,7 @@ module.exports = function(db) {
               console.log(err);
               errorCallback("Error inserting new domain in DB call");
             } else {
+              newDomainAttributes.created_on = docs[1][0]["created_on"];
               newDomainAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
               successCallback(newDomainAttributes);
             }

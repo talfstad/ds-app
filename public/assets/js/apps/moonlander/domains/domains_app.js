@@ -53,7 +53,7 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
         addCampaignToLander: function(attr) {
           ListController.addCampaignToLander(attr);
         },
-        
+
         removeCampaignFromLander: function(campaignModel) {
           ListController.removeCampaignFromLander(campaignModel);
         },
@@ -66,9 +66,9 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
         deleteLander: function(model) {
           ListController.deleteLander(model);
         },
-        
-        addLander: function(landerModel) {
-          ListController.addLander(landerModel);
+
+        addDomain: function(domainModel) {
+          ListController.addDomain(domainModel);
         }
       };
 
@@ -89,8 +89,12 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
         landersAppAPI.showAddNewDomainModal(model);
       });
 
+      Moonlander.on("domains:list:addDomain", function(domainModel) {
+        landersAppAPI.addDomain(domainModel);
+      });
 
-////above functions are certain they belong, below aren't sure yet
+
+      ////above functions are certain they belong, below aren't sure yet
 
 
       Moonlander.on("domains:deployLanderToNewDomain", function(attr) {
