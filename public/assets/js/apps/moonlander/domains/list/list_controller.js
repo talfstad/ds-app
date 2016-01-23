@@ -26,7 +26,7 @@ define(["app",
 
       List.Controller = {
 
-        filteredLanderCollection: null,
+        filteredDomainCollection: null,
 
         removeSnippetFromAllLanders: function(attr) {
           var me = this;
@@ -37,7 +37,7 @@ define(["app",
           var landersToRedeploy = [];
           var activeSnippetsToRemove = [];
 
-          this.filteredLanderCollection.original.each(function(landerModel) {
+          this.filteredDomainCollection.original.each(function(landerModel) {
 
             //create a full list of snippets to remove
             var urlEndpointsCollection = landerModel.get("urlEndpoints");
@@ -165,9 +165,9 @@ define(["app",
 
         updateAllActiveSnippetNames: function(savedModel) {
 
-          if (this.filteredLanderCollection) {
+          if (this.filteredDomainCollection) {
 
-            this.filteredLanderCollection.original.each(function(landerModel) {
+            this.filteredDomainCollection.original.each(function(landerModel) {
 
               var urlEndpointCollection = landerModel.get("urlEndpoints");
               urlEndpointCollection.each(function(endpoint) {
@@ -223,13 +223,13 @@ define(["app",
 
           $.when(deferredLandersCollection).done(function(landersCollection) {
 
-            me.filteredLanderCollection = FilteredPaginatedCollection({
+            me.filteredDomainCollection = FilteredPaginatedCollection({
               collection: landersCollection,
               paginated: true,
               filterFunction: function(filterCriterion) {
                 var criterion = filterCriterion.toLowerCase();
                 return function(lander) {
-                  if (lander.get('name').toLowerCase().indexOf(criterion) !== -1) {
+                  if (lander.get('domain').toLowerCase().indexOf(criterion) !== -1) {
                     // || lander.get('last_updated').toLowerCase().indexOf(criterion) !== -1) {
                     // || lander.get('phoneNumber').toLowerCase().indexOf(criterion) !== -1){
                     return lander;
@@ -240,11 +240,11 @@ define(["app",
 
             //make landers view and display data
             var domainsListView = new ListView({
-              collection: me.filteredLanderCollection
+              collection: me.filteredDomainCollection
             });
 
             landersListLayout.on("domains:filterList", function(filterVal) {
-              me.filteredLanderCollection.filter(filterVal);
+              me.filteredDomainCollection.filter(filterVal);
             });
 
             landersListLayout.on("domains:sort", function() {
@@ -252,7 +252,7 @@ define(["app",
             });
 
             landersListLayout.on("domains:changepagesize", function(pageSize) {
-              me.filteredLanderCollection.setPageSize(pageSize);
+              me.filteredDomainCollection.setPageSize(pageSize);
             });
 
             if (landersListLayout.isRendered) {
@@ -261,10 +261,10 @@ define(["app",
 
             //this is the pagination pages totals and lander count totals view
             var topbarView = new TopbarView({
-              model: me.filteredLanderCollection.state.gui
+              model: me.filteredDomainCollection.state.gui
             });
 
-            me.filteredLanderCollection.on("reset", function(collection) {
+            me.filteredDomainCollection.on("reset", function(collection) {
 
               //on reset we're always going to want to close the sidebar
               //this is important so we dont get weird states
@@ -376,22 +376,22 @@ define(["app",
 
 
             var paginatedButtonView = new PaginatedButtonView({
-              model: me.filteredLanderCollection.state.gui
+              model: me.filteredDomainCollection.state.gui
             });
-            paginatedButtonView.on("domains:firstPage", function(page) {
-              me.filteredLanderCollection.getFirstPage();
+            paginatedButtonView.on("firstPage", function(page) {
+              me.filteredDomainCollection.getFirstPage();
             });
-            paginatedButtonView.on("domains:previousPage", function(page) {
-              me.filteredLanderCollection.getPreviousPage();
+            paginatedButtonView.on("previousPage", function(page) {
+              me.filteredDomainCollection.getPreviousPage();
             });
-            paginatedButtonView.on("domains:nextPage", function(page) {
-              me.filteredLanderCollection.getNextPage();
+            paginatedButtonView.on("nextPage", function(page) {
+              me.filteredDomainCollection.getNextPage();
             });
-            paginatedButtonView.on("domains:lastPage", function(page) {
-              me.filteredLanderCollection.getLastPage();
+            paginatedButtonView.on("lastPage", function(page) {
+              me.filteredDomainCollection.getLastPage();
             });
-            paginatedButtonView.on("domains:gotoPage", function(page) {
-              me.filteredLanderCollection.gotoPage(page);
+            paginatedButtonView.on("gotoPage", function(page) {
+              me.filteredDomainCollection.gotoPage(page);
             });
 
 
@@ -401,7 +401,7 @@ define(["app",
             }
 
             var filterVal = $(".lander-search").val() || "";
-            me.filteredLanderCollection.filter(filterVal);
+            me.filteredDomainCollection.filter(filterVal);
           });
         },
 
@@ -425,7 +425,7 @@ define(["app",
 
           var landerModel = modelAttributes.lander_model;
           if (!landerModel) {
-            landerModel = this.filteredLanderCollection.get(modelAttributes.lander_id);
+            landerModel = this.filteredDomainCollection.get(modelAttributes.lander_id);
           }
           if (!landerModel) return false;
 
@@ -465,7 +465,7 @@ define(["app",
           var me = this;
           var addedCampaignSuccessCallback = function(activeCampaignModel) {
             // add the model to collection
-            var lander = me.filteredLanderCollection.get(modelAttributes.lander_id);
+            var lander = me.filteredDomainCollection.get(modelAttributes.lander_id);
 
             var activeCampaignsCollection = lander.get("activeCampaigns");
             activeCampaignsCollection.add(activeCampaignModel);
@@ -505,7 +505,7 @@ define(["app",
           var me = this;
           var lander_id = campaignModel.get("lander_id");
 
-          var lander = me.filteredLanderCollection.get(lander_id);
+          var lander = me.filteredDomainCollection.get(lander_id);
           var deployedLanders = lander.get("deployedLanders");
 
 
@@ -545,9 +545,9 @@ define(["app",
         //add the lander model to the list
         addDomain: function(domainModel) {
           Moonlander.trigger('domains:closesidebar');
-          this.filteredLanderCollection.add(domainModel);
+          this.filteredDomainCollection.add(domainModel);
           //1. goto page with new lander on it
-          this.filteredLanderCollection.showPageWithModel(domainModel);
+          this.filteredDomainCollection.showPageWithModel(domainModel);
           //2. expand new lander
           domainModel.trigger("view:expand");
         },
@@ -555,10 +555,10 @@ define(["app",
         //TODO
         deleteDomain: function(model) {
           var lander_id = model.get("id");
-          var landerModel = this.filteredLanderCollection.get(lander_id);
+          var landerModel = this.filteredDomainCollection.get(lander_id);
 
           //model is a clone not 'the' model in filtered collection
-          // var filteredCollectionLanderModel = this.filteredLanderCollection.get(model.get("id"));
+          // var filteredCollectionLanderModel = this.filteredDomainCollection.get(model.get("id"));
           // filteredCollectionLanderModel.set("deploy_status", "deleting");
 
           var jobAttributes = {
@@ -575,8 +575,8 @@ define(["app",
         },
 
         updateTopbarTotals: function() {
-          if (this.filteredLanderCollection) {
-            this.filteredLanderCollection.updateTotals();
+          if (this.filteredDomainCollection) {
+            this.filteredDomainCollection.updateTotals();
           }
         }
       }

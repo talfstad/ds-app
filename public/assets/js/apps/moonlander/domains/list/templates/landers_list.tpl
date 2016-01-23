@@ -24,7 +24,7 @@
             </li>
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
-                <input value="50" data-sort-by="last-updated" id="50-pages-radio" type="radio" name="pages-radio">
+                <input value="50" data-sort-by="created-on" id="50-pages-radio" type="radio" name="pages-radio">
                 <label class="ml5" for="50-pages-radio">50 Rows Per Page</label>
               </a>
             </li>
@@ -47,8 +47,8 @@
             </li>
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
-                <input data-sortby-name="Created On" data-sort-by="last-updated" type="radio" id="last-updated" name="sort-radio">
-                <label class="ml5" for="last-updated">Created On</label>
+                <input data-sortby-name="Created On" data-sort-by="created-on" type="radio" id="created-on" name="sort-radio">
+                <label class="ml5" for="created-on">Created On</label>
               </a>
             </li>
             <!-- <li>

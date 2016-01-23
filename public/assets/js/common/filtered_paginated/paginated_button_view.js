@@ -17,25 +17,25 @@ define(["app",
         var me = this;
         $("button.first-page").click(function(e){
           e.preventDefault();
-          me.trigger("landers:firstPage")          
+          me.trigger("firstPage");
           
         });
         $(".previous-page").click(function(e){
           e.preventDefault();
-          me.trigger("landers:previousPage");          
+          me.trigger("previousPage");          
         });
         $(".next-page").click(function(e){
           e.preventDefault();
-          me.trigger("landers:nextPage");         
+          me.trigger("nextPage");         
         });
         $(".last-page").click(function(e){
           e.preventDefault();
-          me.trigger("landers:lastPage");          
+          me.trigger("lastPage");          
         });
         $(".goto-page").click(function(e){
           e.preventDefault();
           var page = $(e.currentTarget).attr("data-page");
-          me.trigger("landers:gotoPage", page);
+          me.trigger("gotoPage", page);
         });
       }
 

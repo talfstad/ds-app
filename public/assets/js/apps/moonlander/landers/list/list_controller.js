@@ -375,19 +375,19 @@ define(["app",
             var paginatedButtonView = new PaginatedButtonView({
               model: me.filteredLanderCollection.state.gui
             });
-            paginatedButtonView.on("landers:firstPage", function(page) {
+            paginatedButtonView.on("firstPage", function(page) {
               me.filteredLanderCollection.getFirstPage();
             });
-            paginatedButtonView.on("landers:previousPage", function(page) {
+            paginatedButtonView.on("previousPage", function(page) {
               me.filteredLanderCollection.getPreviousPage();
             });
-            paginatedButtonView.on("landers:nextPage", function(page) {
+            paginatedButtonView.on("nextPage", function(page) {
               me.filteredLanderCollection.getNextPage();
             });
-            paginatedButtonView.on("landers:lastPage", function(page) {
+            paginatedButtonView.on("lastPage", function(page) {
               me.filteredLanderCollection.getLastPage();
             });
-            paginatedButtonView.on("landers:gotoPage", function(page) {
+            paginatedButtonView.on("gotoPage", function(page) {
               me.filteredLanderCollection.gotoPage(page);
             });
 
