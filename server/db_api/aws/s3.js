@@ -121,9 +121,9 @@ module.exports = function(db) {
       aws_s3_client.deleteBucket(params, function(err, data) {
 
         if (err) {
-
+        
           console.log(err, err.stack); // an error occurred
-          callback("Failure deleting bucket: " + bucketName)
+          callback(err)
 
         } else {
 

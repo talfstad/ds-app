@@ -2,6 +2,48 @@ module.exports = function(db) {
 
   return {
 
+    //remove domain from all campaigns that have it
+    removeActiveCampaignsForDomain: function(user, domain_id, callback) {
+      var user_id = user.id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        }
+        connection.query("DELETE FROM campaigns_with_domains WHERE user_id = ? AND domain_id = ?", [user_id, domain_id],
+          function(err, docs) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(false, docs);
+            }
+            connection.release();
+          });
+      });
+
+    },
+
+    //remove all deployed_landers on that domain
+    removeDeployedLandersFromDomain: function(user, domain_id, callback) {
+      var user_id = user.id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        }
+        connection.query("DELETE FROM deployed_landers WHERE user_id = ? AND domain_id = ?", [user_id, domain_id],
+          function(err, docs) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(false, docs);
+            }
+            connection.release();
+          });
+      });
+
+    },
+
     addNewDomain: function(user, newDomainAttributes, successCallback, errorCallback) {
       // console.log(newDomainAttributes);
       // {
@@ -21,12 +63,14 @@ module.exports = function(db) {
       var cloudfront_domain = newDomainAttributes.cloudfrontDomainName;
       var cloudfront_id = newDomainAttributes.cloudfrontId;
       var nameservers = newDomainAttributes.nameservers.join();
+      var hosted_zone_id = newDomainAttributes.hostedZoneId;
+      var bucket_name = newDomainAttributes.bucketName;
 
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         }
-        connection.query("call insert_new_domain(?, ?, ?, ?, ?, ?)", [user_id, nameservers, domain, bucket_url, cloudfront_domain, cloudfront_id],
+        connection.query("call insert_new_domain(?, ?, ?, ?, ?, ?, ?, ?)", [user_id, nameservers, domain, bucket_url, cloudfront_domain, cloudfront_id, hosted_zone_id, bucket_name],
           function(err, docs) {
             if (err) {
               console.log(err);
@@ -35,6 +79,26 @@ module.exports = function(db) {
               newDomainAttributes.created_on = docs[1][0]["created_on"];
               newDomainAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
               successCallback(newDomainAttributes);
+            }
+            connection.release();
+          });
+      });
+    },
+
+    //gets all for one domain
+    getDomain: function(user, domain_id, callback) {
+      var user_id = user.id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        }
+        connection.query("SELECT id,domain,nameservers,created_on,bucket_url,bucket_name,cloudfront_domain,cloudfront_id,hosted_zone_id FROM domains WHERE user_id = ? AND id = ?", [user_id, domain_id],
+          function(err, dbDomainInfo) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(false, dbDomainInfo[0]);
             }
             connection.release();
           });
@@ -296,6 +360,30 @@ module.exports = function(db) {
               if (err) {
                 console.log(err);
                 errorCallback("\nError saving domain.");
+              } else {
+                successCallback(docs);
+              }
+              connection.release();
+            });
+        }
+      });
+
+    },
+
+    deleteDomain: function(user, domain_id, successCallback, errorCallback) {
+      var user_id = user.id;
+
+      //update model stuff into domains where id= model.id
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+          errorCallback(err);
+        } else {
+          connection.query("DELETE FROM domains WHERE user_id = ? AND id = ?", [user_id, domain_id],
+            function(err, docs) {
+              if (err) {
+                console.log(err);
+                errorCallback("\nError deleting domain from db.");
               } else {
                 successCallback(docs);
               }

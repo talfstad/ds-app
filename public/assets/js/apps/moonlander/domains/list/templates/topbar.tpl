@@ -7,14 +7,25 @@
   </ol>
 
   <div class="right-stats"> 
-    <% 
+
+<% 
      
       var total_domains = "Domain"
       if(total > 1 || total < 1) {
         total_domains = "Domains"
       }
-   
-    %>
+      var deletingDomainText = "Domain"
+      if(total_deleting > 1 || total_deleting < 1){
+        deletingDomainText = "Domains"
+      }
+
+  if(total_deleting > 0) { %>
+      
+      <div>
+        <span class="badge-danger badge"><%= total_deleting %></span> <%= deletingDomainText %> Deleting
+      </div>
+
+  <% } %>
 
     <div>
       <span class="badge-light badge"><%= total %></span> Total <%= total_domains %>

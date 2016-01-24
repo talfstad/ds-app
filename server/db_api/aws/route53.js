@@ -126,7 +126,7 @@ module.exports = function(db) {
                 if (err) {
                   callback(err, {})
                 } else {
-                  callback(error, nameservers);
+                  callback(error, nameservers, hostedZoneId);
                 }
               });
             }
@@ -137,6 +137,109 @@ module.exports = function(db) {
         }
       });
 
+    },
+
+
+    //removes a domains CNAME and A records so we can delete the hosted zone!
+    deleteRecordSets: function(credentials, hostedZoneId, callback) {
+
+      var timestamp = moment().format();
+
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+
+      AWS.config.update(credentials);
+
+      var route53 = new AWS.Route53();
+
+      //first get all record sets with A or CNAME
+      var params = {
+        HostedZoneId: hostedZoneId,
+        /* required */
+        MaxItems: '100',
+      };
+
+      route53.listResourceRecordSets(params, function(err, data) {
+        if (err) {
+          console.log(err, err.stack); // an error occurred
+        } else {
+          //inclue all sets except NS
+          var resourceRecordSets = [];
+          for (var i = 0; i < data.ResourceRecordSets.length; i++) {
+            if (data.ResourceRecordSets[i].Type !== "NS" && data.ResourceRecordSets[i].Type !== "SOA") {
+
+              resourceRecordSets.push(data.ResourceRecordSets[i]);
+            }
+          }
+
+          //delete them! 
+          //format them for delete
+          var recordsFormattedForDelete = [];
+          for (var i = 0; i < resourceRecordSets.length; i++) {
+            //remove resource records if empty
+            if (resourceRecordSets[i].ResourceRecords.length <= 0) {
+              delete resourceRecordSets[i].ResourceRecords
+            }
+
+            var record = {};
+            record.Action = "DELETE";
+            record.ResourceRecordSet = resourceRecordSets[i]
+            recordsFormattedForDelete.push(record);
+          }
+
+          var params = {
+            ChangeBatch: {
+              Changes: recordsFormattedForDelete
+            },
+            HostedZoneId: hostedZoneId
+          }
+
+
+          if (resourceRecordSets.length > 0) {
+            route53.changeResourceRecordSets(params, function(err, data) {
+              if (err) {
+                console.log(err);
+
+              } else {
+                console.log("successfully deleted all record sets for zone id: " + hostedZoneId);
+                callback(false, true);
+              }
+            });
+          }
+        }
+      });
+
+    },
+
+    deleteHostedZone: function(credentials, hostedZoneId, callback) {
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+
+      AWS.config.update(credentials);
+
+      var route53 = new AWS.Route53();
+
+      //delete all hosted zone record sets first!
+      this.deleteRecordSets(credentials, hostedZoneId, function(err, data) {
+
+        var params = {
+          Id: hostedZoneId /* required */
+        };
+
+        route53.deleteHostedZone(params, function(err, data) {
+          if (err) {
+            console.log(err, err.stack); // an error occurred
+          } else {
+            console.log("successfully deleted hosted zone: " + hostedZoneId); // successful response
+            callback(false, data);
+          }
+        });
+
+      });
     }
 
   }

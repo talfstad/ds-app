@@ -29,6 +29,7 @@ module.exports = function(app, passport) {
     domain = domain.replace('https://', '');
     domain = domain.replace('http://', '');
     domain = domain.replace('www.', '');
+    domain = domain.toLowerCase();
 
     if (!checkIsValidDomain(domain)) {
 
@@ -61,7 +62,7 @@ module.exports = function(app, passport) {
 
         //generate a unique bucket name for user, make sure it is a valid bucket name
         var bucketName = uuid.v4();
-
+        newDomainData.bucketName = bucketName;
 
         //1. create a bucket
         db.aws.s3.createBucket(credentials, bucketName, function(err, responseData) {
@@ -138,7 +139,7 @@ module.exports = function(app, passport) {
                     newDomainData.cloudfrontId = cloudfrontId;
 
                     //3. create the route 53 for that
-                    db.aws.route53.createHostedZone(credentials, domain, cloudfrontDomainName, function(err, nameservers) {
+                    db.aws.route53.createHostedZone(credentials, domain, cloudfrontDomainName, function(err, nameservers, hostedZoneId) {
                       if (err) {
                         //if fail remove bucket & cloud front
                         db.aws.s3.deleteBucket(credentials, bucketName, function(errDeleteBucket) {
@@ -176,9 +177,10 @@ module.exports = function(app, passport) {
                           }
                         });
                       } else {
-                        console.log("successfully created hosted zone " + nameservers);
+                        console.log("successfully created hosted zone " + nameservers + " zoneid: " + hostedZoneId);
 
                         newDomainData.nameservers = nameservers;
+                        newDomainData.hostedZoneId = hostedZoneId;
 
                         //4. save it all to db for reference
                         db.domains.addNewDomain(user, newDomainData, function(responseData) {
