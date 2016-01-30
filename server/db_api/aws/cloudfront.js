@@ -280,8 +280,6 @@ module.exports = function(db) {
         if (err) {
 
         } else {
-
-          console.log("this is the etag: " + etag);
           //now delete the CF distribution
           var params = {
             Id: distributionId,
@@ -292,7 +290,6 @@ module.exports = function(db) {
             if (err) {
               console.log(err, err.stack); // an error occurred
             } else {
-              console.log(data); // successful response
               console.log("successfully deleted cloudfront distribution!");
               callback(false, true);
             }
