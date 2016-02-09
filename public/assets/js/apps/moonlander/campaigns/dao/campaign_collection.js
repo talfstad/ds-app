@@ -38,6 +38,9 @@ define(["app",
           this.campaignCollectionInstance.fetch({
             success: function(campaigns) {
               defer.resolve(campaigns);
+            },
+            error: function(one, two, three){
+              Moonlander.execute("show:login");
             }
           });
         } else {

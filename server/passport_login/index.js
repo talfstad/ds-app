@@ -1,8 +1,11 @@
 var config = require("../config");
 
 var passport;
+var uuid = require('uuid');
+var db;
 
-exports.initialize = function(app, db) {
+exports.initialize = function(app, db_ref) {
+  db = db_ref;
   passport = require('passport');
   var Strategy = require('passport-local').Strategy;
 
@@ -34,13 +37,21 @@ exports.initialize = function(app, db) {
   // serializing, and querying the user record by ID from the database when
   // deserializing.
   passport.serializeUser(function(user, cb) {
-    cb(null, user.id);
+    var data = {
+      id: user.id,
+      auth_token: user.auth_token
+    };
+
+    cb(null, data);
   });
 
-  passport.deserializeUser(function(id, cb) {
-    db.users.findById(id, function(err, user) {
+  passport.deserializeUser(function(user, cb) {
+    db.users.findByIdAndAuth(user.id, user.auth_token, function(err, user) {
       if (err) {
-        return cb(err);
+        return cb(null, false);
+      }
+      if (!user) {
+        return cb(null, false);
       }
       cb(null, user);
     });
@@ -67,7 +78,6 @@ exports.authenticate = function() {
         });
         return;
       }
-
       if (err) {
         res.json({
           logged_in: false
@@ -76,14 +86,22 @@ exports.authenticate = function() {
       }
 
       //if we're here we're authenticated
-      req.login(user, function(err) {
+      //make an auth token
+      user.auth_token = uuid.v4();
+      db.users.setAuthToken(user.id, user.auth_token, function(err) {
         if (err) {
-          res.json({
-            logged_in: false
+          console.log(err);
+        } else {
+          req.login(user, function(err) {
+            if (err) {
+              res.json({
+                logged_in: false
+              });
+              return;
+            }
+            return next();
           });
-          return;
         }
-        return next();
       });
     })(req, res, next);
   }

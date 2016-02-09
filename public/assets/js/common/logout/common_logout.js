@@ -1,12 +1,16 @@
 define(["app",
-  "/assets/js/common/logout/logout_model.js"], function(Moonlander, LogoutModel){
+  "/assets/js/common/logout/logout_model.js"
+], function(Moonlander, LogoutModel) {
 
-  Moonlander.logout = function(cb){
+  Moonlander.logout = function(cb) {
     var logoutModel = new LogoutModel();
 
     logoutModel.fetch({
-      success: function(data){
-      	cb(data);
+      success: function(data) {
+        cb(data);
+      },
+      error: function(one, two, three) {
+        Moonlander.execute("show:login");
       }
     });
   };

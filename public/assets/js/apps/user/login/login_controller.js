@@ -17,6 +17,10 @@ function(Moonlander, LoginView, LoginLayout, ResetPasswordView, ResetPasswordMod
       },
       
       showLogin: function(){
+        //hide the modal region
+        $("#modal-region").hide();
+        $(".modal-backdrop").remove();
+
         Moonlander.UserApp.Login.Controller.showLayout();
         var loginView = new LoginView.showLogin({model: Moonlander.loginModel});
         Moonlander.loginLayout.content.show(loginView);

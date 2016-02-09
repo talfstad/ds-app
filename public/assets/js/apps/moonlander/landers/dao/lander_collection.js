@@ -27,6 +27,9 @@ define(["app",
           this.landerCollectionInstance.fetch({
             success: function(landers) {
               defer.resolve(landers);
+            },
+            error: function(one, two, three){
+              Moonlander.execute("show:login");
             }
           });
         // } else {

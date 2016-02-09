@@ -1,3 +1,4 @@
 {
-    "directory": "public/vendor/bower_installed"
+    "directory": "public/vendor/bower_installed",
+    "allow_root": true
 }

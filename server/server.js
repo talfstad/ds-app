@@ -21,7 +21,7 @@ app.use(bodyParser.json({
   limit: '20mb'
 }));
 
-app.use( cookieParser( config.cookieSecret ) ); // populates req.signedCookies
+app.use(cookieParser(config.cookieSecret)); // populates req.signedCookies
 //app.use(session({ secret: config.sessionSecret, resave: true, saveUninitialized: true }));
 
 app.use(bodyParser.urlencoded({

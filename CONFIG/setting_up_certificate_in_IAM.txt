@@ -1,0 +1,16 @@
+#setting up certificate in IAM
+
+#INPUT:
+`aws iam upload-server-certificate --server-certificate-name STAR_landerds_com.crt --certificate-body file:///Users/alfstad/buildcave/ssl/landerDS_certs/STAR_landerds_com.crt --private-key file:///Users/alfstad/buildcave/ssl/landerdsSSL/server.key --certificate-chain file:///Users/alfstad/buildcave/ssl/landerDS_certs/landerDS-ssl-bundle.crt`
+
+#OUTPUT:
+# {
+#     "ServerCertificateMetadata": {
+#         "ServerCertificateId": "ASCAJCJHLVGIKEQ4P7Q7S", 
+#         "ServerCertificateName": "STAR_landerds_com.crt", 
+#         "Expiration": "2017-01-27T23:59:59Z", 
+#         "Path": "/", 
+#         "Arn": "arn:aws:iam::834835117621:server-certificate/STAR_landerds_com.crt", 
+#         "UploadDate": "2016-01-30T21:35:19.356Z"
+#     }
+# }

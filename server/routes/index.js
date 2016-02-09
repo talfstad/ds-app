@@ -1,24 +1,35 @@
 module.exports = function(app, passport) {
-    var module = {};
+  var module = {};
 
-    var csrf = require('csurf');
-    app.use(csrf({cookie: true}));
+  var csrf = require('csurf');
+  app.use(csrf({
+    cookie: true
+  }));
 
-    require('./login')(app, passport);
-    require('./landers')(app, passport);
-    require('./campaigns')(app, passport);
-    require('./domains')(app, passport);
-    require('./js_snippets')(app, passport);
-    require('./live_updater')(app, passport);
-    require('./jobs')(app, passport);
-    require('./user')(app, passport);
-    
+  //always forward to https
+  app.use(function requireHTTPS(req, res, next) {
+    if (req.get('x-forwarded-proto') == 'http') {
+      return res.redirect('https://' + req.get('host') + req.url);
+    }
+    next();
+  });
 
-    app.get("*", function(req, res) {
-        res.render('index', {
-            csrfToken: req.csrfToken()
-        });
+  require('./login')(app, passport);
+  require('./landers')(app, passport);
+  require('./campaigns')(app, passport);
+  require('./domains')(app, passport);
+  require('./js_snippets')(app, passport);
+  require('./live_updater')(app, passport);
+  require('./jobs')(app, passport);
+  require('./user')(app, passport);
+
+  app.get("*", function(req, res) {
+    res.render('index', {
+      csrfToken: req.csrfToken()
     });
+  });
 
-    return module;
+
+
+  return module;
 }

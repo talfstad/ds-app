@@ -38,6 +38,9 @@ define(["app",
           this.domainCollectionInstance.fetch({
             success: function(domains) {
               defer.resolve(domains);
+            },
+            error: function(one, two, three){
+              Moonlander.execute("show:login");
             }
           });
         } else {

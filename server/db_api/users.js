@@ -6,12 +6,12 @@ module.exports = function(db) {
   var bcrypt = require("bcrypt-nodejs");
 
   return {
-    findById: function(id, cb) {
+    findByIdAndAuth: function(id, auth_token, cb) {
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("SELECT * FROM users WHERE id = ?;", [id], function(err, userDocs) {
+          connection.query("SELECT * FROM users WHERE id = ? AND auth_token = ?;", [id, auth_token], function(err, userDocs) {
             if (err) {
               console.log(err);
               cb("Error looking up user id", null);
@@ -22,6 +22,24 @@ module.exports = function(db) {
                 var user_row = userDocs[0];
                 cb(null, user_row);
               }
+            }
+            connection.release();
+          });
+        }
+      });
+    },
+
+    setAuthToken: function(user_id, auth_token, cb) {
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("UPDATE users set auth_token = ? WHERE id = ?;", [auth_token, user_id], function(err, userDocs) {
+            if (err) {
+              console.log(err);
+              cb(err);
+            } else {
+              cb(false);
             }
             connection.release();
           });
