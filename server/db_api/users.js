@@ -234,7 +234,7 @@ module.exports = function(db) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("SELECT aws_access_key_id, aws_secret_access_key, uid FROM users WHERE id=?;", [user_id], function(err, docs) {
+          connection.query("SELECT aws_access_key_id, aws_secret_access_key FROM users WHERE id=?;", [user_id], function(err, docs) {
             if (!err) {
               var access_key_id = null;
               var secret_access_key = null;

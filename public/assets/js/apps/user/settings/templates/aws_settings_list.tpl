@@ -14,7 +14,7 @@
     <label for="secretAccessKey" class="field-label col-md-3 text-center">Secret Access Key:</label>
     <div class="col-md-9">
       <label for="secretAccessKey" class="field prepend-icon">
-        <input type="password" name="secretAccessKey" id="secret-access-key" class="gui-input" value="<%= aws_secret_access_key %>">
+        <input type="text" name="secretAccessKey" id="secret-access-key" class="gui-input" value="<%= aws_secret_access_key %>">
         <label for="secretAccessKey" class="field-icon">
           <i class="fa fa-user-secret"></i>
         </label>

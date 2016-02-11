@@ -7,11 +7,11 @@ module.exports = {
 
   port: 3000,
   dbConnectionInfo: {
-    host : '52.88.173.62',
+    host: '52.88.173.62',
     // host : 'localhost',
-    user : 'root',
-    password : 'Wewillrockyou1986!',
-    database : 'moonlander',
+    user: 'root',
+    password: 'Wewillrockyou1986!',
+    database: 'moonlander',
     multipleStatements: true,
     connectionLimit: 10
   },
@@ -20,5 +20,9 @@ module.exports = {
   cookieMaxAge: (1000 * 60 * 60 * 24 * 365),
   adminEmail: 'trevor@buildcave.com',
   adminEmailPassword: 'stackedandjacked',
-  resetCodeLifespanMinutes: 240
+  resetCodeLifespanMinutes: 240,
+
+  
+  awsRegion: "us-west-2"
+
 };

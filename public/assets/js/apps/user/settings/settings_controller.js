@@ -12,7 +12,7 @@ define(["app",
         showSettingsModal: function() {
 
           var settingsLayoutView = new SettingsLayoutView({
-            model: awsModel
+            model: new AwsModel
           });
 
 
