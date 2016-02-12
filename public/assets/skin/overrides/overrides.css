@@ -345,18 +345,22 @@ body.sb-l-o #topbar.affix,
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.3);
+    background-color: rgba(0,0,0,0.6);
     left: 0px;
     top: 0;
     z-index: 10;
     text-align: center;
 }
 
+.modal-loading-container {
+    color: #e5e5e5;
+    margin: 80px auto;
+}
+
+
 .spinner-large {
     color: #e5e5e5;
     font-size: 35px;
     -webkit-animation: spin2 2s infinite linear;
     display: inline-block;
-    position: absolute;
-    top: 40%;
 }

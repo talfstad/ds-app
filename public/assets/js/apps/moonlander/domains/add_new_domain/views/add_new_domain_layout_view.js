@@ -36,8 +36,8 @@ define(["app",
 
         alertLoading: function() {
           if (this.model.get("alertLoading")) {
+            this.$el.find("span[data-handle='domain']").text(this.model.get("domain"));
             this.$el.find(".alert-loading").fadeIn();
-
           } else {
             this.$el.find(".alert-loading").hide();
           }

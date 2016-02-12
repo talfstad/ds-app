@@ -5,18 +5,16 @@
       <h4 class="modal-title">Add a New Domain</h4>
     </div>
     <div class="campaigns-list-region modal-body">
-
       <div class="alert-loading spinner-full-container">
-        <span class="spinner-large glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+        <div class="modal-loading-container">
+          <span class="spinner-large glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+          <h4 class="loading-text">Adding <span data-handle="domain">Domain</span></h4>
+        </div>
       </div>
-    
       <div class="alert alert-micro alert-border-left alert-default new-domain-info-alert">
         <i class="fa fa-info pr10"></i> To add a new domain just enter it's URL. Have questions? <a href="#" class="alert-link">Check out this step by step guide.</a>
       </div>
-
       <div style="display:none;" class="alert has-error alert-micro alert-border-left alert-danger new-domain-error-alert"></div>
-
-
       <div class="panel panel-primary top mb35">
         <div class="panel-heading">
           <span class="panel-title">New Domain Information</span>
