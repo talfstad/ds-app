@@ -52,16 +52,7 @@ module.exports = function(db) {
 
       aws_s3_client.createBucket(params, function(err, data) {
         if (err) {
-          if (err.code == 'BucketAlreadyExists') {
-            callback('Bucket already exists.');
-          } else if (err.code == 'BucketAlreadyOwnedByYou') {
-            //just move along, nothing to see here
-            callback('Bucket already owned by me, moving to next step');
-          } else {
-            console.log(err, err.stack); // an error occurred
-            callback("Failure creating bucket: " + bucketName)
-          }
-
+          callback(err);
         } else {
           console.log("successfully created bucket"); // successful response
           callback(false, data);
@@ -184,7 +175,7 @@ module.exports = function(db) {
 
       aws_s3_client.listBuckets(function(err, data) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
           var buckets = data.Buckets;
           for (var i = 0; i < buckets.length; i++) {
@@ -197,7 +188,7 @@ module.exports = function(db) {
             }
           }
 
-          callback(bucketExists);
+          callback(false, bucketExists);
         }
       });
     },
@@ -218,7 +209,7 @@ module.exports = function(db) {
         };
         aws_s3_client.putObject(params, function(err, data) {
           if (err) {
-            console.log(err, err.stack); // an error occurred
+            completeCallback(err);
           } else {
             console.log("added " + username + " snippets folder"); // successful response
             callback();
@@ -234,7 +225,7 @@ module.exports = function(db) {
         };
         aws_s3_client.putObject(params, function(err, data) {
           if (err) {
-            console.log(err, err.stack); // an error occurred
+            completeCallback(err);
           } else {
             console.log("added " + username + " snippets folder"); // successful response
             callback();
@@ -250,7 +241,7 @@ module.exports = function(db) {
         };
         aws_s3_client.putObject(params, function(err, data) {
           if (err) {
-            console.log(err, err.stack); // an error occurred
+            completeCallback(err);
           } else {
             console.log("added " + username + " landers folder"); // successful response
             callback();
@@ -266,7 +257,7 @@ module.exports = function(db) {
         };
         aws_s3_client.putObject(params, function(err, data) {
           if (err) {
-            console.log(err, err.stack); // an error occurred
+            completeCallback(err);
           } else {
             console.log("added " + username + " landers folder"); // successful response
             callback();
@@ -283,7 +274,7 @@ module.exports = function(db) {
         };
         aws_s3_client.putObject(params, function(err, data) {
           if (err) {
-            console.log(err, err.stack); // an error occurred
+            completeCallback(err);
           } else {
             console.log("added domains"); // successful response
             callback();
@@ -304,7 +295,7 @@ module.exports = function(db) {
           addUserSnippetsFolder(function() {
             addUserSnippetsResourcesFolder(function() {
               addUserLandersFolder(function() {
-                completeCallback();
+                completeCallback(false);
               });
             });
           });
@@ -316,48 +307,55 @@ module.exports = function(db) {
     createNewS3DirectoryStructureIfNotExists: function(username, buckets, credentials, callback) {
 
       var me = this;
-      this.checkIfBucketPatternExists(credentials, "lander-ds-", function(actualBucketName) {
-        if (!actualBucketName) {
-          me.createBucket(credentials, buckets.newBucketName, function() {
-            me.createLanderDSBaseDirectoryStructure(username, buckets.newBucketName, credentials, function() {
-              callback(false);
-            });
-          });
+      this.checkIfBucketPatternExists(credentials, "lander-ds-", function(err, actualBucketName) {
+        if (err) {
+          callback(err);
         } else {
-          callback(actualBucketName);
+          if (!actualBucketName) {
+            me.createBucket(credentials, buckets.newBucketName, function(err) {
+              if (err) {
+                callback(err);
+              } else {
+                me.createLanderDSBaseDirectoryStructure(username, buckets.newBucketName, credentials, function(err) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    callback(false, false);
+                  }
+                });
+              }
+            });
+          } else {
+            callback(false, actualBucketName);
+          }
         }
       });
     },
 
-    checkIfObjectExists: function(credentials, username, landerDsBucket, callback) {
-      if (!landerDsBucket) {
-        callback(false);
-      }
+    checkIfObjectExists: function(credentials, username, bucket, callback) {
+      if (!bucket) {
+        //no error if we pass a null string cuz the bucket doesn't exist
+        callback(false, false);
+      } else {
+        AWS.config.update({
+          region: 'us-west-2',
+          maxRetries: 0
+        });
+        AWS.config.update(credentials);
+        var aws_s3_client = new AWS.S3();
 
-
-      AWS.config.update({
-        region: 'us-west-2',
-        maxRetries: 0
-      });
-      AWS.config.update(credentials);
-      var aws_s3_client = new AWS.S3();
-
-      var params = {
-        Bucket: landerDsBucket,
-        Key: username + "/"
-      };
-      aws_s3_client.headObject(params, function(err, data) {
-        if (err) {
-          if (err.code === "NotFound") {
-            callback(false);
+        var params = {
+          Bucket: bucket,
+          Key: username + "/"
+        };
+        aws_s3_client.headObject(params, function(err, data) {
+          if (err) {
+            callback(err, false);
           } else {
-            console.log(err, err.stack); // an error occurred
+            callback(false, true);
           }
-        } else {
-          callback(true);
-          console.log(data); // successful response
-        }
-      });
+        });
+      }
 
     },
 
@@ -399,7 +397,7 @@ module.exports = function(db) {
 
       var params = {
         localDir: stagingPath,
-        deleteRemoved: false,
+        deleteRemoved: true,
 
         s3Params: {
           Bucket: bucketName,
@@ -447,51 +445,65 @@ module.exports = function(db) {
 
     },
 
+    //gets old folder and moves it to the new one...
     backupAndMoveUserFolder: function(oldCredentials, newCredentials, buckets, username, callback) {
       if (!buckets.oldBucketName || !buckets.newBucketName) {
         callback(false);
-      }
-      var me = this;
+      } else {
+        var me = this;
 
-      this.createStagingArea(function(stagingPath) {
-        console.log("made staging dir " + stagingPath);
+        this.createStagingArea(function(stagingPath) {
+          console.log("made staging dir " + stagingPath);
 
-        me.copyDirFromS3ToStaging(stagingPath, oldCredentials, username, buckets.oldBucketName, function() {
-          console.log("successfully downloaded dir to staging");
+          me.copyDirFromS3ToStaging(stagingPath, oldCredentials, username, buckets.oldBucketName, function() {
+            console.log("successfully downloaded dir to staging");
 
-          me.copyDirFromStagingToS3(stagingPath, newCredentials, username, buckets.newBucketName, function() {
-            console.log("successfully uploaded dir from staging");
+            me.copyDirFromStagingToS3(stagingPath, newCredentials, username, buckets.newBucketName, function() {
+              console.log("successfully uploaded dir from staging");
 
-            me.removeStagingArea(stagingPath, function() {
-              console.log("successfully deleted staging dir");
-              callback();
+              me.removeStagingArea(stagingPath, function() {
+                console.log("successfully deleted staging dir");
+                callback();
+              });
             });
           });
         });
-      });
+      }
     },
 
     backupUserFolderMoveToNewAccountIfNeeded: function(oldCredentials, newCredentials, username, buckets, callback) {
-      if (!buckets.oldBucketName || !buckets.newBucketName) {
-        callback(false);
+      if (!buckets.newBucketName) {
+        console.log("as: " + JSON.stringify(buckets));
+        callback({
+          code: "NoNewBucketsSpecified"
+        });
+      } else {
+        //if old user folder exists back up and move
+        var me = this;
+
+        //back it up if we have something to back up
+        this.checkIfObjectExists(oldCredentials, username, buckets.oldBucketName, function(err, objectExists) {
+          if (err) {
+            callback(err);
+          } else {
+            if (objectExists) {
+              console.log("backing up..");
+              //back it up and move it
+
+              me.backupAndMoveUserFolder(oldCredentials, newCredentials, buckets, username, function(err) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false, false);
+                }
+              });
+
+            } else {
+              callback(false, false);
+            }
+          }
+        });
       }
-      //if old user folder exists back up and move
-      var me = this;
-
-      //back it up if we have something to back up
-      this.checkIfObjectExists(oldCredentials, username, buckets.oldBucketName, function(objectExists) {
-        if (objectExists) {
-          console.log("backing up..");
-          //back it up and move it
-
-          me.backupAndMoveUserFolder(oldCredentials, newCredentials, buckets, username, function() {
-            callback();
-          });
-
-        } else {
-          callback();
-        }
-      });
 
     },
 
@@ -508,18 +520,23 @@ module.exports = function(db) {
         oldBucketName: currentRootBucket,
         newBucketName: newBucketName
       };
-      this.createNewS3DirectoryStructureIfNotExists(username, buckets, newCredentials, function(newBucketName) {
-        console.log("done with creating dir structure");
+      this.createNewS3DirectoryStructureIfNotExists(username, buckets, newCredentials, function(err, newBucketName) {
+        if (err) {
+          callback(err);
+        } else {
+          if (newBucketName) {
+            buckets.newBucketName = newBucketName;
+          }
 
-        if (newBucketName) {
-          buckets.newBucketName = newBucketName;
+          me.backupUserFolderMoveToNewAccountIfNeeded(oldCredentials, newCredentials, username, buckets, function(err) {
+            if (err) {
+              console.log("backing up user data error: " + JSON.stringify(err));
+              callback(err);
+            } else {
+              callback(false, buckets.newBucketName);
+            }
+          });
         }
-
-        console.log("HERE buckets: " + JSON.stringify(buckets));
-
-        me.backupUserFolderMoveToNewAccountIfNeeded(oldCredentials, newCredentials, username, buckets, function() {
-          callback(newBucketName);
-        });
       });
     }
 

@@ -27,19 +27,34 @@ module.exports = function(app, passport) {
         accessKeyId: awsData.aws_access_key_id,
         secretAccessKey: awsData.aws_secret_access_key
       };
-
       var currentRootBucket = awsData.aws_root_bucket;
 
-      //adds user folder to new account &
-      //makes sure new account is set up correctly
-      db.aws.s3.copyUserFolderToNewAccount(oldCredentials, newCredentials, currentRootBucket, user, function(newRootBucket) {
-        //update keys to new keys in db
-        db.aws.keys.updateAccessKeysAndRootBucket(user, newCredentials.accessKeyId, newCredentials.secretAccessKey, newRootBucket, function(result) {
-          console.log("updated access keys" + newCredentials.secretAccessKey + " " + newCredentials.accessKeyId + newRootBucket);
-          //successful return
-          res.json(result);
+      //only update if we don't have the same keys
+      if (oldCredentials.accessKeyId !== newCredentials.accessKeyId) {
+        //adds user folder to new account &
+        //makes sure new account is set up correctly
+        db.aws.s3.copyUserFolderToNewAccount(oldCredentials, newCredentials, currentRootBucket, user, function(err, newRootBucket) {
+          if (err) {
+            res.json(err);
+          } else {
+            //update keys to new keys in db
+            db.aws.keys.updateAccessKeysAndRootBucket(user, newCredentials.accessKeyId, newCredentials.secretAccessKey, newRootBucket, function(err, result) {
+              if (err) {
+                res.json(err);
+              } else {
+                //successful return
+                res.json(result);
+              }
+            });
+          }
         });
-      });
+      } else {
+        res.json({
+          error: {
+            'code': "keysAlreadyCurrent"
+          }
+        })
+      }
     });
 
   });
