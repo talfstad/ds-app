@@ -35,15 +35,15 @@ module.exports = function(app, passport) {
         //makes sure new account is set up correctly
         db.aws.s3.copyUserFolderToNewAccount(oldCredentials, newCredentials, currentRootBucket, user, function(err, newRootBucket) {
           if (err) {
-            res.json(err);
+            res.json({error: err});
           } else {
             //update keys to new keys in db
             db.aws.keys.updateAccessKeysAndRootBucket(user, newCredentials.accessKeyId, newCredentials.secretAccessKey, newRootBucket, function(err, result) {
               if (err) {
-                res.json(err);
+                res.json({error: err});
               } else {
                 //successful return
-                res.json(result);
+                res.json({});
               }
             });
           }
@@ -51,7 +51,7 @@ module.exports = function(app, passport) {
       } else {
         res.json({
           error: {
-            'code': "keysAlreadyCurrent"
+            'code': "KeysAlreadyCurrent"
           }
         })
       }

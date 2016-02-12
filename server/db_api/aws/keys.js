@@ -39,7 +39,7 @@ module.exports = function(db) {
                 console.log(err);
                 errorCallback("\nError updating aws keys.");
               } else {
-                successCallback(docs);
+                successCallback(false, docs);
               }
               //release connection
               connection.release();

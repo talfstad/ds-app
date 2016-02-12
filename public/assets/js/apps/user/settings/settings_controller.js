@@ -10,9 +10,9 @@ define(["app",
       Settings.Controller = {
 
         showSettingsModal: function() {
-
+          var awsModel = new AwsModel;
           var settingsLayoutView = new SettingsLayoutView({
-            model: new AwsModel
+            model: awsModel
           });
 
 
@@ -25,12 +25,47 @@ define(["app",
           settingsLayoutView.awsSettingsRegion.show(loadingView)
 
           //settings get the login model which is like all the stuff for the user or whatever..
-          var awsModel = new AwsModel();
           awsModel.fetch({
             success: function(model) {
 
               var awsSettingsView = new AwsSettingsListView({
                 model: model
+              });
+
+              settingsLayoutView.on("confirmUpdateAwsAccessKeys", function(accessKeyData) {
+                //show loading
+                awsModel.set("alertLoading", true);
+
+                //save user model
+                this.model.save(accessKeyData, {
+                  success: function(model, serverResponse) {
+                    awsModel.set("alertLoading", false);
+
+                    if (serverResponse.error) {
+
+                      if (serverResponse.error.code === "InvalidAccessKeyId") {
+                        awsModel.set("alertKeysInvalid", true);
+                        awsModel.set("alertKeysAlreadyCurrent", false);
+                        awsModel.set("alertUnknownError", false);
+                      } else if (serverResponse.error.code === "KeysAlreadyCurrent") {
+                        awsModel.set("alertKeysAlreadyCurrent", true);
+                        awsModel.set("alertKeysInvalid", false);
+                        awsModel.set("alertUnknownError", false);
+                      } else {
+                        awsModel.set("errorCode", serverResponse.error.code);
+                        awsModel.set("alertUnknownError", true);
+                        awsModel.set("alertKeysAlreadyCurrent", false);
+                        awsModel.set("alertKeysInvalid", false);
+                      }
+
+                    } else {
+                      awsModel.set("alertUpdatedAwsKeys", true);
+                    }
+
+                  },
+                  error: function() {}
+                });
+
               });
 
               settingsLayoutView.awsSettingsRegion.show(awsSettingsView);
