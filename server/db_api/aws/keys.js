@@ -54,14 +54,16 @@ module.exports = function(db) {
       var user_id = user.id;
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
           connection.query("SELECT aws_access_key_id, aws_secret_access_key, aws_root_bucket FROM users WHERE id=?;", [user_id], function(err, docs) {
 
             if (docs[0]) {
-              callback(docs[0]);
+              callback(false, docs[0]);
             } else {
-              callback("Unable to find Amazon API credentials for user: " + user, null);
+              callback({
+                code: "CredentialsNotFound"
+              }, null);
             }
 
             //release connection
@@ -80,9 +82,11 @@ module.exports = function(db) {
           connection.query("SELECT aws_access_key_id, aws_secret_access_key FROM users WHERE id=?;", [user_id], function(err, docs) {
 
             if (docs[0]) {
-              callback(docs[0]);
+              callback(false, docs[0]);
             } else {
-              callback("Unable to find Amazon API credentials for user: " + user, null);
+              callback({
+                code: "CredentialsNotFound"
+              }, null);
             }
 
             //release connection

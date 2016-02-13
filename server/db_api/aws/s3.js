@@ -87,9 +87,7 @@ module.exports = function(db) {
 
       aws_s3_client.putBucketWebsite(params, function(err, data) {
         if (err) {
-          console.log(err, err.stack);
-          callback("Failure deleting bucket: " + bucketName)
-
+          callback(err);
         } else {
           // console.log("successfully configured bucket for website " + bucketName); // successful response
           callback(false, data);
@@ -191,6 +189,50 @@ module.exports = function(db) {
           callback(false, bucketExists);
         }
       });
+    },
+
+    addNewDomainFolderToS3: function(credentials, baseBucketName, key, callback) {
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+      AWS.config.update(credentials);
+      var aws_s3_client = new AWS.S3();
+
+      var params = {
+        Bucket: baseBucketName,
+        Key: key,
+        ACL: 'bucket-owner-full-control'
+      };
+      aws_s3_client.putObject(params, function(err, data) {
+        if (err) {
+          completeCallback(err);
+        } else {
+          callback();
+        }
+      });
+    },
+
+    deleteDomainFromS3: function(domain, baseBucketName, credentials, callback) {
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+      AWS.config.update(credentials);
+      var aws_s3_client = new AWS.S3();
+
+      var params = {
+          Bucket: baseBucketName,
+          Key: 'domains/'+ domain + '/'
+        };
+        aws_s3_client.deleteObject(params, function(err, data) {
+          if (err) {
+            callback(err);
+          } else {
+            // console.log("added " + username + " snippets folder"); // successful response
+            callback();
+          }
+        });
     },
 
     createLanderDSBaseDirectoryStructure: function(username, baseBucketName, credentials, completeCallback) {
@@ -316,11 +358,17 @@ module.exports = function(db) {
               if (err) {
                 callback(err);
               } else {
-                me.createLanderDSBaseDirectoryStructure(username, buckets.newBucketName, credentials, function(err) {
+                me.createBucketWebsite(credentials, buckets.newBucketName, function(err, data) {
                   if (err) {
                     callback(err);
                   } else {
-                    callback(false, false);
+                    me.createLanderDSBaseDirectoryStructure(username, buckets.newBucketName, credentials, function(err) {
+                      if (err) {
+                        callback(err);
+                      } else {
+                        callback(false, false);
+                      }
+                    });
                   }
                 });
               }

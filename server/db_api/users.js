@@ -29,6 +29,29 @@ module.exports = function(db) {
       });
     },
 
+    findById: function(id, callback) {
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("SELECT * FROM users WHERE id = ?;", [id], function(err, userDocs) {
+            if (err) {
+              console.log(err);
+              callback("Error looking up user id", null);
+            } else {
+              if (!userDocs[0]) {
+                callback("Error looking up user id", null);
+              } else {
+                var user_row = userDocs[0];
+                callback(null, user_row);
+              }
+            }
+            connection.release();
+          });
+        }
+      });
+    },
+
     setAuthToken: function(user_id, auth_token, cb) {
       db.getConnection(function(err, connection) {
         if (err) {

@@ -7,12 +7,26 @@ module.exports = function(app, passport) {
 
   app.get('/api/domains', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
-    db.domains.getAll(user, function(rows) {
-      res.json(rows);
+    var user_id = user.id;
+
+    db.users.findById(user_id, function(err, userData) {
+
+      db.domains.getAll(user, user.aws_root_bucket, function(err, rows) {
+        if (err) {
+          res.json({
+            error: {
+              code: "FailedToGetDomains",
+            }
+          });
+        } else {
+          res.json(rows);
+        }
+      });
     });
+
   });
 
-  //saving a new domain!
+  //adding a new domain!
   app.post('/api/domains', passport.isAuthenticated(), function(req, res) {
 
     var user = req.user;
@@ -33,19 +47,14 @@ module.exports = function(app, passport) {
 
     if (!checkIsValidDomain(domain)) {
 
-      console.log("domain invalid");
-
       res.json({
         error: {
-          code: "domainInvalid",
+          code: "DomainInvalid",
           msg: "Please enter a valid domain name"
         }
       });
 
     } else {
-
-      console.log("domain: " + domain);
-
 
       //used to gather all new attributes before saving to db
       //during aws calls
@@ -53,152 +62,74 @@ module.exports = function(app, passport) {
       newDomainData.domain = domain;
 
       //0. get AWS credentials
-      db.aws.keys.getAmazonApiKeys(user, function(awsKeyData) {
+      db.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
+        if (err) {
+          res.json({
+            error: err
+          });
+        } else {
 
-        var credentials = {
-          accessKeyId: awsKeyData.aws_access_key_id,
-          secretAccessKey: awsKeyData.aws_secret_access_key
-        }
+          var credentials = {
+            accessKeyId: awsData.aws_access_key_id,
+            secretAccessKey: awsData.aws_secret_access_key
+          }
+          var rootBucket = awsData.aws_root_bucket;
+          var path = "domains/" + domain;
+          //1. create domain folder in root landerDS bucket /domains/<domain_folder>
+          db.aws.s3.addNewDomainFolderToS3(credentials, rootBucket, path + "/", function(err) {
+            if (err) {
+              res.json({
+                error: err
+              });
+            } else {
+              //save the bucket link
+              newDomainData.path = path;
+              newDomainData.rootBucket = rootBucket;
+              //2. create a cloud front for domain
+              db.aws.cloudfront.makeCloudfrontDistribution(credentials, domain, "/" + path, rootBucket, function(err, cloudfrontDomainName, cloudfrontId) {
+                if (err) {
+                  res.json({
+                    error: {
+                      code: "couldNotCreateCloudfrontDistribution",
+                      msg: err
+                    }
+                  });
+                } else {
+                  //store this for adding to domain table later
+                  newDomainData.cloudfrontDomainName = cloudfrontDomainName;
+                  newDomainData.cloudfrontId = cloudfrontId;
 
-        //generate a unique bucket name for user, make sure it is a valid bucket name
-        var bucketName = uuid.v4();
-        newDomainData.bucketName = bucketName;
-
-        //1. create a bucket
-        db.aws.s3.createBucket(credentials, bucketName, function(err, responseData) {
-          if (err) {
-
-            res.json({
-              error: {
-                code: "couldNotCreateS3Bucket",
-                msg: err
-              }
-            });
-
-          } else {
-
-            //save the bucket link
-            var bucketUrl = responseData.Location;
-            newDomainData.bucketUrl = bucketUrl;
-
-            //2. add website configuration to the bucket
-            db.aws.s3.createBucketWebsite(credentials, bucketName, function(err, data) {
-              if (err) {
-                //if fail remove bucket
-                db.aws.s3.deleteBucket(credentials, bucketName, function(errDeleteBucket, responseData) {
-                  if (errDeleteBucket) {
-                    //oh shit error
-                    res.json({
-                      error: {
-                        code: "couldNotDeleteS3Bucket",
-                        msg: errDeleteBucket
-                      }
-                    });
-                  } else {
-                    //normal error
-                    res.json({
-                      error: {
-                        code: "couldNotCreateCloudfrontDistribution",
-                        msg: err
-                      }
-                    });
-                  }
-                });
-
-              } else {
-
-                //2. create a cloud front for domain
-                db.aws.cloudfront.makeCloudfrontDistribution(credentials, domain, bucketName, function(err, cloudfrontDomainName, cloudfrontId) {
-                  if (err) {
-                    //if fail remove bucket
-                    db.aws.s3.deleteBucket(credentials, bucketName, function(errDeleteBucket, responseData) {
-                      if (errDeleteBucket) {
-                        //oh shit error
+                  //3. create the route 53 for that
+                  db.aws.route53.createHostedZone(credentials, domain, cloudfrontDomainName, function(err, nameservers, hostedZoneId) {
+                    if (err) {
+                      //error so remove CF distro
+                      db.aws.cloudfront.deleteDistribution(credentials, cloudfrontId, function(err) {
                         res.json({
-                          error: {
-                            code: "couldNotDeleteS3Bucket",
-                            msg: errDeleteBucket
-                          }
+                          error: err
                         });
-                      } else {
-                        //normal error
-                        res.json({
-                          error: {
-                            code: "couldNotCreateCloudfrontDistribution",
-                            msg: err
-                          }
-                        });
-                      }
-                    });
+                      });
+                    } else {
+                      newDomainData.nameservers = nameservers;
+                      newDomainData.hostedZoneId = hostedZoneId;
 
-                  } else {
-                    console.log("successfully created cloudfront distribution " + cloudfrontDomainName + " id: " + cloudfrontId);
-
-                    //store this for adding to domain table later
-                    newDomainData.cloudfrontDomainName = cloudfrontDomainName;
-                    newDomainData.cloudfrontId = cloudfrontId;
-
-                    //3. create the route 53 for that
-                    db.aws.route53.createHostedZone(credentials, domain, cloudfrontDomainName, function(err, nameservers, hostedZoneId) {
-                      if (err) {
-                        //if fail remove bucket & cloud front
-                        db.aws.s3.deleteBucket(credentials, bucketName, function(errDeleteBucket) {
-                          if (errDeleteBucket) {
-                            //oh shit error
-                            res.json({
-                              error: {
-                                code: "couldNotDeleteS3Bucket",
-                                msg: errDeleteBucket
-                              }
-                            });
-                          } else {
-                            //delete cloud front
-                            console.log("trying ot delete cloudfront");
-                            db.aws.cloudfront.deleteCloudfrontDistribution(credentials, cloudfrontId, function(errDeleteCloudfront) {
-                              console.log("successfully deleted cloudfront distribution " + cloudfrontId);
-                              if (errDeleteCloudfront) {
-                                //oh shit error
-                                res.json({
-                                  error: {
-                                    code: "errDeleteCloudfront",
-                                    msg: errDeleteCloudfront
-                                  }
-                                });
-                              } else {
-                                //normal error
-                                res.json({
-                                  error: {
-                                    code: "couldNotCreateHostedZone",
-                                    msg: err
-                                  }
-                                });
-                              }
-                            });
-                          }
-                        });
-                      } else {
-                        console.log("successfully created hosted zone " + nameservers + " zoneid: " + hostedZoneId);
-
-                        newDomainData.nameservers = nameservers;
-                        newDomainData.hostedZoneId = hostedZoneId;
-
-                        //4. save it all to db for reference
-                        db.domains.addNewDomain(user, newDomainData, function(responseData) {
-
-                          console.log("added domain to database");
-
+                      //4. save it all to db for reference
+                      db.domains.addNewDomain(user, newDomainData, function(err, responseData) {
+                        if (err) {
+                          res.json({
+                            error: err
+                          });
+                        } else {
                           //5. return the data with an id, etc to the gui model
                           res.json(responseData);
-
-                        });
-                      }
-                    });
-                  }
-                });
-              }
-            });
-          }
-        });
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
       });
     }
   });

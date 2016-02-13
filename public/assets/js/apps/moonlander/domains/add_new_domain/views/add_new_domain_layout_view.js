@@ -31,7 +31,8 @@ define(["app",
           "change:alertLoading": "alertLoading",
           "change:domainInputError": "alertEnterDomain",
           "change:domainAlreadyAdded": "alertDomainAlreadyAdded",
-          "change:domainInvalid": "alertDomainInvalid"
+          "change:domainInvalid": "alertDomainInvalid",
+          "change:alertUnknownError": "alertUnknownError"
         },
 
         alertLoading: function() {
@@ -43,18 +44,27 @@ define(["app",
           }
         },
 
-        showNoErrorInfo: function() {
-          this.model.set({
-            'alertEnterDomain': false,
-            'alertDomainAlreadyAdded': false,
-            'alertDomainInvalid': false
-          });
+        alertUnknownError: function() {
+          var me = this;
 
-          var alert = this.$el.find(".new-domain-error-alert");
-          alert.hide();
+          var unknownError = this.model.get("alertUnknownError");
 
-          var info = this.$el.find(".new-domain-info-alert");
-          info.fadeIn();
+          if (unknownError) {
+            var infoAlert = this.$el.find(".aws-info-alert");
+            infoAlert.hide();
+            var successAlert = this.$el.find(".aws-success-alert");
+            successAlert.hide();
+            var defaultAlert = this.$el.find(".aws-default-alert");
+            defaultAlert.hide();
+
+            //in child view
+            var adminForm = this.$el.find(".admin-form");
+            adminForm.addClass("has-error");
+            var errorAlert = this.$el.find(".aws-error-alert");
+            errorAlert.html("We encountered an error while adding your new domain. The error code is: " + this.model.get('errorCode') || "Unknown");
+            errorAlert.fadeIn();
+            
+          }
         },
 
         alertDomainInvalid: function() {
@@ -63,16 +73,20 @@ define(["app",
           var domainInvalid = this.model.get("domainInvalid");
 
           if (domainInvalid) {
+            var infoAlert = this.$el.find(".aws-info-alert");
+            infoAlert.hide();
+            var successAlert = this.$el.find(".aws-success-alert");
+            successAlert.hide();
+            var defaultAlert = this.$el.find(".aws-default-alert");
+            defaultAlert.hide();
+
+            //in child view
             var adminForm = this.$el.find(".admin-form");
             adminForm.addClass("has-error");
-
-            var alert = this.$el.find(".new-domain-error-alert");
-            alert.html("Error: You must enter a valid domain name.");
-
-            var info = this.$el.find(".new-domain-info-alert");
-            info.hide();
-
-            alert.fadeIn();
+            var errorAlert = this.$el.find(".aws-error-alert");
+            errorAlert.html("Error: You must enter a valid domain name.");
+            errorAlert.fadeIn();
+          
           }
         },
 
@@ -82,37 +96,46 @@ define(["app",
           var domainAlreadyAdded = this.model.get("domainAlreadyAdded");
 
           if (domainAlreadyAdded) {
+            var infoAlert = this.$el.find(".aws-info-alert");
+            infoAlert.hide();
+            var successAlert = this.$el.find(".aws-success-alert");
+            successAlert.hide();
+            var defaultAlert = this.$el.find(".aws-default-alert");
+            defaultAlert.hide();
+
+            //in child view
             var adminForm = this.$el.find(".admin-form");
             adminForm.addClass("has-error");
-
-
-            var alert = this.$el.find(".new-domain-error-alert");
-            alert.html("Error: You have already added this domain.");
-
-            var info = this.$el.find(".new-domain-info-alert");
-            info.hide();
-
-            alert.fadeIn();
+            var errorAlert = this.$el.find(".aws-error-alert");
+            errorAlert.html("Error: You have already added this domain.");
+            errorAlert.fadeIn();
+          
           }
+
         },
 
         alertEnterDomain: function() {
           var me = this;
 
-          var domainInputError = this.model.get("domainInputError")
+          var domainInputError = this.model.get("domainInputError");
 
           if (domainInputError) {
+            var infoAlert = this.$el.find(".aws-info-alert");
+            infoAlert.hide();
+            var successAlert = this.$el.find(".aws-success-alert");
+            successAlert.hide();
+            var defaultAlert = this.$el.find(".aws-default-alert");
+            defaultAlert.hide();
+
+            //in child view
             var adminForm = this.$el.find(".admin-form");
             adminForm.addClass("has-error");
-
-            var alert = this.$el.find(".new-domain-error-alert");
-            alert.html("Error: You must enter a domain name before adding it.");
-
-            var info = this.$el.find(".new-domain-info-alert");
-            info.hide();
-
-            alert.fadeIn();
+            var errorAlert = this.$el.find(".aws-error-alert");
+            errorAlert.html("Error: You must enter a domain name before adding it.");
+            errorAlert.fadeIn();
+          
           }
+
         },
 
         confirmedAddNewDomain: function(e) {

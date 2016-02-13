@@ -21,26 +21,29 @@ module.exports = function(app, passport) {
     };
 
     //1. if not first time adding keys, back up user's landerDS user folder 
-    db.aws.keys.getAmazonApiKeysAndRootBucket(user, function(awsData) {
+    db.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
 
       var oldCredentials = {
         accessKeyId: awsData.aws_access_key_id,
         secretAccessKey: awsData.aws_secret_access_key
       };
       var currentRootBucket = awsData.aws_root_bucket;
-
       //only update if we don't have the same keys
       if (oldCredentials.accessKeyId !== newCredentials.accessKeyId) {
         //adds user folder to new account &
         //makes sure new account is set up correctly
         db.aws.s3.copyUserFolderToNewAccount(oldCredentials, newCredentials, currentRootBucket, user, function(err, newRootBucket) {
           if (err) {
-            res.json({error: err});
+            res.json({
+              error: err
+            });
           } else {
             //update keys to new keys in db
             db.aws.keys.updateAccessKeysAndRootBucket(user, newCredentials.accessKeyId, newCredentials.secretAccessKey, newRootBucket, function(err, result) {
               if (err) {
-                res.json({error: err});
+                res.json({
+                  error: err
+                });
               } else {
                 //successful return
                 res.json({});
@@ -65,8 +68,14 @@ module.exports = function(app, passport) {
 
     var user = req.user;
 
-    db.aws.keys.getAmazonApiKeys(user, function(response) {
-      res.json(response);
+    db.aws.keys.getAmazonApiKeys(user, function(err, response) {
+      if (err) {
+        res.json({
+          error: err
+        });
+      } else {
+        res.json(response);
+      }
     });
 
   });

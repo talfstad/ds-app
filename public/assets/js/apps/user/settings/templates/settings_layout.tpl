@@ -22,7 +22,7 @@
           <div class="alert-loading spinner-full-container">
             <div class="modal-loading-container">
               <span class="spinner-large glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
-              <h4 class="loading-text">Updating AWS Keys &amp; Migrating You to Your New Account. Please be patient.</h4>
+              <h4 class="loading-text">Updating AWS keys &amp; migrating you to your new account. Please be patient.</h4>
             </div>
           </div>
           <div class="alert alert-micro alert-border-left alert-default aws-default-alert">

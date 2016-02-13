@@ -8,7 +8,9 @@ module.exports = function(db) {
 
   return {
 
-    makeCloudfrontDistribution: function(credentials, domain, bucketName, callback) {
+    makeCloudfrontDistribution: function(credentials, domain, path, bucketName, callback) {
+      //needs a / in the beginning because aws appends it to domain name
+      // console.log("origin path: " + path)
       //set keys before every action
       AWS.config.update({
         region: 'us-west-2',
@@ -25,8 +27,10 @@ module.exports = function(db) {
 
       var timestamp = moment().format();
 
-      var s3_id = 'S3-' + bucketName;
+      var s3_id = 'domain-' + bucketName;
       var s3_domain = bucketName + '.s3.amazonaws.com';
+
+      // console.log("s3 domain name: " + s3_domain);
 
       var params = {
         DistributionConfig: { /* required */
@@ -83,7 +87,7 @@ module.exports = function(db) {
                 /* required */
                 Id: s3_id,
                 /* required */
-                OriginPath: '',
+                OriginPath: path,
                 S3OriginConfig: {
                   OriginAccessIdentity: '' /* required */
                 }
@@ -108,7 +112,9 @@ module.exports = function(db) {
       cloudfront_client.createDistribution(params, function(err, data) {
         if (err) {
           console.log(err, err.stack);
-          error = "Error creating cloudfront distribution from bucket: " + bucketName;
+          error = {
+            code: "ErrorCreatingCloudfrontDistribution"
+          };
           callback(error, {});
         } else {
           callback(error, data.DomainName, data.Id);
@@ -161,7 +167,6 @@ module.exports = function(db) {
       cloudfront_client.getDistribution(params, function(err, data) {
         if (err) {
           callback(err);
-          console.log(err);
         } else {
           callback(false, data);
         }
@@ -171,8 +176,8 @@ module.exports = function(db) {
     disableCloudfrontDistribution: function(credentials, distributionId, callback) {
       var me = this;
       //timeout if not completed within 20 minutes
-      var minutesToWait = 20;
-      var timeout = 1000 * 60 * minutesToWait; //1000ms = 1 s * 60 = 1 minute * 20 = 20 minutes
+      var minutesToWait = 40;
+      var timeout = 1000 * 60 * minutesToWait; //1000ms = 1 s * 60 = 1 minute * 40 = 40 minutes
 
       //poll every minute
       var pollRate = 1000 * 60 // 1 minute
@@ -192,9 +197,9 @@ module.exports = function(db) {
         var etag = data.ETag;
         var distributionConfig = data.DistributionConfig;
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
-          console.log("Distribution params for: " + distributionId);
+          // console.log("Distribution params for: " + distributionId);
 
           //update distribution config to disable it
           distributionConfig.Enabled = false;
@@ -210,11 +215,8 @@ module.exports = function(db) {
           cloudfront_client.updateDistribution(updateDistributionParams, function(err, data) {
             var etag = data.ETag;
             if (err) {
-              console.log(err);
-              console.log("failed to update distribution params");
+              callback(err);
             } else {
-
-              console.log("successfully updated distribution to disabled");
 
               //now that its disabling wait for it to disable and then delete it.
               var interval = setInterval(function() {
@@ -234,26 +236,30 @@ module.exports = function(db) {
                   //check to see if it's done disabling
                   //1. get config for it
                   me.getDistribution(credentials, distributionId, function(err, data) {
-                    var distribution = data.Distribution;
-                    var enabled = data.DistributionConfig.Enabled;
-
-                    //quit if its enabled, something really weird/bad happened
-                    if (enabled) {
-                      clearInterval(interval);
-                      var error = {
-                        code: "DistributionNotDisabled",
-                        msg: "Somehow your distribution was re-enabled even though we just disabled it."
-                      }
-                      console.log("Error: distribution wasn't disabled so we're stopping");
-                      callback(error);
+                    if (err) {
+                      callback(err);
                     } else {
-                      //it's disabled so check status!
-                      //2. check the config status = "Deployed" if is then we're good
-                      if (distribution.Status === "Deployed") {
-                        console.log("successfully disabled cloudfront distribution")
-                          //successfully disabled, lets clear it
+                      var distribution = data.Distribution;
+                      var enabled = data.DistributionConfig.Enabled;
+
+                      //quit if its enabled, something really weird/bad happened
+                      if (enabled) {
                         clearInterval(interval);
-                        callback(false, etag);
+                        var error = {
+                          code: "DistributionNotDisabled",
+                          msg: "Somehow your distribution was re-enabled even though we just disabled it."
+                        }
+                        console.log("Error: distribution wasn't disabled so we're stopping");
+                        callback(error);
+                      } else {
+                        //it's disabled so check status!
+                        //2. check the config status = "Deployed" if is then we're good
+                        if (distribution.Status === "Deployed") {
+                          console.log("successfully disabled cloudfront distribution")
+                            //successfully disabled, lets clear it
+                          clearInterval(interval);
+                          callback(false, etag);
+                        }
                       }
                     }
                   });
@@ -266,8 +272,7 @@ module.exports = function(db) {
     },
 
     deleteDistribution: function(credentials, distributionId, callback) {
-
-      //set keys before every action
+        //set keys before every action
       AWS.config.update({
         region: 'us-west-2',
         maxRetries: 0
@@ -278,8 +283,9 @@ module.exports = function(db) {
       //disable first
       this.disableCloudfrontDistribution(credentials, distributionId, function(err, etag) {
         if (err) {
-
+          callback(err);
         } else {
+          console.log("disabled distro");
           //now delete the CF distribution
           var params = {
             Id: distributionId,
@@ -288,9 +294,8 @@ module.exports = function(db) {
 
           cloudfront_client.deleteDistribution(params, function(err, data) {
             if (err) {
-              console.log(err, err.stack); // an error occurred
+              callback(err);
             } else {
-              console.log("successfully deleted cloudfront distribution!");
               callback(false, true);
             }
           });

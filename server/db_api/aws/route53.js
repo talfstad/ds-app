@@ -19,10 +19,9 @@ module.exports = function(db) {
           var error;
           route53.listResourceRecordSets(params, function(err, data) {
             if (err) {
-              console.log("Error listing record sets for hosted zone id: " + hostedZoneId);
-              callback(err, {})
+              callback(err);
             } else {
-              callback(error, data.ResourceRecordSets)
+              callback(error, data.ResourceRecordSets);
             }
           });
         }
@@ -163,7 +162,7 @@ module.exports = function(db) {
 
       route53.listResourceRecordSets(params, function(err, data) {
         if (err) {
-          console.log(err, err.stack); // an error occurred
+          callback(err);
         } else {
           //inclue all sets except NS
           var resourceRecordSets = [];
@@ -200,10 +199,8 @@ module.exports = function(db) {
           if (resourceRecordSets.length > 0) {
             route53.changeResourceRecordSets(params, function(err, data) {
               if (err) {
-                console.log(err);
-
+                callback(err);
               } else {
-                console.log("successfully deleted all record sets for zone id: " + hostedZoneId);
                 callback(false, true);
               }
             });
@@ -232,9 +229,8 @@ module.exports = function(db) {
 
         route53.deleteHostedZone(params, function(err, data) {
           if (err) {
-            console.log(err, err.stack); // an error occurred
+            callback(err);
           } else {
-            console.log("successfully deleted hosted zone: " + hostedZoneId); // successful response
             callback(false, data);
           }
         });

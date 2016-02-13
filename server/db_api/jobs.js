@@ -15,16 +15,16 @@ module.exports = function(db) {
         if (err) {
           console.log(err);
         } else {
-          
+
           connection.query("SELECT * FROM jobs WHERE user_id = ? AND domain_id = ? AND lander_id = ? AND processing = ?", [user_id, domain_id, lander_id, true],
 
             function(err, docs) {
               if (err) {
                 console.log(err);
               } else {
-                
+
                 successCallback(docs);
-              
+
               }
               connection.release();
             });
@@ -102,6 +102,24 @@ module.exports = function(db) {
       } else {
         successCallback();
       }
+    },
+
+    setErrorAndStop: function(errorJobId, callback) {
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        }
+        connection.query("UPDATE jobs SET error = ?, processing = ? WHERE id = ?", [true, false, errorJobId], function(err, docs) {
+          if (err) {
+            callback({
+              code: err
+            });
+          } else {
+            callback(false);
+          }
+          connection.release();
+        });
+      });
     },
 
     finishedProcessing: function(user, finishedJobs, successCallback, errorCallback) {

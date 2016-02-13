@@ -44,7 +44,7 @@ module.exports = function(db) {
 
     },
 
-    addNewDomain: function(user, newDomainAttributes, successCallback, errorCallback) {
+    addNewDomain: function(user, newDomainAttributes, callback) {
       // console.log(newDomainAttributes);
       // {
       //   bucketUrl: 'http://f2e569da-f6d7-47af-bffb-486bcac07d67.s3.amazonaws.com/',
@@ -59,26 +59,28 @@ module.exports = function(db) {
       //insert a new domain 
       var user_id = user.id;
       var domain = newDomainAttributes.domain;
-      var bucket_url = newDomainAttributes.bucketUrl;
       var cloudfront_domain = newDomainAttributes.cloudfrontDomainName;
       var cloudfront_id = newDomainAttributes.cloudfrontId;
       var nameservers = newDomainAttributes.nameservers.join();
       var hosted_zone_id = newDomainAttributes.hostedZoneId;
-      var bucket_name = newDomainAttributes.bucketName;
+      var root_bucket = newDomainAttributes.rootBucket;
+
 
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         }
-        connection.query("call insert_new_domain(?, ?, ?, ?, ?, ?, ?, ?)", [user_id, nameservers, domain, bucket_url, cloudfront_domain, cloudfront_id, hosted_zone_id, bucket_name],
+        connection.query("call insert_new_domain(?, ?, ?, ?, ?, ?, ?)", [user_id, nameservers, domain, cloudfront_domain, cloudfront_id, hosted_zone_id, root_bucket],
           function(err, docs) {
             if (err) {
               console.log(err);
-              errorCallback("Error inserting new domain in DB call");
+              callback({
+                code: "CouldNotInsertIntoDb"
+              });
             } else {
               newDomainAttributes.created_on = docs[1][0]["created_on"];
               newDomainAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
-              successCallback(newDomainAttributes);
+              callback(false, newDomainAttributes);
             }
             connection.release();
           });
@@ -93,7 +95,7 @@ module.exports = function(db) {
         if (err) {
           console.log(err);
         }
-        connection.query("SELECT id,domain,nameservers,created_on,bucket_url,bucket_name,cloudfront_domain,cloudfront_id,hosted_zone_id FROM domains WHERE user_id = ? AND id = ?", [user_id, domain_id],
+        connection.query("SELECT * FROM domains WHERE user_id = ? AND id = ?", [user_id, domain_id],
           function(err, dbDomainInfo) {
             if (err) {
               callback(err);
@@ -105,8 +107,7 @@ module.exports = function(db) {
       });
     },
 
-    getAll: function(user, successCallback) {
-
+    getAll: function(user, rootBucket, successCallback) {
       var user_id = user.id;
 
       var getActiveCampaignsForDomain = function(domain, callback) {
@@ -265,7 +266,7 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT id,domain,nameservers,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM domains WHERE user_id = ?", [user_id], function(err, dbdomains) {
+          connection.query("SELECT id,domain,nameservers,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM domains WHERE aws_root_bucket = ?", [rootBucket], function(err, dbdomains) {
             if (err) {
               console.log(err);
             } else {
@@ -278,10 +279,10 @@ module.exports = function(db) {
                   dbdomains[i].nameservers = nameserversArray;
                 }
 
-
                 getExtraNestedForDomain(dbdomains[i], function() {
 
                   if (++idx == dbdomains.length) {
+
                     gotDomainsCallback(dbdomains);
                   }
 
@@ -299,7 +300,7 @@ module.exports = function(db) {
 
       //call to get all and return rows
       getAllDomainsDb(function(domains) {
-        return successCallback(domains);
+        return successCallback(false, domains);
       });
 
 
@@ -370,22 +371,24 @@ module.exports = function(db) {
 
     },
 
-    deleteDomain: function(user, domain_id, successCallback, errorCallback) {
+    deleteDomain: function(user, domain_id, callback) {
       var user_id = user.id;
 
       //update model stuff into domains where id= model.id
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
-          errorCallback(err);
+          callback(err);
         } else {
           connection.query("DELETE FROM domains WHERE user_id = ? AND id = ?", [user_id, domain_id],
             function(err, docs) {
               if (err) {
                 console.log(err);
-                errorCallback("\nError deleting domain from db.");
+                callback({
+                  code: "Error deleting domain from db."
+                });
               } else {
-                successCallback(docs);
+                callback(false, docs);
               }
               connection.release();
             });

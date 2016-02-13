@@ -31,11 +31,12 @@ define(["app",
                   
                   if (serverResponse.error.code === "couldNotCreateCloudfrontDistribution") {
                     domainModel.set("domainAlreadyAdded", true);
-                  } else if (serverResponse.error.code === "domainInvalid") {
+                  } else if (serverResponse.error.code === "DomainInvalid") {
                     domainModel.set("domainInvalid", true);
                   } else {
                     //other error
-                    
+                    domainModel.set("errorCode", serverResponse.error.code);
+                    domainModel.set("alertUnknownError", true);
                   }
                 } else {
                   //successfully saved new domain

@@ -3,7 +3,7 @@
 <div style="display: inline-block; margin-top: 75px">
 	<% if(filterVal === "") { %> 
 
-	<h1 class="text-muted">Add a lander!</h1>
+	<h1 class="text-muted">Add a domain!</h1>
 
 	<% } else { %>
 
