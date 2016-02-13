@@ -6,6 +6,7 @@ module.exports = function(app, passport) {
 
 
   app.get('/api/domains', passport.isAuthenticated(), function(req, res) {
+
     var user = req.user;
     var user_id = user.id;
 
@@ -56,10 +57,7 @@ module.exports = function(app, passport) {
 
     } else {
 
-      //used to gather all new attributes before saving to db
-      //during aws calls
-      var newDomainData = {};
-      newDomainData.domain = domain;
+
 
       //0. get AWS credentials
       db.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
@@ -69,68 +67,122 @@ module.exports = function(app, passport) {
           });
         } else {
 
+          //used to gather all new attributes before saving to db
+          //during aws calls
+          var newDomainData = {};
+          newDomainData.domain = domain;
+
           var credentials = {
             accessKeyId: awsData.aws_access_key_id,
             secretAccessKey: awsData.aws_secret_access_key
           }
           var rootBucket = awsData.aws_root_bucket;
           var path = "domains/" + domain;
-          //1. create domain folder in root landerDS bucket /domains/<domain_folder>
-          db.aws.s3.addNewDomainFolderToS3(credentials, rootBucket, path + "/", function(err) {
+
+          //check if domain has already been added as a root domain. if so, add it as a subdomain
+          db.domains.checkIfSubdomain(rootBucket, domain, function(err, domainInformation) {
             if (err) {
               res.json({
                 error: err
               });
             } else {
-              //save the bucket link
-              newDomainData.path = path;
-              newDomainData.rootBucket = rootBucket;
-              //2. create a cloud front for domain
-              db.aws.cloudfront.makeCloudfrontDistribution(credentials, domain, "/" + path, rootBucket, function(err, cloudfrontDomainName, cloudfrontId) {
+              //1. create domain folder in root landerDS bucket /domains/<domain_folder>
+              db.aws.s3.addNewDomainFolderToS3(credentials, rootBucket, path + "/", function(err) {
                 if (err) {
                   res.json({
-                    error: {
-                      code: "couldNotCreateCloudfrontDistribution",
-                      msg: err
-                    }
+                    error: err
                   });
                 } else {
-                  //store this for adding to domain table later
-                  newDomainData.cloudfrontDomainName = cloudfrontDomainName;
-                  newDomainData.cloudfrontId = cloudfrontId;
-
-                  //3. create the route 53 for that
-                  db.aws.route53.createHostedZone(credentials, domain, cloudfrontDomainName, function(err, nameservers, hostedZoneId) {
+                  //save the bucket link
+                  newDomainData.path = path;
+                  newDomainData.rootBucket = rootBucket;
+                  
+                  //2. create a cloud front for domain
+                  db.aws.cloudfront.makeCloudfrontDistribution(credentials, domain, "/" + path, rootBucket, function(err, cloudfrontDomainName, cloudfrontId) {
                     if (err) {
-                      //error so remove CF distro
-                      db.aws.cloudfront.deleteDistribution(credentials, cloudfrontId, function(err) {
-                        res.json({
-                          error: err
-                        });
-                      });
-                    } else {
-                      newDomainData.nameservers = nameservers;
-                      newDomainData.hostedZoneId = hostedZoneId;
-
-                      //4. save it all to db for reference
-                      db.domains.addNewDomain(user, newDomainData, function(err, responseData) {
-                        if (err) {
-                          res.json({
-                            error: err
-                          });
-                        } else {
-                          //5. return the data with an id, etc to the gui model
-                          res.json(responseData);
+                      res.json({
+                        error: {
+                          code: "couldNotCreateCloudfrontDistribution",
+                          msg: err
                         }
                       });
+                    } else {
+                      //store this for adding to domain table later
+                      newDomainData.cloudfrontDomainName = cloudfrontDomainName;
+                      newDomainData.cloudfrontId = cloudfrontId;
+
+                      if (domainInformation.isSubdomain) {
+                        //add A DNS record to the domain's hosted zone for this subdomain aliased to the new CF distribution :D
+                        db.aws.route53.addSubdomainRecord(credentials, domain, cloudfrontDomainName, domainInformation.hosted_zone_id, function(err, responseData) {
+                          if (err) {
+                            //error so remove CF distro
+                            db.aws.cloudfront.deleteDistribution(credentials, cloudfrontId, function(err) {
+                              res.json({
+                                error: err
+                              });
+                            });
+                          } else {
+                            newDomainData.nameservers = domainInformation.nameservers.split(',');
+                            newDomainData.hostedZoneId = domainInformation.hosted_zone_id;
+
+                            db.domains.addNewDomain(user, newDomainData, function(err, responseData) {
+                              if (err) {
+                                res.json({
+                                  error: err
+                                });
+                              } else {
+                                //5. return the data with an id, etc to the gui model
+                                res.json(responseData);
+                              }
+                            });
+                          }
+                        });
+                      } else {
+                        //3. create the route 53 for that if not subdomain
+                        db.aws.route53.createHostedZone(credentials, domain, cloudfrontDomainName, function(err, nameservers, hostedZoneId) {
+                          if (err) {
+                            //error so remove CF distro
+                            db.aws.cloudfront.deleteDistribution(credentials, cloudfrontId, function(err) {
+                              res.json({
+                                error: err
+                              });
+                            });
+                          } else {
+                            newDomainData.nameservers = nameservers;
+                            newDomainData.hostedZoneId = hostedZoneId;
+
+                            //4. save it all to db for reference
+                            db.domains.addNewDomain(user, newDomainData, function(err, responseData) {
+                              if (err) {
+                                res.json({
+                                  error: err
+                                });
+                              } else {
+                                //5. return the data with an id, etc to the gui model
+                                res.json(responseData);
+                              }
+                            });
+                          }
+                        });
+                      }
                     }
                   });
                 }
               });
+
             }
           });
         }
       });
+
+
+
+
+
+
+
+
+
     }
   });
 

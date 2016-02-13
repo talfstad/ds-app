@@ -138,6 +138,58 @@ module.exports = function(db) {
 
     },
 
+    addSubdomainRecord: function(credentials, subdomain, cloudfrontDomainName, hostedZoneId, callback) {
+      var timestamp = moment().format();
+      console.log("hosted zone id: " + hostedZoneId);
+
+      //cloudfront hosted zone is always this
+      var cloudfrontHostedZoneId = 'Z2FDTNDATAQYW2';
+
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+
+      AWS.config.update(credentials);
+
+      var route53 = new AWS.Route53();
+
+      var recordSetParams = {
+        ChangeBatch: { /* required */
+          Changes: [ /* required */ {
+            Action: 'UPSERT',
+            /* required */
+            ResourceRecordSet: { /* required */
+              Name: subdomain,
+              /* required */
+              Type: 'A',
+              /* required */
+              AliasTarget: {
+                DNSName: cloudfrontDomainName,
+                /* required */
+                EvaluateTargetHealth: false,
+                /* required */
+                HostedZoneId: cloudfrontHostedZoneId /* required */
+              }
+            }
+          }],
+          Comment: 'Added by Lander DS on ' + timestamp
+        },
+        HostedZoneId: hostedZoneId /* required */
+      };
+
+      route53.changeResourceRecordSets(recordSetParams, function(err, data) {
+        if (err) {
+          callback({
+            code: "ErrorAddingRecordSet"
+          });
+        } else {
+          callback(false, data);
+        }
+      });
+
+    },
+
 
     //removes a domains CNAME and A records so we can delete the hosted zone!
     deleteRecordSets: function(credentials, hostedZoneId, callback) {

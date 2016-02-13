@@ -32,6 +32,18 @@
                 </label>
               </div>
             </div>
+            <!-- <div class="section row mb10">
+              <label for="domainName" class="text-align-right field-label col-md-3 text-center">
+                <a style="float: right;margin-left: 3px;margin-top: 1px;" href="#">
+                  <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
+                </a>Is this a subdomain?</label>
+              <div class="col-md-9">
+                <label class="switch switch-success switch-round block mn">
+                  <input type="checkbox" name="subdomain" id="subdomain" value="angular">
+                  <label for="subdomain" data-on="YES" data-off="NO" style="margin-top: 8px;"></label>
+                </label>
+              </div>
+            </div> -->
           </div>
         </div>
       </div>

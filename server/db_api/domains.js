@@ -73,7 +73,6 @@ module.exports = function(db) {
         connection.query("call insert_new_domain(?, ?, ?, ?, ?, ?, ?)", [user_id, nameservers, domain, cloudfront_domain, cloudfront_id, hosted_zone_id, root_bucket],
           function(err, docs) {
             if (err) {
-              console.log(err);
               callback({
                 code: "CouldNotInsertIntoDb"
               });
@@ -394,6 +393,48 @@ module.exports = function(db) {
             });
         }
       });
+
+    },
+
+    checkIfSubdomain: function(rootBucket, subdomain, callback) {
+
+        //get all domains for user and check if they are in the subdomain
+        db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+            callback(err);
+          } else {
+            connection.query("SELECT * from domains WHERE aws_root_bucket = ?", [rootBucket],
+              function(err, docs) {
+                if (err) {
+                  console.log(err);
+                  callback({
+                    code: "ErrorGettingDomainsFromDb"
+                  });
+                } else {
+                  var domainFoundForSubdomain = false;
+                  var domainData = {};
+                  for (var i = 0; i < docs.length; i++) {
+                    //if domain is in subdomain
+                    if (subdomain.indexOf(docs[i].domain) > -1) {
+                      domainData = docs[i];
+                      domainData.isSubdomain = true;
+                      domainFoundForSubdomain = true;
+                      callback(false, docs[i]);
+                      break;
+                    }
+                  }
+                  if (!domainFoundForSubdomain) {
+                    domainData.isSubdomain = false;
+                    callback(false, domainData);
+                  }
+                }
+                connection.release();
+              });
+          }
+        });
+
+      
 
     }
   }

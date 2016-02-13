@@ -152,6 +152,7 @@ define(["app",
 
             //1. set the new values into the job model
             this.model.set("domain", newDomainData.domainName);
+            this.model.set("subdomain", newDomainData.subdomain);
 
             this.trigger("confirmAddDomain", this.model);
 
