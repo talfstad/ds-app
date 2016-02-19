@@ -11,8 +11,6 @@ module.exports = function(db) {
 
     createHostedZone: function(credentials, domain, cloudfront_domain_name, callback) {
 
-
-
       var error;
 
       var timestamp = moment().format();
@@ -360,28 +358,39 @@ module.exports = function(db) {
 
     },
 
-    //return all domains with the hosted zone id passed in
-    getDomainsByHostedZone: function(hostedZoneId, callback) {
+    //list the hosted zone records, return the 
+    getNumDomainsInHostedZone: function(credentials, hostedZoneId, callback) {
+      var me = this;
 
-      db.getConnection(function(err, connection) {
-        if (err) {
-          console.log(err);
-          callback(err);
-        } else {
-          connection.query("SELECT * from domains WHERE hosted_zone_id = ?", [hostedZoneId],
-            function(err, docs) {
-              if (err) {
-                callback({
-                  code: "ErrorGettingDomainsByHostedZoneFromDb"
-                });
-              } else {
-                callback(false, docs);
-              }
-              connection.release();
-            });
-        }
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
       });
 
+      AWS.config.update(credentials);
+
+      var route53 = new AWS.Route53();
+
+      var params = {
+        HostedZoneId: hostedZoneId /* required */
+      };
+
+      route53.listResourceRecordSets(params, function(err, data) {
+        if (err) {
+          callback(err);
+        } else {
+          //count the A records:
+          var resourceRecords = data.ResourceRecordSets;
+          var count = 0;
+          for (var i = 0; i < resourceRecords.length; i++) {
+            if (resourceRecords[i].Type === "A") {
+              count++;
+            }
+          }
+
+          callback(false, count);
+        }
+      });
     },
 
     deleteHostedZoneInformationForDomain: function(credentials, domain, hostedZoneId, callback) {
@@ -397,12 +406,16 @@ module.exports = function(db) {
       var route53 = new AWS.Route53();
 
       //check for other domains that are using this hosted zone
-      this.getDomainsByHostedZone(hostedZoneId, function(err, domainsDb) {
+      this.getNumDomainsInHostedZone(credentials, hostedZoneId, function(err, numDomainsInHostedZone) {
         if (err) {
-          callback(err);
+          if (err.code === "NoSuchHostedZone") {
+            callback(false);
+          } else {
+            callback(err);
+          }
         } else {
 
-          if (domainsDb.length < 2) {
+          if (numDomainsInHostedZone < 2) {
             console.log("deleting the hosted zone not just domain");
             //delete the hosted zone
             me.deleteHostedZone(credentials, hostedZoneId, function(err, deletedHostedZoneData) {

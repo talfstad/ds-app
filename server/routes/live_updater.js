@@ -19,12 +19,14 @@ module.exports = function(app, passport) {
       for (var i = 0; i < modelsAttributes.length; i++) {
         var jobNotFound = true;
         for (var j = 0; j < activeJobs.length; j++) {
+
           if(modelsAttributes[i].id === activeJobs[j].id) {
             jobNotFound = false;
 
             if (activeJobs[j].done || activeJobs[j].error) {
               //add to finished, remove from active
               modelsAttributes[i].error = activeJobs[j].error;
+              modelsAttributes[i].error_code = activeJobs[j].error_code;
               modelsAttributes[i].done = activeJobs[j].done;
               finishedJobs.push(modelsAttributes[i]);
             }

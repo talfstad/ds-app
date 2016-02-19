@@ -65,9 +65,9 @@ module.exports = function(db) {
 
       if (finishedJobs.length > 0) {
         //build sql command
-        var finishedJobsValues = [true, false];
+        var finishedJobsValues = [true];
 
-        var updateSql = "UPDATE jobs SET done = ?, processing = ? WHERE ";
+        var updateSql = "UPDATE jobs SET done = ? WHERE ";
 
 
         for (var i = 0; i < finishedJobs.length; i++) {
@@ -104,12 +104,12 @@ module.exports = function(db) {
       }
     },
 
-    setErrorAndStop: function(errorJobId, callback) {
+    setErrorAndStop: function(code, errorJobId, callback) {
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         }
-        connection.query("UPDATE jobs SET error = ?, processing = ? WHERE id = ?", [true, false, errorJobId], function(err, docs) {
+        connection.query("UPDATE jobs SET error = ?, error_code = ? WHERE id = ?", [true, code, errorJobId], function(err, docs) {
           if (err) {
             callback({
               code: err

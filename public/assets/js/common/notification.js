@@ -1,11 +1,7 @@
-define(["app", "pnotify", "pnotify.buttons"], function(Moonlander, PNotify){
+define(["app", "pnotify", "pnotify.buttons"], function(Moonlander, PNotify) {
   Moonlander.notification = {};
 
-  Moonlander.notification = function(title, message, style, location){
-    // A "stack" controls the direction and position
-    // of a notification. Here we create an array w
-    // with several custom stacks that we use later
-    var Stacks = {
+  var stacks = {
       stack_top_right: {
         "dir1": "down",
         "dir2": "left",
@@ -52,8 +48,12 @@ define(["app", "pnotify", "pnotify.buttons"], function(Moonlander, PNotify){
         "dir2": "left",
         "context": $("#stack-context")
       },
-    }
+    };
 
+    Moonlander.notification = function(title, message, style, location) {
+      // A "stack" controls the direction and position
+      // of a notification. Here we create an array w
+      // with several custom stacks that we use later
 
       // PNotify Plugin Event Init
       var noteStyle = style;
@@ -87,21 +87,16 @@ define(["app", "pnotify", "pnotify.buttons"], function(Moonlander, PNotify){
         opacity: noteOpacity,
         addclass: noteStack,
         type: noteStyle,
-        hide: true,
         buttons: {
           closer_hover: true,
           sticker: false
         },
-        stack: Stacks[noteStack],
+        stack: stacks[noteStack],
         width: findWidth(),
-        delay: 2400
+        delay: 10000
       });
 
 
-
-
-
-  };
+    };
   return Moonlander.notification;
 });
-

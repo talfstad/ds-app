@@ -7,11 +7,12 @@ define(["app",
     "/assets/js/apps/moonlander/domains/list/views/lander_tab_handle_view.js",
     "/assets/js/apps/moonlander/domains/list/views/campaign_tab_handle_view.js",
     "/assets/js/apps/moonlander/domains/list/active_campaigns/views/active_campaigns_collection_view.js",
+    "/assets/js/common/notification.js",
     "bootstrap",
     "jstz"
   ],
   function(Moonlander, LandersListItemTpl, DeployedListChildView, DeployedListEmptyView, SidebarModel, moment,
-    DeployStatusView, CampaignTabHandleView, ActiveCampaignsView) {
+    DeployStatusView, CampaignTabHandleView, ActiveCampaignsView, Notification) {
 
     Moonlander.module("DomainsApp.Domains.List", function(List, Moonlander, Backbone, Marionette, $, _) {
       List.childView = Marionette.LayoutView.extend({
@@ -33,6 +34,11 @@ define(["app",
         events: {
           "click button.deploy-to-domain": "showDeployLanderToDomain",
           "click button.add-to-campaign": "showAddToCampaign"
+        },
+
+        modelEvents: {
+          "notifySuccessDeleteDomain": "notifySuccessDeleteDomain",
+          "notifyErrorDeleteDomain": "notifyErrorDeleteDomain"
         },
 
         regions: {
@@ -63,6 +69,14 @@ define(["app",
           this.$el.find("a:first").click();
         },
 
+        notifySuccessDeleteDomain: function() {
+          Notification(this.model.get("domain"), "Successfully Deleted", "success", "stack_top_right");
+        },
+
+        notifyErrorDeleteDomain: function(errorMsg) {
+          Notification(this.model.get("domain"), errorMsg, "danger", "stack_top_right");
+          this.model.trigger("reset");
+        },
 
         disableAccordionPermanently: function() {
           //disable tab links

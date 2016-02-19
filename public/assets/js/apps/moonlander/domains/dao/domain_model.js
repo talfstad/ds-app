@@ -33,6 +33,7 @@ define(["app",
         activeJobsCollection.on("finishedState", function(jobModel) {
           var deployStatus = "deployed";
           if (jobModel.get("action") === "deleteDomain") {
+            me.trigger("notifySuccessDeleteDomain");
             //destroy the domain model
             delete me.attributes.id;
             me.destroy();
@@ -44,6 +45,18 @@ define(["app",
 
           //trigger to start the next job on the list
           Moonlander.trigger("job:startNext", activeJobsCollection);
+
+        });
+
+        activeJobsCollection.on("errorState", function(jobModel) {
+          //change deploy status back to deployed
+          me.set("deploy_status", "deployed");
+        
+          me.trigger("notifyErrorDeleteDomain", jobModel.get("error"));
+
+          //hack to not delete job from server
+          delete jobModel.attributes.id;
+          jobModel.destroy();
 
         });
 
@@ -70,7 +83,7 @@ define(["app",
           //   var isDeploying = false;
           //   deployedLandersCollection.each(function(deployLanderModel) {
           //     //is this lander deployed to this domain?
-              
+
           //     if (currentDomain.domain_id == deployLanderModel.id) {
           //       isDeployed = true;
 

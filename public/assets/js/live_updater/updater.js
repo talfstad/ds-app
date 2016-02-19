@@ -34,7 +34,12 @@ define(["app"], function(Moonlander) {
           if (!modelAttributes.processing) {
             //done, update original model
             var actualJobModel = me.updateCollection.get(modelAttributes.id);
-            actualJobModel.trigger("finishedState", actualJobModel);
+            if (modelAttributes.error) {
+              actualJobModel.set("error", modelAttributes.error_code);
+              actualJobModel.trigger("errorState", actualJobModel);
+            } else {
+              actualJobModel.trigger("finishedState", actualJobModel);
+            }
           }
         });
       };
@@ -85,7 +90,7 @@ define(["app"], function(Moonlander) {
       });
 
       if (!hasConflict) {
-        
+
         this.updateCollection.add(model);
         model.trigger("startState");
 

@@ -54,12 +54,6 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
         removeSnippetFromAllLanders: function(attr) {
           ListController.removeSnippetFromAllLanders(attr);
         },
-        showAndReFilterActiveSnippetsView: function(model) {
-          SidemenuController.showAndReFilterActiveSnippetsView(model);
-        },
-        updateAllActiveSnippetNames: function(model) {
-          ListController.updateAllActiveSnippetNames(model);
-        },
         deployLanderToNewDomain: function(attr) {
           ListController.deployLanderToDomain(attr);
         },

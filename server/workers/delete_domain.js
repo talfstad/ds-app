@@ -17,7 +17,8 @@ module.exports = function(app, db) {
       var domain = domainInfo.domain;
 
       var setErrorAndStop = function(err) {
-        db.jobs.setErrorAndStop(job_id, function(err) {
+        var code = err.code || "UnkownError";
+        db.jobs.setErrorAndStop(code, job_id, function(err) {
           console.log("error occured during delete domain: " + err);
         });
       };
@@ -57,7 +58,6 @@ module.exports = function(app, db) {
                         if (err) {
                           setErrorAndStop(err);
                         } else {
-
                           //d. delete cloudfront distribution
                           db.aws.cloudfront.deleteDistribution(credentials, distribution_id, function(err, deleteDistributionData) {
                             if (err) {
