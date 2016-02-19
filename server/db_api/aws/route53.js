@@ -11,6 +11,22 @@ module.exports = function(db) {
 
     createHostedZone: function(credentials, domain, cloudfront_domain_name, callback) {
 
+
+
+      var error;
+
+      var timestamp = moment().format();
+      var callerRef = make_uuid.v4();
+
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+
+      AWS.config.update(credentials);
+
+      var route53 = new AWS.Route53();
+
       //function definitions for creating hosted zone
       var getNameServers = function(hostedZoneId, callback) {
           var params = {
@@ -26,20 +42,6 @@ module.exports = function(db) {
           });
         }
         ////////////////////////////////
-
-      var error;
-
-      var timestamp = moment().format();
-      var callerRef = make_uuid.v4();
-
-      AWS.config.update({
-        region: 'us-west-2',
-        maxRetries: 0
-      });
-
-      AWS.config.update(credentials);
-
-      var route53 = new AWS.Route53();
 
       var hostedZoneParams = {
         CallerReference: callerRef,
@@ -288,6 +290,161 @@ module.exports = function(db) {
         });
 
       });
+    },
+
+    deleteDomainRecordSets: function(credentials, domain, hostedZoneId, callback) {
+      var me = this;
+      var timestamp = moment().format();
+
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+
+      AWS.config.update(credentials);
+
+      var route53 = new AWS.Route53();
+
+      //list record sets
+      var params = {
+        HostedZoneId: hostedZoneId /* required */
+      };
+
+      var error;
+
+      route53.listResourceRecordSets(params, function(err, data) {
+        if (err) {
+          if (err.code === "NoSuchHostedZone") {
+            //no error keep going if it doesnt exist
+            callback(false, true);
+          } else {
+            callback(err);
+          }
+        } else {
+          //find A record set that matches domain
+          var resourceRecords = data.ResourceRecordSets;
+          var recordsToDelete = [];
+          for (var i = 0; i < resourceRecords.length; i++) {
+            //only delete the exact records
+            //weird theres a period at the end of the records when you get them
+            if (resourceRecords[i].Name === domain + "." && resourceRecords[i].Type === "A") {
+
+              delete resourceRecords[i].ResourceRecords;
+              var record = {
+                Action: "DELETE",
+                ResourceRecordSet: resourceRecords[i]
+              };
+              recordsToDelete.push(record);
+            }
+          }
+
+          //delete the actual records!
+          var recordSetParams = {
+            ChangeBatch: { /* required */
+              Changes: recordsToDelete,
+              Comment: 'Added by Lander DS on ' + timestamp
+            },
+            HostedZoneId: hostedZoneId /* required */
+          };
+
+          route53.changeResourceRecordSets(recordSetParams, function(err, data) {
+            if (err) {
+              console.log(err, err.stack);
+              callback(error, {});
+            } else {
+              callback(false);
+            }
+          });
+        }
+      });
+
+    },
+
+    //return all domains with the hosted zone id passed in
+    getDomainsByHostedZone: function(hostedZoneId, callback) {
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+          callback(err);
+        } else {
+          connection.query("SELECT * from domains WHERE hosted_zone_id = ?", [hostedZoneId],
+            function(err, docs) {
+              if (err) {
+                callback({
+                  code: "ErrorGettingDomainsByHostedZoneFromDb"
+                });
+              } else {
+                callback(false, docs);
+              }
+              connection.release();
+            });
+        }
+      });
+
+    },
+
+    deleteHostedZoneInformationForDomain: function(credentials, domain, hostedZoneId, callback) {
+      var me = this;
+
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+
+      AWS.config.update(credentials);
+
+      var route53 = new AWS.Route53();
+
+      //check for other domains that are using this hosted zone
+      this.getDomainsByHostedZone(hostedZoneId, function(err, domainsDb) {
+        if (err) {
+          callback(err);
+        } else {
+
+          if (domainsDb.length < 2) {
+            console.log("deleting the hosted zone not just domain");
+            //delete the hosted zone
+            me.deleteHostedZone(credentials, hostedZoneId, function(err, deletedHostedZoneData) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, deletedHostedZoneData);
+              }
+            });
+          } else {
+            console.log("deleting the domains record sets not the hosted zone");
+
+            //delete just the domains record set
+            me.deleteDomainRecordSets(credentials, domain, hostedZoneId, function(err, deletedRecordData) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, deletedRecordData);
+              }
+            });
+          }
+
+
+        }
+      });
+
+
+      // this.deleteRecordSets(credentials, hostedZoneId, function(err, data) {
+
+      //   var params = {
+      //     Id: hostedZoneId /* required */
+      //   };
+
+      //   route53.deleteHostedZone(params, function(err, data) {
+      //     if (err) {
+      //       callback(err);
+      //     } else {
+      //       callback(false, data);
+      //     }
+      //   });
+
+      // });
     }
 
   }

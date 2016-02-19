@@ -46,14 +46,14 @@ module.exports = function(app, db) {
                     secretAccessKey: awsKeyData.aws_secret_access_key
                   }
 
-                  //b. delete bucket
+                  //b. delete domain folder
                   db.aws.s3.deleteDomainFromS3(domain, baseBucketName, credentials, function(err) {
                     //dont care if bucket was already deleted, continue
                     if (err && err.code !== "NoSuchBucket") {
                       setErrorAndStop(err);
                     } else {
                       //c. delete hosted zone
-                      db.aws.route53.deleteHostedZone(credentials, hosted_zone_id, function(err, deleteHostedZoneResponseData) {
+                      db.aws.route53.deleteHostedZoneInformationForDomain(credentials, domain, hosted_zone_id, function(err, deleteHostedZoneResponseData) {
                         if (err) {
                           setErrorAndStop(err);
                         } else {
