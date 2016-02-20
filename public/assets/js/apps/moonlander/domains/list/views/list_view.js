@@ -1,5 +1,5 @@
 define(["app",
-    "/assets/js/apps/moonlander/domains/list/views/list_childview_view.js",
+    "/assets/js/apps/moonlander/domains/list/views/domains_list_row_view.js",
     "/assets/js/apps/moonlander/domains/list/views/list_emptyview_view.js",
     "tpl!/assets/js/apps/moonlander/domains/list/templates/list_container.tpl",
     "moment",

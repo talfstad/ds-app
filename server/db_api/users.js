@@ -36,7 +36,6 @@ module.exports = function(db) {
         } else {
           connection.query("SELECT * FROM users WHERE id = ?;", [id], function(err, userDocs) {
             if (err) {
-              console.log(err);
               callback("Error looking up user id", null);
             } else {
               if (!userDocs[0]) {
@@ -74,12 +73,12 @@ module.exports = function(db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          cb(err, null);
+
         } else {
           connection.query("SELECT * FROM users WHERE user = ?;", [username], function(err, userDocs) {
             if (err) {
-              console.log(err);
-              cb("Error looking up user", null);
+              cb({code: "ErrorFindingUserDb"}, null);
             } else {
               if (!userDocs[0]) {
                 cb("Invalid user or password", null);
@@ -88,7 +87,7 @@ module.exports = function(db) {
                 if (bcrypt.compareSync(password, user_row.hash)) {
                   cb(null, user_row);
                 } else {
-                  cb("Invalid user or password", null);
+                  cb({code: "InvalidPassword"}, null);
                 }
               }
             }

@@ -127,7 +127,7 @@ define(["app",
         activeCampaigns: [],
         deploy_status: "deployed",
         active_campaigns_count: 0,
-        active_landers_count: 0,
+        active_landers_count: 0
       }
 
     });

@@ -7,7 +7,7 @@
 
 	<% } else { %>
 
-	<h2 style="display: inline" class="text-muted"><span class="fa fa-warning"></span> You Don't Have Any Landers With </h2><h1 style="display: inline" > <%= filterVal %> </h1><h2 style="display: inline" class="text-muted"> in the Name </h2>
+	<h2 style="display: inline" class="text-muted"><span class="fa fa-warning"></span> You Don't Have Any Domains With </h2><h1 style="display: inline" > <%= filterVal %> </h1><h2 style="display: inline" class="text-muted"> in the Name </h2>
 
 	<% } %>
 	

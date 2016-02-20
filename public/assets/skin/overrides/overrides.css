@@ -364,3 +364,8 @@ body.sb-l-o #topbar.affix,
     -webkit-animation: spin2 2s infinite linear;
     display: inline-block;
 }
+
+
+.add-link-plus {
+    display: inline;
+}

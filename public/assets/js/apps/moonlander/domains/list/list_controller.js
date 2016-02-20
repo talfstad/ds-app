@@ -14,14 +14,12 @@ define(["app",
     "/assets/js/apps/moonlander/domains/dao/deployed_lander_model.js",
     "/assets/js/jobs/jobs_model.js",
     "/assets/js/apps/moonlander/domains/dao/active_campaign_model.js",
-    "/assets/js/apps/moonlander/domains/list/views/deploy_to_new_domain_view.js",
-    "/assets/js/apps/moonlander/domains/list/views/add_to_new_campaign_view.js",
     "/assets/js/apps/moonlander/domains/list/views/list_layout_view.js"
   ],
   function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
     PaginatedButtonView, TopbarView, LoadingView, LanderTabHandleView, CampaignTabHandleView,
     DeployedLandersView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLocationModel,
-    JobModel, ActiveCampaignModel, DeployToNewDomainView, AddToNewCampaignView) {
+    JobModel, ActiveCampaignModel) {
     Moonlander.module("DomainsApp.Domains.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
       List.Controller = {
@@ -305,14 +303,6 @@ define(["app",
                   deployedLandersCollection.domain = domainView.model.get("domain");
 
 
-                  var deployToNewDomainView = new DeployToNewDomainView({
-                    model: domainView.model
-                  });
-
-                  var addToNewCampaignView = new AddToNewCampaignView({
-                    model: domainView.model
-                  })
-
                   var deployedLandersView = new DeployedLandersView({
                     collection: deployedLandersCollection
                   });
@@ -365,8 +355,6 @@ define(["app",
                   domainView.campaign_tab_handle_region.show(campaignTabHandleView);
                   domainView.deployed_domains_region.show(deployedLandersView);
                   domainView.active_campaigns_region.show(activeCampaignsView);
-                  domainView.deploy_to_new_domain_region.show(deployToNewDomainView);
-                  domainView.add_to_new_campaign_region.show(addToNewCampaignView);
                 });
               }
 

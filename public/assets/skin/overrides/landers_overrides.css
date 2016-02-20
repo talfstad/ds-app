@@ -88,7 +88,7 @@
     bottom: 0;
     right: 0;
     min-width: 122px;
-    margin-right: 240px;
+    margin-right: 300px;
 }
 
 .accordion-toggle.active .domain-campaign-notification span {
@@ -424,7 +424,7 @@ tr.warning input[type=select] {
 }
 
 .campaign-status-tab-handle {
-    width: 120px !important;
+    width: 145px !important;
 }
 
 #domains-list-datatable > tbody > tr {

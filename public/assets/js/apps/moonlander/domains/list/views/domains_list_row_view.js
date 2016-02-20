@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/domains/list/templates/landers_child_item.tpl",
+    "tpl!/assets/js/apps/moonlander/domains/list/templates/domains_list_row.tpl",
     "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_landers_collection_view.js",
     "/assets/js/apps/moonlander/domains/list/deployed_landers/views/deployed_landers_empty_view.js",
     "/assets/js/apps/moonlander/domains/dao/sidebar_model.js",
@@ -38,7 +38,8 @@ define(["app",
 
         modelEvents: {
           "notifySuccessDeleteDomain": "notifySuccessDeleteDomain",
-          "notifyErrorDeleteDomain": "notifyErrorDeleteDomain"
+          "notifyErrorDeleteDomain": "notifyErrorDeleteDomain",
+          "change:deploy_status": "alertDeployStatus"
         },
 
         regions: {
@@ -48,6 +49,17 @@ define(["app",
           'active_campaigns_region': '.active_campaigns_region',
           'deploy_to_new_domain_region': '.deploy-to-new-domain-region',
           'add_to_new_campaign_region': '.add-to-new-campaign-region'
+        },
+
+        alertDeployStatus: function() {
+          var capitalizeFirstLetter = function(string) {
+            string = string.toLowerCase();
+            return string.charAt(0).toUpperCase() + string.slice(1);
+          }
+
+          if (this.model.get("deploy_status") === "deleting") {
+            this.$el.find(".alert-delete-badge").show();
+          }
         },
 
         showDeployLanderToDomain: function() {
@@ -109,6 +121,8 @@ define(["app",
         onRender: function() {
 
           var me = this;
+          
+          this.alertDeployStatus();
 
           //if deleting need to show delet state (which is disabling the whole thing)
           if (this.model.get("deploy_status") === "deleting") {
@@ -145,8 +159,11 @@ define(["app",
                 Moonlander.trigger('domains:closesidebar');
               }
 
+              //hide the tab
+
               $(e.currentTarget).find("li.active").removeClass("active");
               $(e.currentTarget).find(".accordion-toggle").removeClass('active');
+              $(e.currentTarget).find(".add-link-plus").hide();
             });
 
             this.$el.on('show.bs.collapse', function(e) {
@@ -189,12 +206,16 @@ define(["app",
                 //show clicked on tab
                 currentTab.addClass("active");
                 currentTabData.addClass("active");
+                currentTab.find(".add-link-plus").css("display", "inline");
               } else {
                 //no tab show domains tab
-                $(e.currentTarget).find("li.lander-tab-handle-region").addClass("active");
-                $(e.currentTarget).find("div[id^='domains-tab']").addClass("active");
-              }
+                var tabHandle = $(e.currentTarget).find("li.lander-tab-handle-region");
+                tabHandle.addClass("active");
+                tabHandle.find(".add-link-plus").css("display", "inline");                
 
+                var tab = $(e.currentTarget).find("div[id^='domains-tab']");
+                tab.addClass("active");
+              }
 
               $(e.currentTarget).find(".accordion-toggle").addClass('active')
 
@@ -205,13 +226,8 @@ define(["app",
             });
 
             this.$el.on('shown.bs.collapse', function(e) {
-
-
-
-
               //enable the anchor tags
               $(".accordion-toggle").removeClass("inactive-link");
-
             });
 
             this.$el.find(".nav.panel-tabs").click(function(e) {

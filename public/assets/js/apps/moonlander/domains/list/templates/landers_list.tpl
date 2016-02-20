@@ -90,8 +90,8 @@
         <div style="position: absolute; width: 100%; font-size: 11px; font-weight: 600">
         
         <div style="float: left; margin-left: 15px; margin-bottom: 10px">Domain Name</div>
-        <div style="float: right; margin-right: 55px; margin-bottom: 10px">Deployed Landers</div>
-        <div style="float: right; margin-right: 28px; margin-bottom: 10px">Active Campaigns</div>
+        <div style="float: right; margin-right: 95px; margin-bottom: 10px">Deployed Landers</div>
+        <div style="float: right; margin-right: 52px; margin-bottom: 10px">Active Campaigns</div>
         <div style="float: right; margin-right: 87px; margin-bottom: 10px">Created On</div>
         
 
