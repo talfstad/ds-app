@@ -51,7 +51,7 @@ define(["app",
 
         startDeployingNewLander: function(landerId, landerName) {
           var attrs = {
-              landerName: landerName,
+              name: landerName,
               domain_id: this.model.get("id"),
               lander_id: landerId
             };

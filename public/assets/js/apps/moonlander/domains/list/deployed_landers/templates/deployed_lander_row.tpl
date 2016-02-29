@@ -4,8 +4,6 @@
 </td>
 
 <td class="absorbing-column">  
-      <a class="domain-link" target="_blank"><%= domain %>/</a>
-      
       <select class="domain-endpoint-select form-control">
         
         <% _.each(urlEndpoints, function(endpoint) { %>
@@ -14,10 +12,17 @@
 
         <% }); %>
       
-      </select>
-      
+      </select>      
 
-      <div style="float: right; margin-right: 10px">
+      <div class="domain-action-buttons">
+
+        <a class="" href="#">
+          <span class="fa fa-eye"></span>
+        </a>
+        
+        <a class="" href="#">
+          <span class="fa fa-edit"></span>
+        </a>
 
         <% if(attached_campaigns_gui.length > 0) { %>
 
@@ -35,5 +40,8 @@
         </a>
 
         <% } %>
+
+        
+
       </div>
 </td>

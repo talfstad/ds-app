@@ -363,6 +363,7 @@ define(["app",
                     var length = this.children.length;
                     if (childView.isDestroyed) --length;
                     campaignTabHandleView.model.set("active_landers_count", length);
+                    domainView.reAlignTableHeader();
                   });
 
                   // deployedDomainsCollection.on("destroy", function() {

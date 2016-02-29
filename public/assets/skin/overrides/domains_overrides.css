@@ -12,9 +12,22 @@
 	padding-top: 10px; 
 	float: left;
 	display: none;
+	font-weight: 600;
 }
 
 .btn.delete-domain-button {
 	margin: 0 auto;
 	display: block;
+}
+
+.domain-action-buttons{
+	float: right;
+}
+
+.domain-action-buttons a {
+	margin-right: 10px;
+}
+
+.domain-action-buttons a:hover {
+	text-decoration: none;
 }

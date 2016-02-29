@@ -46,7 +46,7 @@
         <div class="tab-pane" role="tabpanel" id="campaigns-tab-id-<%= id %>">
           <div class="panel-menu clearfix">
             <div class="row" style="margin-left: 0px; margin-right: 0px;">
-              <div style="margin-left: 5px; padding-top: 10px; float: left;" class="clearfix">
+              <div style="margin-left: 5px; font-weight: 600; padding-top: 10px; float: left;" class="clearfix">
                 <span style="width: 20px">#</span>
                 <span style="margin-left: 15px">Current Campaigns</span>
               </div>
