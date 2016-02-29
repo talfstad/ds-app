@@ -32,7 +32,6 @@ define(["app",
         childViewContainer: "table.deployed-domains-region",
 
         events: {
-          "click button.deploy-to-domain": "showDeployLanderToDomain",
           "click button.add-to-campaign": "showAddToCampaign"
         },
 
@@ -61,11 +60,7 @@ define(["app",
             this.$el.find(".alert-delete-badge").show();
           }
         },
-
-        showDeployLanderToDomain: function() {
-          Moonlander.trigger("domains:showDeployToDomain", this.model);
-        },
-
+        
         showAddToCampaign: function() {
           Moonlander.trigger("domains:showAddToCampaign", this.model);
         },

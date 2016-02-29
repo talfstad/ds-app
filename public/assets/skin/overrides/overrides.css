@@ -369,3 +369,11 @@ body.sb-l-o #topbar.affix,
 .add-link-plus {
     display: inline;
 }
+
+.navbar-inverse {
+    background: #000 !important;
+}
+
+.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
+    background-color: #181818;
+}

@@ -5,5 +5,5 @@
 </span>
 
 <a class="add-link-plus" href="#" style="position: relative; left: 20px; top: 2px; display: none">
-<i style="font-size: 18px !important" class="fa fa-plus text-info fs12 pl5 pr5"></i>
+<i style="font-size: 18px !important; color: #555;" class="fa fa-plus fs12 pl5 pr5"></i>
 </a>
