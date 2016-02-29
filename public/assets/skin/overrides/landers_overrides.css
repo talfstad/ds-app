@@ -92,7 +92,7 @@
 }
 
 .accordion-toggle.active .domain-campaign-notification span {
-    color: #000 !important;
+    /*color: #000 !important;*/
 }
 
 .landers-list-items .label {
@@ -174,7 +174,7 @@ tr.success .domain-endpoint-select {
     height: 21px;
     display: inherit;
     color: #3f9532;
-    width: inherit;
+    width: initial;
     height: inherit;
 }
 
@@ -182,7 +182,7 @@ tr.info .domain-endpoint-select {
     height: 21px;
     display: inherit;
     color: #1c7393;
-    width: inherit;
+    width: initial;
     height: inherit;
 }
 
@@ -191,7 +191,7 @@ tr.dark .domain-endpoint-select {
     display: inherit;
     color: #3b3f4f;
     width: auto;
-    height: inherit;
+    height: initial;
 }
 
 .table > tbody > tr.dark > td {
@@ -203,21 +203,21 @@ tr.dark .domain-endpoint-select {
 tr.warning .domain-endpoint-select {
     display: inherit;
     color: #c88a0a;
-    width: inherit;
+    width: initial;
     height: inherit;
 }
 
 tr.primary .domain-endpoint-select {
     display: inherit;
     color: #c88a0a;
-    width: inherit;
+    width: initial;
     height: inherit;
 }
 
 tr.alert .domain-endpoint-select {
     display: inherit;
     color: #c88a0a;
-    width: inherit;
+    width: initial;
     height: inherit;
 }
 

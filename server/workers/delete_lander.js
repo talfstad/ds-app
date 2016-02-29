@@ -39,8 +39,6 @@ module.exports = function(app, db) {
 
             });
 
-
-
           }, function() {
             //errorCB
             console.log("Error deleting lander with id: " + lander_id);

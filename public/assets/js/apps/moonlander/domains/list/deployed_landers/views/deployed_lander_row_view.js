@@ -32,7 +32,6 @@ define(["app",
 
         template: DeployedDomainRowTpl,
         tagName: "tr",
-        className: "dark",
 
         modelEvents: {
           "change": "render"
@@ -49,7 +48,18 @@ define(["app",
         },
 
         onBeforeRender: function() {
-         
+
+          var deployStatus = this.model.get("deploy_status");
+          if (deployStatus === "deployed") {
+            this.model.set("deploy_status_gui", "");
+          } else if (deployStatus === "deploying") {
+            this.model.set("deploy_status_gui", "<strong>DEPLOYING</strong> &mdash;");
+          } else if (deployStatus === "undeploying") {
+            this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong> &mdash;");
+          } else if (deployStatus === "modified") {
+            this.model.set("deploy_status_gui", "<strong>DEPLOY REQUIRED</strong> &mdash;");
+          }
+
           //add attached campaigns to template
           var attachedCampaignNamesArray = [];
           this.model.get("attachedCampaigns").each(function(campaign) {
@@ -58,11 +68,22 @@ define(["app",
           this.model.set("attached_campaigns_gui", attachedCampaignNamesArray);
         },
 
-        onDestroy: function(){
+        onDestroy: function() {
           this.trigger("updateParentLayout", this.model);
         },
 
         onRender: function() {
+          var deployStatus = this.model.get("deploy_status");
+          this.$el.removeClass("success alert warning");
+          if (deployStatus === "deployed") {
+            this.$el.addClass("success");
+          } else if (deployStatus === "deploying" ||
+            deployStatus === "undeploying") {
+            this.$el.addClass("alert");
+          } else if (deployStatus === "modified") {
+            this.$el.addClass("warning");
+          }
+
           this.trigger("updateParentLayout", this.model);
 
         },

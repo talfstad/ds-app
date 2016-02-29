@@ -73,6 +73,35 @@ define(["app",
 
         var activeCampaignsCollection = new ActiveCampaignCollection();
 
+        var applyUpdatedDeployStatusToLander = function() {
+          //update deploy status view UNLESS we're initializing or deleting. if initializing needs to be changed
+          //to not_deployed by the lander job itself because we're adding a new lander. this logic is
+          // for when the lander is already added
+          if (me.get("deploy_status") !== "initializing" &&
+            me.get("deploy_status") !== "deleting") {
+            var deployStatus = "deployed";
+            deployedLandersCollection.each(function(deployedLanderModel) {
+              if (deployedLanderModel.get("activeJobs").length > 0) {
+                deployStatus = "deploying";
+              } else if(deployedLanderModel.get("deploy_status") === "modified") {
+                deployStatus = "modified";
+              }
+            });
+
+            //catch if there are no models, set to not_deployed
+            if (deployedLandersCollection.length <= 0) {
+              deployStatus = "not_deployed"
+            }
+
+            me.set("deploy_status", deployStatus);
+          }
+        }
+
+        //whenever deployed domain coll updates deploy_status, update master lander deploy status
+        deployedLandersCollection.on("add change:deploy_status", function(domainModel) {
+          applyUpdatedDeployStatusToLander();
+        });
+
         activeCampaignsCollection.on("add", function(campaignModel, campaignCollection, options) {
           // check all deployed locations make sure all campaign model deployed domains is deployed if not then trigger
           // a deploy here

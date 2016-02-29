@@ -56,8 +56,11 @@ define(["app",
             return string.charAt(0).toUpperCase() + string.slice(1);
           }
 
-          if (this.model.get("deploy_status") === "deleting") {
-            this.$el.find(".alert-delete-badge").show();
+          //show correct one
+          if (this.model.get("deploy_status") !== "deployed") {
+            this.$el.find(".alert-working-badge").show();
+          } else {
+            this.$el.find(".alert-working-badge").hide();
           }
         },
 

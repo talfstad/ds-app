@@ -1,9 +1,14 @@
 <td><%= viewIndex %></td>
 <td class="table-lander-name" style="white-space: nowrap; min-width: 145px">
+      <%= deploy_status_gui %> 
       <span><%= name %></span>
 </td>
 
 <td class="absorbing-column">  
+      
+
+      <% if(deploy_status === "deployed") { %>
+
       <select class="domain-endpoint-select form-control">
         
         <% _.each(urlEndpoints, function(endpoint) { %>
@@ -15,6 +20,8 @@
       </select>      
 
       <div class="domain-action-buttons">
+
+     
 
         <a class="" href="#">
           <span class="fa fa-eye"></span>
@@ -39,9 +46,12 @@
           <span class="fa fa-trash-o"></span>
         </a>
 
-        <% } %>
+      
 
+      <% } %>
         
 
       </div>
+
+    <% } %>
 </td>
