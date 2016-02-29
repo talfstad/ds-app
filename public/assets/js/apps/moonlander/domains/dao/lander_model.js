@@ -1,21 +1,14 @@
-define(["app",
-        "/assets/js/jobs/jobs_base_gui_model.js"], 
-function(Moonlander, JobsGuiBaseModel){
-  var DomainModel = JobsGuiBaseModel.extend({
-  	urlRoot: '/api/domains',
-    defaults: {
-      domain: "",
-      nameservers: "",
+define(["app"],
+  function(Moonlander) {
+    var LanderModel = Backbone.Model.extend({
+      urlRoot: '/api/landers',
+      defaults: {
+        name: "",
+        //gui update attributes
+        deploy_status: 'not_deployed',
+      }
+    });
 
-      //gui attributes
-      //should default true since deployed_domains is where this model is used
-      deploy_status: 'deployed'
-    }
+    return LanderModel;
 
-   
-    
   });
-
-  return DomainModel;
-
-});

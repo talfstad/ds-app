@@ -30,7 +30,7 @@ define(["app",
           //3. filter it for domains its already deployed to
 
 
-          var deferredDomainsCollection = Moonlander.request("domains:domainsCollection");
+          var deferredDomainsCollection = Moonlander.request("landers:domainsCollection");
 
           $.when(deferredDomainsCollection).done(function(domainsCollection) {
 

@@ -2,12 +2,14 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
     "/assets/js/common/login/common_login.js",
     "/assets/js/apps/moonlander/domains/right_sidebar/sidebar_controller.js",
     "/assets/js/apps/moonlander/domains/add_new_domain/add_new_domain_controller.js",
+    "/assets/js/apps/moonlander/domains/deploy_new_lander/deploy_new_lander_controller.js",
     "/assets/js/apps/moonlander/domains/delete_domain/delete_domain_controller.js"
   ],
-  function(Moonlander, ListController, CommonLogin, SidemenuController, AddNewDomainController, DeleteDomainController) {
+  function(Moonlander, ListController, CommonLogin, SidemenuController, AddNewDomainController, 
+    DeployNewLanderController, DeleteDomainController) {
     Moonlander.module("DomainsApp", function(DomainsApp, Moonlander, Backbone, Marionette, $, _) {
 
-      var landersAppAPI = {
+      var domainsAppAPI = {
         showDomains: function(d) {
           Moonlander.domains = {};
 
@@ -22,6 +24,10 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
         },
         showDeleteDomainModal: function(model) {
           DeleteDomainController.showDeleteDomainModal(model);
+        },
+
+        deployNewLander: function(attr){
+          ListController.deployNewLander(attr);
         },
 
         openSidebar: function(model) {
@@ -41,6 +47,10 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
 
         deleteDomain: function(model) {
           ListController.deleteDomain(model);
+        },
+
+        showDeployNewLander: function(model){
+          DeployNewLanderController.showDeployNewLander(model);
         },
 
         //above functions are certain, below not sure we need yet
@@ -77,62 +87,69 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
       };
 
       Moonlander.on("domains:list", function() {
-        landersAppAPI.showDomains();
-        landersAppAPI.loadDomainsSideMenu();
+        domainsAppAPI.showDomains();
+        domainsAppAPI.loadDomainsSideMenu();
       });
 
       Moonlander.on("domains:opensidebar", function(model) {
-        landersAppAPI.openSidebar(model);
+        domainsAppAPI.openSidebar(model);
       });
 
       Moonlander.on("domains:closesidebar", function() {
-        landersAppAPI.closeSidebar();
+        domainsAppAPI.closeSidebar();
       });
 
       Moonlander.on("domains:showAddNewDomainModal", function(model) {
-        landersAppAPI.showAddNewDomainModal(model);
+        domainsAppAPI.showAddNewDomainModal(model);
       });
 
       Moonlander.on("domains:showDeleteDomainModal", function(model) {
-        landersAppAPI.showDeleteDomainModal(model);
+        domainsAppAPI.showDeleteDomainModal(model);
       });
 
       Moonlander.on("domains:list:addDomain", function(domainModel) {
-        landersAppAPI.addDomain(domainModel);
+        domainsAppAPI.addDomain(domainModel);
       });
 
       Moonlander.on("domains:list:deleteDomain", function(domainModel) {
-        landersAppAPI.deleteDomain(domainModel);
+        domainsAppAPI.deleteDomain(domainModel);
       });
 
+      Moonlander.on("domains:showDeployNewLander", function(model){
+        domainsAppAPI.showDeployNewLander(model);
+      });
+
+      Moonlander.on("domains:deployNewLander", function(attr){
+        domainsAppAPI.deployNewLander(attr);
+      });
 
       ////above functions are certain they belong, below aren't sure yet
 
 
       Moonlander.on("domains:deployLanderToNewDomain", function(attr) {
-        landersAppAPI.deployLanderToNewDomain(attr);
+        domainsAppAPI.deployLanderToNewDomain(attr);
       });
 
       Moonlander.on("domains:removeCampaignFromLander", function(campaignModel) {
-        landersAppAPI.removeCampaignFromLander(campaignModel);
+        domainsAppAPI.removeCampaignFromLander(campaignModel);
       });
 
 
 
       Moonlander.on("domains:addCampaignToLander", function(attr) {
-        landersAppAPI.addCampaignToLander(attr);
+        domainsAppAPI.addCampaignToLander(attr);
       });
 
       Moonlander.on("domains:showDeployToDomain", function(model) {
-        landersAppAPI.showDeployToDomain(model);
+        domainsAppAPI.showDeployToDomain(model);
       });
 
       Moonlander.on("domains:showAddToCampaign", function(model) {
-        landersAppAPI.showAddToCampaign(model);
+        domainsAppAPI.showAddToCampaign(model);
       });
 
       Moonlander.on("domains:updateTopbarTotals", function(landerModel) {
-        landersAppAPI.updateTopbarTotals();
+        domainsAppAPI.updateTopbarTotals();
       });
 
     });

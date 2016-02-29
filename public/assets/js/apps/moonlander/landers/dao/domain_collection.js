@@ -55,7 +55,7 @@ define(["app",
       }
     };
 
-    Moonlander.reqres.setHandler("domains:domainsCollection", function() {
+    Moonlander.reqres.setHandler("landers:domainsCollection", function() {
       return API.getDomainsCollection();
     });
 

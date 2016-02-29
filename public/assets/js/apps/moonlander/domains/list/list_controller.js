@@ -26,6 +26,57 @@ define(["app",
 
         filteredDomainCollection: null,
 
+        //create new deploy job for lander attach it to domain
+        deployNewLander: function(modelAttributes) {
+          //we're deploying!
+          modelAttributes.deploy_status = "deploying";
+
+          //create active job model to deploy this lander to a domain
+          var jobAttributes = {
+            action: "deployLanderToDomain",
+            lander_id: modelAttributes.lander_id,
+            domain_id: modelAttributes.domain_id,
+          };
+
+          //create job and add to models activeJobs
+          var jobModel = new JobModel(jobAttributes);
+
+          var landerModel = modelAttributes.lander_model;
+          if (!landerModel) {
+            landerModel = this.filteredDomainCollection.get(modelAttributes.domain_id);
+          }
+          if (!landerModel) return false;
+
+          //check if this domain_id is already there, if it is instead of adding a new domain_model
+          //just add this job to it
+
+          var deployedLanders = landerModel.get("deployedLanders");
+
+          //search deployedlocations for the domain_id if found use that
+          var existingLanderModel = null;
+          deployedLanders.each(function(deployedLander) {
+            if (deployedLander.get("lander_id") == modelAttributes.lander_id) {
+              existingLanderModel = deployedLander;
+            }
+          });
+
+          if (existingLanderModel) {
+            var activeJobs = existingLanderModel.get("activeJobs");
+            activeJobs.add(jobModel);
+          } else {
+            //create the deployed location model
+            var landerModel = new DeployedLocationModel(modelAttributes);
+            var activeJobs = landerModel.get("activeJobs");
+            activeJobs.add(jobModel);
+            deployedLanders.add(landerModel);
+          }
+
+          //set new lander to deploying by default
+
+          Moonlander.trigger("job:start", jobModel);
+
+        },
+
         removeSnippetFromAllLanders: function(attr) {
           var me = this;
           var snippetToRemoveFromLanders = attr.snippet;
@@ -217,7 +268,7 @@ define(["app",
           landersListLayout.topbarRegion.show(topbarView);
 
           //request landers collection
-          var deferredLandersCollection = Moonlander.request("domains:landersCollection");
+          var deferredLandersCollection = Moonlander.request("domains:domainsCollection");
 
           $.when(deferredLandersCollection).done(function(landersCollection) {
 

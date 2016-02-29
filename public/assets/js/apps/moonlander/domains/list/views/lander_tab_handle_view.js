@@ -21,6 +21,14 @@ define(["app",
           "change:deploy_status": "render",
         },
 
+        events: {
+          "click .add-link-plus": "deployNewLander"
+        },
+
+        deployNewLander: function(e) {
+          Moonlander.trigger("domains:showDeployNewLander", this.model);
+        },
+
         onRender: function() {
           var me = this;
 

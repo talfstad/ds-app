@@ -1,22 +1,22 @@
 define(["app",
     "/assets/js/apps/moonlander/domains/dao/lander_model.js"
   ],
-  function(Moonlander, DomainModel) {
-    var DomainCollection = Backbone.Collection.extend({
-      url: '/api/domains',
-      model: DomainModel,
-      comparator: 'domain',
+  function(Moonlander, LanderModel) {
+    var LanderCollection = Backbone.Collection.extend({
+      url: '/api/landers',
+      model: LanderModel,
 
-      filterOutDomains: function(domainsToFilterOutCollection) {
+      filterOutLanders: function(landersToFilterOutCollection) {
 
-        var items = new DomainCollection();
+        var items = new LanderCollection();
 
-        this.each(function(domain){
-          domainId = domain.get("id");
+        this.each(function(lander) {
+          landerId = lander.get("id");
 
-          if(!domainsToFilterOutCollection.get(domainId)) {
-            items.add(domain);
+          if (!landersToFilterOutCollection.find(function(m) { return m.get('lander_id') === landerId })) {
+            items.add(lander);
           }
+
         });
 
         return items;
@@ -24,29 +24,29 @@ define(["app",
 
     });
 
-    var domainCollectionInstance = null;
+    var landerCollectionInstance = null;
 
     var API = {
-      getDomainsCollection: function() {
+      getLandersCollection: function() {
         var me = this;
         var defer = $.Deferred();
 
-        if (!this.domainCollectionInstance) {
+        if (!landerCollectionInstance) {
 
-          this.domainCollectionInstance = new DomainCollection();
+          landerCollectionInstance = new LanderCollection();
 
-          this.domainCollectionInstance.fetch({
-            success: function(domains) {
-              defer.resolve(domains);
+          landerCollectionInstance.fetch({
+            success: function(landers) {
+              defer.resolve(landers);
             },
-            error: function(one, two, three){
+            error: function(one, two, three) {
               Moonlander.execute("show:login");
             }
           });
         } else {
           //async hack to still return defer
           setTimeout(function() {
-            defer.resolve(me.domainCollectionInstance);
+            defer.resolve(landerCollectionInstance);
           }, 100);
         }
 
@@ -55,9 +55,9 @@ define(["app",
       }
     };
 
-    Moonlander.reqres.setHandler("landers:landersCollection", function() {
-      return API.getDomainsCollection();
+    Moonlander.reqres.setHandler("domains:landersCollection", function() {
+      return API.getLandersCollection();
     });
 
-    return DomainCollection;
+    return LanderCollection;
   });
