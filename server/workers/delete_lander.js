@@ -6,33 +6,63 @@ module.exports = function(app, db) {
 
   module.deleteLander = function(user, attr) {
 
+    var myJobId = attr.id;
 
-    console.log("now working delete lander job");
+    var runJobCode = function() {
 
-    // 1. undeploy from all domains
-    // 2. delete from s3 preview bucket
-    // 3. remove lander from DB, cascade all related to delete as well
+      db.jobs.getAllProcessingForLanderDomain(user, attr, function(jobs) {
 
-    var user_id = user.id;
-    var lander_id = attr.lander_id;
+        //get the lowest job id
+        var lowestJobId = jobs[0].id;
+        for (var i = 0; i < jobs.length; i++) {
+          if (jobs[i].id < lowestJobId) {
+            lowestJobId = jobs[i].id;
+          }
+        }
 
-    db.landers.deleteLander(user_id, lander_id, function() {
-      //successCB
+        if (myJobId <= lowestJobId) {
+          clearInterval(interval);
 
-      var finishedJobs = [attr.id];
-    
-      db.jobs.finishedJobSuccessfully(user, finishedJobs, function() {
-    
-        console.log("successfully updated deleteLander job to finished");
-    
+          //job code starts here
+
+          var user_id = user.id;
+          var lander_id = attr.lander_id;
+
+          db.landers.deleteLander(user_id, lander_id, function() {
+            //successCB
+
+            var finishedJobs = [attr.id];
+
+            db.jobs.finishedJobSuccessfully(user, finishedJobs, function() {
+
+              console.log("successfully updated deleteLander job to finished");
+
+            });
+
+
+
+          }, function() {
+            //errorCB
+            console.log("Error deleting lander with id: " + lander_id);
+          });
+
+
+          //end job code
+
+        }
+
       });
+    }
+
+    //run once before interval starts
+    runJobCode();
+
+    var intervalPeriod = 1000 * 30 // 30 seconds
+    var interval = setInterval(function() {
+      runJobCode();
+    }, intervalPeriod);
 
 
-
-    }, function() {
-      //errorCB
-      console.log("Error deleting lander with id: " + lander_id);
-    });
 
   };
 
