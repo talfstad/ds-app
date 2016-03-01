@@ -15,7 +15,7 @@ define(["app",
         className: "accordion",
         emptyView: landersEmptyView,
         childView: landersListItemView,
-        
+
         initialize: function() {
           this.listenTo(this, "domains:sort", this.triggerSort);
         },
@@ -26,32 +26,32 @@ define(["app",
           // }
         },
 
-        triggerSort: function(){
+        triggerSort: function() {
           var me = this;
-          
+
           var sortKey = $('input[name=sort-radio]:checked').attr("data-sort-by");
           var sortOrder = $(".btn-group-nav a.active").attr("data-sort-order");
 
           if (sortKey === "domain-name") {
             me.collection.comparator = function(a, b) {
 
-              var aDomainName = a.get("domain").toLowerCase(); 
+              var aDomainName = a.get("domain").toLowerCase();
               var bDomainName = b.get("domain").toLowerCase();
 
-              if(aDomainName === bDomainName) {
+              if (aDomainName === bDomainName) {
                 return 0;
               } else {
-                if(aDomainName < bDomainName) {
-                  if(sortOrder === 'asc') {
+                if (aDomainName < bDomainName) {
+                  if (sortOrder === 'asc') {
                     return -1;
                   } else {
                     return 1;
                   }
                 } else {
-                  if(sortOrder === 'asc') {
+                  if (sortOrder === 'asc') {
                     return 1
                   } else {
-                    return -1; 
+                    return -1;
                   }
                 }
               }
@@ -61,26 +61,26 @@ define(["app",
             me.collection.trigger('reset');
 
           } else if (sortKey === "created-on") {
-            
+
             me.collection.comparator = function(a, b) {
 
-              var aCreatedOn = moment(new Date(a.get("created_on"))).unix(); 
+              var aCreatedOn = moment(new Date(a.get("created_on"))).unix();
               var bCreatedOn = moment(new Date(b.get("created_on"))).unix();
 
-              if(aCreatedOn === bCreatedOn) {
+              if (aCreatedOn === bCreatedOn) {
                 return 0;
               } else {
-                if(aCreatedOn < bCreatedOn) {
-                  if(sortOrder === 'asc') {
+                if (aCreatedOn < bCreatedOn) {
+                  if (sortOrder === 'asc') {
                     return -1;
                   } else {
                     return 1;
                   }
                 } else {
-                  if(sortOrder === 'asc') {
+                  if (sortOrder === 'asc') {
                     return 1
                   } else {
-                    return -1; 
+                    return -1;
                   }
                 }
               }
@@ -88,7 +88,7 @@ define(["app",
 
             me.collection.sortFiltered();
           }
-          
+
         },
 
         onDomRefresh: function() {

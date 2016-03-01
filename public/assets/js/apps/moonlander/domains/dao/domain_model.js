@@ -43,6 +43,8 @@ define(["app",
           delete jobModel.attributes.id;
           jobModel.destroy();
 
+          me.set("deploy_status", deployStatus);
+          
           //trigger to start the next job on the list
           Moonlander.trigger("job:startNext", activeJobsCollection);
 

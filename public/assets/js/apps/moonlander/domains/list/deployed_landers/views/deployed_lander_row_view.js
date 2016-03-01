@@ -92,7 +92,7 @@ define(["app",
           e.preventDefault();
           e.stopPropagation();
 
-          Moonlander.trigger("domains:showUndeploy", this.model);
+          Moonlander.trigger("domains:showUndeployLander", this.model);
         }
       });
     });

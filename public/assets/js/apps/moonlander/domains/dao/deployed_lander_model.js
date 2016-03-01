@@ -48,14 +48,16 @@ define(["app",
                 moreJobsToDo = true;
               }
             });
-            if (!moreJobsToDo) {
-              me.trigger('destroy', me, me.collection);
-            }
 
             //hack to get it to not send DELETE XHR
             delete jobModel.attributes.id;
             jobModel.destroy();
 
+            setDeployStatusForLocation();
+
+            if (!moreJobsToDo) {
+              me.trigger('destroy', me, me.collection);
+            }
           } else if (jobModel.get("action") === "deployLanderToDomain") {
 
             //finished with this job so destroy the jobModel

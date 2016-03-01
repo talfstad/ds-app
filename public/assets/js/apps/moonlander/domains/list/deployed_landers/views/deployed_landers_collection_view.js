@@ -11,6 +11,20 @@ define(["app",
         emptyView: EmptyView,
 
 
+        onAddChild: function(childView) {
+          this.reIndex();
+        },
+
+        onRemoveChild: function(childView) {
+          this.reIndex();
+        },
+
+        reIndex: function() {
+          this.collection.each(function(deployedLanderModel, idx) {
+            deployedLanderModel.set("viewIndex", idx + 1);
+          });
+        },
+
         //pass the deployed list its rendered index for # column
         childViewOptions: function(model) {
           model.set('viewIndex', parseInt(this.collection.indexOf(model)) + 1);
@@ -21,7 +35,7 @@ define(["app",
             isInitializing: this.collection.isInitializing || false
           };
         },
-        
+
         onRender: function() {
 
 

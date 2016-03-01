@@ -3,10 +3,11 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
     "/assets/js/apps/moonlander/domains/right_sidebar/sidebar_controller.js",
     "/assets/js/apps/moonlander/domains/add_new_domain/add_new_domain_controller.js",
     "/assets/js/apps/moonlander/domains/deploy_new_lander/deploy_new_lander_controller.js",
-    "/assets/js/apps/moonlander/domains/delete_domain/delete_domain_controller.js"
+    "/assets/js/apps/moonlander/domains/delete_domain/delete_domain_controller.js",
+    "/assets/js/apps/moonlander/domains/undeploy_lander/undeploy_controller.js"
   ],
-  function(Moonlander, ListController, CommonLogin, SidemenuController, AddNewDomainController, 
-    DeployNewLanderController, DeleteDomainController) {
+  function(Moonlander, ListController, CommonLogin, SidemenuController, AddNewDomainController,
+    DeployNewLanderController, DeleteDomainController, UndeployLanderController) {
     Moonlander.module("DomainsApp", function(DomainsApp, Moonlander, Backbone, Marionette, $, _) {
 
       var domainsAppAPI = {
@@ -26,7 +27,7 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
           DeleteDomainController.showDeleteDomainModal(model);
         },
 
-        deployNewLander: function(attr){
+        deployNewLander: function(attr) {
           ListController.deployNewLander(attr);
         },
 
@@ -49,8 +50,12 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
           ListController.deleteDomain(model);
         },
 
-        showDeployNewLander: function(model){
+        showDeployNewLander: function(model) {
           DeployNewLanderController.showDeployNewLander(model);
+        },
+
+        showUndeployLander: function(model) {
+          UndeployLanderController.showUndeployLander(model);
         },
 
         //above functions are certain, below not sure we need yet
@@ -77,13 +82,13 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
         removeCampaignFromLander: function(campaignModel) {
           ListController.removeCampaignFromLander(campaignModel);
         },
-        
+
         updateToModifiedAndSave: function() {
           SidemenuController.updateToModifiedAndSave();
         },
-        
 
-        
+
+
       };
 
       Moonlander.on("domains:list", function() {
@@ -115,13 +120,19 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
         domainsAppAPI.deleteDomain(domainModel);
       });
 
-      Moonlander.on("domains:showDeployNewLander", function(model){
+      Moonlander.on("domains:showDeployNewLander", function(model) {
         domainsAppAPI.showDeployNewLander(model);
       });
 
-      Moonlander.on("domains:deployNewLander", function(attr){
+      Moonlander.on("domains:deployNewLander", function(attr) {
         domainsAppAPI.deployNewLander(attr);
       });
+
+      Moonlander.on("domains:showUndeployLander", function(model) {
+        domainsAppAPI.showUndeployLander(model);
+      });
+
+
 
       ////above functions are certain they belong, below aren't sure yet
 
