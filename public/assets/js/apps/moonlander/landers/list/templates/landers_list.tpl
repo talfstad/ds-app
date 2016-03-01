@@ -32,7 +32,7 @@
         </div>
 
         <div class="dropdown pull-left">
-          <button data-toggle="dropdown" style="text-align: left" role="button" aria-expanded="false" type="button" class="ml10 w200 pl10 pt5 pb5 btn btn-default btn-gradient dark">
+          <button data-toggle="dropdown" style="text-align: left" role="button" aria-expanded="false" type="button" class="ml10 w210 pl10 pt5 pb5 btn btn-default btn-gradient dark">
             <span class="fa fa-caret-down pr5"></span>
             Sort By: 
             <span class="sortbyname">Lander Name</span> 

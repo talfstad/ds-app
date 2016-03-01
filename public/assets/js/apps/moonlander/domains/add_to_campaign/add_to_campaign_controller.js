@@ -1,19 +1,20 @@
 define(["app",
-    "/assets/js/apps/moonlander/landers/add_to_campaign/views/loading_view.js",
-    "/assets/js/apps/moonlander/landers/add_to_campaign/views/campaigns_list_view.js",
-    "/assets/js/apps/moonlander/landers/add_to_campaign/views/add_to_campaign_layout_view.js",
-    "/assets/js/apps/moonlander/landers/dao/campaign_collection.js"
+    "/assets/js/apps/moonlander/domains/add_to_campaign/views/loading_view.js",
+    "/assets/js/apps/moonlander/domains/add_to_campaign/views/campaigns_list_view.js",
+    "/assets/js/apps/moonlander/domains/add_to_campaign/views/add_to_campaign_layout_view.js",
+    "/assets/js/apps/moonlander/domains/dao/campaign_collection.js"
   ],
   function(Moonlander, LoadingView, CampaignsListView, AddToCampaignLayoutView) {
-    Moonlander.module("LandersApp.Landers.AddToCampaign", function(AddToCampaign, Moonlander, Backbone, Marionette, $, _) {
+    Moonlander.module("DomainsApp.Domains.AddToCampaign", function(AddToCampaign, Moonlander, Backbone, Marionette, $, _) {
 
       AddToCampaign.Controller = {
 
-        showAddToCampaign: function(model) {
+        showAddNewCampaign: function(model) {
 
           var addLanderToCampaignLayout = new AddToCampaignLayoutView({
             model: model
           });
+
 
           addLanderToCampaignLayout.render();
 
@@ -58,5 +59,5 @@ define(["app",
       }
     });
 
-    return Moonlander.LandersApp.Landers.AddToCampaign.Controller;
+    return Moonlander.DomainsApp.Domains.AddToCampaign.Controller;
   });

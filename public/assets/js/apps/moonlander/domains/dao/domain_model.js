@@ -107,44 +107,44 @@ define(["app",
         activeCampaignsCollection.on("add", function(campaignModel, campaignCollection, options) {
           // check all deployed locations make sure all campaign model deployed domains is deployed if not then trigger
           // a deploy here
-          // $.each(campaignModel.get("currentDomains"), function(idx, currentDomain) {
+          $.each(campaignModel.get("currentLanders"), function(idx, currentLander) {
 
-          //   var isDeployed = false;
-          //   var isUndeploying = false;
-          //   var isDeploying = false;
-          //   deployedLandersCollection.each(function(deployLanderModel) {
-          //     //is this lander deployed to this domain?
+            var isDeployed = false;
+            var isUndeploying = false;
+            var isDeploying = false;
+            deployedLandersCollection.each(function(deployLanderModel) {
+              //is this lander deployed to this domain?
 
-          //     if (currentDomain.domain_id == deployLanderModel.id) {
-          //       isDeployed = true;
+              if (currentLander.lander_id == deployLanderModel.get("lander_id")) {
+                isDeployed = true;
 
-          //       deployLanderModel.get("activeJobs").each(function(job) {
-          //         if (job.get("action") == "undeployLanderFromDomain") {
-          //           isUndeploying = true;
-          //         } else if (job.get("action") == "deployLanderToDomain") {
-          //           isDeploying = true;
-          //         }
-          //       });
+                deployLanderModel.get("activeJobs").each(function(job) {
+                  if (job.get("action") == "undeployLanderFromDomain") {
+                    isUndeploying = true;
+                  } else if (job.get("action") == "deployLanderToDomain") {
+                    isDeploying = true;
+                  }
+                });
 
-          //       //add this campaign info to the deployed location so we can see that it belongs to
-          //       //this campaign in the deployed tab
-          //       var attachedCampaigns = deployLanderModel.get("attachedCampaigns");
-          //       attachedCampaigns.add(campaignModel);
-          //     }
-          //   });
+                //add this campaign info to the deployed location so we can see that it belongs to
+                //this campaign in the deployed tab
+                var attachedCampaigns = deployLanderModel.get("attachedCampaigns");
+                attachedCampaigns.add(campaignModel);
+              }
+            });
 
-          //   //if currentDomain is deployed do nothing, if not trigger a deploy on it
-          //   if (!isDeployed || isUndeploying || isDeploying) {
-          //     //trigger deploy
-          //     var attr = {
-          //       lander_id: me.get("id"),
-          //       id: currentDomain.domain_id,
-          //       lander_model: me,
-          //       domain: currentDomain.domain
-          //     }
-          //     Moonlander.trigger("domains:deployLanderToNewDomain", attr);
-          //   }
-          // });
+            //if currentLander is deployed do nothing, if not trigger a deploy on it
+            if (!isDeployed || isUndeploying || isDeploying) {
+              //trigger deploy
+              var attr = {
+                domain_id: me.get("id"),
+                lander_id: currentLander.lander_id,
+                domain_model: me
+                // lander: currentLander
+              }
+              Moonlander.trigger("domains:deployLanderToNewDomain", attr);
+            }
+          });
         }, this);
 
         this.set("activeCampaigns", activeCampaignsCollection);

@@ -20,6 +20,14 @@ define(["app",
           "change:active_campaigns_count": "render",
         },
 
+        events: {
+          "click .add-link-plus": "addNewCampaign"
+        },
+
+        addNewCampaign: function(){
+          Moonlander.trigger("domains:showAddNewCampaign", this.model);
+        },
+
         onRender: function() {
           var me = this;
           //remove tab capability if deleting

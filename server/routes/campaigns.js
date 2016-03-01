@@ -9,12 +9,9 @@ module.exports = function(app, passport) {
     // campaign_id: "2"
     // lander_id: 1
     // name: "camp1"
-    var modelAttributes = {
-      campaign_id: req.body.campaign_id,
-      lander_id: req.body.lander_id
-    }
-
+    var modelAttributes = req.body;
     var user = req.user;
+    
     db.campaigns.addActiveCampaign(user, modelAttributes, function(row) {
       res.json(row)
     });

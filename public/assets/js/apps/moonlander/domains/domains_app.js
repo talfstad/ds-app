@@ -4,10 +4,11 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
     "/assets/js/apps/moonlander/domains/add_new_domain/add_new_domain_controller.js",
     "/assets/js/apps/moonlander/domains/deploy_new_lander/deploy_new_lander_controller.js",
     "/assets/js/apps/moonlander/domains/delete_domain/delete_domain_controller.js",
-    "/assets/js/apps/moonlander/domains/undeploy_lander/undeploy_controller.js"
+    "/assets/js/apps/moonlander/domains/undeploy_lander/undeploy_controller.js",
+    "/assets/js/apps/moonlander/domains/add_to_campaign/add_to_campaign_controller.js"
   ],
   function(Moonlander, ListController, CommonLogin, SidemenuController, AddNewDomainController,
-    DeployNewLanderController, DeleteDomainController, UndeployLanderController) {
+    DeployNewLanderController, DeleteDomainController, UndeployLanderController, AddToCampaignController) {
     Moonlander.module("DomainsApp", function(DomainsApp, Moonlander, Backbone, Marionette, $, _) {
 
       var domainsAppAPI = {
@@ -25,10 +26,6 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
         },
         showDeleteDomainModal: function(model) {
           DeleteDomainController.showDeleteDomainModal(model);
-        },
-
-        deployNewLander: function(attr) {
-          ListController.deployNewLander(attr);
         },
 
         openSidebar: function(model) {
@@ -54,39 +51,35 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
           DeployNewLanderController.showDeployNewLander(model);
         },
 
+        deployNewLander: function(attr) {
+          ListController.deployNewLander(attr);
+        },
+
         showUndeployLander: function(model) {
           UndeployLanderController.showUndeployLander(model);
         },
 
-        //above functions are certain, below not sure we need yet
+        showAddNewCampaign: function(model) {
+          AddToCampaignController.showAddNewCampaign(model);
+        },
 
-        addNewDuplicatedLander: function(model) {
-          ListController.addNewDuplicatedLander(model);
+        addCampaignToDomain: function(attr) {
+          ListController.addCampaignToDomain(attr);
         },
-        redeployLanders: function(landersArray, successCallback) {
-          ListController.redeployLanders(landersArray, successCallback);
-        },
-        removeSnippetFromAllLanders: function(attr) {
-          ListController.removeSnippetFromAllLanders(attr);
-        },
+
         deployLanderToNewDomain: function(attr) {
           ListController.deployLanderToDomain(attr);
         },
+
+        //above functions are certain, below not sure we need yet
+
         updateTopbarTotals: function() {
           ListController.updateTopbarTotals();
-        },
-        addCampaignToLander: function(attr) {
-          ListController.addCampaignToLander(attr);
         },
 
         removeCampaignFromLander: function(campaignModel) {
           ListController.removeCampaignFromLander(campaignModel);
         },
-
-        updateToModifiedAndSave: function() {
-          SidemenuController.updateToModifiedAndSave();
-        },
-
 
 
       };
@@ -132,6 +125,18 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
         domainsAppAPI.showUndeployLander(model);
       });
 
+      Moonlander.on("domains:showAddNewCampaign", function(model) {
+        domainsAppAPI.showAddNewCampaign(model);
+      });
+
+      Moonlander.on("domains:addCampaignToDomain", function(attr) {
+        domainsAppAPI.addCampaignToDomain(attr);
+      });
+
+      Moonlander.on("domains:deployLanderToNewDomain", function(attr) {
+        domainsAppAPI.deployLanderToNewDomain(attr);
+      });
+
 
 
       ////above functions are certain they belong, below aren't sure yet
@@ -143,12 +148,6 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
 
       Moonlander.on("domains:removeCampaignFromLander", function(campaignModel) {
         domainsAppAPI.removeCampaignFromLander(campaignModel);
-      });
-
-
-
-      Moonlander.on("domains:addCampaignToLander", function(attr) {
-        domainsAppAPI.addCampaignToLander(attr);
       });
 
       Moonlander.on("domains:showDeployToDomain", function(model) {

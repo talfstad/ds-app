@@ -109,6 +109,19 @@ module.exports = function(db) {
     getAll: function(user, rootBucket, successCallback) {
       var user_id = user.id;
 
+      var getAllLanderIdsForCampaign = function(campaign, callback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          }
+          connection.query("SELECT a.lander_id,b.name FROM landers_with_campaigns a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.id],
+            function(err, dbDomainIdsForCampaign) {
+              callback(dbDomainIdsForCampaign);
+              connection.release();
+            });
+        });
+      };
+
       var getActiveCampaignsForDomain = function(domain, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
@@ -122,9 +135,9 @@ module.exports = function(db) {
               } else {
                 var idx = 0;
                 for (var i = 0; i < dbActiveCampaigns.length; i++) {
-                  getAllDomainIdsForCampaign(dbActiveCampaigns[i], function(currentDomains) {
+                  getAllLanderIdsForCampaign(dbActiveCampaigns[i], function(currentLanders) {
                     var deployedLander = dbActiveCampaigns[idx];
-                    deployedLander.currentDomains = currentDomains;
+                    deployedLander.currentLanders = currentLanders;
 
                     if (++idx == dbActiveCampaigns.length) {
                       callback(dbActiveCampaigns);

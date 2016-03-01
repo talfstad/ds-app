@@ -23,7 +23,7 @@ module.exports = function(db) {
 
     },
 
-    addActiveCampaign: function(user, modelAttributes, successCallback) {
+    addActiveCampaign: function(user, modelAttributes, callback) {
       var user_id = user.id;
 
       // args: lander_id, campaign_id, user_id
@@ -53,26 +53,51 @@ module.exports = function(db) {
       //   }
       // ]
 
-      db.getConnection(function(err, connection) {
-        if (err) {
-          console.log(err);
-        } else {
-          connection.query("CALL add_campaign_to_lander(?, ?, ?)", [modelAttributes.lander_id, modelAttributes.campaign_id, user_id], function(err, docs) {
-            if (err) {
-              console.log(err);
-              callback("Error adding active campaign");
-            } else {
-              modelAttributes.active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
-              modelAttributes.currentDomains = docs[1];
-              modelAttributes.id = modelAttributes.campaign_id;
-              successCallback(modelAttributes);
-            }
+      console.log("model attr: " + JSON.stringify(modelAttributes))
 
-            //release connection
-            connection.release();
-          });
-        }
-      });
+      if (modelAttributes.action === "addToDomain") {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          } else {
+            connection.query("CALL add_domain_to_campaign(?, ?, ?)", [modelAttributes.domain_id, modelAttributes.campaign_id, user_id], function(err, docs) {
+              if (err) {
+                console.log(err);
+                callback("Error adding active campaign");
+              } else {
+                modelAttributes.active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
+                modelAttributes.currentLanders = docs[1];
+                modelAttributes.id = modelAttributes.campaign_id;
+                callback(modelAttributes);
+              }
+
+              //release connection
+              connection.release();
+            });
+          }
+        });
+      } else {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          } else {
+            connection.query("CALL add_campaign_to_lander(?, ?, ?)", [modelAttributes.lander_id, modelAttributes.campaign_id, user_id], function(err, docs) {
+              if (err) {
+                console.log(err);
+                callback("Error adding active campaign");
+              } else {
+                modelAttributes.active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
+                modelAttributes.currentDomains = docs[1];
+                modelAttributes.id = modelAttributes.campaign_id;
+                callback(modelAttributes);
+              }
+
+              //release connection
+              connection.release();
+            });
+          }
+        });
+      }
     },
 
     getAll: function(user, successCallback) {

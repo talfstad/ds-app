@@ -33,12 +33,10 @@
 
         <% if(attached_campaigns_gui.length > 0) { %>
 
-          <% _.each(attached_campaigns_gui, function(campaignName, i){ %>
-          
           <a class="campaign-tab-link" href="#">
-            <span><%= campaignName %></span></a><% if (i !== attached_campaigns_gui.length-1){ %>,<% } %>
-          <% }); %>
-
+            <img src="/assets/img/logos/campaigns_icon_e9e9e9.png" alt="lander added by campaign" />
+          </a>
+          
 
         <% } else { %>
         
