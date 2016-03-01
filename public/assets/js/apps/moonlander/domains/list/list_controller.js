@@ -18,66 +18,13 @@ define(["app",
   ],
   function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
     PaginatedButtonView, TopbarView, LoadingView, LanderTabHandleView, CampaignTabHandleView,
-    DeployedLandersView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLocationModel,
+    DeployedLandersView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLanderModel,
     JobModel, ActiveCampaignModel) {
     Moonlander.module("DomainsApp.Domains.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
       List.Controller = {
 
         filteredDomainCollection: null,
-
-        //take a landerID and domainID and deploy the lander
-        //to that domain by adding it to the collection. This triggers
-        //a new job to be created, etc.
-        deployLanderToDomain: function(modelAttributes) {
-          var me = this;
-          //we're deploying!
-          modelAttributes.deploy_status = "deploying";
-
-          //create active job model to deploy this lander to a domain
-          var jobAttributes = {
-            action: "deployLanderToDomain",
-            lander_id: modelAttributes.lander_id,
-            domain_id: modelAttributes.domain_id,
-          };
-
-          //create job and add to models activeJobs
-          var jobModel = new JobModel(jobAttributes);
-
-          var domainModel = modelAttributes.domain_model;
-          if (!domainModel) {
-            domainModel = me.filteredDomainCollection.get(modelAttributes.lander_id);
-          }
-          if (!domainModel) return false;
-
-          //check if this lander_id is already there, if it is instead of adding a new domain_model
-          //just add this job to it
-
-          var deployedLanders = domainModel.get("deployedLanders");
-
-          //search deployedlocations for the lander_id if found use that
-          var existingLanderModel = null;
-          deployedLanders.each(function(deployedLander) {
-            if (deployedLander.get("lander_id") == modelAttributes.id) {
-              existingLanderModel = deployedLander;
-            }
-          });
-
-          if (existingLanderModel) {
-            var activeJobs = existingLanderModel.get("activeJobs");
-            activeJobs.add(jobModel);
-          } else {
-            //create the deployed deployedLander model
-            var domainModel = new DeployedLocationModel(modelAttributes);
-            var activeJobs = domainModel.get("activeJobs");
-            activeJobs.add(jobModel);
-            deployedLanders.add(domainModel);
-          }
-
-          //set new lander to deploying by default
-          Moonlander.trigger("job:start", jobModel);
-
-        },
 
         addCampaignToDomain: function(modelAttributes) {
           var me = this;
@@ -127,47 +74,45 @@ define(["app",
         //create new deploy job for lander attach it to domain
         deployNewLander: function(modelAttributes) {
           //we're deploying!
-          modelAttributes.deploy_status = "deploying";
+          var landerAttributes = modelAttributes.landerAttributes;
+
+          //domainModel NEEDS to be passed by any models calling deployNewLander because it's
+          //during creation time before filteredDomainCollection is created
+          var domainModel = modelAttributes.domain_model;
+
+          //need lander model
+          if (!landerAttributes) {
+            return false;
+          }
+
+          landerAttributes.deploy_status = "deploying";
 
           //create active job model to deploy this lander to a domain
           var jobAttributes = {
             action: "deployLanderToDomain",
-            lander_id: modelAttributes.lander_id,
+            lander_id: landerAttributes.id,
             domain_id: modelAttributes.domain_id,
           };
 
           //create job and add to models activeJobs
           var jobModel = new JobModel(jobAttributes);
 
-          var landerModel = modelAttributes.lander_model;
-          if (!landerModel) {
-            landerModel = this.filteredDomainCollection.get(modelAttributes.domain_id);
+          if (!domainModel) {
+            var domainModel = this.filteredDomainCollection.get(modelAttributes.domain_id);
           }
-          if (!landerModel) return false;
+
+          if (!domainModel) return false;
 
           //check if this domain_id is already there, if it is instead of adding a new domain_model
           //just add this job to it
 
-          var deployedLanders = landerModel.get("deployedLanders");
+          var deployedLanders = domainModel.get("deployedLanders");
 
-          //search deployedlocations for the domain_id if found use that
-          var existingLanderModel = null;
-          deployedLanders.each(function(deployedLander) {
-            if (deployedLander.get("lander_id") == modelAttributes.lander_id) {
-              existingLanderModel = deployedLander;
-            }
-          });
-
-          if (existingLanderModel) {
-            var activeJobs = existingLanderModel.get("activeJobs");
-            activeJobs.add(jobModel);
-          } else {
-            //create the deployed location model
-            var landerModel = new DeployedLocationModel(modelAttributes);
-            var activeJobs = landerModel.get("activeJobs");
-            activeJobs.add(jobModel);
-            deployedLanders.add(landerModel);
-          }
+          //create the deployed lander model
+          var landerModel = new DeployedLanderModel(landerAttributes);
+          var activeJobs = landerModel.get("activeJobs");
+          activeJobs.add(jobModel);
+          deployedLanders.add(landerModel);
 
           //set new lander to deploying by default
 

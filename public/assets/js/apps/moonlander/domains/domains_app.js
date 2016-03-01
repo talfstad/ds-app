@@ -67,9 +67,6 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
           ListController.addCampaignToDomain(attr);
         },
 
-        deployLanderToNewDomain: function(attr) {
-          ListController.deployLanderToDomain(attr);
-        },
 
         //above functions are certain, below not sure we need yet
 
@@ -133,18 +130,10 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
         domainsAppAPI.addCampaignToDomain(attr);
       });
 
-      Moonlander.on("domains:deployLanderToNewDomain", function(attr) {
-        domainsAppAPI.deployLanderToNewDomain(attr);
-      });
-
 
 
       ////above functions are certain they belong, below aren't sure yet
 
-
-      Moonlander.on("domains:deployLanderToNewDomain", function(attr) {
-        domainsAppAPI.deployLanderToNewDomain(attr);
-      });
 
       Moonlander.on("domains:removeCampaignFromLander", function(campaignModel) {
         domainsAppAPI.removeCampaignFromLander(campaignModel);

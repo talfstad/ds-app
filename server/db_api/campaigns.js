@@ -1,6 +1,7 @@
 module.exports = function(db) {
 
   var utils = require('../utils/utils.js')();
+  var dbLanders = require('./landers.js')(db);
 
   return {
 
@@ -53,8 +54,6 @@ module.exports = function(db) {
       //   }
       // ]
 
-      console.log("model attr: " + JSON.stringify(modelAttributes))
-
       if (modelAttributes.action === "addToDomain") {
         db.getConnection(function(err, connection) {
           if (err) {
@@ -66,9 +65,19 @@ module.exports = function(db) {
                 callback("Error adding active campaign");
               } else {
                 modelAttributes.active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
-                modelAttributes.currentLanders = docs[1];
-                modelAttributes.id = modelAttributes.campaign_id;
-                callback(modelAttributes);
+
+                var currentLanders = docs[1];
+
+                //get current lander data by id
+                dbLanders.getAll(user, function(currentLandersArr) {
+                  //add the current lander data and return!
+                  modelAttributes.currentLanders = currentLandersArr
+
+                  modelAttributes.id = modelAttributes.campaign_id;
+                  callback(modelAttributes);
+
+                }, currentLanders);
+
               }
 
               //release connection
@@ -155,49 +164,7 @@ module.exports = function(db) {
         return successCallback(campaigns);
       });
 
-
-
-      ///////MOCK DATA FOR GET ALL LANDERS ////////////      
-      // [{
-      //   id: 1,
-      //   name: "campaign name"
-      // }]
-
     }
-
-
-    // add: function(name, user, callback) {
-    //   db.query("CALL insert_campaign(?, ?);", [name, user], function(err, docs) {
-    //     if (err) {
-    //       console.log(err);
-    //       callback("Error adding campaign.");
-    //     } else {
-    //       callback();
-    //     }
-    //   });
-    // },
-
-    // delete: function(id, user, callback) {
-    //   db.query("CALL delete_campaign(?, ?);", [id, user], function(err, docs) {
-    //     if (err) {
-    //       console.log(err);
-    //       callback("Error deleting campaign with id: " + id);
-    //     } else {
-    //       callback();
-    //     }
-    //   });
-    // },
-
-    // edit: function(id, name, user, callback) {
-    //   db.query("CALL update_campaign(?, ?, ?);", [id, name, user], function(err, docs) {
-    //     if (err) {
-    //       console.log(err);
-    //       callback("Error updating campaign with id: " + id);
-    //     } else {
-    //       callback();
-    //     }
-    //   });
-    // }
 
   }
 

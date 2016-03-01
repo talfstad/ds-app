@@ -28,7 +28,9 @@ module.exports = function(db) {
                 console.log(err);
                 errorCallback();
               } else {
-                successCallback({id: attr.id});
+                successCallback({
+                  id: attr.id
+                });
               }
               connection.release();
 
@@ -171,11 +173,11 @@ module.exports = function(db) {
       });
     },
 
-    getAll: function(user, successCallback) {
+    getAll: function(user, successCallback, landersToGetArr) {
 
       var user_id = user.id;
 
-      getAllDomainIdsForCampaign = function(campaign, callback) {
+      var getAllDomainIdsForCampaign = function(campaign, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
@@ -216,7 +218,7 @@ module.exports = function(db) {
         });
       };
 
-      getActiveJobsForDeployedLocation = function(deployedLocation, callback) {
+      var getActiveJobsForDeployedLocation = function(deployedLocation, callback) {
         //get all jobs attached to lander and make sure only select those. list is:
         // 1. deployLanderToDomain
         // 2. undeployLanderFromDomain
@@ -298,7 +300,7 @@ module.exports = function(db) {
         });
       };
 
-      getActiveJobsForLander = function(lander, callback) {
+      var getActiveJobsForLander = function(lander, callback) {
         //get all jobs attached to lander and make sure only select those. list is:
         // 1. addNewLander
         // 2. deleteLander
@@ -369,11 +371,58 @@ module.exports = function(db) {
         });
       };
 
+      var getLandersById = function(landersToGetArr, gotLandersCallback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          }
 
-      //call to get all and return rows
-      getAllLandersDb(function(landers) {
-        return successCallback(landers);
-      });
+          var queryIds = "AND";
+          for (var i = 0; i < landersToGetArr.length; i++) {
+            queryIds += " id = " + landersToGetArr[i].lander_id
+            if(i + 1 < landersToGetArr.length){
+              queryIds += " OR";
+            }
+          }
+
+          var queryString = "SELECT id,name,optimize_css,optimize_js,optimize_images,optimize_gzip,modified,DATE_FORMAT(last_updated, '%b %e, %Y %l:%i:%s %p') AS last_updated FROM landers WHERE user_id = ? " + queryIds;
+
+          connection.query(queryString, [user_id], function(err, dblanders) {
+            if (err) {
+              console.log(err);
+            } else {
+              var idx = 0;
+              console.log("length: " + dblanders.length);
+              for (var i = 0; i < dblanders.length; i++) {
+                getExtraNestedForLander(dblanders[i], function() {
+
+                  if (++idx == dblanders.length) {
+                    gotLandersCallback(dblanders);
+                  }
+
+                });
+              }
+              if (dblanders.length <= 0) {
+                gotLandersCallback(dblanders);
+              }
+            }
+            connection.release();
+          });
+        });
+      };
+
+
+      //if landersToGetArr is here then just get those landers. arr of objects with id as key
+      if (landersToGetArr) {
+        getLandersById(landersToGetArr, function(landers) {
+          return successCallback(landers);
+        });
+      } else {
+        //call to get all and return rows
+        getAllLandersDb(function(landers) {
+          return successCallback(landers);
+        });
+      }
 
 
 

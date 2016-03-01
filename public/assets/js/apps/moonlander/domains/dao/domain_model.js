@@ -107,7 +107,7 @@ define(["app",
         activeCampaignsCollection.on("add", function(campaignModel, campaignCollection, options) {
           // check all deployed locations make sure all campaign model deployed domains is deployed if not then trigger
           // a deploy here
-          $.each(campaignModel.get("currentLanders"), function(idx, currentLander) {
+          $.each(campaignModel.get("currentLanders"), function(idx, currentLanderAttributes) {
 
             var isDeployed = false;
             var isUndeploying = false;
@@ -115,7 +115,7 @@ define(["app",
             deployedLandersCollection.each(function(deployLanderModel) {
               //is this lander deployed to this domain?
 
-              if (currentLander.lander_id == deployLanderModel.get("lander_id")) {
+              if (currentLanderAttributes.lander_id == deployLanderModel.get("lander_id")) {
                 isDeployed = true;
 
                 deployLanderModel.get("activeJobs").each(function(job) {
@@ -137,12 +137,11 @@ define(["app",
             if (!isDeployed || isUndeploying || isDeploying) {
               //trigger deploy
               var attr = {
+                landerAttributes: currentLanderAttributes,
                 domain_id: me.get("id"),
-                lander_id: currentLander.lander_id,
                 domain_model: me
-                // lander: currentLander
-              }
-              Moonlander.trigger("domains:deployLanderToNewDomain", attr);
+              };
+              Moonlander.trigger("domains:deployNewLander", attr);
             }
           });
         }, this);

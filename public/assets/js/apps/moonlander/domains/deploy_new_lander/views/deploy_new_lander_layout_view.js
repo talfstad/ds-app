@@ -42,18 +42,17 @@ define(["app",
 
           } else {
             var landerId = selectedRow.attr("data-lander-id");
-            var lander = selectedRow.text();
-            this.startDeployingNewLander(landerId, lander);
+            var lander = this.getRegion("landersListRegion").currentView.datatablesCollection.get(landerId)
+            this.startDeployingNewLander(lander);
             //add a row to the deployed domains thats deploying and trigger a start on the deployToDomain job
             this.$el.modal("hide");
           }
         },
 
-        startDeployingNewLander: function(landerId, landerName) {
+        startDeployingNewLander: function(lander) {
           var attrs = {
-              name: landerName,
+              landerAttributes: lander.attributes,
               domain_id: this.model.get("id"),
-              lander_id: landerId
             };
             // triggers add row to deployed domains and starts job 
           Moonlander.trigger("domains:deployNewLander", attrs);

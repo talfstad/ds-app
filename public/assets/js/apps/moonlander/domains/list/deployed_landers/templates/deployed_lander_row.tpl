@@ -1,6 +1,5 @@
 <td><%= viewIndex %></td>
 <td class="table-lander-name" style="white-space: nowrap; min-width: 145px">
-      <%= deploy_status_gui %> 
       <span><%= name %></span>
 </td>
 
@@ -19,9 +18,11 @@
       
       </select>      
 
+      <% } %>
+
       <div class="domain-action-buttons">
 
-     
+        <% if(deploy_status === "deployed") { %>
 
         <a class="" href="#">
           <span class="fa fa-eye"></span>
@@ -40,18 +41,22 @@
           </a>
           
 
+          <% } else { %>
+        
+          <a class="undeploy" href="#">
+            <span class="fa fa-trash-o" style="padding-right: 1px; padding-left: 2px"></span>
+          </a>
+
+          <% } %>
+
         <% } else { %>
         
-        <a class="undeploy" href="#">
-          <span class="fa fa-trash-o"></span>
-        </a>
+        <span style="font-size: 13px">
+          <%= deploy_status_gui %>
+        </span>
 
-      
-
-      <% } %>
-        
+        <% } %>
 
       </div>
 
-    <% } %>
 </td>
