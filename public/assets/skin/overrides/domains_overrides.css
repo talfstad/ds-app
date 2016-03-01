@@ -36,3 +36,8 @@
 .deployed-domains-region {
 	font-size: 14px;
 }
+
+.lander-on-campaign-row td {
+	background-color: #666;
+	color: #fff;
+}

@@ -6,7 +6,8 @@ define(["app",
 
     Moonlander.module("DomainsApp.Domains.List.ActiveCampaigns", function(ActiveCampaigns, Moonlander, Backbone, Marionette, $, _) {
       ActiveCampaigns.ChildView = Marionette.CollectionView.extend({
-        tagName: "tbody",
+        tagName: "table",
+        className: "table",
 
 
         //pass the deployed list its rendered index for # column

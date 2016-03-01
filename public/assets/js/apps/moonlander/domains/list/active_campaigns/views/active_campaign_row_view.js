@@ -7,8 +7,7 @@ define(["app",
       ActiveCampaigns.ActiveCampaignRowView = Marionette.ItemView.extend({
 
         template: ActiveCampaignRowTpl,
-        tagName: "tr",
-        className: "dark pb13",
+        tagName: "tbody",
 
         events: {
           "click .remove-campaign": "showRemoveLanderFromCampaignDialog"

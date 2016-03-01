@@ -114,8 +114,8 @@ define(["app",
             var isDeploying = false;
             deployedLandersCollection.each(function(deployLanderModel) {
               //is this lander deployed to this domain?
-
-              if (currentLanderAttributes.lander_id == deployLanderModel.get("lander_id")) {
+              var landerId = currentLanderAttributes.id || currentLanderAttributes.lander_id;
+              if (landerId == deployLanderModel.get("lander_id")) {
                 isDeployed = true;
 
                 deployLanderModel.get("activeJobs").each(function(job) {

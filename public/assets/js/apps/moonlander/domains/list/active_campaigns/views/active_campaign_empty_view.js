@@ -6,9 +6,8 @@ define(["app",
     Moonlander.module("DomainsApp.Domains.List.ActiveCampaigns", function(ActiveCampaigns, Moonlander, Backbone, Marionette, $, _) {
       ActiveCampaigns.EmptyView = Marionette.ItemView.extend({
         template: EmptyTpl,
-        tagName: "tr",
-        className: "dark"
-
+        tagName: "tbody"
+        
       });
     });
     return Moonlander.DomainsApp.Domains.List.ActiveCampaigns.EmptyView;

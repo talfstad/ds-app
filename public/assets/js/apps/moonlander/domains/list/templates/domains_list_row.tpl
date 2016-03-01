@@ -48,7 +48,8 @@
             <div class="row" style="margin-left: 0px; margin-right: 0px;">
               <div style="margin-left: 5px; font-weight: 600; padding-top: 10px; float: left;" class="clearfix">
                 <span style="width: 20px">#</span>
-                <span style="margin-left: 15px">Current Campaigns</span>
+                <span style="margin-left: 15px">Campaigns</span>
+                <span style="margin-left: 25px">Landers on Campaign</span>
               </div>
               <div style="float: right;" class="add-to-new-campaign-region clearfix">
               </div>
@@ -56,7 +57,7 @@
           </div>
           <div class="panel-body">
             <div style="padding-bottom: 15px">
-              <table class="table active_campaigns_region"></table>
+              <div class="active_campaigns_region"></div>
             </div>
           </div>
         </div>
