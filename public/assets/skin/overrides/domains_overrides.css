@@ -21,6 +21,7 @@
 }
 
 .domain-action-buttons{
+	font-size: 16px;
 	float: right;
 }
 
@@ -30,4 +31,8 @@
 
 .domain-action-buttons a:hover {
 	text-decoration: none;
+}
+
+.deployed-domains-region {
+	font-size: 14px;
 }

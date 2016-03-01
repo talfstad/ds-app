@@ -34,7 +34,9 @@
         <% if(attached_campaigns_gui.length > 0) { %>
 
           <a class="campaign-tab-link" href="#">
-            <img src="/assets/img/logos/campaigns_icon_e9e9e9.png" alt="lander added by campaign" />
+            <span class="icon-campaigns_icon2">
+                
+                </span>
           </a>
           
 
