@@ -29,6 +29,7 @@ define(["app",
         childViewOptions: function(model) {
           model.set('viewIndex', parseInt(this.collection.indexOf(model)) + 1);
           model.set('domain', this.collection.domain);
+          model.set('domain_id', this.collection.domain_id);
 
           //return options ONLY used by our empty view.
           return {

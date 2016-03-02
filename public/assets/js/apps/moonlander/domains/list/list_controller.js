@@ -167,63 +167,6 @@ define(["app",
 
         },
 
-        removeSnippetFromAllLanders: function(attr) {
-          var me = this;
-          var snippetToRemoveFromLanders = attr.snippet;
-          var onSuccessCallback = attr.onSuccess;
-
-          //loop original lander collection to remove active snippet from all url endpoints
-          var landersToRedeploy = [];
-          var activeSnippetsToRemove = [];
-
-          this.filteredDomainCollection.original.each(function(landerModel) {
-
-            //create a full list of snippets to remove
-            var urlEndpointsCollection = landerModel.get("urlEndpoints");
-            var tmpActiveSnippetsToRemove = [];
-            urlEndpointsCollection.each(function(endpoint) {
-              var activeSnippets = endpoint.get("activeSnippets");
-              activeSnippets.each(function(activeSnippet) {
-                if (activeSnippet.get("snippet_id") == snippetToRemoveFromLanders.get("snippet_id")) {
-                  tmpActiveSnippetsToRemove.push(activeSnippet);
-                }
-              });
-            });
-
-            if (tmpActiveSnippetsToRemove.length > 0) {
-              //merge this landers active snippets into the main active snippets list
-              $.merge(activeSnippetsToRemove, tmpActiveSnippetsToRemove);
-              landersToRedeploy.push(landerModel);
-
-              //need to set the deploy status here incase the view isn't currently showing
-              //we will still update correctly for topbartotals
-              // landerModel.set("deploy_status","deploying");
-            }
-          });
-
-          //now we have a FULL list of active snippets and landers that we need to remove and redeploy
-          if (activeSnippetsToRemove.length <= 0) {
-            //none to remove!
-            onSuccessCallback();
-          } else {
-            var activeSnippetsCounter = 0;
-            $.each(activeSnippetsToRemove, function(idx, snippetToRemove) {
-              snippetToRemove.destroy({
-                success: function() {
-                  activeSnippetsCounter++;
-                  if (activeSnippetsCounter == activeSnippetsToRemove.length) {
-                    //all snippets deleted! now redeploy all landers that need to be                  
-                    me.redeployLanders(landersToRedeploy, function() {
-                      onSuccessCallback();
-                    });
-                  }
-                }
-              });
-            });
-          }
-
-        },
-
         //creates an undeploy job and a deploy job and starts them for each lander in the list
         //you pass in
         redeployLanders: function(landerModelsArray, doneAddingAllRedeployJobsToAllLandersCallback) {
@@ -297,29 +240,6 @@ define(["app",
                   doneAddingAllRedeployJobsToAllLandersCallback();
                 }
               });
-            });
-          }
-
-        },
-
-        updateAllActiveSnippetNames: function(savedModel) {
-
-          if (this.filteredDomainCollection) {
-
-            this.filteredDomainCollection.original.each(function(landerModel) {
-
-              var urlEndpointCollection = landerModel.get("urlEndpoints");
-              urlEndpointCollection.each(function(endpoint) {
-
-                var activeSnippetsCollection = endpoint.get("activeSnippets");
-                activeSnippetsCollection.each(function(snippet) {
-                  if (snippet.get("snippet_id") == savedModel.get("snippet_id")) {
-                    snippet.set("name", savedModel.get("name"));
-                  }
-                });
-
-              });
-
             });
           }
 
@@ -442,6 +362,7 @@ define(["app",
                   var deployedLandersCollection = domainView.model.get("deployedLanders");
                   //set the domain for child views
                   deployedLandersCollection.domain = domainView.model.get("domain");
+                  deployedLandersCollection.domain_id = domainView.model.get("id");
 
 
                   var deployedLandersView = new DeployedLandersView({

@@ -21,7 +21,7 @@ define(["app",
 
             var jobAttributes = {
               action: "undeployLanderFromDomain",
-              lander_id: model.get("lander_id"),
+              lander_id: model.get("lander_id") || model.get("id"),
               domain_id: model.get("domain_id"),
             }
 
