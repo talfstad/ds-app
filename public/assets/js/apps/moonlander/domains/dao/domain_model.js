@@ -44,7 +44,7 @@ define(["app",
           jobModel.destroy();
 
           me.set("deploy_status", deployStatus);
-          
+
           //trigger to start the next job on the list
           Moonlander.trigger("job:startNext", activeJobsCollection);
 
@@ -53,7 +53,7 @@ define(["app",
         activeJobsCollection.on("errorState", function(jobModel) {
           //change deploy status back to deployed
           me.set("deploy_status", "deployed");
-        
+
           me.trigger("notifyErrorDeleteDomain", jobModel.get("error"));
 
           //hack to not delete job from server
@@ -85,7 +85,7 @@ define(["app",
             deployedLandersCollection.each(function(deployedLanderModel) {
               if (deployedLanderModel.get("activeJobs").length > 0) {
                 deployStatus = "deploying";
-              } else if(deployedLanderModel.get("deploy_status") === "modified") {
+              } else if (deployedLanderModel.get("deploy_status") === "modified") {
                 deployStatus = "modified";
               }
             });
@@ -114,14 +114,16 @@ define(["app",
             var isDeploying = false;
             deployedLandersCollection.each(function(deployLanderModel) {
               //is this lander deployed to this domain?
-              var landerId = currentLanderAttributes.id || currentLanderAttributes.lander_id;
+              var currentLanderId = currentLanderAttributes.id || currentLanderAttributes.lander_id;
               var deployLocationId = deployLanderModel.get("lander_id") || deployLanderModel.get("id");
-              if (landerId == deployLocationId) {
+              if (currentLanderId == deployLocationId) {
                 isDeployed = true;
 
                 deployLanderModel.get("activeJobs").each(function(job) {
                   if (job.get("action") == "undeployLanderFromDomain") {
                     isUndeploying = true;
+                  } else if (job.get("action") == "deployLanderToDomain") {
+                    isDeploying = true;
                   }
                 });
 
@@ -132,7 +134,7 @@ define(["app",
               }
             });
 
-            //if currentLander is deployed do nothing, if not trigger a deploy on it
+            //if currentLander is deployed do nothing, if not trigger a deploy on it.. why did i say this
             if (!isDeployed || isUndeploying) {
               //trigger deploy
               var attr = {
@@ -147,6 +149,9 @@ define(["app",
 
         this.set("activeCampaigns", activeCampaignsCollection);
         activeCampaignsCollection.add(activeCampaignAttributes);
+
+
+        applyUpdatedDeployStatusToLander();
       },
 
       defaults: {

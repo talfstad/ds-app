@@ -92,7 +92,7 @@ define(["app"], function(Moonlander) {
       if (!hasConflict) {
 
         this.updateCollection.add(model);
-        model.trigger("startState");
+        model.trigger("startState", model);
 
         //start polling if first one.
         //function is self perpetuating so no need to call it for more than 1 model

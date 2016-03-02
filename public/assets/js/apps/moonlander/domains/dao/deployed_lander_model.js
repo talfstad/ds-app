@@ -17,12 +17,14 @@ define(["app",
         var activeJobsCollection = this.get("activeJobs");
 
         //set initial deploy status
-        var setDeployStatusForLocation = function() {
+        var setDeployStatusForDeployedLander = function() {
           if (activeJobsCollection.length > 0) {
-            var deployStatus = "deploying";
+            var deployStatus = "deployed";
             activeJobsCollection.each(function(job) {
               if (job.get("action") === "undeployLanderFromDomain") {
                 deployStatus = "undeploying";
+              } else if (job.get("action") === "deployLanderToDomain") {
+                deployStatus = "deploying";
               }
             });
             me.set("deploy_status", deployStatus);
@@ -31,10 +33,23 @@ define(["app",
           }
         };
 
-        setDeployStatusForLocation();
+        setDeployStatusForDeployedLander();
 
         activeJobsCollection.on("add remove", function() {
-          setDeployStatusForLocation();
+          setDeployStatusForDeployedLander();
+        });
+
+        activeJobsCollection.on("startState", function(jobModel) {
+          var action = jobModel.get("action");
+          var deployStatus = "deployed";
+
+          if (action === "undeployLanderFromDomain") {
+                deployStatus = "undeploying";
+              } else if (action === "deployLanderToDomain") {
+                deployStatus = "deploying";
+              }
+
+          me.set("deploy_status", deployStatus);
         });
 
         activeJobsCollection.on("finishedState", function(jobModel) {
@@ -53,7 +68,7 @@ define(["app",
             delete jobModel.attributes.id;
             jobModel.destroy();
 
-            setDeployStatusForLocation();
+            setDeployStatusForDeployedLander();
 
             if (!moreJobsToDo) {
               me.trigger('destroy', me, me.collection);

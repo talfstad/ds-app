@@ -137,7 +137,7 @@ define(["app",
           //create active job model to deploy this lander to a domain
           var jobAttributes = {
             action: "deployLanderToDomain",
-            lander_id: landerAttributes.id,
+            lander_id: landerAttributes.lander_id || landerAttributes.id,
             domain_id: modelAttributes.domain_id,
           };
 
@@ -155,14 +155,26 @@ define(["app",
 
           var deployedLanders = domainModel.get("deployedLanders");
 
-          //create the deployed lander model
-          var landerModel = new DeployedLanderModel(landerAttributes);
-          var activeJobs = landerModel.get("activeJobs");
-          activeJobs.add(jobModel);
-          deployedLanders.add(landerModel);
+          //search deployedlanders for the domain_id if found use that
+          var existingLanderModel = null;
+          deployedLanders.each(function(deployedLander) {
+            if (deployedLander.get("lander_id") == landerAttributes.id) {
+              existingLanderModel = deployedLander;
+            }
+          });
+
+          if (existingLanderModel) {
+            var activeJobs = existingLanderModel.get("activeJobs");
+            activeJobs.add(jobModel);
+          } else {
+            //create the deployed lander model
+            var landerModel = new DeployedLanderModel(landerAttributes);
+            var activeJobs = landerModel.get("activeJobs");
+            activeJobs.add(jobModel);
+            deployedLanders.add(landerModel);
+          }
 
           //set new lander to deploying by default
-
           Moonlander.trigger("job:start", jobModel);
 
         },

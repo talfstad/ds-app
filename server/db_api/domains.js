@@ -176,14 +176,15 @@ module.exports = function(db) {
       };
 
       getActiveJobsForLander = function(lander, callback) {
+        var lander_id = lander.lander_id || lander.id;
+        var domain_id = lander.domain_id;
+
         //get all jobs attached to lander and make sure only select those. list is:
-        // 1. addNewLander
-        // 2. deleteLander
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addNewLander", "deleteLander", "ripNewLander", user_id, lander.id, true],
+          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", ["addNewLander", "deleteLander", "ripNewLander", "deployLanderToDomain", "undeployLanderFromDomain", user_id, lander_id, domain_id, true],
             function(err, dbActiveJobs) {
               callback(dbActiveJobs);
               connection.release();

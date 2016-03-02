@@ -392,7 +392,6 @@ module.exports = function(db) {
               console.log(err);
             } else {
               var idx = 0;
-              console.log("length: " + dblanders.length);
               for (var i = 0; i < dblanders.length; i++) {
                 getExtraNestedForLander(dblanders[i], function() {
 

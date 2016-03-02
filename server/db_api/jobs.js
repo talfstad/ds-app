@@ -33,6 +33,34 @@ module.exports = function(db) {
 
     },
 
+    getAllNotDoneForLanderDomain: function(user, attr, successCallback) {
+      var user_id = user.id;
+      var lander_id = attr.lander_id;
+      var domain_id = attr.domain_id;
+
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+
+          connection.query("SELECT * FROM jobs WHERE user_id = ? AND domain_id = ? AND lander_id = ? AND done IS NULL OR done = ?", [user_id, domain_id, lander_id, 0],
+
+            function(err, docs) {
+              if (err) {
+                console.log(err);
+              } else {
+
+                successCallback(docs);
+
+              }
+              connection.release();
+            });
+        }
+      });
+
+    },
+
     registerJob: function(user, modelAttributes, successCallback, errorCallback) {
       var user_id = user.id;
 

@@ -57,7 +57,8 @@ define(["app",
           }
 
           //show correct one
-          if (this.model.get("deploy_status") !== "deployed") {
+          var deployStatus = this.model.get("deploy_status");
+          if (deployStatus !== "deployed" && deployStatus !== "not_deployed") {
             this.$el.find(".alert-working-badge").show();
           } else {
             this.$el.find(".alert-working-badge").hide();
