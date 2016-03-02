@@ -122,8 +122,6 @@ define(["app",
                 deployLanderModel.get("activeJobs").each(function(job) {
                   if (job.get("action") == "undeployLanderFromDomain") {
                     isUndeploying = true;
-                  } else if (job.get("action") == "deployLanderToDomain") {
-                    isDeploying = true;
                   }
                 });
 
@@ -135,7 +133,7 @@ define(["app",
             });
 
             //if currentLander is deployed do nothing, if not trigger a deploy on it
-            if (!isDeployed || isUndeploying || isDeploying) {
+            if (!isDeployed || isUndeploying) {
               //trigger deploy
               var attr = {
                 landerAttributes: currentLanderAttributes,
