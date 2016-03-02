@@ -24,6 +24,60 @@ module.exports = function(db) {
 
     },
 
+    removeFromCampaignsWithDomains: function(user, id, successCallback) {
+      var user_id = user.id;
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("DELETE FROM campaigns_with_domains WHERE user_id = ? AND id = ?", [user_id, id],
+            function(err, dbSuccessDelete) {
+
+              successCallback(dbSuccessDelete);
+
+              //release connection
+              connection.release();
+            });
+        }
+      });
+
+    },
+
+    addActiveCampaignToDomain: function(user, modelAttributes, callback) {
+      var user_id = user.id;
+      
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("CALL add_domain_to_campaign(?, ?, ?)", [modelAttributes.domain_id, modelAttributes.campaign_id, user_id], function(err, docs) {
+            if (err) {
+              console.log(err);
+              callback("Error adding active campaign");
+            } else {
+              modelAttributes.active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
+
+              var currentLanders = docs[1];
+
+              //get current lander data by id
+              dbLanders.getAll(user, function(currentLandersArr) {
+                //add the current lander data and return!
+                modelAttributes.currentLanders = currentLandersArr
+
+                modelAttributes.id = modelAttributes.campaign_id;
+                callback(modelAttributes);
+
+              }, currentLanders);
+
+            }
+
+            //release connection
+            connection.release();
+          });
+        }
+      });
+    },
+
     addActiveCampaign: function(user, modelAttributes, callback) {
       var user_id = user.id;
 
@@ -54,59 +108,27 @@ module.exports = function(db) {
       //   }
       // ]
 
-      if (modelAttributes.action === "addToDomain") {
-        db.getConnection(function(err, connection) {
-          if (err) {
-            console.log(err);
-          } else {
-            connection.query("CALL add_domain_to_campaign(?, ?, ?)", [modelAttributes.domain_id, modelAttributes.campaign_id, user_id], function(err, docs) {
-              if (err) {
-                console.log(err);
-                callback("Error adding active campaign");
-              } else {
-                modelAttributes.active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("CALL add_campaign_to_lander(?, ?, ?)", [modelAttributes.lander_id, modelAttributes.campaign_id, user_id], function(err, docs) {
+            if (err) {
+              console.log(err);
+              callback("Error adding active campaign");
+            } else {
+              modelAttributes.active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
+              modelAttributes.currentDomains = docs[1];
+              modelAttributes.id = modelAttributes.campaign_id;
+              callback(modelAttributes);
+            }
 
-                var currentLanders = docs[1];
+            //release connection
+            connection.release();
+          });
+        }
+      });
 
-                //get current lander data by id
-                dbLanders.getAll(user, function(currentLandersArr) {
-                  //add the current lander data and return!
-                  modelAttributes.currentLanders = currentLandersArr
-
-                  modelAttributes.id = modelAttributes.campaign_id;
-                  callback(modelAttributes);
-
-                }, currentLanders);
-
-              }
-
-              //release connection
-              connection.release();
-            });
-          }
-        });
-      } else {
-        db.getConnection(function(err, connection) {
-          if (err) {
-            console.log(err);
-          } else {
-            connection.query("CALL add_campaign_to_lander(?, ?, ?)", [modelAttributes.lander_id, modelAttributes.campaign_id, user_id], function(err, docs) {
-              if (err) {
-                console.log(err);
-                callback("Error adding active campaign");
-              } else {
-                modelAttributes.active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
-                modelAttributes.currentDomains = docs[1];
-                modelAttributes.id = modelAttributes.campaign_id;
-                callback(modelAttributes);
-              }
-
-              //release connection
-              connection.release();
-            });
-          }
-        });
-      }
     },
 
     getAll: function(user, successCallback) {

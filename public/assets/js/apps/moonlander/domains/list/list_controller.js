@@ -26,6 +26,52 @@ define(["app",
 
         filteredDomainCollection: null,
 
+        //takes an array of objects, keys off domain_id to undeploy each domain
+        removeCampaignFromLander: function(campaignModel) {
+          var me = this;
+          var domain_id = campaignModel.get("domain_id");
+
+          var domain = me.filteredDomainCollection.get(domain_id);
+          var deployedLanders = domain.get("deployedLanders");
+
+
+          //trigger undeploy job on each deployed domain that belongs to this campaign
+          $.each(campaignModel.get("currentLanders"), function(idx, lander) {
+            var lander_id = lander.lander_id || lander.id;
+
+            var deployedLanderModel = deployedLanders.find(function(m) {
+              var id = m.get("lander_id") || m.get("id");
+              return id == lander_id
+            })
+
+            var activeJobsCollection = deployedLanderModel.get("activeJobs");
+
+
+            var jobAttributes = {
+              action: "undeployLanderFromDomain",
+              lander_id: lander_id,
+              domain_id: domain_id,
+            }
+
+            //create job and add to models activeJobs
+
+            //get lander so we can add jobs to the deployed domains we want to undeploy
+
+            //only undeploy lander if this is the only campaign attached to the domain
+            var attachedCampaigns = deployedLanderModel.get("attachedCampaigns");
+            if (attachedCampaigns.length <= 0) {
+              //create the new job model
+              var jobModel = new JobModel(jobAttributes);
+              activeJobsCollection.add(jobModel);
+
+              Moonlander.trigger("job:start", jobModel);
+
+            }
+
+          });
+
+        },
+
         addCampaignToDomain: function(modelAttributes) {
           var me = this;
           var addedCampaignSuccessCallback = function(activeCampaignModel) {
@@ -39,10 +85,11 @@ define(["app",
             var currentLanders = activeCampaignModel.get("currentLanders");
 
             $.each(currentLanders, function(idx, lander) {
-              var lander_id = lander.lander_id;
+              var lander_id = lander.lander_id || lander.id;
 
               var deployedLanderModel = deployedLanders.find(function(m) {
-                return m.get('lander_id') == lander_id
+                var id = m.get("lander_id") || m.get("id");
+                return id == lander_id
               });
 
               var attachedCampaigns = deployedLanderModel.get("attachedCampaigns");
@@ -378,7 +425,7 @@ define(["app",
 
                   var activeCampaignsCollection = domainView.model.get("activeCampaigns");
                   //set landername to be used by campaign models dialog
-                  activeCampaignsCollection.landerName = domainView.model.get("name");
+                  activeCampaignsCollection.domain = domainView.model.get("domain");
                   activeCampaignsCollection.deploy_status = domainView.model.get("deploy_status");
 
                   var activeCampaignsView = new ActiveCampaignsView({

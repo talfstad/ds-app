@@ -1,4 +1,4 @@
-<tr class="dark pb13">
+<tr class="dark" style="font-size: 14px">
 <% if(deploy_status !== "initializing") { %>
 <td style="">This lander doesn't currently belong to any campaigns.</td>
 <td>

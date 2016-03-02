@@ -5,10 +5,12 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
     "/assets/js/apps/moonlander/domains/deploy_new_lander/deploy_new_lander_controller.js",
     "/assets/js/apps/moonlander/domains/delete_domain/delete_domain_controller.js",
     "/assets/js/apps/moonlander/domains/undeploy_lander/undeploy_controller.js",
-    "/assets/js/apps/moonlander/domains/add_to_campaign/add_to_campaign_controller.js"
+    "/assets/js/apps/moonlander/domains/add_to_campaign/add_to_campaign_controller.js",
+    "/assets/js/apps/moonlander/domains/undeploy_campaign/undeploy_controller.js"
   ],
   function(Moonlander, ListController, CommonLogin, SidemenuController, AddNewDomainController,
-    DeployNewLanderController, DeleteDomainController, UndeployLanderController, AddToCampaignController) {
+    DeployNewLanderController, DeleteDomainController, UndeployLanderController, AddToCampaignController,
+    UndeployCampaignController) {
     Moonlander.module("DomainsApp", function(DomainsApp, Moonlander, Backbone, Marionette, $, _) {
 
       var domainsAppAPI = {
@@ -67,6 +69,10 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
           ListController.addCampaignToDomain(attr);
         },
 
+        showUndeployDomainFromCampaignDialog: function(model) {
+          UndeployCampaignController.showUndeployDomainFromCampaignDialog(model);
+        },
+
 
         //above functions are certain, below not sure we need yet
 
@@ -76,7 +82,7 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
 
         removeCampaignFromLander: function(campaignModel) {
           ListController.removeCampaignFromLander(campaignModel);
-        },
+        }
 
 
       };
@@ -130,22 +136,19 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
         domainsAppAPI.addCampaignToDomain(attr);
       });
 
+      Moonlander.on("domains:showUndeployDomainFromCampaignDialog", function(model) {
+        domainsAppAPI.showUndeployDomainFromCampaignDialog(model);
+      });
+
+      Moonlander.on("domains:removeCampaignFromLander", function(model) {
+        domainsAppAPI.removeCampaignFromLander(model);
+      });
+
 
 
       ////above functions are certain they belong, below aren't sure yet
 
 
-      Moonlander.on("domains:removeCampaignFromLander", function(campaignModel) {
-        domainsAppAPI.removeCampaignFromLander(campaignModel);
-      });
-
-      Moonlander.on("domains:showDeployToDomain", function(model) {
-        domainsAppAPI.showDeployToDomain(model);
-      });
-
-      Moonlander.on("domains:showAddToCampaign", function(model) {
-        domainsAppAPI.showAddToCampaign(model);
-      });
 
       Moonlander.on("domains:updateTopbarTotals", function(landerModel) {
         domainsAppAPI.updateTopbarTotals();

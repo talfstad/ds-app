@@ -10,14 +10,14 @@ define(["app",
         tagName: "tbody",
 
         events: {
-          "click .remove-campaign": "showRemoveLanderFromCampaignDialog"
+          "click .remove-campaign": "showUndeployDomainFromCampaignDialog"
         },
 
-        showRemoveLanderFromCampaignDialog: function(e){
+        showUndeployDomainFromCampaignDialog: function(e){
           e.preventDefault();
           e.stopPropagation();
 
-          Moonlander.trigger("domains:showRemoveLanderFromCampaignDialog", this.model);
+          Moonlander.trigger("domains:showUndeployDomainFromCampaignDialog", this.model);
         },
 
         modelEvents: {

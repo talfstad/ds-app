@@ -2,7 +2,7 @@ define(["app"],
   function(Moonlander) {
     var ActiveCampaignModel = Backbone.Model.extend({
       
-      urlRoot: "/api/active_campaigns",
+      urlRoot: "/api/active_campaigns_on_domain",
 
       defaults: {
         name: "",

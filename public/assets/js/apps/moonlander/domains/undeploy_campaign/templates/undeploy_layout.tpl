@@ -8,11 +8,11 @@
         
 
     	<div class="edit-lander-modal-content modal-body">
-            <p>Are you sure you want to undeploy the lander <strong><%= name %></strong> from the domain <strong><%= domain %></strong>?</p>
+            <p>Are you sure you want to remove the domain <strong><%= domain %></strong> from the campaign <strong><%= name %></strong>?</p>
         </div>
     	<div class="modal-footer">
             <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Close</button>
-    		<button type="button" data-dismiss="modal" class="undeploy-confirm btn btn-success btn-clipboard">Undeploy</button>
+    		<button type="button" data-dismiss="modal" class="undeploy-confirm btn btn-primary btn-clipboard">Undeploy</button>
     	</div> 
     </div> 
 </div>

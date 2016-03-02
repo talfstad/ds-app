@@ -8,7 +8,7 @@ module.exports = function(app, db) {
   //this triggers the next job to fire
 
   module.undeployLanderFromDomain = function(user, attr) {
-
+    console.log("debug attr: " + JSON.stringify(attr))
     var myJobId = attr.id;
 
 

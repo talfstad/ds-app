@@ -13,7 +13,7 @@ define(["app",
         //pass the deployed list its rendered index for # column
         childViewOptions: function(model) {
           model.set('viewIndex', parseInt(this.collection.indexOf(model))+1);
-          model.set("landerName", this.collection.landerName);
+          model.set("domain", this.collection.domain);
           model.set("deploy_status", this.collection.deploy_status);
         },
 
