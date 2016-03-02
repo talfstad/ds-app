@@ -377,13 +377,13 @@ define(["app",
                     domainView.reAlignTableHeader();
                   });
 
-                  // deployedDomainsCollection.on("destroy", function() {
-                  //   deployedDomainsView.trigger("childview:updateParentLayout");
-                  // });
-
                   //when campaign link selected go to camp tab (this is from deployed domains campaign name link)
                   deployedLandersView.on("childview:selectCampaignTab", function(one, two, three) {
                     domainView.$el.find("a[href=#campaigns-tab-id-" + domainView.model.get("id") + "]").tab('show')
+                  });
+
+                  landerTabHandleView.on("reAlignHeader", function() {
+                    domainView.reAlignTableHeader();
                   });
 
 

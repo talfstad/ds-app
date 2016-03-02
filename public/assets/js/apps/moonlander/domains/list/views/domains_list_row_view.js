@@ -192,8 +192,6 @@ define(["app",
 
             this.$el.on('show.bs.collapse', function(e) {
 
-
-
               me.reAlignTableHeader();
 
               //collapse ALL others so we get an accordian effect !IMPORTANT for design

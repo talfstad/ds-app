@@ -54,6 +54,10 @@ define(["app",
             me.$el.find(".add-link-plus").css("display", "inline");
           });
 
+          this.$el.on("shown.bs.tab", function(e) {
+            me.trigger("reAlignHeader")
+          });
+
         }
 
       });

@@ -13,7 +13,10 @@ define(["app",
         this.each(function(lander) {
           landerId = lander.get("id");
 
-          if (!landersToFilterOutCollection.find(function(m) { return m.get('lander_id') == landerId })) {
+          if (!landersToFilterOutCollection.find(function(m) {
+            var id = m.get('lander_id') || m.get('id')
+              return id == landerId
+            })) {
             items.add(lander);
           }
 
