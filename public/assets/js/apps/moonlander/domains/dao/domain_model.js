@@ -136,6 +136,9 @@ define(["app",
 
             //if currentLander is deployed do nothing, if not trigger a deploy on it.. why did i say this
             if (!isDeployed || isUndeploying) {
+              //deploying from a campaign so we need to add the attached campaign to it
+              // currentLanderAttributes.attachedCampaigns = [];
+              // currentLanderAttributes.attachedCampaigns.push(campaignModel.attributes);
               //trigger deploy
               var attr = {
                 landerAttributes: currentLanderAttributes,
