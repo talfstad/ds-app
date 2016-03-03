@@ -15,6 +15,10 @@ define(["app", "/assets/js/apps/moonlander/header/list/list_view.js"], function(
           Moonlander.trigger("landers:list");
         });
 
+        header.on("showCampaigns", function(childView, model, child) {
+          Moonlander.trigger("campaigns:list");
+        });
+
         Moonlander.rootRegion.currentView.headerRegion.show(header);
 
         //set active item

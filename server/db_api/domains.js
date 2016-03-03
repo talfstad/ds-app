@@ -175,7 +175,7 @@ module.exports = function(db) {
         });
       };
 
-      getActiveJobsForLander = function(lander, callback) {
+      var getActiveJobsForLander = function(lander, callback) {
         var lander_id = lander.lander_id || lander.id;
         var domain_id = lander.domain_id;
 

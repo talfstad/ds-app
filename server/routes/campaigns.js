@@ -67,7 +67,10 @@ module.exports = function(app, passport) {
   ////CAMPAIGNS
   app.get('/api/campaigns', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
-    db.campaigns.getAll(user, function(rows) {
+    db.campaigns.getAll(user, function(err, rows) {
+      if(err){
+        console.log("error getting campaigns: " + JSON.stringify(err));
+      }
       res.json(rows);
     });
   });

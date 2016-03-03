@@ -45,7 +45,7 @@ module.exports = function(db) {
 
     addActiveCampaignToDomain: function(user, modelAttributes, callback) {
       var user_id = user.id;
-      
+
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
@@ -131,23 +131,179 @@ module.exports = function(db) {
 
     },
 
-    getAll: function(user, successCallback) {
+    getAll: function(user, callback) {
 
       var user_id = user.id;
 
-      getAllDomainIdsForCampaign = function(campaign, callback) {
-
+      var getActiveJobsForDeployedDomain = function(deployedDomain, campaign, callback) {
+        //get all jobs attached to lander and make sure only select those. list is:
+        // 1. deployLanderToDomain
+        // 2. undeployLanderFromDomain
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT domain_id FROM campaigns_with_domains WHERE user_id = ? AND campaign_id = ?", [user_id, campaign.id],
-            function(err, dbDomainIdsForCampaign) {
-              callback(dbDomainIdsForCampaign);
+          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND campaign_id = ? AND domain_id = ? AND processing = ?)", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, campaign.id, deployedDomain.id, true],
+            function(err, dbActiveJobs) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, dbActiveJobs);
+                connection.release();
+              }
+            });
+        });
+      };
 
-              //release connection
+      var getDeployedDomainsForCampaign = function(campaign, callback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          }
+          connection.query("SELECT a.id,a.domain from domains a JOIN campaigns_with_domains b ON a.id=b.domain_id WHERE (a.user_id = ? AND campaign_id = ?)", [user_id, campaign.id],
+            function(err, dbDeployedDomains) {
+              if (err) {
+                callback(err);
+              } else {
+                var idx = 0;
+                for (var i = 0; i < dbDeployedDomains.length; i++) {
+                  getActiveJobsForDeployedDomain(dbDeployedDomains[i], campaign, function(err, activeJobs) {
+                    if (err) {
+                      callback(err);
+                    } else {
+                      var deployedLander = dbDeployedDomains[idx];
+                      deployedLander.activeJobs = activeJobs;
+
+                      if (++idx == dbDeployedDomains.length) {
+                        callback(false, dbDeployedDomains);
+                      }
+                    }
+                  });
+                }
+                if (dbDeployedDomains.length <= 0) {
+                  callback(false, []);
+                }
+              }
               connection.release();
             });
+        });
+      };
+
+      var getActiveJobsForLander = function(lander, campaign, callback) {
+        var lander_id = lander.lander_id || lander.id;
+        var campaign_id = campaign.id;
+
+        //get all jobs attached to lander and make sure only select those. list is:
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          }
+          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND campaign_id = ? AND processing = ? AND done IS NULL OR done = ?)", ["deployLanderToDomain", "undeployLanderFromDomain", user_id, lander_id, campaign_id, true, 0],
+            function(err, dbActiveJobs) {
+              callback(false, dbActiveJobs);
+              connection.release();
+            });
+        });
+      };
+
+
+      var getEndpointsForLander = function(lander, callback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          }
+          connection.query("SELECT id,name,lander_id from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.id],
+            function(err, dbUrlEndpoints) {
+              if (err) {
+                callback(err);
+              } else {
+                if (dbUrlEndpoints.length <= 0) {
+                  callback(false, []);
+                } else {
+                  callback(false, dbUrlEndpoints);
+                }
+              }
+              connection.release();
+            });
+        });
+      };
+
+      var getExtraNestedForLander = function(lander, campaign, callback) {
+        getEndpointsForLander(lander, function(err, endpoints) {
+          if (err) {
+            callback(err);
+          } else {
+            console.log("got endpoints")
+            lander.urlEndpoints = endpoints;
+
+            getActiveJobsForLander(lander, campaign, function(err, activeJobs) {
+              if (err) {
+                callback(err);
+              } else {
+                console.log("got active jobs");
+                lander.activeJobs = activeJobs;
+
+                callback(false);
+              }
+
+            });
+
+          }
+
+        });
+      };
+
+      var getDeployedLandersForCampaign = function(campaign, callback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          }
+          connection.query("SELECT a.lander_id AS id, b.name FROM landers_with_campaigns a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.id],
+            function(err, dbLandersOnCampaign) {
+              if (err) {
+                callback(err);
+              } else {
+                var idx = 0;
+                for (var i = 0; i < dbLandersOnCampaign.length; i++) {
+                  getExtraNestedForLander(dbLandersOnCampaign[i], campaign, function(err) {
+                    if (err) {
+                      callback(err);
+                    } else {
+                      if (++idx == dbLandersOnCampaign.length) {
+                        callback(false, dbLandersOnCampaign);
+                      }
+                    }
+                  });
+                }
+                if (dbLandersOnCampaign.length <= 0) {
+                  callback(false, []);
+                }
+              }
+              connection.release();
+            });
+        });
+      };
+
+      var getExtraNestedForCampaign = function(campaign, callback) {
+
+        getDeployedLandersForCampaign(campaign, function(err, landers) {
+          if (err) {
+            callback(err);
+          } else {
+            campaign.deployedLanders = landers;
+
+            getDeployedDomainsForCampaign(campaign, function(err, domains) {
+              if (err) {
+                callback(err);
+              } else {
+                campaign.deployedDomains = domains;
+                callback(false);
+              }
+
+
+            });
+          }
+
         });
       };
 
@@ -156,23 +312,27 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT id,name FROM campaigns WHERE user_id = ?", [user_id],
+          connection.query("SELECT id,name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM campaigns WHERE user_id = ?", [user_id],
             function(err, dbCampaigns) {
-              if (dbCampaigns.length <= 0) {
-                callback([]);
+              if (err) {
+                console.log(err);
               } else {
                 var idx = 0;
                 for (var i = 0; i < dbCampaigns.length; i++) {
-                  getAllDomainIdsForCampaign(dbCampaigns[i], function(campaignsDomainIds) {
-
-                    var deployedCampaign = dbCampaigns[idx];
-                    deployedCampaign.campaignsDomainIds = campaignsDomainIds;
-
-                    if (++idx == dbCampaigns.length) {
-                      callback(dbCampaigns);
+                  getExtraNestedForCampaign(dbCampaigns[i], function(err) {
+                    if (err) {
+                      callback(err);
+                    } else {
+                      if (++idx == dbCampaigns.length) {
+                        callback(false, dbCampaigns);
+                      }
                     }
 
+
                   });
+                }
+                if (dbCampaigns.length <= 0) {
+                  callback(false, []);
                 }
               }
               //release connection
@@ -182,9 +342,37 @@ module.exports = function(db) {
       };
 
       //call to get all and return rows
-      getAllCampaignsDb(function(campaigns) {
-        return successCallback(campaigns);
+      getAllCampaignsDb(function(err, campaigns) {
+        if (err) {
+          return callback(err);
+        } else {
+          return callback(false, campaigns);
+        }
       });
+
+
+      // [{
+      //   "id": 1,
+      //   "name": "default",
+      //   "created_on": "",
+      //   //change to campaignsDomains from campaignsDomainIds
+      //   "deployedDomains": [{
+      //     "id": 127,
+      //     "domain": "ninedomain.com",
+      //     "activeJobs": [] <-- includes any landers that are deploying to this domain and belong to this campaign
+      //   }],
+      //   //add campaignsLanders
+      //   "deployedLanders": [{
+      //     "id": 251,
+      //     "name": "why why why",
+      //     "urlEndpoints": [],
+      //     "activeJobs": [] <- include any domains that are deploying to this lander and belong to this campaign
+      //   }]
+      // }]
+
+
+      //on delete camp we need to remove all campaign landers from all domains on campaign so we create jobs to do that,
+      //when that is finished we can remove the campaign
 
     }
 

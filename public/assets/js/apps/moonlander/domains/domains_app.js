@@ -73,17 +73,15 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
           UndeployCampaignController.showUndeployDomainFromCampaignDialog(model);
         },
 
+        removeCampaignFromLander: function(campaignModel) {
+          ListController.removeCampaignFromLander(campaignModel);
+        },
 
         //above functions are certain, below not sure we need yet
 
         updateTopbarTotals: function() {
           ListController.updateTopbarTotals();
         },
-
-        removeCampaignFromLander: function(campaignModel) {
-          ListController.removeCampaignFromLander(campaignModel);
-        }
-
 
       };
 
@@ -147,8 +145,6 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
 
 
       ////above functions are certain they belong, below aren't sure yet
-
-
 
       Moonlander.on("domains:updateTopbarTotals", function(landerModel) {
         domainsAppAPI.updateTopbarTotals();
