@@ -410,11 +410,15 @@ define(["app",
           //we're deploying!
           modelAttributes.deploy_status = "deploying";
 
+          //any campaign triggered deploy will include a campaign_id
+          var campaign_id = modelAttributes.campaign_id;
+
           //create active job model to deploy this lander to a domain
           var jobAttributes = {
             action: "deployLanderToDomain",
             lander_id: modelAttributes.lander_id,
             domain_id: modelAttributes.id,
+            campaign_id: campaign_id
           }
 
           //create job and add to models activeJobs

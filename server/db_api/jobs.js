@@ -71,7 +71,7 @@ module.exports = function(db) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("CALL register_job(?, ?, ?, ?, ?, ?, ?, ?)", [config.id, modelAttributes.action, true, modelAttributes.lander_id, modelAttributes.domain_id, null, user_id, modelAttributes.lander_url || null],
+          connection.query("CALL register_job(?, ?, ?, ?, ?, ?, ?, ?)", [config.id, modelAttributes.action, true, modelAttributes.lander_id, modelAttributes.domain_id, modelAttributes.campaign_id, user_id, modelAttributes.lander_url || null],
 
             function(err, docs) {
               if (err) {

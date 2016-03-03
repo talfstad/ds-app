@@ -143,7 +143,8 @@ define(["app",
               var attr = {
                 landerAttributes: currentLanderAttributes,
                 domain_id: me.get("id"),
-                domain_model: me
+                domain_model: me,
+                campaign_id: campaignModel.get("campaign_id") || campaignModel.get("id")
               };
               Moonlander.trigger("domains:deployNewLander", attr);
             }

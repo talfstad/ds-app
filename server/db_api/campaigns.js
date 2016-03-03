@@ -233,16 +233,13 @@ module.exports = function(db) {
           if (err) {
             callback(err);
           } else {
-            console.log("got endpoints")
             lander.urlEndpoints = endpoints;
 
             getActiveJobsForLander(lander, campaign, function(err, activeJobs) {
               if (err) {
                 callback(err);
               } else {
-                console.log("got active jobs");
                 lander.activeJobs = activeJobs;
-
                 callback(false);
               }
 

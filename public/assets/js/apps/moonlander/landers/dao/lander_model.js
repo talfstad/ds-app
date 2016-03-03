@@ -153,11 +153,14 @@ define(["app",
             //if currentDomain is deployed do nothing, if not trigger a deploy on it
             if (!isDeployed || isUndeploying || isDeploying) {
               //trigger deploy
+
+              
               var attr = {
                 lander_id: me.get("id"),
                 id: currentDomain.domain_id,
                 lander_model: me,
-                domain: currentDomain.domain
+                domain: currentDomain.domain,
+                campaign_id: campaignModel.get("campaign_id") || campaignModel.get("id")
               }
               Moonlander.trigger("landers:deployLanderToNewDomain", attr);
             }
