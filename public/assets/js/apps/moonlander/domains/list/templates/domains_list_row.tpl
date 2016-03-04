@@ -20,12 +20,12 @@
       </a>
       <ul class="nav panel-tabs">
         <li class="campaign-tab-handle-region" data-tab-target="campaigns-tab-id-<%= id %>"></li>
-        <li class="lander-tab-handle-region" data-tab-target="domains-tab-id-<%= id %>"></li>
+        <li class="lander-tab-handle-region" data-tab-target="landers-tab-id-<%= id %>"></li>
       </ul>
     </div>
     <div id="accord<%= id %>" class="panel-collapse collapse" style="height: auto;">
       <div class="tab-content">
-        <div class="tab-pane " role="tabpanel" id="domains-tab-id-<%= id %>">
+        <div class="tab-pane " role="tabpanel" id="landers-tab-id-<%= id %>">
           <div class="panel-menu clearfix">
             <div class="row" style="margin-left: 0px; margin-right: 0px;">
               <div class="clearfix deployed-landers-header-container">
@@ -39,7 +39,7 @@
           </div>
           <div class="panel-body">
             <div style="padding-bottom: 15px">
-              <table class="table deployed-domains-region"></table>
+              <table class="table deployed-landers-region"></table>
             </div>
           </div>
         </div>

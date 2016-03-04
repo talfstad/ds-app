@@ -29,7 +29,7 @@ define(["app",
         template: LandersListItemTpl,
         childView: DeployedListChildView,
         emptyView: DeployedListEmptyView,
-        childViewContainer: "table.deployed-domains-region",
+        childViewContainer: "table.deployed-landers-region",
 
         events: {
           "click button.add-to-campaign": "showAddToCampaign"
@@ -43,7 +43,7 @@ define(["app",
 
         regions: {
           'lander_tab_handle_region': '.lander-tab-handle-region',
-          'deployed_domains_region': '.deployed-domains-region',
+          'deployed_landers_region': '.deployed-landers-region',
           'campaign_tab_handle_region': '.campaign-tab-handle-region',
           'active_campaigns_region': '.active_campaigns_region',
           'deploy_to_new_domain_region': '.deploy-to-new-domain-region',
@@ -203,7 +203,7 @@ define(["app",
 
               //first dont show any tabs then show correct tab
               $(e.currentTarget).find("li.lander-tab-handle-region").removeClass("active");
-              $(e.currentTarget).find("div[id^='domains-tab']").removeClass("active");
+              $(e.currentTarget).find("div[id^='landers-tab']").removeClass("active");
               $(e.currentTarget).find("li.campaign-tab-handle-region").removeClass("active");
               $(e.currentTarget).find("div[id^='campaigns-tab']").removeClass("active");
               //show the correct tab
@@ -220,7 +220,7 @@ define(["app",
                 tabHandle.addClass("active");
                 tabHandle.find(".add-link-plus").css("display", "inline");
 
-                var tab = $(e.currentTarget).find("div[id^='domains-tab']");
+                var tab = $(e.currentTarget).find("div[id^='landers-tab']");
                 tab.addClass("active");
               }
 

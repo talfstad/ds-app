@@ -5,17 +5,17 @@ define(["app",
     "/assets/js/apps/moonlander/campaigns/dao/sidebar_model.js",
     "moment-timezone",
     "/assets/js/apps/moonlander/campaigns/list/views/lander_tab_handle_view.js",
-    "/assets/js/apps/moonlander/campaigns/list/views/campaign_tab_handle_view.js",
-    "/assets/js/apps/moonlander/campaigns/list/active_campaigns/views/active_campaigns_collection_view.js",
+    "/assets/js/apps/moonlander/campaigns/list/views/domain_tab_handle_view.js",
+    "/assets/js/apps/moonlander/campaigns/list/deployed_domains/views/deployed_domains_collection_view.js",
     "/assets/js/common/notification.js",
     "bootstrap",
     "jstz"
   ],
   function(Moonlander, LandersListItemTpl, DeployedListChildView, DeployedListEmptyView, SidebarModel, moment,
-    DeployStatusView, CampaignTabHandleView, ActiveCampaignsView, Notification) {
+    DeployStatusView, DomainTabHandleView, ActiveCampaignsView, Notification) {
 
-    Moonlander.module("CampaignsApp.Campaigns.List", function(List, Moonlander, Backbone, Marionette, $, _) {
-      List.childView = Marionette.LayoutView.extend({
+    Moonlander.module("CampaignsApp.Campaigns.List.CollectionView", function(CollectionView, Moonlander, Backbone, Marionette, $, _) {
+      CollectionView.RowView = Marionette.LayoutView.extend({
 
         initialize: function() {
           var me = this;
@@ -43,9 +43,9 @@ define(["app",
 
         regions: {
           'lander_tab_handle_region': '.lander-tab-handle-region',
-          'deployed_domains_region': '.deployed-campaigns-region',
-          'campaign_tab_handle_region': '.campaign-tab-handle-region',
-          'active_campaigns_region': '.active_campaigns_region',
+          'deployed_landers_region': '.deployed-landers-region',
+          'domain_tab_handle_region': '.domain-tab-handle-region',
+          'deployed_domains_region': '.deployed-domains-region',
           'deploy_to_new_domain_region': '.deploy-to-new-domain-region',
           'add_to_new_campaign_region': '.add-to-new-campaign-region'
         },
@@ -66,7 +66,7 @@ define(["app",
         },
 
         showAddToCampaign: function() {
-          Moonlander.trigger("domains:showAddToCampaign", this.model);
+          // Moonlander.trigger("domains:showAddToCampaign", this.model);
         },
 
         onBeforeRender: function() {
@@ -81,12 +81,12 @@ define(["app",
         },
 
         notifySuccessDeleteDomain: function() {
-          Notification(this.model.get("domain"), "Successfully Deleted", "success", "stack_top_right");
+          // Notification(this.model.get("domain"), "Successfully Deleted", "success", "stack_top_right");
         },
 
         notifyErrorDeleteDomain: function(errorMsg) {
-          Notification(this.model.get("domain"), errorMsg, "danger", "stack_top_right");
-          this.model.trigger("reset");
+          // Notification(this.model.get("domain"), errorMsg, "danger", "stack_top_right");
+          // this.model.trigger("reset");
         },
 
         disableAccordionPermanently: function() {
@@ -94,9 +94,9 @@ define(["app",
           var me = this;
 
           // first try collapsing it
-          $("#landers-collection .collapse").collapse("hide");
+          $("#campaigns-collection .collapse").collapse("hide");
 
-          this.$el.find(".campaign-tab-handle-region").off();
+          this.$el.find(".domain-tab-handle-region").off();
           this.$el.find(".accordion-toggle").off();
           this.$el.find(".lander-tab-handle-region").off()
           this.$el.off();
@@ -162,7 +162,7 @@ define(["app",
                 $(e.currentTarget).attr("data-currently-hovering", false);
               });
 
-            this.$el.find(".campaign-tab-handle-region").hover(function(e) {
+            this.$el.find(".domain-tab-handle-region").hover(function(e) {
               $(e.currentTarget).attr("data-currently-hovering", true);
             }, function(e) {
               $(e.currentTarget).attr("data-currently-hovering", false);
@@ -196,16 +196,16 @@ define(["app",
               me.reAlignTableHeader();
 
               //collapse ALL others so we get an accordian effect !IMPORTANT for design
-              $("#landers-collection .collapse").collapse("hide");
+              $("#campaigns-collection .collapse").collapse("hide");
 
               //disable the controls until shown (fixes multiple showing bug if clicked too fast)
               $(".accordion-toggle").addClass("inactive-link");
 
               //first dont show any tabs then show correct tab
               $(e.currentTarget).find("li.lander-tab-handle-region").removeClass("active");
-              $(e.currentTarget).find("div[id^='domains-tab']").removeClass("active");
-              $(e.currentTarget).find("li.campaign-tab-handle-region").removeClass("active");
-              $(e.currentTarget).find("div[id^='campaigns-tab']").removeClass("active");
+              $(e.currentTarget).find("div[id^='landers-tab']").removeClass("active");
+              $(e.currentTarget).find("li.domain-tab-handle-region").removeClass("active");
+              $(e.currentTarget).find("div[id^='landers-tab']").removeClass("active");
               //show the correct tab
               var currentTab = $(e.currentTarget).find("li[data-currently-hovering='true']");
               var currentTabData = $("#" + currentTab.attr("data-tab-target"));
@@ -215,12 +215,12 @@ define(["app",
                 currentTabData.addClass("active");
                 currentTab.find(".add-link-plus").css("display", "inline");
               } else {
-                //no tab show domains tab
+                //no tab show campaigns tab
                 var tabHandle = $(e.currentTarget).find("li.lander-tab-handle-region");
                 tabHandle.addClass("active");
                 tabHandle.find(".add-link-plus").css("display", "inline");
 
-                var tab = $(e.currentTarget).find("div[id^='domains-tab']");
+                var tab = $(e.currentTarget).find("div[id^='landers-tab']");
                 tab.addClass("active");
               }
 
@@ -245,5 +245,5 @@ define(["app",
         }
       });
     });
-    return Moonlander.CampaignsApp.Campaigns.List.childView;
+    return Moonlander.CampaignsApp.Campaigns.List.CollectionView.RowView;
   });

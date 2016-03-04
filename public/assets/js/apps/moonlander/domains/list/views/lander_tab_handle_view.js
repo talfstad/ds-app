@@ -9,7 +9,7 @@ define(["app",
         tagName: "a",
         attributes: function() {
           return {
-            "href": "#domains-tab-id-" + this.model.get("id"),
+            "href": "#landers-tab-id-" + this.model.get("id"),
             "data-toggle": "tab"
           }
         },

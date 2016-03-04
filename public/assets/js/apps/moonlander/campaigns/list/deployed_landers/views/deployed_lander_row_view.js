@@ -1,10 +1,10 @@
 define(["app",
     "tpl!/assets/js/apps/moonlander/campaigns/list/deployed_landers/templates/deployed_lander_row.tpl"
   ],
-  function(Moonlander, DeployedDomainRowTpl) {
+  function(Moonlander, DeployedLanderRowTpl) {
 
-    Moonlander.module("CampaignsApp.Campaigns.List.Deployed", function(Deployed, Moonlander, Backbone, Marionette, $, _) {
-      Deployed.DeployedRowView = Marionette.ItemView.extend({
+    Moonlander.module("CampaignsApp.Campaigns.List.CollectionView.RowView.DeployedLandersCollectionView", function(DeployedLandersCollectionView, Moonlander, Backbone, Marionette, $, _) {
+      DeployedLandersCollectionView.DeployedLanderRowView = Marionette.ItemView.extend({
 
         initialize: function() {
           var me = this;
@@ -18,19 +18,9 @@ define(["app",
             me.render();
           });
 
-          //render on attached campaigns change/destroy. needs to be rendered because
-          //changes the text
-          var attachedCampaigns = this.model.get("attachedCampaigns");
-          this.listenTo(attachedCampaigns, "destroy", function() {
-            me.render();
-          });
-          this.listenTo(attachedCampaigns, "add", function() {
-            me.render();
-          });
-
         },
 
-        template: DeployedDomainRowTpl,
+        template: DeployedLanderRowTpl,
         tagName: "tr",
 
         modelEvents: {
@@ -58,12 +48,6 @@ define(["app",
             this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong>");
           }
 
-          //add attached campaigns to template
-          var attachedCampaignNamesArray = [];
-          this.model.get("attachedCampaigns").each(function(campaign) {
-            attachedCampaignNamesArray.push(campaign.get("name"));
-          });
-          this.model.set("attached_campaigns_gui", attachedCampaignNamesArray);
         },
 
         onDestroy: function() {
@@ -94,5 +78,5 @@ define(["app",
         }
       });
     });
-    return Moonlander.CampaignsApp.Campaigns.List.Deployed.DeployedRowView;
+    return Moonlander.CampaignsApp.Campaigns.List.CollectionView.RowView.DeployedLandersCollectionView.DeployedLanderRowView;
   });

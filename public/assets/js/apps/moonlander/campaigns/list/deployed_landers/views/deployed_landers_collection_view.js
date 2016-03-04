@@ -4,8 +4,8 @@ define(["app",
   ],
   function(Moonlander, DeployedDomainRowView, EmptyView) {
 
-    Moonlander.module("CampaignsApp.Campaigns.List.Deployed", function(Deployed, Moonlander, Backbone, Marionette, $, _) {
-      Deployed.ChildView = Marionette.CollectionView.extend({
+    Moonlander.module("CampaignsApp.Campaigns.List.CollectionView.RowView", function(RowView, Moonlander, Backbone, Marionette, $, _) {
+      RowView.DeployedLandersCollectionView = Marionette.CollectionView.extend({
         tagName: "tbody",
         childView: DeployedDomainRowView,
         emptyView: EmptyView,
@@ -45,5 +45,5 @@ define(["app",
 
       });
     });
-    return Moonlander.CampaignsApp.Campaigns.List.Deployed.ChildView;
+    return Moonlander.CampaignsApp.Campaigns.List.CollectionView.RowView.DeployedLandersCollectionView;
   });

@@ -83,7 +83,7 @@
     background: #fafafa;
 }
 
-.domain-campaign-notification {
+.domain-campaign-notification, .domain-lander-notification {
     position: absolute;
     bottom: 0;
     right: 0;
@@ -424,6 +424,10 @@ tr.warning input[type=select] {
 }
 
 .campaign-status-tab-handle {
+    width: 145px !important;
+}
+
+.domain-status-tab-handle {
     width: 145px !important;
 }
 

@@ -55,7 +55,7 @@ define(["app",
       }
     };
 
-    Moonlander.reqres.setHandler("campaigns:campaignsCollection", function() {
+    Moonlander.reqres.setHandler("domains:campaignsCollection", function() {
       return API.getCampaignsCollection();
     });
 

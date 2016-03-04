@@ -10,14 +10,14 @@ define(["app",
 
     Moonlander.module("CampaignsApp.Campaigns.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
-      List.View = Marionette.CollectionView.extend({
-        id: "landers-collection",
+      List.CollectionView = Marionette.CollectionView.extend({
+        id: "campaigns-collection",
         className: "accordion",
         emptyView: landersEmptyView,
         childView: landersListItemView,
 
         initialize: function() {
-          this.listenTo(this, "domains:sort", this.triggerSort);
+          this.listenTo(this, "campaigns:sort", this.triggerSort);
         },
 
         onRenderCollection: function() {
@@ -32,16 +32,16 @@ define(["app",
           var sortKey = $('input[name=sort-radio]:checked').attr("data-sort-by");
           var sortOrder = $(".btn-group-nav a.active").attr("data-sort-order");
 
-          if (sortKey === "domain-name") {
+          if (sortKey === "campaign-name") {
             me.collection.comparator = function(a, b) {
 
-              var aDomainName = a.get("domain").toLowerCase();
-              var bDomainName = b.get("domain").toLowerCase();
+              var aCampaignName = a.get("name").toLowerCase();
+              var bCampaignName = b.get("name").toLowerCase();
 
-              if (aDomainName === bDomainName) {
+              if (aCampaignName === bCampaignName) {
                 return 0;
               } else {
-                if (aDomainName < bDomainName) {
+                if (aCampaignName < bCampaignName) {
                   if (sortOrder === 'asc') {
                     return -1;
                   } else {
@@ -95,11 +95,11 @@ define(["app",
 
           $(".collapse").collapse({
             toggle: false,
-            parent: "#landers-collection"
+            parent: "#campaigns-collection"
           });
         }
       });
 
     });
-    return Moonlander.CampaignsApp.Campaigns.List.View;
+    return Moonlander.CampaignsApp.Campaigns.List.CollectionView;
   });

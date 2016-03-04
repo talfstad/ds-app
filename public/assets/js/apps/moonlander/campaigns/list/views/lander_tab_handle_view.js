@@ -3,13 +3,13 @@ define(["app",
   ],
   function(Moonlander, landersStatusTpl) {
 
-    Moonlander.module("CampaignsApp.Campaigns.List", function(List, Moonlander, Backbone, Marionette, $, _) {
-      List.DeployStatus = Marionette.ItemView.extend({
+    Moonlander.module("CampaignsApp.Campaigns.List.CollectionView.RowView", function(RowView, Moonlander, Backbone, Marionette, $, _) {
+      RowView.LanderTabHandle = Marionette.ItemView.extend({
         className: "lander-status-tab-handle",
         tagName: "a",
         attributes: function() {
           return {
-            "href": "#domains-tab-id-" + this.model.get("id"),
+            "href": "#landers-tab-id-" + this.model.get("id"),
             "data-toggle": "tab"
           }
         },
@@ -17,7 +17,7 @@ define(["app",
         template: landersStatusTpl,
 
         modelEvents: {
-          "change:active_landers_count": "render",
+          "change:deployed_landers_count": "render",
           "change:deploy_status": "render",
         },
 
@@ -62,5 +62,5 @@ define(["app",
 
       });
     });
-    return Moonlander.CampaignsApp.Campaigns.List.DeployStatus;
+    return Moonlander.CampaignsApp.Campaigns.List.CollectionView.RowView.LanderTabHandle;
   });

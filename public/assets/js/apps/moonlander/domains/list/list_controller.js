@@ -434,7 +434,7 @@ define(["app",
 
                   domainView.lander_tab_handle_region.show(landerTabHandleView);
                   domainView.campaign_tab_handle_region.show(campaignTabHandleView);
-                  domainView.deployed_domains_region.show(deployedLandersView);
+                  domainView.deployed_landers_region.show(deployedLandersView);
                   domainView.active_campaigns_region.show(activeCampaignsView);
                 });
               }

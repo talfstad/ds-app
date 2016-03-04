@@ -24,7 +24,7 @@ define(["app",
           addLanderToCampaignLayout.campaignsListRegion.show(loadingView)
         
          
-          var deferredCampaignsCollection = Moonlander.request("campaigns:campaignsCollection");
+          var deferredCampaignsCollection = Moonlander.request("landers:campaignsCollection");
 
           $.when(deferredCampaignsCollection).done(function(campaignsCollection) {
 

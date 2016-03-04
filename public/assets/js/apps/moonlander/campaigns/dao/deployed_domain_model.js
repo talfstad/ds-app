@@ -1,10 +1,9 @@
 define(["app",
     "/assets/js/jobs/jobs_base_gui_model.js",
-    "/assets/js/apps/moonlander/domains/dao/attached_campaigns_collection.js",
     "/assets/js/jobs/jobs_app.js"
   ],
-  function(Moonlander, JobsGuiBaseModel, AttachedCampaignsCollection) {
-    var DeployedLanderModel = JobsGuiBaseModel.extend({
+  function(Moonlander, JobsGuiBaseModel) {
+    var DeployedLocationModel = JobsGuiBaseModel.extend({
 
       url: '/',
 
@@ -17,14 +16,12 @@ define(["app",
         var activeJobsCollection = this.get("activeJobs");
 
         //set initial deploy status
-        var setDeployStatusForDeployedLander = function() {
+        var setDeployStatusForDomain = function() {
           if (activeJobsCollection.length > 0) {
-            var deployStatus = "deployed";
+            var deployStatus = "deploying";
             activeJobsCollection.each(function(job) {
               if (job.get("action") === "undeployLanderFromDomain") {
                 deployStatus = "undeploying";
-              } else if (job.get("action") === "deployLanderToDomain") {
-                deployStatus = "deploying";
               }
             });
             me.set("deploy_status", deployStatus);
@@ -33,23 +30,10 @@ define(["app",
           }
         };
 
-        setDeployStatusForDeployedLander();
+        setDeployStatusForDomain();
 
         activeJobsCollection.on("add remove", function() {
-          setDeployStatusForDeployedLander();
-        });
-
-        activeJobsCollection.on("startState", function(jobModel) {
-          var action = jobModel.get("action");
-          var deployStatus = "deployed";
-
-          if (action === "undeployLanderFromDomain") {
-                deployStatus = "undeploying";
-              } else if (action === "deployLanderToDomain") {
-                deployStatus = "deploying";
-              }
-
-          me.set("deploy_status", deployStatus);
+          setDeployStatusForDomain();
         });
 
         activeJobsCollection.on("finishedState", function(jobModel) {
@@ -63,16 +47,14 @@ define(["app",
                 moreJobsToDo = true;
               }
             });
+            if (!moreJobsToDo) {
+              me.trigger('destroy', me, me.collection);
+            }
 
             //hack to get it to not send DELETE XHR
             delete jobModel.attributes.id;
             jobModel.destroy();
 
-            setDeployStatusForDeployedLander();
-
-            if (!moreJobsToDo) {
-              me.trigger('destroy', me, me.collection);
-            }
           } else if (jobModel.get("action") === "deployLanderToDomain") {
 
             //finished with this job so destroy the jobModel
@@ -80,11 +62,9 @@ define(["app",
             delete jobModel.attributes.id;
             jobModel.destroy();
 
-            if (me.get("shouldSetModifiedWhenJobsFinish")) {
-              me.set("deploy_status", "modified");
-            } else {
-              me.set("deploy_status", "deployed");
-            }
+            
+            me.set("deploy_status", "deployed");
+            
           }
 
           //trigger to start the next job on the list
@@ -94,8 +74,8 @@ define(["app",
 
 
         //build attachedCampaigns collection
-        var attachedCampaignsCollection = new AttachedCampaignsCollection();
-        this.set("attachedCampaigns", attachedCampaignsCollection);
+        // var attachedCampaignsCollection = new AttachedCampaignsCollection();
+        // this.set("attachedCampaigns", attachedCampaignsCollection);
 
         this.startActiveJobs();
 
@@ -103,17 +83,14 @@ define(["app",
 
       defaults: {
         domain: "",
-        nameservers: "",
-
         //gui attributes
         //should default true since deployed_domains is where this model is used
-        deploy_status: 'deployed',
-        attachedCampaigns: []
+        deploy_status: 'deployed'
       }
 
 
     });
 
-    return DeployedLanderModel;
+    return DeployedLocationModel;
 
   });

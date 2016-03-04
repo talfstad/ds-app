@@ -1,23 +1,23 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/campaigns/list/templates/campaign_tab_handle.tpl"
+    "tpl!/assets/js/apps/moonlander/campaigns/list/templates/domain_tab_handle.tpl"
   ],
-  function(Moonlander, campaignTabHandleTpl) {
+  function(Moonlander, domainTabHandleTpl) {
 
-    Moonlander.module("CampaignsApp.Campaigns.List", function(List, Moonlander, Backbone, Marionette, $, _) {
-      List.DeployStatus = Marionette.ItemView.extend({
-        className: "campaign-status-tab-handle",
+    Moonlander.module("CampaignsApp.Campaigns.List.CollectionView.RowView", function(RowView, Moonlander, Backbone, Marionette, $, _) {
+      RowView.DomainTabHandle = Marionette.ItemView.extend({
+        className: "domain-status-tab-handle",
         tagName: "a",
         attributes: function() {
           return {
-            "href": "#campaigns-tab-id-" + this.model.get("id"),
+            "href": "#domains-tab-id-" + this.model.get("id"),
             "data-toggle": "tab"
           }
         },
 
-        template: campaignTabHandleTpl,
+        template: domainTabHandleTpl,
 
         modelEvents: {
-          "change:active_campaigns_count": "render",
+          "change:deployed_domains_count": "render",
         },
 
         events: {
@@ -56,5 +56,5 @@ define(["app",
         }
       });
     });
-    return Moonlander.CampaignsApp.Campaigns.List.DeployStatus;
+    return Moonlander.CampaignsApp.Campaigns.List.CollectionView.RowView.DomainTabHandle;
   });

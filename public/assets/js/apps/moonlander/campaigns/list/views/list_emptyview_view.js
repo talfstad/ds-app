@@ -3,8 +3,8 @@ define(["app",
   ],
   function(Moonlander, landersListEmptyItemsTpl) {
 
-    Moonlander.module("CampaignsApp.Campaigns.List", function(List, Moonlander, Backbone, Marionette, $, _) {
-      List.EmptyView = Marionette.ItemView.extend({
+    Moonlander.module("CampaignsApp.Campaigns.List.CollectionView", function(CollectionView, Moonlander, Backbone, Marionette, $, _) {
+      CollectionView.EmptyView = Marionette.ItemView.extend({
 
         template: landersListEmptyItemsTpl,
 
@@ -14,5 +14,5 @@ define(["app",
 
       });
     });
-    return Moonlander.CampaignsApp.Campaigns.List.EmptyView;
+    return Moonlander.CampaignsApp.Campaigns.List.CollectionView.EmptyView;
   });
