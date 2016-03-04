@@ -69,7 +69,7 @@ define(["app",
               filterFunction: function(filterCriterion) {
                 var criterion = filterCriterion.toLowerCase();
                 return function(lander) {
-                  if (lander.get('domain').toLowerCase().indexOf(criterion) !== -1) {
+                  if (lander.get('name').toLowerCase().indexOf(criterion) !== -1) {
                     // || lander.get('last_updated').toLowerCase().indexOf(criterion) !== -1) {
                     // || lander.get('phoneNumber').toLowerCase().indexOf(criterion) !== -1){
                     return lander;
@@ -155,16 +155,11 @@ define(["app",
                     var length = this.children.length;
                     if (childView.isDestroyed) --length;
                     domainTabHandleView.model.set("deployed_landers_count", length);
-                    campaignView.reAlignTableHeader();
                   });
 
                   //when campaign link selected go to camp tab (this is from deployed domains campaign name link)
                   deployedLandersView.on("childview:selectCampaignTab", function(one, two, three) {
                     campaignView.$el.find("a[href=#domains-tab-id-" + campaignView.model.get("id") + "]").tab('show')
-                  });
-
-                  landerTabHandleView.on("reAlignHeader", function() {
-                    campaignView.reAlignTableHeader();
                   });
 
 

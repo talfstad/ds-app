@@ -117,29 +117,6 @@ define(["app",
 
         },
 
-        reAlignTableHeader: function() {
-          var me = this;
-
-          //setTimeout is used to let dom set to visible to extract widths/heights!
-          //run this after a very little bit so we can have the items VISIBLE!!!
-          setTimeout(function() {
-            //set the correct margin for the top headers
-            var landersColumnWidth = me.$el.find(".table-lander-name").width();
-            var newLanderLinkMargin = landersColumnWidth - 70;
-            if (newLanderLinkMargin > 0) {
-              me.$el.find(".deployed-landers-header").css("margin-left", newLanderLinkMargin);
-              me.$el.find(".deployed-landers-header").show();
-            } else {
-              me.$el.find(".deployed-landers-header").hide();
-            }
-
-
-            //fade  in the headers fast
-            $(".deployed-landers-header-container").show();
-
-          }, 10);
-
-        },
 
         onRender: function() {
 
@@ -147,7 +124,6 @@ define(["app",
 
           this.alertDeployStatus();
 
-          this.reAlignTableHeader();
 
           //if deleting need to show delet state (which is disabling the whole thing)
           if (this.model.get("deploy_status") === "deleting") {
@@ -193,7 +169,6 @@ define(["app",
 
             this.$el.on('show.bs.collapse', function(e) {
 
-              me.reAlignTableHeader();
 
               //collapse ALL others so we get an accordian effect !IMPORTANT for design
               $("#campaigns-collection .collapse").collapse("hide");
@@ -205,7 +180,7 @@ define(["app",
               $(e.currentTarget).find("li.lander-tab-handle-region").removeClass("active");
               $(e.currentTarget).find("div[id^='landers-tab']").removeClass("active");
               $(e.currentTarget).find("li.domain-tab-handle-region").removeClass("active");
-              $(e.currentTarget).find("div[id^='landers-tab']").removeClass("active");
+              $(e.currentTarget).find("div[id^='domains-tab']").removeClass("active");
               //show the correct tab
               var currentTab = $(e.currentTarget).find("li[data-currently-hovering='true']");
               var currentTabData = $("#" + currentTab.attr("data-tab-target"));
@@ -215,7 +190,7 @@ define(["app",
                 currentTabData.addClass("active");
                 currentTab.find(".add-link-plus").css("display", "inline");
               } else {
-                //no tab show campaigns tab
+                //no tab show landers tab
                 var tabHandle = $(e.currentTarget).find("li.lander-tab-handle-region");
                 tabHandle.addClass("active");
                 tabHandle.find(".add-link-plus").css("display", "inline");

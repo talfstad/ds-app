@@ -5,7 +5,10 @@ define(["app",
     var CampaignCollection = Backbone.Collection.extend({
       url: '/api/campaigns',
       model: CampaignModel,
-      comparator: 'campaign',
+      comparator: function(doc) {
+        var str = doc.get('name') || '';
+        return str.toLowerCase();
+      },
 
       filterOutCampaigns: function(campaignsToFilterOutCollection) {
 

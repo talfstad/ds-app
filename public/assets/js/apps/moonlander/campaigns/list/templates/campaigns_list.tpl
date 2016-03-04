@@ -12,13 +12,13 @@
           <ul class="dropdown-menu dropdown-menu-left pt5" role="menu">
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
-                <input checked data-sort-by="domain-name" value="10" id="10-pages-radio" type="radio" name="pages-radio">
+                <input checked data-sort-by="campaign-name" value="10" id="10-pages-radio" type="radio" name="pages-radio">
                 <label class="ml5" for="10-pages-radio">10 Rows Per Page</label>
               </a>
             </li>
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
-                <input value="20" data-sort-by="domain-name" id="20-pages-radio" type="radio" name="pages-radio">
+                <input value="20" data-sort-by="campaign-name" id="20-pages-radio" type="radio" name="pages-radio">
                 <label class="ml5" for="20-pages-radio">20 Rows Per Page</label>
               </a>
             </li>
@@ -41,8 +41,8 @@
           <ul class="topbar dropdown-menu dropdown-menu-left pt5" role="menu">
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
-                <input checked data-sortby-name="Domain Name" data-sort-by="domain-name" type="radio" id="domain-name" name="sort-radio">
-                <label class="ml5" for="domain-name">Campaign Name</label>
+                <input checked data-sortby-name="Domain Name" data-sort-by="campaign-name" type="radio" id="campaign-name" name="sort-radio">
+                <label class="ml5" for="campaign-name">Campaign Name</label>
               </a>
             </li>
             <li>
