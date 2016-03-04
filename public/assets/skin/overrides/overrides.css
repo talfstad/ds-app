@@ -378,6 +378,12 @@ body.sb-l-o #topbar.affix,
     background-color: #282828;
 }
 
+.fs18 {
+    font-size: 18px;
+}
+.fs20 {
+    font-size: 20px;
+}
 
 
 
@@ -385,11 +391,11 @@ body.sb-l-o #topbar.affix,
 
 @font-face {
     font-family: 'icomoon';
-    src:    url('/assets/fonts/icomoon/icomoon.eot?obhx1x');
-    src:    url('/assets/fonts/icomoon/icomoon.eot?obhx1x#iefix') format('embedded-opentype'),
-        url('/assets/fonts/icomoon/icomoon.ttf?obhx1x') format('truetype'),
-        url('/assets/fonts/icomoon/icomoon.woff?obhx1x') format('woff'),
-        url('/assets/fonts/icomoon/icomoon.svg?obhx1x#icomoon') format('svg');
+    src:    url('/assets/fonts/icomoon/icomoon.eot?kkhbdx');
+    src:    url('/assets/fonts/icomoon/icomoon.eot?kkhbdx#iefix') format('embedded-opentype'),
+        url('/assets/fonts/icomoon/icomoon.ttf?kkhbdx') format('truetype'),
+        url('/assets/fonts/icomoon/icomoon.woff?kkhbdx') format('woff'),
+        url('/assets/fonts/icomoon/icomoon.svg?kkhbdx#icomoon') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -409,20 +415,16 @@ body.sb-l-o #topbar.affix,
     -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-campaigns_icon:before {
+.icon-landers_icon:before {
     content: "\e900";
 }
-.icon-campaigns_icon2:before {
+.icon-campaigns_icon:before {
     content: "\e901";
 }
-.icon-campaigns_icon_black:before {
+.icon-domains_icon:before {
     content: "\e902";
 }
 
-.icon-campaigns_icon2 {
-    position: relative;
-    top: 1px;
-}
 
 /**/
 

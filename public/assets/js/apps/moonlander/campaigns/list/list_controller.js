@@ -26,6 +26,18 @@ define(["app",
         filteredCampaignCollection: null,
 
 
+        addCampaign: function(model) {
+
+          Moonlander.trigger('campaigns:closesidebar');
+          this.filteredCampaignCollection.add(model);
+          //1. goto page with new lander on it
+          this.filteredCampaignCollection.showPageWithModel(model);
+          //2. expand new lander
+          model.trigger("view:expand");
+
+        },
+
+
         showCampaigns: function(model) {
           //make layout for campaigns
           var me = this;
@@ -155,11 +167,18 @@ define(["app",
                     var length = this.children.length;
                     if (childView.isDestroyed) --length;
                     domainTabHandleView.model.set("deployed_landers_count", length);
+                    campaignView.reAlignTableHeader();
+
                   });
 
                   //when campaign link selected go to camp tab (this is from deployed domains campaign name link)
                   deployedLandersView.on("childview:selectCampaignTab", function(one, two, three) {
                     campaignView.$el.find("a[href=#domains-tab-id-" + campaignView.model.get("id") + "]").tab('show')
+                  });
+
+
+                  landerTabHandleView.on("reAlignHeader", function() {
+                    campaignView.reAlignTableHeader();
                   });
 
 
@@ -232,7 +251,7 @@ define(["app",
           });
         },
 
-        
+
         updateTopbarTotals: function() {
           if (this.filteredCampaignCollection) {
             this.filteredCampaignCollection.updateTotals();
@@ -243,5 +262,3 @@ define(["app",
 
     return Moonlander.CampaignsApp.Campaigns.List.Controller;
   });
-
-

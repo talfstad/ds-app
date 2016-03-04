@@ -1,5 +1,6 @@
 <span class="open_sidemenu_r">
-	<img style="width: 20px; opacity: 0.5" src="/assets/img/logos/campaigns_icon_black.png">
+	<span style="position: relative; top: 4px" class="fs20 icon-campaigns_icon"></span>
+
 	<span style="font-size: 12px; line-height: 29px"><%= active_campaigns_count %> <% if(active_campaigns_count > 1 || active_campaigns_count == 0) { %>Campaigns <% } else { %>Campaign <% } %></span>
 </span>
   <a class="add-link-plus" href="#" style="position: relative; left: 8px; top: 2px; display: none">

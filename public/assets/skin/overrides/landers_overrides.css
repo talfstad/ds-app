@@ -424,10 +424,17 @@ tr.warning input[type=select] {
 }
 
 .campaign-status-tab-handle {
+    color: #666 !important;
     width: 145px !important;
 }
 
 .domain-status-tab-handle {
+    color: #666 !important;
+    width: 145px !important;
+}
+
+.lander-status-tab-handle {
+    color: #666 !important;
     width: 145px !important;
 }
 

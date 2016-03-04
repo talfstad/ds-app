@@ -107,8 +107,6 @@ define(["app",
             return false;
           });
 
-          //disable main link
-          // this.$el.find(".accordion-toggle").removeAttr("data-toggle");
           this.$el.find(".accordion-toggle").hover(function() {
             $(this).addClass("disabled-link");
           });

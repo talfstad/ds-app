@@ -8,19 +8,19 @@
   <ul style="margin-left: 35px" class="landerds-nav nav navbar-nav navbar-left">
     <li class="landers">
       <a href="/landers" class="go-landers fw600">
-        <img style="width: 20px" src="/assets/img/logos/landers_icon_e9e9e9.png"/>
+        <span style="position: relative; top: 5px" class="fs20 icon-landers_icon"></span>
         <span class="ml5 sidebar-title">Landing Pages</span>
       </a>
     </li>
     <li class="campaigns">
       <a href="/campaigns" role="button" class="go-campaigns fw600">
-        <img style="width: 20px" src="/assets/img/logos/campaigns_icon_e9e9e9.png"/>
+        <span style="position: relative; top: 5px" class="fs20 icon-campaigns_icon"></span>
         <span  class="ml5 sidebar-title">Campaigns</span>
       </a>
     </li>
     <li class="domains">
       <a href="/domains" role="button" class="go-domains fw600">
-        <img style="width: 20px" src="/assets/img/logos/domains_icon_e9e9e9.png"/>
+        <span style="position: relative; top: 5px" class="fs20 icon-domains_icon"></span>
         <span class="ml5 sidebar-title">Domains</span>
       </a>
     </li>

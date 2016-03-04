@@ -33,7 +33,7 @@
 	text-decoration: none;
 }
 
-.deployed-domains-region {
+.deployed-domains-region, .deployed-landers-region {
 	font-size: 14px;
 }
 
@@ -45,3 +45,7 @@
 	font-size: 14px;
 }
 
+
+.domain-links-column {
+	min-width: 170px;
+}

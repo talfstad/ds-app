@@ -55,7 +55,7 @@ define(["app",
           });
 
           this.$el.on("shown.bs.tab", function(e) {
-            me.trigger("reAlignHeader")
+            me.trigger("reAlignHeader");
           });
 
         }

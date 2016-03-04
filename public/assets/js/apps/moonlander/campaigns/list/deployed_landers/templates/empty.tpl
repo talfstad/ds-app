@@ -1,6 +1,7 @@
 
-
-<td style="">This lander is not currently deployed.</td>
+<td style="">There are no landers currently on this campaign.</td>
 <td>
 
 </td>
+<td></td>
+

@@ -60,25 +60,25 @@ define(["app",
             model: model
           });
 
-          var nameserversView = new NameserversView({
-            model: model
-          });
+          // var nameserversView = new NameserversView({
+          //   model: model
+          // });
 
           //when optimizations modified save them and set correct deploy status
           //when changing deploy status must start with the deployed locations status
           //it will propogate up to the lander model
-          nameserversView.on("modified", function() {
+          // nameserversView.on("modified", function() {
 
-            me.updateToModifiedAndSave();
+          //   me.updateToModifiedAndSave();
 
 
-          });
+          // });
 
           //show it
           Moonlander.rootRegion.currentView.rightSidebarRegion.show(this.sidebarView);
 
           //optimization region view
-          Moonlander.rootRegion.currentView.rightSidebarRegion.currentView.nameAndOptimizationsRegion.show(nameserversView);
+          // Moonlander.rootRegion.currentView.rightSidebarRegion.currentView.nameAndOptimizationsRegion.show(nameserversView);
 
           //open
           setTimeout(this.sidebarView.openSidebar, 20);

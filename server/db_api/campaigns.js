@@ -5,6 +5,37 @@ module.exports = function(db) {
 
   return {
 
+    addNewCampaign: function(user, newCampaignAttributes, callback) {
+
+      //insert a new campaign 
+      var user_id = user.id;
+      var name = newCampaignAttributes.name;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        }
+        connection.query("call insert_new_campaign(?, ?)", [user_id, name],
+          function(err, docs) {
+            if (err) {
+              callback({
+                code: "CouldNotInsertCampIntoDb"
+              });
+            } else {
+              //don't send back deployedLanders or deployedDomains because it will overwrite the collections
+              delete newCampaignAttributes.deployedLanders;
+              delete newCampaignAttributes.deployedDomains;
+
+              newCampaignAttributes.created_on = docs[1][0]["created_on"];
+              newCampaignAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
+              callback(false, newCampaignAttributes);
+            }
+            connection.release();
+          });
+      });
+
+    },
+
     removeFromLandersWithCampaigns: function(user, id, successCallback) {
       var user_id = user.id;
       db.getConnection(function(err, connection) {

@@ -34,11 +34,9 @@ define(["app",
         var me = this;
         var defer = $.Deferred();
 
-        if (!this.campaignCollectionInstance) {
+          campaignCollectionInstance = new CampaignCollection();
 
-          this.campaignCollectionInstance = new CampaignCollection();
-
-          this.campaignCollectionInstance.fetch({
+          campaignCollectionInstance.fetch({
             success: function(campaigns) {
               defer.resolve(campaigns);
             },
@@ -46,12 +44,7 @@ define(["app",
               Moonlander.execute("show:login");
             }
           });
-        } else {
-          //async hack to still return defer
-          setTimeout(function() {
-            defer.resolve(me.campaignCollectionInstance);
-          }, 100);
-        }
+        
 
         var promise = defer.promise();
         return promise;

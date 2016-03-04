@@ -20,12 +20,12 @@ define(["app",
         },
 
         events: {
-          "click .add-new-domain-button": "showAddNewDomain",
+          "click .add-new-campaign-button": "showAddNewCampaign",
         },
 
-        showAddNewDomain: function(e) {
+        showAddNewCampaign: function(e) {
           e.preventDefault();
-          Moonlander.trigger("campaigns:showAddNewDomainModal");
+          Moonlander.trigger("campaigns:showAddNewCampaignModal");
         },
 
         filterCampaigns: function(filterValue) {

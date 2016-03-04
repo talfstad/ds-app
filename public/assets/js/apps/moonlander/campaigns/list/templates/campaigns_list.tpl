@@ -78,7 +78,7 @@
 
         <div class="topbar-right hidden-xs hidden-sm">
            <div class="bs-component btn-group ml15">
-            <button type="button" class="add-new-domain-button pl10 pt5 pb5 btn btn-default btn-gradient dark">
+            <button type="button" class="add-new-campaign-button pl10 pt5 pb5 btn btn-default btn-gradient dark">
               <span class="fa fa-plus pr5"></span>Add New Campaign
             </button>
           </div>
@@ -91,7 +91,7 @@
         
         <div style="float: left; margin-left: 15px; margin-bottom: 10px">Campaign Name</div>
         <div style="float: right; margin-right: 95px; margin-bottom: 10px">Deployed Landers</div>
-        <div style="float: right; margin-right: 52px; margin-bottom: 10px">Deployed Domains</div>
+        <div style="float: right; margin-right: 45px; margin-bottom: 10px">Deployed Domains</div>
         <div style="float: right; margin-right: 85px; margin-bottom: 10px">Created On</div>
         
 

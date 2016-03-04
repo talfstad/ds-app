@@ -27,6 +27,10 @@
         <a class="" href="#">
           <span class="fa fa-eye"></span>
         </a>
+
+        <a class="" href="#">
+          <span class="fa fa-clipboard"></span>
+        </a>
         
         <a class="" href="#">
           <span class="fa fa-edit"></span>
@@ -35,7 +39,7 @@
         <% if(attached_campaigns_gui.length > 0) { %>
 
           <a class="campaign-tab-link" href="#">
-            <span class="icon-campaigns_icon2">
+            <span class="icon-campaigns_icon">
                 
                 </span>
           </a>
