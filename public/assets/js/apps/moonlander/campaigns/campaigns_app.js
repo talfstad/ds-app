@@ -5,11 +5,11 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
     "/assets/js/apps/moonlander/campaigns/add_new_lander/add_new_lander_controller.js",
     "/assets/js/apps/moonlander/campaigns/delete_domain/delete_domain_controller.js",
     "/assets/js/apps/moonlander/campaigns/undeploy_lander/undeploy_controller.js",
-    "/assets/js/apps/moonlander/campaigns/add_to_campaign/add_to_campaign_controller.js",
+    "/assets/js/apps/moonlander/campaigns/add_new_domain/add_new_domain_controller.js",
     "/assets/js/apps/moonlander/campaigns/undeploy_campaign/undeploy_controller.js"
   ],
   function(Moonlander, ListController, CommonLogin, SidemenuController, AddNewCampaignController,
-    AddNewLanderController, DeleteDomainController, UndeployLanderController, AddToCampaignController,
+    AddNewLanderController, DeleteDomainController, UndeployLanderController, AddNewDomainController,
     UndeployCampaignController) {
     Moonlander.module("CampaignsApp", function(CampaignsApp, Moonlander, Backbone, Marionette, $, _) {
 
@@ -38,6 +38,10 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
 
         deployLanderToCampaignDomains: function(attr) {
           ListController.deployLanderToCampaignDomains(attr);
+        },
+
+        showAddNewDomain: function(model) {
+          AddNewDomainController.showAddNewDomain(model);
         },
 
         //////////above methods are good, below are just here still
@@ -71,9 +75,7 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
           UndeployLanderController.showUndeployLander(model);
         },
 
-        showAddNewCampaign: function(model) {
-          AddToCampaignController.showAddNewCampaign(model);
-        },
+        
 
         addCampaignToDomain: function(attr) {
           ListController.addCampaignToDomain(attr);
@@ -134,6 +136,9 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
         campaignsAppAPI.addLanderToCampaign(attr);
       });
 
+      Moonlander.on("campaigns:showAddNewDomain", function(model) {
+        campaignsAppAPI.showAddNewDomain(model);
+      });
 
 
       /////////above methods are good, below are just here still
@@ -160,9 +165,7 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
       //   campaignsAppAPI.showUndeployLander(model);
       // });
 
-      // Moonlander.on("domains:showAddNewCampaign", function(model) {
-      //   campaignsAppAPI.showAddNewCampaign(model);
-      // });
+      
 
 
       // Moonlander.on("domains:showUndeployDomainFromCampaignDialog", function(model) {

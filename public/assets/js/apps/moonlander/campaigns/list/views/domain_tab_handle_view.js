@@ -21,11 +21,11 @@ define(["app",
         },
 
         events: {
-          "click .add-link-plus": "addNewCampaign"
+          "click .add-link-plus": "addNewDomain"
         },
 
-        addNewCampaign: function(){
-          Moonlander.trigger("domains:showAddNewCampaign", this.model);
+        addNewDomain: function(){
+          Moonlander.trigger("campaigns:showAddNewDomain", this.model);
         },
 
         onRender: function() {
