@@ -5,7 +5,7 @@ define(["app"],
       defaults: {
         name: "",
         //gui update attributes
-        deploy_status: 'not_deployed',
+        deploy_status: 'deployed',
       }
     });
 

@@ -11,10 +11,10 @@ define(["app",
 
         var items = new DomainCollection();
 
-        this.each(function(domain){
-          domainId = domain.get("id");
+        this.each(function(domain) {
+          domainId = domain.get("domain_id") || domain.get("id");
 
-          if(!domainsToFilterOutCollection.get(domainId)) {
+          if (!domainsToFilterOutCollection.get(domainId)) {
             items.add(domain);
           }
         });
@@ -31,7 +31,7 @@ define(["app",
         var me = this;
         var defer = $.Deferred();
 
-        // if (!this.domainCollectionInstance) {
+        if (!this.domainCollectionInstance) {
 
           this.domainCollectionInstance = new DomainCollection();
 
@@ -39,16 +39,16 @@ define(["app",
             success: function(domains) {
               defer.resolve(domains);
             },
-            error: function(one, two, three){
+            error: function(one, two, three) {
               Moonlander.execute("show:login");
             }
           });
-        // } else {
-        //   //async hack to still return defer
-        //   setTimeout(function() {
-        //     defer.resolve(me.domainCollectionInstance);
-        //   }, 100);
-        // }
+        } else {
+          //async hack to still return defer
+          setTimeout(function() {
+            defer.resolve(me.domainCollectionInstance);
+          }, 100);
+        }
 
         var promise = defer.promise();
         return promise;

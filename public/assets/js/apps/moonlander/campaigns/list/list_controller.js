@@ -25,69 +25,64 @@ define(["app",
 
         filteredCampaignCollection: null,
 
-        //add the lander to the campaign, save it only if it's not already added
-        addLanderToCampaign: function(attr) {
-          var campaignModel = attr.campaignModel;
-          var landerAttributes = attr.landerAttributes;
 
-          //callback
-          var addedLanderToCampaignSuccessCallback = function(deployedLanderModel) {
+        deployCampaignLandersToDomain: function(attr) {
 
-            //save this lander to landers_with_campaigns
-            var deployLanderToCampaignDomainsAttrs = {
-              landerAttributes: landerAttributes,
-              campaign_model: model
-            };
+          var campaignModel = attr.campaign_model;
+          var deployedDomainModel = attr.deployed_domain_model;
 
-            // triggers add row to deployed domains and starts job 
-            Moonlander.trigger("campaigns:deployLanderToCampaignDomains", deployLanderToCampaignDomainsAttrs);
+          var deployedDomains = campaignModel.get("deployedDomains");
 
-          };
-          var addedLanderToCampaignErrorCallback = function(err, two, three) {
-
-          };
-
-          if (!landerAttributes) {
+          if (!deployedDomainModel) {
             return false;
           }
 
           var campaign_id = campaignModel.get("id");
 
-          var deployedLanders = campaignModel.get("deployedLanders");
+          var deployedDomainModelActiveJobs = deployedDomainModel.get("activeJobs");
 
-          var deployedLanderModel = null;
-          deployedLanders.each(function(deployedLander) {
-            if (deployedLander.get("lander_id") == landerAttributes.id) {
-              deployedLanderModel = deployedLander;
-            }
+          var deployedLandersCollection = campaignModel.get("deployedLanders");
+          deployedLandersCollection.each(function(deployedLanderModel) {
+
+            //if there are any landers set deploy status to deploying
+            deployedDomainModel.set("deploy_status", "deploying");
+
+            var deployedLanderModelActiveJobs = deployedLanderModel.get("activeJobs");
+
+
+            //create deploy job for domain and add it to the domain and the lander model
+            var jobAttributes = {
+              action: "deployLanderToDomain",
+              lander_id: deployedLanderModel.get("lander_id") || deployedLanderModel.get("id"),
+              domain_id: deployedDomainModel.get("domain_id"),
+              campaign_id: campaign_id
+            };
+            var jobModel = new JobModel(jobAttributes);
+
+            deployedLanderModelActiveJobs.add(jobModel);
+
+            deployedDomainModelActiveJobs.add(jobModel);
+
+            Moonlander.trigger("job:start", jobModel);
+
           });
 
-          var usingNewDeployedLanderModel = false;
-          if (!deployedLanderModel) {
-            usingNewDeployedLanderModel = true;
-            //create the deployed lander model
-            deployedLanderModel = new DeployedLanderModel(landerAttributes);
-
-            deployedLanderModel.save({}, {
-              success: addedLanderToCampaignSuccessCallback,
-              error: addedLanderToCampaignErrorCallback
-            });
-          } else {
-
-            //should never get here because you shouldn't be able to add a lander to a campaign
-            //if its in the list (aka deploying,)
-
-
+          if (deployedLandersCollection.length <= 0) {
+            deployedDomainModel.set("deploy_status", "deployed");
           }
+
+          deployedDomains.add(deployedDomainModel);
+
 
         },
 
+      
         deployLanderToCampaignDomains: function(attr) {
           var campaignModel = attr.campaign_model;
           var deployedLanderModel = attr.deployed_lander_model;
 
           var deployedLanders = campaignModel.get("deployedLanders");
-          
+
           if (!deployedLanderModel) {
             return false;
           }
@@ -97,12 +92,12 @@ define(["app",
           var deployedLanderModelActiveJobs = deployedLanderModel.get("activeJobs");
 
           //now we have lander model, we can create our jobs
-          var deployedDomains = campaignModel.get("deployedDomains");
-          deployedDomains.each(function(deployedDomainModel) {
+          var deployedDomainsCollection = campaignModel.get("deployedDomains");
+          deployedDomainsCollection.each(function(deployedDomainModel) {
 
             //if there are any domains set deploy status to deploying
             deployedLanderModel.set("deploy_status", "deploying");
-            
+
             var deployedDomainModelActiveJobs = deployedDomainModel.get("activeJobs");
 
 
@@ -123,7 +118,7 @@ define(["app",
 
           });
 
-          if (deployedDomains.length <= 0) {
+          if (deployedDomainsCollection.length <= 0) {
             deployedLanderModel.set("deploy_status", "deployed");
           }
 

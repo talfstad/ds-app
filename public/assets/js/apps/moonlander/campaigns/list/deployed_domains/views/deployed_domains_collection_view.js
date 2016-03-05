@@ -12,7 +12,6 @@ define(["app",
         childViewOptions: function(model) {
           model.set('viewIndex', parseInt(this.collection.indexOf(model))+1);
           model.set("name", this.collection.name);
-          model.set("deploy_status", this.collection.deploy_status);
         },
 
         childView: DeployedDomainRowView,

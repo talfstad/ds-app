@@ -5,7 +5,7 @@ define(["app",
   function(Moonlander, JobsGuiBaseModel) {
     var DeployedDomainModel = JobsGuiBaseModel.extend({
 
-      url: '/',
+      url: '/api/active_campaigns_on_domain',
 
       initialize: function() {
         var me = this;
@@ -73,10 +73,6 @@ define(["app",
         });
 
 
-        //build attachedCampaigns collection
-        // var attachedCampaignsCollection = new AttachedCampaignsCollection();
-        // this.set("attachedCampaigns", attachedCampaignsCollection);
-
         this.startActiveJobs();
 
       },
@@ -85,7 +81,7 @@ define(["app",
         domain: "",
         //gui attributes
         //should default true since deployed_domains is where this model is used
-        deploy_status: 'deployed'
+        deploy_status: 'not_deployed'
       }
 
 

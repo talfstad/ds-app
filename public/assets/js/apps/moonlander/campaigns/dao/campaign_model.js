@@ -35,9 +35,12 @@ define(["app",
               }
             });
 
-            //catch if there are no models, set to not_deployed
-            if (deployedLandersCollection.length <= 0) {
-              deployStatus = "not_deployed"
+            if (deployStatus !== "deployed") {
+              deployedDomainCollection.each(function(deployedDomainModel) {
+                if (deployedDomainModel.get("activeJobs").length > 0) {
+                  deployStatus = "deploying";
+                }
+              });
             }
 
             me.set("deploy_status", deployStatus);
@@ -45,56 +48,13 @@ define(["app",
         }
 
         //whenever deployed domain coll updates deploy_status, update master lander deploy status
-        deployedLandersCollection.on("add change:deploy_status", function(domainModel) {
+        deployedLandersCollection.on("add change:deploy_status", function() {
           applyUpdatedDeployStatusToCampaign();
         });
 
-        deployedDomainCollection.on("add", function(campaignModel, campaignCollection, options) {
-          // check all deployed locations make sure all campaign model deployed domains is deployed if not then trigger
-          // a deploy here
-          // $.each(campaignModel.get("currentLanders"), function(idx, currentLanderAttributes) {
-
-          //   var isDeployed = false;
-          //   var isUndeploying = false;
-          //   var isDeploying = false;
-          //   deployedLandersCollection.each(function(deployLanderModel) {
-          //     //is this lander deployed to this domain?
-          //     var currentLanderId = currentLanderAttributes.id || currentLanderAttributes.lander_id;
-          //     var deployLocationId = deployLanderModel.get("lander_id") || deployLanderModel.get("id");
-          //     if (currentLanderId == deployLocationId) {
-          //       isDeployed = true;
-
-          //       deployLanderModel.get("activeJobs").each(function(job) {
-          //         if (job.get("action") == "undeployLanderFromDomain") {
-          //           isUndeploying = true;
-          //         } else if (job.get("action") == "deployLanderToDomain") {
-          //           isDeploying = true;
-          //         }
-          //       });
-
-          //       //add this campaign info to the deployed location so we can see that it belongs to
-          //       //this campaign in the deployed tab
-          //       var attachedCampaigns = deployLanderModel.get("attachedCampaigns");
-          //       attachedCampaigns.add(campaignModel);
-          //     }
-          //   });
-
-          //   //if currentLander is deployed do nothing, if not trigger a deploy on it.. why did i say this
-          //   if (!isDeployed || isUndeploying) {
-          //     //deploying from a campaign so we need to add the attached campaign to it
-          //     // currentLanderAttributes.attachedCampaigns = [];
-          //     // currentLanderAttributes.attachedCampaigns.push(campaignModel.attributes);
-          //     //trigger deploy
-          //     var attr = {
-          //       landerAttributes: currentLanderAttributes,
-          //       domain_id: me.get("id"),
-          //       domain_model: me,
-          //       campaign_id: campaignModel.get("campaign_id") || campaignModel.get("id")
-          //     };
-          //     Moonlander.trigger("domains:deployNewLander", attr);
-          //   }
-          // });
-        }, this);
+        deployedDomainCollection.on("add change:deploy_status", function() {
+          applyUpdatedDeployStatusToCampaign();
+        });
 
         this.set("deployedDomains", deployedDomainCollection);
         deployedDomainCollection.add(deployedDomainAttributes);

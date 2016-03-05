@@ -75,6 +75,7 @@ module.exports = function(db) {
     },
 
     addActiveCampaignToDomain: function(user, modelAttributes, callback) {
+
       var user_id = user.id;
 
       db.getConnection(function(err, connection) {
@@ -90,15 +91,29 @@ module.exports = function(db) {
 
               var currentLanders = docs[1];
 
+              delete modelAttributes.activeJobs;
+              
               //get current lander data by id
-              dbLanders.getAll(user, function(currentLandersArr) {
-                //add the current lander data and return!
-                modelAttributes.currentLanders = currentLandersArr
+              if (currentLanders.length > 0) {
 
-                modelAttributes.id = modelAttributes.campaign_id;
+                dbLanders.getAll(user, function(currentLandersArr) {
+                  //add the current lander data and return!
+
+                  modelAttributes.currentLanders = currentLandersArr
+
+                  modelAttributes.id = modelAttributes.domain_id;
+                  callback(modelAttributes);
+
+                }, currentLanders);
+
+              } else {
+
+                modelAttributes.currentLanders = []
+
+                modelAttributes.id = modelAttributes.domain_id;
                 callback(modelAttributes);
 
-              }, currentLanders);
+              }
 
             }
 
@@ -150,10 +165,10 @@ module.exports = function(db) {
             } else {
               modelAttributes.active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
               modelAttributes.currentDomains = docs[1];
-              modelAttributes.id = modelAttributes.campaign_id;
+              modelAttributes.id = modelAttributes.lander_id;
 
               delete modelAttributes.activeJobs;
-              
+
               callback(modelAttributes);
             }
 

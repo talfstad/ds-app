@@ -44,6 +44,10 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
           AddNewDomainController.showAddNewDomain(model);
         },
 
+        deployCampaignLandersToDomain: function(attr) {
+          ListController.deployCampaignLandersToDomain(attr);
+        },
+
         //////////above methods are good, below are just here still
 
         showDeleteDomainModal: function(model) {
@@ -68,14 +72,10 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
         },
 
 
-
-
-
         showUndeployLander: function(model) {
           UndeployLanderController.showUndeployLander(model);
         },
 
-        
 
         addCampaignToDomain: function(attr) {
           ListController.addCampaignToDomain(attr);
@@ -85,12 +85,6 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
           UndeployCampaignController.showUndeployDomainFromCampaignDialog(model);
         },
 
-        addLanderToCampaign: function(attr) {
-          ListController.addLanderToCampaign(attr);
-        },
-
-
-        //above functions are certain, below not sure we need yet
 
         updateTopbarTotals: function() {
           ListController.updateTopbarTotals();
@@ -132,13 +126,14 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
         campaignsAppAPI.deployLanderToCampaignDomains(attr);
       });
 
-      Moonlander.on("campaigns:addLanderToCampaign", function(attr) {
-        campaignsAppAPI.addLanderToCampaign(attr);
-      });
-
       Moonlander.on("campaigns:showAddNewDomain", function(model) {
         campaignsAppAPI.showAddNewDomain(model);
       });
+
+      Moonlander.on("campaigns:deployCampaignLandersToDomain", function(attr) {
+        campaignsAppAPI.deployCampaignLandersToDomain(attr);
+      });
+
 
 
       /////////above methods are good, below are just here still
@@ -165,7 +160,7 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
       //   campaignsAppAPI.showUndeployLander(model);
       // });
 
-      
+
 
 
       // Moonlander.on("domains:showUndeployDomainFromCampaignDialog", function(model) {

@@ -5,9 +5,22 @@
     <div>
       <%= domain %>
         <div style="float: right; margin-right: 10px; font-size: 16px">
-          <a class="undeploy" data-domainId="df" data-domainName="fd" href="#">
-            <span class="remove-campaign fa fa-trash-o"></span>
-          </a>
+
+        <% if(deploy_status === "deployed") { %>
+
+        <a class="undeploy" data-domainId="df" data-domainName="fd" href="#">
+          <span class="remove-campaign fa fa-trash-o"></span>
+        </a>
+
+       
+        <% } else { %>
+        
+        <span style="font-size: 13px">
+          <%= deploy_status_gui %>
+        </span>
+
+        <% } %>
+          
         </div>
     </div>
   </td>

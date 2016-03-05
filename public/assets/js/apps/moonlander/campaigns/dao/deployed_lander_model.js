@@ -44,10 +44,10 @@ define(["app",
           var deployStatus = "deployed";
 
           if (action === "undeployLanderFromDomain") {
-                deployStatus = "undeploying";
-              } else if (action === "deployLanderToDomain") {
-                deployStatus = "deploying";
-              }
+            deployStatus = "undeploying";
+          } else if (action === "deployLanderToDomain") {
+            deployStatus = "deploying";
+          }
 
           me.set("deploy_status", deployStatus);
         });
@@ -107,7 +107,7 @@ define(["app",
 
         //gui attributes
         //should default true since deployed_domains is where this model is used
-        deploy_status: 'deployed',
+        deploy_status: 'not_deployed',
         // attachedCampaigns: []
       }
 
@@ -117,3 +117,5 @@ define(["app",
     return DeployedLanderModel;
 
   });
+
+

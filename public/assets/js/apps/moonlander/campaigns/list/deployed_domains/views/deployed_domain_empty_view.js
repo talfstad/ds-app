@@ -8,8 +8,9 @@ define(["app",
         template: EmptyTpl,
         className: "dark",
         tagName: "tr"
-        
+
       });
     });
     return Moonlander.CampaignsApp.Campaigns.List.CollectionView.RowView.DeployedDomainsCollectionView.EmptyView;
   });
+
