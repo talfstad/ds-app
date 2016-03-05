@@ -16,7 +16,7 @@ module.exports = function(db) {
           console.log(err);
         } else {
 
-          connection.query("SELECT * FROM jobs WHERE user_id = ? AND domain_id = ? AND lander_id = ? AND processing = ? AND done IS NULL OR done = ?", [user_id, domain_id, lander_id, true, 0],
+          connection.query("SELECT * FROM jobs WHERE user_id = ? AND domain_id = ? AND lander_id = ? AND processing = ? AND (done IS NULL OR done = ?)", [user_id, domain_id, lander_id, true, 0],
 
             function(err, docs) {
               if (err) {
@@ -44,7 +44,7 @@ module.exports = function(db) {
           console.log(err);
         } else {
 
-          connection.query("SELECT * FROM jobs WHERE user_id = ? AND domain_id = ? AND lander_id = ? AND done IS NULL OR done = ?", [user_id, domain_id, lander_id, 0],
+          connection.query("SELECT * FROM jobs WHERE user_id = ? AND domain_id = ? AND lander_id = ? AND (done IS NULL OR done = ?)", [user_id, domain_id, lander_id, 0],
 
             function(err, docs) {
               if (err) {

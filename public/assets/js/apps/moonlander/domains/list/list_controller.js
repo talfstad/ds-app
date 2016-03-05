@@ -161,7 +161,8 @@ define(["app",
 
           var deployedLanders = domainModel.get("deployedLanders");
 
-          //search deployedlanders for the domain_id if found use that
+          //search deployedlanders for the domain_id if found use that. this is for if you add campaign before
+          //some landers are done dpeloying
           var existingLanderModel = null;
           deployedLanders.each(function(deployedLander) {
             if (deployedLander.get("lander_id") == landerAttributes.id) {

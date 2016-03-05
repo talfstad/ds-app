@@ -2,14 +2,14 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
     "/assets/js/common/login/common_login.js",
     "/assets/js/apps/moonlander/campaigns/right_sidebar/sidebar_controller.js",
     "/assets/js/apps/moonlander/campaigns/add_new_campaign/add_new_campaign_controller.js",
-    "/assets/js/apps/moonlander/campaigns/deploy_new_lander/deploy_new_lander_controller.js",
+    "/assets/js/apps/moonlander/campaigns/add_new_lander/add_new_lander_controller.js",
     "/assets/js/apps/moonlander/campaigns/delete_domain/delete_domain_controller.js",
     "/assets/js/apps/moonlander/campaigns/undeploy_lander/undeploy_controller.js",
     "/assets/js/apps/moonlander/campaigns/add_to_campaign/add_to_campaign_controller.js",
     "/assets/js/apps/moonlander/campaigns/undeploy_campaign/undeploy_controller.js"
   ],
   function(Moonlander, ListController, CommonLogin, SidemenuController, AddNewCampaignController,
-    DeployNewLanderController, DeleteDomainController, UndeployLanderController, AddToCampaignController,
+    AddNewLanderController, DeleteDomainController, UndeployLanderController, AddToCampaignController,
     UndeployCampaignController) {
     Moonlander.module("CampaignsApp", function(CampaignsApp, Moonlander, Backbone, Marionette, $, _) {
 
@@ -32,6 +32,14 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
           ListController.addCampaign(model);
         },
 
+        showAddNewLander: function(model) {
+          AddNewLanderController.showAddNewLander(model);
+        },
+
+        deployLanderToCampaignDomains: function(attr) {
+          ListController.deployLanderToCampaignDomains(attr);
+        },
+
         //////////above methods are good, below are just here still
 
         showDeleteDomainModal: function(model) {
@@ -45,7 +53,7 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
           SidemenuController.closeSidebar();
         },
 
-        
+
 
         loadCampaignsSideMenu: function(d) {
           SidemenuController.loadCampaignsSideMenu();
@@ -55,13 +63,9 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
           ListController.deleteDomain(model);
         },
 
-        showDeployNewLander: function(model) {
-          DeployNewLanderController.showDeployNewLander(model);
-        },
 
-        deployNewLander: function(attr) {
-          ListController.deployNewLander(attr);
-        },
+
+
 
         showUndeployLander: function(model) {
           UndeployLanderController.showUndeployLander(model);
@@ -77,6 +81,10 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
 
         showUndeployDomainFromCampaignDialog: function(model) {
           UndeployCampaignController.showUndeployDomainFromCampaignDialog(model);
+        },
+
+        addLanderToCampaign: function(attr) {
+          ListController.addLanderToCampaign(attr);
         },
 
 
@@ -114,6 +122,19 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
         campaignsAppAPI.addCampaign(model);
       });
 
+      Moonlander.on("campaigns:showAddNewLander", function(attr) {
+        campaignsAppAPI.showAddNewLander(attr);
+      });
+
+      Moonlander.on("campaigns:deployLanderToCampaignDomains", function(attr) {
+        campaignsAppAPI.deployLanderToCampaignDomains(attr);
+      });
+
+      Moonlander.on("campaigns:addLanderToCampaign", function(attr) {
+        campaignsAppAPI.addLanderToCampaign(attr);
+      });
+
+
 
       /////////above methods are good, below are just here still
 
@@ -124,7 +145,7 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
       //   campaignsAppAPI.showDeleteDomainModal(model);
       // });
 
-      
+
       // Moonlander.on("domains:list:deleteDomain", function(domainModel) {
       //   campaignsAppAPI.deleteDomain(domainModel);
       // });
@@ -133,9 +154,7 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
       //   campaignsAppAPI.showDeployNewLander(model);
       // });
 
-      // Moonlander.on("domains:deployNewLander", function(attr) {
-      //   campaignsAppAPI.deployNewLander(attr);
-      // });
+
 
       // Moonlander.on("domains:showUndeployLander", function(model) {
       //   campaignsAppAPI.showUndeployLander(model);
@@ -145,9 +164,6 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
       //   campaignsAppAPI.showAddNewCampaign(model);
       // });
 
-      // Moonlander.on("domains:addCampaignToDomain", function(attr) {
-      //   campaignsAppAPI.addCampaignToDomain(attr);
-      // });
 
       // Moonlander.on("domains:showUndeployDomainFromCampaignDialog", function(model) {
       //   campaignsAppAPI.showUndeployDomainFromCampaignDialog(model);

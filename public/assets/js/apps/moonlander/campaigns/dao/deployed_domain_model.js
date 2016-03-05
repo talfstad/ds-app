@@ -3,7 +3,7 @@ define(["app",
     "/assets/js/jobs/jobs_app.js"
   ],
   function(Moonlander, JobsGuiBaseModel) {
-    var DeployedLocationModel = JobsGuiBaseModel.extend({
+    var DeployedDomainModel = JobsGuiBaseModel.extend({
 
       url: '/',
 
@@ -91,6 +91,6 @@ define(["app",
 
     });
 
-    return DeployedLocationModel;
+    return DeployedDomainModel;
 
   });

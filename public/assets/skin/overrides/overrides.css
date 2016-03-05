@@ -1,19 +1,20 @@
 body {
     min-height: 300px;
 }
+
 #nestable-contextual {
-	max-width: none;
+    max-width: none;
 }
 
 .topbar.dropdown-menu {
-	margin-top: 10px;
-	border-top-color: #3498db !important;
-	border-top: 3px solid transparent;
-	padding: 0;
+    margin-top: 10px;
+    border-top-color: #3498db !important;
+    border-top: 3px solid transparent;
+    padding: 0;
 }
 
 .topbar.dropdown-menu:after {
-	content: "";
+    content: "";
     position: absolute;
     width: 0;
     height: 0;
@@ -25,35 +26,34 @@ body {
     border-bottom-color: #4a89dc;
 }
 
-
 .dd-primary > .dd-content {
-	border: 1px solid #f9d58b;
+    border: 1px solid #f9d58b;
 }
 
 #sidebar_left {
-	width: 230px;
+    width: 230px;
 }
 
 .sb-l-o #content_wrapper,
 .sb-r-c #content_wrapper,
 body.sb-l-o #topbar.affix,
 #content_wrapper,
-#topbar.affix
- {
+#topbar.affix {
     /*margin-left: 230px;*/
-	margin-left: 0px;
+    margin-left: 0px;
 }
 
 .sb-l-c #content_wrapper {
-	margin-left: 0;
+    margin-left: 0;
 }
+
 
 /*#content_wrapper {
     position: inherit;
 }*/
 
 #first-topbar {
-	z-index: 2;
+    z-index: 2;
     position: relative;
     width: 100%;
     min-height: 60px;
@@ -61,6 +61,7 @@ body.sb-l-o #topbar.affix,
     background: #fafafa;
     border-bottom: 1px solid #e0e0e0;
 }
+
 #first-topbar.alt {
     padding: 17px 22px !important;
     background: #e7e7e7;
@@ -68,39 +69,40 @@ body.sb-l-o #topbar.affix,
 }
 
 #first-topbar.alt .breadcrumb {
-	font-size: 14px;
+    font-size: 14px;
 }
 
-
 #topbar.alt {
-	min-height: 0 !important;
-	padding: 17px 22px !important;
+    min-height: 0 !important;
+    padding: 17px 22px !important;
 }
 
 #topbar {
-	transition: none !important;
+    transition: none !important;
 }
 
 .sb-r-o #topbar.affix {
-	top: 0px;
-	padding-top: 70px;
-	right: 300px;
+    top: 0px;
+    padding-top: 70px;
+    right: 300px;
 }
+
 .sb-r-c #topbar.affix {
-	top: 0px;
-	padding-top: 70px;
-	right: 0 !important;
+    top: 0px;
+    padding-top: 70px;
+    right: 0 !important;
 }
+
 .sb-l-c #topbar.affix {
-	top: 0px;
-	padding-top: 70px;
-	right: 300px;
-	margin-left: 0 !important;
+    top: 0px;
+    padding-top: 70px;
+    right: 300px;
+    margin-left: 0 !important;
 }
 
 .domain-list {
-	list-style: none;
-	padding-left: 0;
+    list-style: none;
+    padding-left: 0;
 }
 
 .domain-list > li:first-child {
@@ -113,11 +115,11 @@ body.sb-l-o #topbar.affix,
 
 .domain-item a:hover,
 .domain-item a:focus {
-   text-decoration: none;
+    text-decoration: none;
 }
 
 .domain-title {
-	display: block;
+    display: block;
     height: auto;
     margin: 5px 0;
     padding: 7px 0 7px 10px;
@@ -138,22 +140,22 @@ body.sb-l-o #topbar.affix,
 
 .domain-title a,
 .campaign-title a {
-	color: #fff;
-	font-size: 10px;
-	margin-right: 10px;
+    color: #fff;
+    font-size: 10px;
+    margin-right: 10px;
 }
 
 .campaign-list,
 .lander-list {
-	padding-top: 5px;
-	padding-left: 30px;
-	padding-bottom: 15px !important;
+    padding-top: 5px;
+    padding-left: 30px;
+    padding-bottom: 15px !important;
     position: relative;
     list-style: none;
 }
 
 .campaign-item {
-	display: block;
+    display: block;
     position: relative;
     margin: 0;
     padding: 0;
@@ -163,14 +165,13 @@ body.sb-l-o #topbar.affix,
 }
 
 .campaign-title {
-	color: #FFF;
+    color: #FFF;
     background-color: #3bafda !important;
     border-color: #3bafda !important;
     display: block;
     height: auto;
     margin: 5px 0;
     padding: 7px 0px 7px 10px;
-    
     text-decoration: none;
     font-weight: 600;
     border: 1px solid #ddd;
@@ -180,20 +181,19 @@ body.sb-l-o #topbar.affix,
 }
 
 .lander-item {
-	display: block;
+    display: block;
     position: relative;
     margin: 0;
     padding: 0;
     min-height: 20px;
     font-size: 13px;
-    line-height: 20px;    
+    line-height: 20px;
 }
 
 .lander-title {
-	color: #777;
+    color: #777;
     border: 1px solid #ddd;
     background: #f5f5f5;
-
     display: block;
     height: auto;
     margin: 5px 0;
@@ -208,7 +208,6 @@ body.sb-l-o #topbar.affix,
 #sidebar_left {
     background-color: #232323;
 }
-
 
 .domain-controls {
     float: right;
@@ -227,7 +226,6 @@ body.sb-l-o #topbar.affix,
     margin-top: 5px;
     width: 100%;
 }
-
 
 .campaign-controls {
     float: right;
@@ -255,14 +253,23 @@ body.sb-l-o #topbar.affix,
 }
 
 @-webkit-keyframes spin2 {
-    from { -webkit-transform: rotate(0deg);}
-    to { -webkit-transform: rotate(360deg);}
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
 }
 
 @keyframes spin {
-    from { transform: scale(1) rotate(0deg);}
-    to { transform: scale(1) rotate(360deg);}
+    from {
+        transform: scale(1) rotate(0deg);
+    }
+    to {
+        transform: scale(1) rotate(360deg);
+    }
 }
+
 
 /*.collapsing {
     -webkit-transition: none;
@@ -282,13 +289,15 @@ body.sb-l-o #topbar.affix,
     margin-top: -15px !important;
 }
 
-#sidebar_left, #content_wrapper {
-  padding-top: 60px;
+#sidebar_left,
+#content_wrapper {
+    padding-top: 60px;
 }
 
 .ml14 {
     margin-left: 14px !important;
 }
+
 .mt3 {
     margin-top: 3px !important;
 }
@@ -296,6 +305,7 @@ body.sb-l-o #topbar.affix,
 .pt0 {
     padding-top: 0px !important;
 }
+
 .pb0 {
     padding-bottom: 0px !important;
 }
@@ -308,12 +318,12 @@ body.sb-l-o #topbar.affix,
     line-height: 29px;
     /*background-color: #101010 !important;*/
 }
+
 .lds-top-nav ul li a {
     padding-left: 15px !important;
     padding-right: 15px !important;
     color: #e9e9e9 !important;
 }
-
 
 .lds-top-nav ul li a:hover {
     opacity: 0.8;
@@ -333,7 +343,8 @@ body.sb-l-o #topbar.affix,
     display: none;
 }
 
-#content_wrapper, .sb-l-o #content_wrapper {
+#content_wrapper,
+.sb-l-o #content_wrapper {
     left: 0;
 }
 
@@ -345,7 +356,7 @@ body.sb-l-o #topbar.affix,
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.6);
+    background-color: rgba(0, 0, 0, 0.6);
     left: 0px;
     top: 0;
     z-index: 10;
@@ -357,14 +368,12 @@ body.sb-l-o #topbar.affix,
     margin: 80px auto;
 }
 
-
 .spinner-large {
     color: #e5e5e5;
     font-size: 35px;
     -webkit-animation: spin2 2s infinite linear;
     display: inline-block;
 }
-
 
 .add-link-plus {
     display: inline;
@@ -374,33 +383,33 @@ body.sb-l-o #topbar.affix,
     background: #000 !important;
 }
 
-.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
+.navbar-inverse .navbar-nav > .active > a,
+.navbar-inverse .navbar-nav > .active > a:hover,
+.navbar-inverse .navbar-nav > .active > a:focus {
     background-color: #282828;
 }
 
 .fs18 {
     font-size: 18px;
 }
+
 .fs20 {
     font-size: 20px;
 }
-
 
 
 /*icons */
 
 @font-face {
     font-family: 'icomoon';
-    src:    url('/assets/fonts/icomoon/icomoon.eot?kkhbdx');
-    src:    url('/assets/fonts/icomoon/icomoon.eot?kkhbdx#iefix') format('embedded-opentype'),
-        url('/assets/fonts/icomoon/icomoon.ttf?kkhbdx') format('truetype'),
-        url('/assets/fonts/icomoon/icomoon.woff?kkhbdx') format('woff'),
-        url('/assets/fonts/icomoon/icomoon.svg?kkhbdx#icomoon') format('svg');
+    src: url('/assets/fonts/icomoon/icomoon.eot?kkhbdx');
+    src: url('/assets/fonts/icomoon/icomoon.eot?kkhbdx#iefix') format('embedded-opentype'), url('/assets/fonts/icomoon/icomoon.ttf?kkhbdx') format('truetype'), url('/assets/fonts/icomoon/icomoon.woff?kkhbdx') format('woff'), url('/assets/fonts/icomoon/icomoon.svg?kkhbdx#icomoon') format('svg');
     font-weight: normal;
     font-style: normal;
 }
 
-[class^="icon-"], [class*=" icon-"] {
+[class^="icon-"],
+[class*=" icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'icomoon' !important;
     speak: none;
@@ -409,7 +418,6 @@ body.sb-l-o #topbar.affix,
     font-variant: normal;
     text-transform: none;
     line-height: 1;
-
     /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -418,9 +426,11 @@ body.sb-l-o #topbar.affix,
 .icon-landers_icon:before {
     content: "\e900";
 }
+
 .icon-campaigns_icon:before {
     content: "\e901";
 }
+
 .icon-domains_icon:before {
     content: "\e902";
 }
@@ -429,3 +439,8 @@ body.sb-l-o #topbar.affix,
 /**/
 
 .btn {}
+
+.add-link-plus-container {
+    text-align: right;
+    float: right;
+}

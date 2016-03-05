@@ -6,7 +6,7 @@ define(["app",
   function(Moonlander, JobsGuiBaseModel) {
     var DeployedLanderModel = JobsGuiBaseModel.extend({
 
-      url: '/',
+      url: '/api/active_campaigns',
 
       initialize: function() {
         var me = this;

@@ -15,7 +15,7 @@
           </div>
 
           <div class="widget-menu domain-lander-notification">
-            <span class="fs11 text-muted"><%= created_on_gui %></span>
+            <span class="fs11"><%= created_on_gui %></span>
           </div>
       </a>
       <ul class="nav panel-tabs">

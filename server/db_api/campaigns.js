@@ -151,6 +151,9 @@ module.exports = function(db) {
               modelAttributes.active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
               modelAttributes.currentDomains = docs[1];
               modelAttributes.id = modelAttributes.campaign_id;
+
+              delete modelAttributes.activeJobs;
+              
               callback(modelAttributes);
             }
 
@@ -174,7 +177,7 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND campaign_id = ? AND domain_id = ? AND processing = ?)", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, campaign.id, deployedDomain.id, true],
+          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND campaign_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?))", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, campaign.id, deployedDomain.id, true, 0],
             function(err, dbActiveJobs) {
               if (err) {
                 callback(err);
@@ -229,7 +232,7 @@ module.exports = function(db) {
           if (err) {
             callback(err);
           }
-          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND campaign_id = ? AND processing = ? AND done IS NULL OR done = ?)", ["deployLanderToDomain", "undeployLanderFromDomain", user_id, lander_id, campaign_id, true, 0],
+          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND campaign_id = ? AND processing = ? AND (done IS NULL OR done = ?))", ["deployLanderToDomain", "undeployLanderFromDomain", user_id, lander_id, campaign_id, true, 0],
             function(err, dbActiveJobs) {
               callback(false, dbActiveJobs);
               connection.release();

@@ -18,6 +18,13 @@ module.exports = function(app, passport) {
 
   });
 
+  //updates an active lander on campaign model
+  app.put('/api/active_campaigns/:id', passport.isAuthenticated(), function(req, res){
+
+    res.json({});
+
+  });
+
   app.delete('/api/active_campaigns/:id', passport.isAuthenticated(), function(req, res) {
 
     //remove this by id from the landers with campaigns table
