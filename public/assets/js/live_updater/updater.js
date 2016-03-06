@@ -91,8 +91,23 @@ define(["app"], function(Moonlander) {
 
       if (!hasConflict) {
 
-        this.updateCollection.add(model);
-        model.trigger("startState", model);
+        //send the model thats in the updateCollection first to startState. startState
+        //will replace the activeJobModel it made with the one already in the updater
+        var modelAlreadyInUpdater = this.updateCollection.get(model.get('id'));
+        if (modelAlreadyInUpdater) {
+          var attr = {
+            jobModelToReplace: model,
+            actualAddedJobModel: modelAlreadyInUpdater
+          }
+          model.trigger("startState", attr);
+        } else {
+          this.updateCollection.add(model);
+          var attr = {
+            actualAddedJobModel: model
+          }
+          model.trigger("startState", attr);
+        }
+
 
         //start polling if first one.
         //function is self perpetuating so no need to call it for more than 1 model

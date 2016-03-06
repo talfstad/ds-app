@@ -58,7 +58,7 @@ module.exports = function(app, db) {
               //end job code
 
             } else {
-              console.log("my jobid: " + myJobId + " lowestJobId: " + lowestJobId)
+
             }
           }
 

@@ -158,7 +158,7 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE action = ? AND user_id = ? AND domain_id = ? AND processing = ?", ["deleteDomain", user_id, domain.id, true],
+          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE action = ? AND user_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?)", ["deleteDomain", user_id, domain.id, true, 0],
             function(err, dbActiveJobs) {
               if (err) {
                 console.log(err);
@@ -453,3 +453,4 @@ module.exports = function(db) {
     }
   }
 };
+
