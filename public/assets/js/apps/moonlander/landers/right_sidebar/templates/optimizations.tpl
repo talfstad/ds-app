@@ -18,7 +18,7 @@
             </h5>
   <table class="optimizations-table table">
     <tr>
-      <td>Fully optimize lander</td>
+      <td>Fully Optimize Lander</td>
       <td>
         <label class="pull-right switch switch-success switch-round block mn">
           <% if(optimize_gzip) { %>
@@ -31,7 +31,7 @@
       </td>
     </tr>
     <tr>
-      <td>Try to use root folder</td>
+      <td>Deploy to Domain Root</td>
       <td>
         <label class="pull-right switch switch-success switch-round block mn">
           <% if(optimize_js) { %>
