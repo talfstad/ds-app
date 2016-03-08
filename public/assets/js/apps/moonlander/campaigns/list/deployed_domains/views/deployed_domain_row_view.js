@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/campaigns/list/deployed_domains/templates/deployed_domain_row.tpl"
+    "tpl!assets/js/apps/moonlander/campaigns/list/deployed_domains/templates/deployed_domain_row.tpl"
   ],
   function(Moonlander, DeployedDomainRowTpl) {
 

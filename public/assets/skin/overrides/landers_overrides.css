@@ -450,6 +450,9 @@ tr.warning input[type=select] {
 .deployed-domains-region .alert {
     border: none !important;
 }
+.deployed-landers-region .alert {
+    border: none !important;
+}
 
 .table > tbody > tr > td.absorbing-column {
     width: 100%;
@@ -459,3 +462,7 @@ tr.warning input[type=select] {
     margin-left: 15px;
 }
 
+
+.breadcrumb > li {
+    font-size: 16px;
+}

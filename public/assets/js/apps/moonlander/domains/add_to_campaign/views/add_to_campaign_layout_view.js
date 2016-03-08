@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/domains/add_to_campaign/templates/add_to_campaign_layout.tpl"
+    "tpl!assets/js/apps/moonlander/domains/add_to_campaign/templates/add_to_campaign_layout.tpl"
   ],
   function(Moonlander, AddToCampaignLayoutTpl) {
 

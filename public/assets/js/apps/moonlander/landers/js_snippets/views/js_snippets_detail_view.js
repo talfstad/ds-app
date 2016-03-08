@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/js_snippets/templates/snippet_detail.tpl",
+    "tpl!assets/js/apps/moonlander/landers/js_snippets/templates/snippet_detail.tpl",
     "vendor/bower_installed/codemirror/lib/codemirror",
     "vendor/bower_installed/codemirror/mode/htmlmixed/htmlmixed",
     "vendor/bower_installed/codemirror/mode/css/css",
@@ -9,8 +9,8 @@ define(["app",
   ],
   function(Moonlander, SnippetDetailTpl, CodeMirror) {
 
-    Moonlander.module("LandersApp.Landers.JsSnippets.List", function(List, Moonlander, Backbone, Marionette, $, _) {
-      List.DetailView = Marionette.ItemView.extend({
+    Moonlander.module("LandersApp.Landers.JsSnippets.List.DetailView", function(DetailView, Moonlander, Backbone, Marionette, $, _) {
+      DetailView.View = Marionette.ItemView.extend({
         template: SnippetDetailTpl,
 
         initialize: function() {
@@ -402,5 +402,5 @@ define(["app",
 
       });
     });
-    return Moonlander.LandersApp.Landers.JsSnippets.List.DetailView;
+    return Moonlander.LandersApp.Landers.JsSnippets.List.DetailView.View;
   });

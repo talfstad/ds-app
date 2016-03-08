@@ -3,14 +3,13 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
     "/assets/js/apps/moonlander/campaigns/right_sidebar/sidebar_controller.js",
     "/assets/js/apps/moonlander/campaigns/add_new_campaign/add_new_campaign_controller.js",
     "/assets/js/apps/moonlander/campaigns/add_new_lander/add_new_lander_controller.js",
-    "/assets/js/apps/moonlander/campaigns/delete_domain/delete_domain_controller.js",
-    "/assets/js/apps/moonlander/campaigns/undeploy_lander/undeploy_controller.js",
+    // "/assets/js/apps/moonlander/campaigns/delete_domain/delete_domain_controller.js",
+    // "/assets/js/apps/moonlander/campaigns/undeploy_lander/undeploy_controller.js",
     "/assets/js/apps/moonlander/campaigns/add_new_domain/add_new_domain_controller.js",
-    "/assets/js/apps/moonlander/campaigns/undeploy_campaign/undeploy_controller.js"
+    // "/assets/js/apps/moonlander/campaigns/undeploy_campaign/undeploy_controller.js"
   ],
   function(Moonlander, ListController, CommonLogin, SidemenuController, AddNewCampaignController,
-    AddNewLanderController, DeleteDomainController, UndeployLanderController, AddNewDomainController,
-    UndeployCampaignController) {
+    AddNewLanderController, AddNewDomainController) {
     Moonlander.module("CampaignsApp", function(CampaignsApp, Moonlander, Backbone, Marionette, $, _) {
 
       var campaignsAppAPI = {
@@ -51,7 +50,7 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
         //////////above methods are good, below are just here still
 
         showDeleteDomainModal: function(model) {
-          DeleteDomainController.showDeleteDomainModal(model);
+          // DeleteDomainController.showDeleteDomainModal(model);
         },
 
         openSidebar: function(model) {
@@ -73,7 +72,7 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
 
 
         showUndeployLander: function(model) {
-          UndeployLanderController.showUndeployLander(model);
+          // UndeployLanderController.showUndeployLander(model);
         },
 
 
@@ -82,7 +81,7 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
         },
 
         showUndeployDomainFromCampaignDialog: function(model) {
-          UndeployCampaignController.showUndeployDomainFromCampaignDialog(model);
+          // UndeployCampaignController.showUndeployDomainFromCampaignDialog(model);
         },
 
 

@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/right_sidebar/templates/menu_buttons.tpl"
+    "tpl!assets/js/apps/moonlander/landers/right_sidebar/templates/menu_buttons.tpl"
   ],
   function(Moonlander, MenuButtonsTpl) {
 

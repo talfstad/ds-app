@@ -1,4 +1,4 @@
-define(["app", "tpl!/assets/js/apps/moonlander/entry_point/templates/anchor_layout.tpl"],
+define(["app", "tpl!assets/js/apps/moonlander/entry_point/templates/anchor_layout.tpl"],
 function(Moonlander, anchorTpl){
 
   Moonlander.module("EntryApp.AnchorView", function(AnchorView, Moonlander, Backbone, Marionette, $, _){

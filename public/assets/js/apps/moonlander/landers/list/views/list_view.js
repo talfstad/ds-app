@@ -1,7 +1,7 @@
 define(["app",
     "/assets/js/apps/moonlander/landers/list/views/list_childview_view.js",
     "/assets/js/apps/moonlander/landers/list/views/list_emptyview_view.js",
-    "tpl!/assets/js/apps/moonlander/landers/list/templates/list_container.tpl",
+    "tpl!assets/js/apps/moonlander/landers/list/templates/list_container.tpl",
     "moment",
     "fancytree",
     "bootstrap"

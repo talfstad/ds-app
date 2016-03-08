@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/campaigns/add_new_lander/templates/add_new_lander_layout.tpl"
+    "tpl!assets/js/apps/moonlander/campaigns/add_new_lander/templates/add_new_lander_layout.tpl"
   ],
   function(Moonlander, AddNewLanderLayout) {
 

@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/common/filtered_paginated/templates/paginated_buttons.tpl",
+    "tpl!assets/js/common/filtered_paginated/templates/paginated_buttons.tpl",
     "/assets/js/common/filtered_paginated/paginated_model.js"
     ],
   function(Moonlander, paginatedButtonsTpl, Model) {

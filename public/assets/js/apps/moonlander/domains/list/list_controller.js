@@ -30,6 +30,7 @@ define(["app",
         removeCampaignFromLander: function(campaignModel) {
           var me = this;
           var domain_id = campaignModel.get("domain_id");
+          var campaign_id = campaignModel.get("campaign_id") || campaignModel.get("id");
 
           var domain = me.filteredDomainCollection.get(domain_id);
           var deployedLanders = domain.get("deployedLanders");
@@ -51,6 +52,7 @@ define(["app",
               action: "undeployLanderFromDomain",
               lander_id: lander_id,
               domain_id: domain_id,
+              campaign_id: campaign_id
             }
 
             //create job and add to models activeJobs
@@ -183,84 +185,6 @@ define(["app",
 
           //set new lander to deploying by default
           Moonlander.trigger("job:start", jobModel);
-
-        },
-
-        //creates an undeploy job and a deploy job and starts them for each lander in the list
-        //you pass in
-        redeployLanders: function(landerModelsArray, doneAddingAllRedeployJobsToAllLandersCallback) {
-
-          //redeploy landers and call the callback when ALL jobs have been started!
-          var startRedeployJobs = function(deployedLocation, successCallback) {
-            var activeJobCollection = deployedLocation.get("activeJobs");
-            //create undeploy job, on callback success started call start deploy job on callback call success
-            var undeployAttr = {
-              lander_id: deployedLocation.get("lander_id"),
-              domain_id: deployedLocation.get("id"),
-              action: "undeployLanderFromDomain"
-            }
-
-            //create job and add to models activeJobs
-            var undeployJobModel = new JobModel(undeployAttr);
-            activeJobCollection.add(undeployJobModel);
-
-            var undeployStartingAttr = {
-              jobModel: undeployJobModel,
-              onSuccess: function() {
-                //successfully added undeploy job now lets add deploy job
-                var deployAttr = {
-                  lander_id: deployedLocation.get("lander_id"),
-                  domain_id: deployedLocation.get("id"),
-                  action: "deployLanderToDomain"
-                }
-
-                //create job and add to models activeJobs
-                var deployJobModel = new JobModel(deployAttr);
-                activeJobCollection.add(deployJobModel);
-
-                var deployStartingAttr = {
-                  jobModel: deployJobModel,
-                  onSuccess: function() {
-                    //successfully added the deploy job now we're good!
-                    successCallback();
-                  }
-                }
-                Moonlander.trigger("job:start", deployStartingAttr);
-              }
-            }
-            Moonlander.trigger("job:start", undeployStartingAttr);
-          };
-
-          //get list of all deployedlocations first
-          var deployedLocationsList = [];
-          $.each(landerModelsArray, function(idx, landerModel) {
-            //get list of all locations to 
-            var deployedLocationCollection = landerModel.get("deployedLocations");
-            deployedLocationCollection.each(function(deployedLocation) {
-              deployedLocationsList.push(deployedLocation);
-            });
-          });
-
-          //now i have the list, start the jobs for each, when completed call the
-          //callback
-          if (deployedLocationsList.length <= 0) {
-            //nothing to redeploy
-            doneAddingAllRedeployJobsToAllLandersCallback();
-          } else {
-            var deployedLocationsCount = 0;
-            $.each(deployedLocationsList, function(idx, deployedLocation) {
-              //create undeploy job
-              startRedeployJobs(deployedLocation, function() {
-                deployedLocationsCount++;
-
-                //if we're equal then we're done all jobs have finished async
-                if (deployedLocationsCount == deployedLocationsList.length) {
-                  //call this once everything has been guaranteed started for every lander
-                  doneAddingAllRedeployJobsToAllLandersCallback();
-                }
-              });
-            });
-          }
 
         },
 

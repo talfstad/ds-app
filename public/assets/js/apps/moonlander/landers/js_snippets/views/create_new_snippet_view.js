@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/js_snippets/templates/new_snippet.tpl",
+    "tpl!assets/js/apps/moonlander/landers/js_snippets/templates/new_snippet.tpl",
     "syphon"
   ],
   function(Moonlander, NewSnippetTpl) {

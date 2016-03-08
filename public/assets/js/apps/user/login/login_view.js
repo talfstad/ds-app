@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/user/login/templates/login_view.tpl",
+    "tpl!assets/js/apps/user/login/templates/login_view.tpl",
     "/assets/js/common/validation.js",
     "/assets/js/common/notification.js",
     "canvasbg",

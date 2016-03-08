@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/campaigns/list/templates/campaigns_list_row.tpl",
+    "tpl!assets/js/apps/moonlander/campaigns/list/templates/campaigns_list_row.tpl",
     "/assets/js/apps/moonlander/campaigns/list/deployed_landers/views/deployed_landers_collection_view.js",
     "/assets/js/apps/moonlander/campaigns/list/deployed_landers/views/deployed_landers_empty_view.js",
     "/assets/js/apps/moonlander/campaigns/dao/sidebar_model.js",

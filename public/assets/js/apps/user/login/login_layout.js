@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/user/login/templates/login_layout.tpl",
+    "tpl!assets/js/apps/user/login/templates/login_layout.tpl",
   ],
 
   function(Moonlander, loginLayoutTpl) {

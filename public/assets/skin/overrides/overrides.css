@@ -1,5 +1,19 @@
+
+@import url('login_overrides.css');
+@import url('landers_overrides.css');
+@import url('domains_overrides.css');
+@import url('campaigns_overrides.css');
+@import url('active_snippets_overrides.css');
+
+
 body {
     min-height: 300px;
+}
+
+
+#topbar {
+    min-height: 41px;
+    padding: 5px 21px;
 }
 
 #nestable-contextual {
@@ -83,13 +97,17 @@ body.sb-l-o #topbar.affix,
 
 .sb-r-o #topbar.affix {
     top: 0px;
-    padding-top: 70px;
+    padding-top: 65px;
     right: 300px;
+}
+
+#topbar.affix + #content {
+    margin-top: 44px;
 }
 
 .sb-r-c #topbar.affix {
     top: 0px;
-    padding-top: 70px;
+    padding-top: 65px;
     right: 0 !important;
 }
 
@@ -438,7 +456,9 @@ body.sb-l-o #topbar.affix,
 
 /**/
 
-.btn {}
+.btn {
+    font-size: 14px;
+}
 
 .add-link-plus-container {
     text-align: right;

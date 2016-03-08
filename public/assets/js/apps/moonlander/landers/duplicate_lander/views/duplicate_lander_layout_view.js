@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/duplicate_lander/templates/duplicate_lander_layout.tpl",
+    "tpl!assets/js/apps/moonlander/landers/duplicate_lander/templates/duplicate_lander_layout.tpl",
     "bootstrap.fileinput",
     "syphon"
   ],

@@ -1,4 +1,4 @@
-define(["app", "pnotify", "pnotify.buttons"], function(Moonlander, PNotify) {
+define(["app", "pnotify"], function(Moonlander, PNotify) {
   Moonlander.notification = {};
 
   var stacks = {

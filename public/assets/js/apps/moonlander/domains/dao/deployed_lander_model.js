@@ -39,17 +39,31 @@ define(["app",
           setDeployStatusForDeployedLander();
         });
 
-        activeJobsCollection.on("startState", function(jobModel) {
-          var action = jobModel.get("action");
+        activeJobsCollection.on("startState", function(attr) {
+          var actualAddedJobModel = attr.actualAddedJobModel;
+          var jobModelToReplace = attr.jobModelToReplace;
+
+          var action = actualAddedJobModel.get("action");
           var deployStatus = "deployed";
 
           if (action === "undeployLanderFromDomain") {
-                deployStatus = "undeploying";
-              } else if (action === "deployLanderToDomain") {
-                deployStatus = "deploying";
-              }
+            deployStatus = "undeploying";
+          } else if (action === "deployLanderToDomain") {
+            deployStatus = "deploying";
+          }
 
           me.set("deploy_status", deployStatus);
+
+          //on start remove the created job model and replace with the job model on the updater.
+          //this allows us to have one job model across multiple things. (camps, domains, etc)
+          //no events should fire it should just be quick and dirty ;)
+          //must remove it at the correct index and put the new one in the correct index
+          if (jobModelToReplace) {
+            var index = activeJobsCollection.indexOf(jobModelToReplace);
+            activeJobsCollection.remove(jobModelToReplace, {silent: true})
+            activeJobsCollection.add(actualAddedJobModel, {at: index, silent: true});
+          }
+
         });
 
         activeJobsCollection.on("finishedState", function(jobModel) {

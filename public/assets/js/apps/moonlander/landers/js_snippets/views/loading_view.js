@@ -1,9 +1,9 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/js_snippets/templates/loading.tpl"
+    "tpl!assets/js/apps/moonlander/landers/js_snippets/templates/loading.tpl"
   ],
   function(Moonlander, LoadingTpl) {
 
-    Moonlander.module("LandersApp.JsSnippets", function(JsSnippets, Moonlander, Backbone, Marionette, $, _) {
+    Moonlander.module("LandersApp.Landers.JsSnippets", function(JsSnippets, Moonlander, Backbone, Marionette, $, _) {
       JsSnippets.LoadingView = Marionette.ItemView.extend({
 
         template: LoadingTpl,
@@ -14,5 +14,5 @@ define(["app",
 
       });
     });
-    return Moonlander.LandersApp.JsSnippets.LoadingView;
+    return Moonlander.LandersApp.Landers.JsSnippets.LoadingView;
   });

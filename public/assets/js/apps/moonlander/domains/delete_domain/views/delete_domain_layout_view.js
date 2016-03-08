@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/domains/delete_domain/templates/delete_domain_layout.tpl"
+    "tpl!assets/js/apps/moonlander/domains/delete_domain/templates/delete_domain_layout.tpl"
   ],
   function(Moonlander, DeleteDomainLayoutTpl) {
 

@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/campaigns/add_new_domain/templates/domains_list.tpl",
+    "tpl!assets/js/apps/moonlander/campaigns/add_new_domain/templates/domains_list.tpl",
     "bootstrap.datatables"
   ],
   function(Moonlander, domainsListTpl) {

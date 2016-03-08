@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/user/settings/templates/settings_layout.tpl",
+    "tpl!assets/js/apps/user/settings/templates/settings_layout.tpl",
     "syphon"
   ],
   function(Moonlander, SettingsLayoutTpl) {

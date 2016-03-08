@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/domains/list/templates/landers_tab_handle.tpl"
+    "tpl!assets/js/apps/moonlander/domains/list/templates/landers_tab_handle.tpl"
   ],
   function(Moonlander, landersStatusTpl) {
 

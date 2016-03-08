@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/domains/list/templates/topbar.tpl"
+    "tpl!assets/js/apps/moonlander/domains/list/templates/topbar.tpl"
   ],
  function(Moonlander, topbarTpl) {
 

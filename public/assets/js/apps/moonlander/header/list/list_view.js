@@ -1,4 +1,4 @@
-define(["app", "tpl!/assets/js/apps/moonlander/header/list/templates/header_list.tpl"],
+define(["app", "tpl!assets/js/apps/moonlander/header/list/templates/header_list.tpl"],
 function(Moonlander, listTpl){
 
   Moonlander.module("HeaderApp", function(HeaderApp, Moonlander, Backbone, Marionette, $, _){

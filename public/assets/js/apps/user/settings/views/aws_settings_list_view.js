@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/user/settings/templates/aws_settings_list.tpl",
+    "tpl!assets/js/apps/user/settings/templates/aws_settings_list.tpl",
     "bootstrap.datatables"
   ],
   function(Moonlander, SettingsListTpl) {

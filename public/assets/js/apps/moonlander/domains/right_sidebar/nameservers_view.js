@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/domains/right_sidebar/templates/nameservers.tpl",
+    "tpl!assets/js/apps/moonlander/domains/right_sidebar/templates/nameservers.tpl",
     "select2",
     "syphon"
   ],

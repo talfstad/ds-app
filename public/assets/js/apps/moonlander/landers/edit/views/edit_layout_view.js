@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/edit/templates/edit_layout.tpl",
+    "tpl!assets/js/apps/moonlander/landers/edit/templates/edit_layout.tpl",
     "vendor/bower_installed/codemirror/lib/codemirror",
     "vendor/bower_installed/codemirror/mode/htmlmixed/htmlmixed",
     "vendor/bower_installed/codemirror/mode/css/css",

@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/domains/undeploy_lander/templates/undeploy_layout.tpl"
+    "tpl!assets/js/apps/moonlander/domains/undeploy_lander/templates/undeploy_layout.tpl"
   ],
   function(Moonlander, UndeployLayoutTemplate) {
 

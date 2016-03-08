@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/list/templates/deploy_status_tab_handle.tpl"
+    "tpl!assets/js/apps/moonlander/landers/list/templates/deploy_status_tab_handle.tpl"
   ],
   function(Moonlander, deployStatusTpl) {
 

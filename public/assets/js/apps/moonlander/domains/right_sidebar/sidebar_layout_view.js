@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/domains/right_sidebar/templates/sidebar_landers.tpl",
+    "tpl!assets/js/apps/moonlander/domains/right_sidebar/templates/sidebar_landers.tpl",
     "bootstrap"
   ],
   function(Moonlander, sidebarLanders) {

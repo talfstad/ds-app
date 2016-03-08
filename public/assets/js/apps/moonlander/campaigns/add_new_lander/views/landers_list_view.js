@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/campaigns/add_new_lander/templates/landers_list.tpl",
+    "tpl!assets/js/apps/moonlander/campaigns/add_new_lander/templates/landers_list.tpl",
     "bootstrap.datatables"
   ],
   function(Moonlander, landersListTpl) {

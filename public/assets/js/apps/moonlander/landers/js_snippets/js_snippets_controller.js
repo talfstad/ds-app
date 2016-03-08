@@ -14,7 +14,7 @@ define(["app",
   function(Moonlander, JsSnippetsLayoutView, LoadingView,
     LeftNavSnippetsView, SnippetModel, JsSnippetDetailView, FilteredPaginatedCollection,
     JsSnippetTotalsView, ActiveSnippetModel, EmptySnippetsDetailView, CreateNewSnippetView) {
-    Moonlander.module("LandersApp.JsSnippets", function(JsSnippets, Moonlander, Backbone, Marionette, $, _) {
+    Moonlander.module("LandersApp.Landers.JsSnippets", function(JsSnippets, Moonlander, Backbone, Marionette, $, _) {
 
       JsSnippets.Controller = {
 
@@ -368,5 +368,5 @@ define(["app",
       }
     });
 
-    return Moonlander.LandersApp.JsSnippets.Controller;
+    return Moonlander.LandersApp.Landers.JsSnippets.Controller;
   });

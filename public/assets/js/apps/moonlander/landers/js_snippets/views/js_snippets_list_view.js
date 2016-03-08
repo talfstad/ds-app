@@ -4,8 +4,8 @@ define(["app",
   ],
   function(Moonlander, SnippetsListItem, SnippetsEmptyView) {
 
-    Moonlander.module("LandersApp.Landers.JsSnippets.List", function(LeftNavList, Moonlander, Backbone, Marionette, $, _) {
-      LeftNavList.View = Marionette.CollectionView.extend({
+    Moonlander.module("LandersApp.Landers.JsSnippets.List", function(List, Moonlander, Backbone, Marionette, $, _) {
+      List.View = Marionette.CollectionView.extend({
 
         id: "snippets-list-collection",
         tagName: "ul",

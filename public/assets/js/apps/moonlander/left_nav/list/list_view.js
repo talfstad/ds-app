@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/left_nav/list/templates/left_nav.tpl"
+    "tpl!assets/js/apps/moonlander/left_nav/list/templates/left_nav.tpl"
   ],
   function(Moonlander, leftNavTpl) {
 

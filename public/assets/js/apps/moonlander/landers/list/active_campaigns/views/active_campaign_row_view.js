@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/list/active_campaigns/templates/active_campaign_row.tpl"
+    "tpl!assets/js/apps/moonlander/landers/list/active_campaigns/templates/active_campaign_row.tpl"
   ],
   function(Moonlander, ActiveCampaignRowTpl) {
 

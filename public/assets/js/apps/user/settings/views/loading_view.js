@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/user/settings/templates/loading.tpl"
+    "tpl!assets/js/apps/user/settings/templates/loading.tpl"
   ],
   function(Moonlander, LoadingTpl) {
 

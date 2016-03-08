@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/add_to_campaign/templates/loading.tpl"
+    "tpl!assets/js/apps/moonlander/landers/add_to_campaign/templates/loading.tpl"
   ],
   function(Moonlander, campaignListLoadingTpl) {
 

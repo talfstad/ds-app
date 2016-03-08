@@ -1,11 +1,11 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/js_snippets/templates/js_snippets_layout.tpl",
+    "tpl!assets/js/apps/moonlander/landers/js_snippets/templates/js_snippets_layout.tpl",
     "syphon",
     "typewatch"
   ],
   function(Moonlander, JsSnippetsLayoutTpl) {
 
-    Moonlander.module("LandersApp.JsSnippets", function(JsSnippets, Moonlander, Backbone, Marionette, $, _) {
+    Moonlander.module("LandersApp.Landers.JsSnippets", function(JsSnippets, Moonlander, Backbone, Marionette, $, _) {
 
       JsSnippets.Layout = Marionette.LayoutView.extend({
 
@@ -94,5 +94,5 @@ define(["app",
       });
 
     });
-    return Moonlander.LandersApp.JsSnippets.Layout;
+    return Moonlander.LandersApp.Landers.JsSnippets.Layout;
   });

@@ -30,6 +30,7 @@ define(["app", "/assets/js/apps/moonlander/header/list/list_view.js"], function(
         //close all sidebars
         Moonlander.trigger("domains:closesidebar");
         Moonlander.trigger("landers:closesidebar");
+        Moonlander.trigger("campaigns:closesidebar");
 
         if (Moonlander.rootRegion.currentView.headerRegion.hasView()) {
           var headerView = Moonlander.rootRegion.currentView.headerRegion.currentView;

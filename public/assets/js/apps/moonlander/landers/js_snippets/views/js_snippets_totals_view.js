@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!/assets/js/apps/moonlander/landers/js_snippets/templates/js_snippet_totals.tpl"
+    "tpl!assets/js/apps/moonlander/landers/js_snippets/templates/js_snippet_totals.tpl"
   ],
   function(Moonlander, TotalsTpl) {
 
