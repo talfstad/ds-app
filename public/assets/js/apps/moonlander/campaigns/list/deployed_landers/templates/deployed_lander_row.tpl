@@ -5,15 +5,16 @@
 
 <td class="absorbing-column">  
 <div class="row campaigns-lander-links" style="margin-left: 0;">
-      <% if(deploy_status === "deployed") { %>
+      <% if(deploy_status === "deployed" && deployedDomains.length > 0) {  %>
 
       
           <div class="domains-select-container">
 
           <select style="width: 300px" class="ml15 domain-select form-control select2-single">
-            
-           <option>http://hardbodiesandboners.org/</option>
-           <option>http://leafy.com/</option>
+          
+           <% _.each(deployed_domains_gui, function(domain) { %> 
+           <option><%= domain.domain %></option>
+           <% }); %>   
             
           </select>
           </div>
@@ -31,11 +32,11 @@
           </select>
           </div>
           <div style="display: inline">
-            <a style="margin-left: 10px;" class="" href="#">
+            <a style="margin-left: 10px;" class="open-link" href="#">
               <span class="fa fa-eye"></span>
             </a>
 
-            <a style="margin-left: 15px;" class="" href="#">
+            <a style="margin-left: 15px;" class="copy-clipboard" href="#">
               <span class="fa fa-clipboard"></span>
             </a>
           </div>

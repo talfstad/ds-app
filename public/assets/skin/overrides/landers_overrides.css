@@ -333,10 +333,12 @@ input.lander-search {
 }
 
 tr.success a {
+    text-decoration: none;
     color: #3f9532;
 }
 
 tr.alert a {
+    text-decoration: none;
     color: #542fb2;
 }
 
@@ -345,14 +347,17 @@ tr.alert td {
 }
 
 tr.warning a {
+    text-decoration: none;
     color: #c88a0a;
 }
 
 tr.dark a {
+    text-decoration: none;
     color: #3b3f4f;
 }
 
 tr.info a {
+    text-decoration: none;
     color: #1c7393;
 }
 

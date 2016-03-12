@@ -262,9 +262,15 @@ define(["app",
                   });
 
                   var deployedLandersCollection = campaignView.model.get("deployedLanders");
+                  //give landers deployed domains ref
+                  deployedLandersCollection.deployedDomains = deployedDomainsCollection;
 
                   var deployedLandersView = new DeployedLandersView({
                     collection: deployedLandersCollection
+                  });
+
+                  deployedDomainsCollection.on("add remove", function() {
+                    deployedLandersView.render();
                   });
 
                   deployedLandersCollection.on("showRemoveLander", function(landerModel) {

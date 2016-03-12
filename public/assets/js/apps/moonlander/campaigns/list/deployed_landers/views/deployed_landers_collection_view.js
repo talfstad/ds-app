@@ -28,6 +28,7 @@ define(["app",
         //pass the deployed list its rendered index for # column
         childViewOptions: function(model) {
           model.set('viewIndex', parseInt(this.collection.indexOf(model)) + 1);
+          model.set("deployedDomains", this.collection.deployedDomains);
           // model.set('domain', this.collection.domain);
           // model.set('domain_id', this.collection.domain_id);
 

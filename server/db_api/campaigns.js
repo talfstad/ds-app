@@ -158,8 +158,6 @@ module.exports = function(db) {
         //get all jobs attached to lander and make sure only select those. list is:
         // 1. deployLanderToDomain
         // 2. undeployLanderFromDomain
-        console.log("here: " + JSON.stringify(deployedDomain));
-
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);

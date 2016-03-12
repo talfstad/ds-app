@@ -29,7 +29,65 @@ define(["app",
         },
 
         events: {
-          "click .remove-lander": "showRemoveLander"
+          "click .remove-lander": "showRemoveLander",
+          "click .open-link": "openLanderLink",
+          "click .copy-clipboard": function() {
+            this.copyLinkToClipboard(this.getCurrentLink());
+          }
+        },
+
+        getCurrentLink: function() {
+          //return the combination of selects
+          var domainVal = this.$el.find(".domain-select").val();
+          var endpointVal = this.$el.find(".lander-endpoint-select").val();
+          return "http://" + domainVal + "/" + endpointVal;
+        },
+
+        openLanderLink: function() {
+          window.open(this.getCurrentLink(), '_blank');
+          return false;
+        },
+
+        copyLinkToClipboard: function(text) {
+
+          var textArea = $("<textarea></textarea>");
+
+          // Place in top-left corner of screen regardless of scroll position.
+          textArea.css("position", "fixed");
+          textArea.css("top", "0");
+          textArea.css("left", "0");
+
+          // Ensure it has a small width and height. Setting to 1px / 1em
+          // doesn't work as this gives a negative w/h on some browsers.
+          textArea.css("width", "2em");
+          textArea.css("height", "2em");
+
+          // We don't need padding, reducing the size if it does flash render.
+          textArea.css("padding", "0");
+
+          // Clean up any borders.
+          textArea.css("border", "none");
+          textArea.css("outline", "none");
+          textArea.css("boxShadow", "none");
+
+          // Avoid flash of white box if rendered for any reason.
+          textArea.css("background", "transparent");
+          textArea.text(text);
+
+          $("body").append(textArea);
+
+          textArea.select();
+
+          try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+          } catch (err) {
+            console.log('Oops, unable to copy');
+          }
+
+          textArea.remove();
+
         },
 
         selectCampaignTab: function(e) {
@@ -47,6 +105,8 @@ define(["app",
           } else if (deployStatus === "undeploying") {
             this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong>");
           }
+
+          this.model.set("deployed_domains_gui", this.model.attributes.deployedDomains.toJSON());
 
         },
 
