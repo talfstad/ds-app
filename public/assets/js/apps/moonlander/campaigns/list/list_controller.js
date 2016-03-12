@@ -54,7 +54,7 @@ define(["app",
             var jobAttributes = {
               action: "deployLanderToDomain",
               lander_id: deployedLanderModel.get("lander_id") || deployedLanderModel.get("id"),
-              domain_id: deployedDomainModel.get("domain_id"),
+              domain_id: deployedDomainModel.get("domain_id") || deployedDomainModel.get("id"),
               campaign_id: campaign_id
             };
             var jobModel = new JobModel(jobAttributes);
@@ -76,7 +76,7 @@ define(["app",
 
         },
 
-      
+
         deployLanderToCampaignDomains: function(attr) {
           var campaignModel = attr.campaign_model;
           var deployedLanderModel = attr.deployed_lander_model;
@@ -246,6 +246,14 @@ define(["app",
                     collection: deployedDomainsCollection
                   });
 
+                  deployedDomainsCollection.on("showRemoveDomain", function(domainModel) {
+                    var attr = {
+                      campaign_model: campaignView.model,
+                      domain_model: domainModel
+                    };
+                    Moonlander.trigger("campaigns:showRemoveDomain", attr);
+                  });
+
                   deployedDomainsView.on("childview:updateParentLayout", function(childView, options) {
                     //update the campaign count for lander
                     var length = this.children.length;
@@ -257,6 +265,14 @@ define(["app",
 
                   var deployedLandersView = new DeployedLandersView({
                     collection: deployedLandersCollection
+                  });
+
+                  deployedLandersCollection.on("showRemoveLander", function(landerModel) {
+                    var attr = {
+                      campaign_model: campaignView.model,
+                      lander_model: landerModel
+                    };
+                    Moonlander.trigger("campaigns:showRemoveLander", attr);
                   });
 
                   deployedLandersView.on("childview:updateParentLayout", function(childView, options) {

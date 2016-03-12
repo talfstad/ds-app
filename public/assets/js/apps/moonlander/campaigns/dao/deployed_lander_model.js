@@ -5,7 +5,7 @@ define(["app",
   function(Moonlander, JobsGuiBaseModel) {
     var DeployedLanderModel = JobsGuiBaseModel.extend({
 
-      url: '/api/active_campaigns',
+      urlRoot: '/api/active_campaigns',
 
       initialize: function() {
         var me = this;
@@ -20,7 +20,7 @@ define(["app",
           if (activeJobsCollection.length > 0) {
             var deployStatus = "deployed";
             activeJobsCollection.each(function(job) {
-              if (job.get("action") === "undeployLanderFromDomain") {
+              if (job.get("action") === "undeployLanderFromDomain" || job.get("action") === "undeployDomainFromLander") {
                 deployStatus = "undeploying";
               } else if (job.get("action") === "deployLanderToDomain") {
                 deployStatus = "deploying";
@@ -45,7 +45,7 @@ define(["app",
           var action = actualAddedJobModel.get("action");
           var deployStatus = "deployed";
 
-          if (action === "undeployLanderFromDomain") {
+          if (action === "undeployLanderFromDomain" || action === "undeployDomainFromLander") {
             deployStatus = "undeploying";
           } else if (action === "deployLanderToDomain") {
             deployStatus = "deploying";
@@ -68,36 +68,32 @@ define(["app",
         activeJobsCollection.on("finishedState", function(jobModel) {
 
           if (jobModel.get("action") === "undeployLanderFromDomain") {
-            //destroy only if we dont have any other jobs for this
-            //1. if we have a deploy to do
-            var moreJobsToDo = false;
-            activeJobsCollection.each(function(job) {
-              if (job.get("action") == "deployLanderToDomain") {
-                moreJobsToDo = true;
-              }
-            });
-
+            
             //hack to get it to not send DELETE XHR
             delete jobModel.attributes.id;
             jobModel.destroy();
 
+            //destroy only if we dont have any other jobs for this
+            //1. if we have a deploy to do
+            var moreJobsToDo = false;
+            if(activeJobsCollection.length > 0){              
+                moreJobsToDo = true;
+            }
+
             setDeployStatusForDeployedLander();
 
             if (!moreJobsToDo) {
-              me.trigger('destroy', me, me.collection);
+              //triggers destroy to the server to get rid of this lander from campaign
+              me.destroy();
             }
-          } else if (jobModel.get("action") === "deployLanderToDomain") {
+          } else {
 
             //finished with this job so destroy the jobModel
             //hack to get it to not send DELETE XHR
             delete jobModel.attributes.id;
             jobModel.destroy();
 
-            if (me.get("shouldSetModifiedWhenJobsFinish")) {
-              me.set("deploy_status", "modified");
-            } else {
-              me.set("deploy_status", "deployed");
-            }
+          
           }
 
           //trigger to start the next job on the list

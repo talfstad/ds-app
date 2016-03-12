@@ -3,30 +3,43 @@
       <span><%= name %></span>
 </td>
 
-<td class="domain-links-column">
-  <% if(deploy_status === "deployed") { %>
-
-      <select class="domain-endpoint-select form-control">
-        <option> HEY HEY HEY HEY </option>      
-      </select>
-
-  <% } %>
-</td>
-
 <td class="absorbing-column">  
-
+<div class="row campaigns-lander-links" style="margin-left: 0;">
       <% if(deploy_status === "deployed") { %>
 
-      <select class="ml15 domain-endpoint-select form-control">
-        
-        <% _.each(urlEndpoints, function(endpoint) { %>
-        
-        <option> <%= endpoint.name %></option>
-
-        <% }); %>
       
-      </select>      
+          <div class="domains-select-container">
 
+          <select style="width: 300px" class="ml15 domain-select form-control select2-single">
+            
+           <option>http://hardbodiesandboners.org/</option>
+           <option>http://leafy.com/</option>
+            
+          </select>
+          </div>
+
+          <div class="landers-select-container">
+
+          <select style="width: 300px" class="lander-endpoint-select form-control select2-single">
+        
+            <% _.each(urlEndpoints, function(endpoint) { %>
+            
+            <option> <%= endpoint.name %></option>
+
+            <% }); %>
+
+          </select>
+          </div>
+          <div style="display: inline">
+            <a style="margin-left: 10px;" class="" href="#">
+              <span class="fa fa-eye"></span>
+            </a>
+
+            <a style="margin-left: 15px;" class="" href="#">
+              <span class="fa fa-clipboard"></span>
+            </a>
+          </div>
+        
       <% } %>
 
      
@@ -34,31 +47,26 @@
 
         <% if(deploy_status === "deployed") { %>
 
-        <a class="" href="#">
-          <span class="fa fa-eye"></span>
-        </a>
-
-        <a class="" href="#">
-          <span class="fa fa-clipboard"></span>
-        </a>
+        
         
         <a class="" href="#">
           <span class="fa fa-edit"></span>
         </a>
 
-        <a class="undeploy" href="#">
+        <a class="remove-lander" href="#">
           <span class="fa fa-trash-o" style="padding-right: 1px; padding-left: 2px"></span>
         </a>
 
        
         <% } else { %>
         
-        <span style="font-size: 13px">
+        <span style="font-size: 13px; margin-right: 20px">
           <%= deploy_status_gui %>
         </span>
 
         <% } %>
 
+      </div>
       </div>
 
 </td>

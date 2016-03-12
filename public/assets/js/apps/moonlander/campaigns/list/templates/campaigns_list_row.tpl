@@ -48,7 +48,6 @@
               <div class="clearfix deployed-landers-header-container">
                 <span style="width: 20px">#</span>
                 <span style="margin-left: 15px">Lander Name</span>
-                <span class="deployed-domains-header">Deployed Domains</span>
                 <span class="deployed-landers-header">Lander Links</span>
               </div>
               <div style="float: right;" class="deploy-to-new-campaign-region clearfix">

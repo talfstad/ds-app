@@ -120,23 +120,12 @@ define(["app",
         reAlignTableHeader: function() {
           var me = this;
 
-          //setTimeout is used to let dom set to visible to extract widths/heights!
-          //run this after a very little bit so we can have the items VISIBLE!!!
           setTimeout(function() {
             //set the correct margin for the top headers
             var landersColumnWidth = me.$el.find(".table-lander-name").width();
-            var newDomainsLinkMargin = landersColumnWidth - 70;
-            if (newDomainsLinkMargin > 0) {
-              me.$el.find(".deployed-domains-header").css("margin-left", newDomainsLinkMargin);
-              me.$el.find(".deployed-domains-header").show();
-            } else {
-              me.$el.find(".deployed-domains-header").hide();
-            }
-
-            var domainsColumnWidth = me.$el.find(".domain-links-column").width();
-            var newLandersLinkMargin = domainsColumnWidth + landersColumnWidth - 215;
-            if (newLandersLinkMargin > 0) {
-              me.$el.find(".deployed-landers-header").css("margin-left", newLandersLinkMargin);
+            var newLanderLinkMargin = landersColumnWidth - 70;
+            if (newLanderLinkMargin > 0) {
+              me.$el.find(".deployed-landers-header").css("margin-left", newLanderLinkMargin);
               me.$el.find(".deployed-landers-header").show();
             } else {
               me.$el.find(".deployed-landers-header").hide();

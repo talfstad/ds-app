@@ -71,7 +71,7 @@ define(["app",
           this.datatablesCollection.each(function(rowModel){
             var dtRow = {};
             dtRow.domain = rowModel.get("domain");
-            dtRow.domainId = rowModel.get("id");
+            dtRow.domainId = rowModel.get("domain_id") || rowModel.get("id");
             dtRows.push(dtRow);
           });
 

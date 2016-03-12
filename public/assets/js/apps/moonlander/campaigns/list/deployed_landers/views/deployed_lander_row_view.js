@@ -1,5 +1,6 @@
 define(["app",
-    "tpl!assets/js/apps/moonlander/campaigns/list/deployed_landers/templates/deployed_lander_row.tpl"
+    "tpl!assets/js/apps/moonlander/campaigns/list/deployed_landers/templates/deployed_lander_row.tpl",
+    "select2"
   ],
   function(Moonlander, DeployedLanderRowTpl) {
 
@@ -28,8 +29,7 @@ define(["app",
         },
 
         events: {
-          "click .undeploy": "showUndeployLander",
-          "click .campaign-tab-link": "selectCampaignTab"
+          "click .remove-lander": "showRemoveLander"
         },
 
         selectCampaignTab: function(e) {
@@ -55,6 +55,7 @@ define(["app",
         },
 
         onRender: function() {
+          var me = this;
           var deployStatus = this.model.get("deploy_status");
           this.$el.removeClass("success alert warning");
           if (deployStatus === "deployed") {
@@ -66,15 +67,18 @@ define(["app",
             this.$el.addClass("warning");
           }
 
+          this.$el.find(".domain-select").select2();
+          this.$el.find(".lander-endpoint-select").select2();
+
           this.trigger("updateParentLayout", this.model);
 
         },
 
-        showUndeployLander: function(e) {
+        showRemoveLander: function(e) {
           e.preventDefault();
           e.stopPropagation();
 
-          Moonlander.trigger("domains:showUndeployLander", this.model);
+          this.model.trigger("showRemoveLander", this.model);
         }
       });
     });

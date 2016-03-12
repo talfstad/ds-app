@@ -2,3 +2,41 @@
 	margin: 0 auto;
 	display: block;
 }
+
+.campaigns-lander-links .domains-select-container {
+	display: inline;
+	float: left;
+}
+
+.campaigns-lander-links .landers-select-container {
+	display: inline;
+}
+
+.campaigns-lander-links .landers-select-container .select2-selection {
+	outline: none;
+	border-radius: 0px 4px 4px 0px;
+	border-color: #3f9532 !important;
+}
+
+.campaigns-lander-links .landers-select-container .select2-container {
+	right: 1px;
+}
+
+
+.campaigns-lander-links .domains-select-container .select2-selection {
+	border-radius: 4px 0px 0px 4px;
+	outline: none;
+	border-color: #3f9532 !important;
+}
+
+.campaigns-lander-links a:hover {
+	text-decoration: none !important;
+}
+
+.campaigns-lander-links .select2-container--default .select2-selection--single .select2-selection__rendered {
+	color: #3f9532 !important;
+}
+
+.campaigns-lander-links .select2-container--default .select2-selection--single .select2-selection__arrow b {
+	border-color: #3f9532 transparent transparent transparent;
+}

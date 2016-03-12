@@ -42,7 +42,12 @@ define(["app",
 
           } else {
             var domainId = selectedRow.attr("data-domain-id");
-             var domain = this.getRegion("domainsListRegion").currentView.datatablesCollection.get(domainId)
+
+            var domain = this.getRegion("domainsListRegion").currentView.datatablesCollection.find(function(m) {
+              var id = m.get('domain_id') || m.get('id')
+              return id == domainId
+            });
+
             this.startDeployingLandersToNewDomain(domain);
             //add a row to the deployed domains thats deploying and trigger a start on the deployToDomain job
             this.$el.modal("hide");

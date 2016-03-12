@@ -14,7 +14,10 @@ define(["app",
         this.each(function(domain) {
           domainId = domain.get("domain_id") || domain.get("id");
 
-          if (!domainsToFilterOutCollection.get(domainId)) {
+          if (!domainsToFilterOutCollection.find(function(m) {
+            var id = m.get('domain_id') || m.get('id')
+              return id == domainId
+            })) {
             items.add(domain);
           }
         });

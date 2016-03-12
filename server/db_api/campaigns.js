@@ -87,12 +87,12 @@ module.exports = function(db) {
               console.log(err);
               callback("Error adding active campaign");
             } else {
-              modelAttributes.active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
+              modelAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
 
               var currentLanders = docs[1];
 
               delete modelAttributes.activeJobs;
-              
+
               //get current lander data by id
               if (currentLanders.length > 0) {
 
@@ -101,7 +101,6 @@ module.exports = function(db) {
 
                   modelAttributes.currentLanders = currentLandersArr
 
-                  modelAttributes.id = modelAttributes.domain_id;
                   callback(modelAttributes);
 
                 }, currentLanders);
@@ -110,7 +109,6 @@ module.exports = function(db) {
 
                 modelAttributes.currentLanders = []
 
-                modelAttributes.id = modelAttributes.domain_id;
                 callback(modelAttributes);
 
               }
@@ -136,9 +134,8 @@ module.exports = function(db) {
               console.log(err);
               callback("Error adding active campaign");
             } else {
-              modelAttributes.active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
+              modelAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
               modelAttributes.currentDomains = docs[1];
-              modelAttributes.id = modelAttributes.lander_id;
 
               delete modelAttributes.activeJobs;
 
@@ -161,11 +158,13 @@ module.exports = function(db) {
         //get all jobs attached to lander and make sure only select those. list is:
         // 1. deployLanderToDomain
         // 2. undeployLanderFromDomain
+        console.log("here: " + JSON.stringify(deployedDomain));
+
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE user_id = ? AND campaign_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?)", [user_id, campaign.id, deployedDomain.id, true, 0],
+          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE user_id = ? AND campaign_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?)", [user_id, campaign.id, deployedDomain.domain_id, true, 0],
             function(err, dbActiveJobs) {
               if (err) {
                 callback(err);
@@ -182,7 +181,7 @@ module.exports = function(db) {
           if (err) {
             callback(err);
           }
-          connection.query("SELECT a.id,a.domain from domains a JOIN campaigns_with_domains b ON a.id=b.domain_id WHERE (a.user_id = ? AND campaign_id = ?)", [user_id, campaign.id],
+          connection.query("SELECT a.id AS domain_id,a.domain,b.id from domains a JOIN campaigns_with_domains b ON a.id=b.domain_id WHERE (a.user_id = ? AND campaign_id = ?)", [user_id, campaign.id],
             function(err, dbDeployedDomains) {
               if (err) {
                 callback(err);
@@ -277,7 +276,7 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT a.lander_id AS id, b.name FROM landers_with_campaigns a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.id],
+          connection.query("SELECT a.id, b.id AS lander_id, b.name FROM landers_with_campaigns a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.id],
             function(err, dbLandersOnCampaign) {
               if (err) {
                 callback(err);
@@ -370,31 +369,10 @@ module.exports = function(db) {
       });
 
 
-      // [{
-      //   "id": 1,
-      //   "name": "default",
-      //   "created_on": "",
-      //   //change to campaignsDomains from campaignsDomainIds
-      //   "deployedDomains": [{
-      //     "id": 127,
-      //     "domain": "ninedomain.com",
-      //     "activeJobs": [] <-- includes any landers that are deploying to this domain and belong to this campaign
-      //   }],
-      //   //add campaignsLanders
-      //   "deployedLanders": [{
-      //     "id": 251,
-      //     "name": "why why why",
-      //     "urlEndpoints": [],
-      //     "activeJobs": [] <- include any domains that are deploying to this lander and belong to this campaign
-      //   }]
-      // }]
-
-
-      //on delete camp we need to remove all campaign landers from all domains on campaign so we create jobs to do that,
-      //when that is finished we can remove the campaign
-
     }
 
   }
 
 };
+
+

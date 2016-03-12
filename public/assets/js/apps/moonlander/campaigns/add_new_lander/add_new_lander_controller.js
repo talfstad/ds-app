@@ -28,7 +28,6 @@ define(["app",
             //taking a lander model and making it a deployed lander model
             landerAttributes.lander_id = landerAttributes.id;
             landerAttributes.campaign_id = campaign_id;
-            delete landerAttributes.id;
 
             //callback
             var addedLanderToCampaignSuccessCallback = function(deployedLanderModel) {
@@ -49,7 +48,8 @@ define(["app",
 
             //add the campaign to the domain first, on success close dialog
             var deployedLanderModel = new DeployedLanderModel(landerAttributes);
-
+            deployedLanderModel.unset("id");
+            
             // create the model for activeCampaign model. make sure it saves to
             // /api/active_campaigns
             deployedLanderModel.save({}, {

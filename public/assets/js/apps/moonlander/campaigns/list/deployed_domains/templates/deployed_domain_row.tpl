@@ -8,8 +8,8 @@
 
         <% if(deploy_status === "deployed") { %>
 
-        <a class="undeploy" data-domainId="df" data-domainName="fd" href="#">
-          <span class="remove-campaign fa fa-trash-o"></span>
+        <a class="remove-domain" data-domainId="df" data-domainName="fd" href="#">
+          <span class="fa fa-trash-o"></span>
         </a>
 
        

@@ -28,8 +28,7 @@ define(["app",
             //taking a lander model and making it a deployed lander model
             domainAttributes.domain_id = domainAttributes.id;
             domainAttributes.campaign_id = campaign_id;
-            delete domainAttributes.id;
-
+            
             //callback
             var addedDomainToCampaignSuccessCallback = function(deployedDomainModel) {
 
@@ -49,6 +48,7 @@ define(["app",
 
             //add the campaign to the domain first, on success close dialog
             var deployedDomainModel = new DeployedDomainModel(domainAttributes);
+            deployedDomainModel.unset("id");
 
             // create the model for activeCampaign model. make sure it saves to
             // /api/active_campaigns_for_domain

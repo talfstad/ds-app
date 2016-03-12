@@ -19,7 +19,7 @@ module.exports = function(app, passport) {
   });
 
   //updates an active lander on campaign model
-  app.put('/api/active_campaigns/:id', passport.isAuthenticated(), function(req, res){
+  app.put('/api/active_campaigns/:id', passport.isAuthenticated(), function(req, res) {
 
     res.json({});
 
@@ -84,7 +84,7 @@ module.exports = function(app, passport) {
 
   //add a new campaign
   app.post('/api/campaigns', passport.isAuthenticated(), function(req, res) {
-    
+
     var user = req.user;
     var newCampaignData = req.body;
 

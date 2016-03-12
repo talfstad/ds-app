@@ -10,14 +10,7 @@ define(["app",
         tagName: "tr",
 
         events: {
-          "click .remove-campaign": "showUndeployDomainFromCampaignDialog"
-        },
-
-        showUndeployDomainFromCampaignDialog: function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-
-          Moonlander.trigger("domains:showUndeployDomainFromCampaignDialog", this.model);
+          "click .remove-domain": "showRemoveDomain",
         },
 
         modelEvents: {
@@ -56,6 +49,13 @@ define(["app",
           this.trigger("updateParentLayout", this.model);
 
         },
+
+        showRemoveDomain: function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          this.model.trigger("showRemoveDomain", this.model);
+        }
 
       });
     });
