@@ -4,6 +4,28 @@ module.exports = function(db) {
 
   return {
 
+    //returns all processing jobs for campaign id
+    getAllProcessingForCampaign: function(user, campaign_id, callback) {
+      var user_id = user.id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("SELECT * FROM jobs WHERE user_id = ? AND campaign_id = ? AND action <> ? AND processing = ? AND (done IS NULL OR done = ?);", [user_id, campaign_id, "deleteCampaign", 1, 0],
+            function(err, docs) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, docs);
+              }
+              connection.release();
+            });
+        }
+      });
+
+    },
+
     //returns all jobs currently processing for user with specific domain and lander ids
     getAllProcessingForLanderDomain: function(user, attr, successCallback) {
       var user_id = user.id;

@@ -14,16 +14,27 @@ define(["app",
         className: "nano affix",
 
         events: {
-          "click .delete-domain-button": "showDeleteDomainModal",
+          "click .remove-campaign-button": "showRemoveCampaignModal",
         },
 
-      
-        showDeleteDomainModal: function() {
-          Moonlander.trigger("domains:showDeleteDomainModal", this.model);
+
+        showRemoveCampaignModal: function() {
+          Moonlander.trigger("campaigns:showRemoveCampaign", this.model);
+        },
+
+        setUpdateCampaignNameButtonState: function(enable) {
+          if (enable) {
+            this.$el.find(".update-campaign-name-button").removeClass("disabled");
+          } else {
+            this.$el.find(".update-campaign-name-button").addClass("disabled");
+          }
         },
 
         onRender: function() {
-
+          var me = this;
+          this.$el.find(".campaign-name-edit").keyup(function() {
+            me.setUpdateCampaignNameButtonState(true);
+          });
         },
 
         onDomRefresh: function() {

@@ -5,10 +5,12 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
     "/assets/js/apps/moonlander/campaigns/add_new_lander/add_new_lander_controller.js",
     "/assets/js/apps/moonlander/campaigns/add_new_domain/add_new_domain_controller.js",
     "assets/js/apps/moonlander/campaigns/remove_lander/remove_lander_controller.js",
-    "assets/js/apps/moonlander/campaigns/remove_domain/remove_domain_controller.js"
+    "assets/js/apps/moonlander/campaigns/remove_domain/remove_domain_controller.js",
+    "assets/js/apps/moonlander/campaigns/remove_campaign/remove_campaign_controller.js"
   ],
   function(Moonlander, ListController, CommonLogin, SidemenuController, AddNewCampaignController,
-    AddNewLanderController, AddNewDomainController, RemoveLanderController, RemoveDomainController) {
+    AddNewLanderController, AddNewDomainController, RemoveLanderController, RemoveDomainController,
+    RemoveCampaignController) {
     Moonlander.module("CampaignsApp", function(CampaignsApp, Moonlander, Backbone, Marionette, $, _) {
 
       var campaignsAppAPI = {
@@ -61,7 +63,7 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
         showRemoveDomain: function(model) {
           RemoveDomainController.showRemoveDomain(model);
         },
-        
+
         loadCampaignsSideMenu: function(d) {
           SidemenuController.loadCampaignsSideMenu();
         },
@@ -69,6 +71,10 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
         updateTopbarTotals: function() {
           ListController.updateTopbarTotals();
         },
+
+        showRemoveCampaign: function(model) {
+          RemoveCampaignController.showRemoveCampaign(model);
+        }
 
       };
 
@@ -115,6 +121,10 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
 
       Moonlander.on("campaigns:showRemoveDomain", function(model) {
         campaignsAppAPI.showRemoveDomain(model);
+      });
+
+      Moonlander.on("campaigns:showRemoveCampaign", function(model) {
+        campaignsAppAPI.showRemoveCampaign(model);
       });
 
 

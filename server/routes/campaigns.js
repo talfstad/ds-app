@@ -45,12 +45,16 @@ module.exports = function(app, passport) {
   /////ACTIVE CAMPS BELONGING TO DOMAIN!
   app.delete('/api/active_campaigns_on_domain/:id', passport.isAuthenticated(), function(req, res) {
 
-    db.campaigns.removeFromCampaignsWithDomains(req.user, req.params.id, function() {
-
-      res.json({
-        success: "true"
-      });
-
+    db.campaigns.removeFromCampaignsWithDomains(req.user, req.params.id, function(err) {
+      if (err) {
+        res.json({
+          code: "CouldNotDeleteCampaignDb"
+        });
+      } else {
+        res.json({
+          success: "true"
+        });
+      }
     });
 
 
@@ -106,8 +110,12 @@ module.exports = function(app, passport) {
 
   });
 
-  app.delete('/api/campaigns', passport.isAuthenticated(), function(req, res) {
-
+  app.delete('/api/campaigns/:id', passport.isAuthenticated(), function(req, res) {
+    db.campaigns.deleteCampaign(req.user, req.params.id, function() {
+      res.json({
+        success: "true"
+      });
+    });
   });
 
   return module;

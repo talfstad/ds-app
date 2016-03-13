@@ -269,10 +269,6 @@ define(["app",
                     collection: deployedLandersCollection
                   });
 
-                  deployedDomainsCollection.on("add remove", function() {
-                    deployedLandersView.render();
-                  });
-
                   deployedLandersCollection.on("showRemoveLander", function(landerModel) {
                     var attr = {
                       campaign_model: campaignView.model,

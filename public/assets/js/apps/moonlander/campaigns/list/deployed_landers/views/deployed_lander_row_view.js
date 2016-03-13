@@ -19,13 +19,27 @@ define(["app",
             me.render();
           });
 
+          var deployedDomainsCollection = this.model.get("deployedDomains");
+          deployedDomainsCollection.on("add remove", function() {
+            me.render();
+          });
+
         },
 
         template: DeployedLanderRowTpl,
         tagName: "tr",
 
         modelEvents: {
-          "change": "render"
+          "change": "renderUnlessDeployStatusDeleting"
+        },
+
+        renderUnlessDeployStatusDeleting: function() {
+          var deployStatus = this.model.get("deploy_status");
+          if (deployStatus === "deleting") {
+            this.disableAccordionPermanently();
+          } else {
+            this.render();
+          }
         },
 
         events: {
@@ -80,11 +94,7 @@ define(["app",
 
           try {
             var successful = document.execCommand('copy');
-            var msg = successful ? 'successful' : 'unsuccessful';
-            console.log('Copying text command was ' + msg);
-          } catch (err) {
-            console.log('Oops, unable to copy');
-          }
+          } catch (err) {}
 
           textArea.remove();
 

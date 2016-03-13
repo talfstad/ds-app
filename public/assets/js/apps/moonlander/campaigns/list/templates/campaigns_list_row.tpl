@@ -9,7 +9,7 @@
         
           <div class="text-alert">
             <span style="position: relative; top: 2px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>  
-           <span>Working...</span>
+           <span class="deploy-status-text">Working...</span>
            </div>
             </span>
           </div>

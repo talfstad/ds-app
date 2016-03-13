@@ -51,17 +51,20 @@ define(["app",
         },
 
         alertDeployStatus: function() {
-          var capitalizeFirstLetter = function(string) {
-            string = string.toLowerCase();
-            return string.charAt(0).toUpperCase() + string.slice(1);
-          }
-
           //show correct one
           var deployStatus = this.model.get("deploy_status");
-          if (deployStatus !== "deployed" && deployStatus !== "not_deployed") {
+
+          if (deployStatus === "deleting") {
+            this.$el.find(".deploy-status-text").text("Deleting...");
             this.$el.find(".alert-working-badge").show();
           } else {
-            this.$el.find(".alert-working-badge").hide();
+            this.$el.find(".deploy-status-text").text("Working...");
+          
+            if (deployStatus !== "deployed" && deployStatus !== "not_deployed") {
+              this.$el.find(".alert-working-badge").show();
+            } else {
+              this.$el.find(".alert-working-badge").hide();
+            }
           }
         },
 
@@ -107,8 +110,6 @@ define(["app",
             return false;
           });
 
-          //disable main link
-          // this.$el.find(".accordion-toggle").removeAttr("data-toggle");
           this.$el.find(".accordion-toggle").hover(function() {
             $(this).addClass("disabled-link");
           });

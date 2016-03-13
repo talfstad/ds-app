@@ -158,7 +158,7 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE action = ? AND user_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?)", ["deleteDomain", user_id, domain.id, true, 0],
+          connection.query("SELECT id,action,processing,lander_id,domain_id,campaign_id,done,error,created_on FROM jobs WHERE action = ? AND user_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?)", ["deleteDomain", user_id, domain.id, true, 0],
             function(err, dbActiveJobs) {
               if (err) {
                 console.log(err);
@@ -184,7 +184,7 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?))", ["addNewLander", "deleteLander", "ripNewLander", "deployLanderToDomain", "undeployLanderFromDomain", user_id, lander_id, domain_id, true, 0],
+          connection.query("SELECT id,action,processing,lander_id,domain_id,campaign_id,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?))", ["addNewLander", "deleteLander", "ripNewLander", "deployLanderToDomain", "undeployLanderFromDomain", user_id, lander_id, domain_id, true, 0],
             function(err, dbActiveJobs) {
               callback(dbActiveJobs);
               connection.release();

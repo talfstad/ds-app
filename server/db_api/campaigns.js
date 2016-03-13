@@ -25,6 +25,7 @@ module.exports = function(db) {
               //don't send back deployedLanders or deployedDomains because it will overwrite the collections
               delete newCampaignAttributes.deployedLanders;
               delete newCampaignAttributes.deployedDomains;
+              delete newCampaignAttributes.activeJobs;
 
               newCampaignAttributes.created_on = docs[1][0]["created_on"];
               newCampaignAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
@@ -34,6 +35,24 @@ module.exports = function(db) {
           });
       });
 
+    },
+
+    deleteCampaign: function(user, id, callback) {
+      var user_id = user.id;
+      db.getConnection(function(err, connection) {
+        if (err) {
+          callback(err);
+        } else {
+          connection.query("DELETE FROM campaigns WHERE user_id = ? AND id = ?", [user_id, id],
+            function(err, dbSuccessDelete) {
+
+              callback(false, dbSuccessDelete);
+
+              //release connection
+              connection.release();
+            });
+        }
+      });
     },
 
     removeFromLandersWithCampaigns: function(user, id, successCallback) {
@@ -162,7 +181,7 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE user_id = ? AND campaign_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?)", [user_id, campaign.id, deployedDomain.domain_id, true, 0],
+          connection.query("SELECT id,action,processing,done,error,lander_id,domain_id,campaign_id,created_on FROM jobs WHERE user_id = ? AND campaign_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?)", [user_id, campaign.id, deployedDomain.domain_id, true, 0],
             function(err, dbActiveJobs) {
               if (err) {
                 callback(err);
@@ -208,6 +227,30 @@ module.exports = function(db) {
         });
       };
 
+      var getActiveJobsForCampaign = function(campaign, callback) {
+        //get all jobs attached to domain and make sure only select those. list is:
+        // 1. deleteDomain
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          }
+          connection.query("SELECT id,action,processing,done,error,lander_id,domain_id,campaign_id,created_on FROM jobs WHERE action = ? AND user_id = ? AND campaign_id = ? AND processing = ? AND (done IS NULL OR done = ?)", ["deleteCampaign", user_id, campaign.id, true, 0],
+            function(err, dbActiveJobs) {
+              if (err) {
+                callback(err);
+              } else {
+                if (dbActiveJobs <= 0) {
+                  callback(false, []);
+                } else {
+                  callback(false, dbActiveJobs);
+                }
+              }
+
+              connection.release();
+            });
+        });
+      };
+
       var getActiveJobsForLander = function(lander, campaign, callback) {
         var lander_id = lander.lander_id || lander.id;
         var campaign_id = campaign.id;
@@ -217,7 +260,7 @@ module.exports = function(db) {
           if (err) {
             callback(err);
           }
-          connection.query("SELECT id,action,processing,done,error,created_on FROM jobs WHERE user_id = ? AND lander_id = ? AND campaign_id = ? AND processing = ? AND (done IS NULL OR done = ?)", [user_id, lander_id, campaign_id, true, 0],
+          connection.query("SELECT id,action,processing,done,error,lander_id,domain_id,campaign_id,created_on FROM jobs WHERE user_id = ? AND lander_id = ? AND campaign_id = ? AND processing = ? AND (done IS NULL OR done = ?)", [user_id, lander_id, campaign_id, true, 0],
             function(err, dbActiveJobs) {
               callback(false, dbActiveJobs);
               connection.release();
@@ -313,9 +356,17 @@ module.exports = function(db) {
                 callback(err);
               } else {
                 campaign.deployedDomains = domains;
-                callback(false);
-              }
 
+                getActiveJobsForCampaign(campaign, function(err, activeJobs) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    campaign.activeJobs = activeJobs;
+                    callback(false);
+                  }
+                });
+
+              }
 
             });
           }
@@ -372,5 +423,3 @@ module.exports = function(db) {
   }
 
 };
-
-
