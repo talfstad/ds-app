@@ -106,7 +106,21 @@ module.exports = function(app, passport) {
 
   });
 
-  app.put('/api/campaigns', passport.isAuthenticated(), function(req, res) {
+  //update campaign name
+  app.put('/api/campaigns/:id', passport.isAuthenticated(), function(req, res) {
+    var user = req.user;
+    
+    db.campaigns.updateCampaignName(user, req.body, function(err, attributes){
+      if(err){
+        res.json({
+          error: err
+        });
+      } else {
+        res.json({});
+      }
+    });
+
+
 
   });
 

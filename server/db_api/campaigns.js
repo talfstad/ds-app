@@ -5,6 +5,31 @@ module.exports = function(db) {
 
   return {
 
+
+    updateCampaignName: function(user, campaignAttributes, callback) {
+
+      var user_id = user.id;
+      var name = campaignAttributes.name;
+      var campaign_id = campaignAttributes.id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        }
+        connection.query("UPDATE campaigns SET name = ? WHERE user_id = ? AND id = ?", [name, user_id, campaign_id],
+          function(err, docs) {
+            if (err) {
+              callback({
+                code: "CouldNotUpdateCampNameIntoDb"
+              });
+            } else {
+              callback(false, campaignAttributes);
+            }
+            connection.release();
+          });
+      });
+    },
+
     addNewCampaign: function(user, newCampaignAttributes, callback) {
 
       //insert a new campaign 

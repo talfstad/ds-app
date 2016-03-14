@@ -88,12 +88,12 @@ module.exports = function(db) {
 
       //set processing true to start processing on response
       modelAttributes.processing = true;
-      //param order: working_node_id, action, processing, lander_id, domain_id, campaign_id, user_id
+      //param order: working_node_id, action, alternate_action, processing, lander_id, domain_id, campaign_id, user_id
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("CALL register_job(?, ?, ?, ?, ?, ?, ?, ?)", [config.id, modelAttributes.action, true, modelAttributes.lander_id, modelAttributes.domain_id, modelAttributes.campaign_id, user_id, modelAttributes.lander_url || null],
+          connection.query("CALL register_job(?, ?, ?, ?, ?, ?, ?, ?, ?)", [config.id, modelAttributes.action, modelAttributes.alternate_action, true, modelAttributes.lander_id, modelAttributes.domain_id, modelAttributes.campaign_id, user_id, modelAttributes.lander_url || null],
 
             function(err, docs) {
               if (err) {

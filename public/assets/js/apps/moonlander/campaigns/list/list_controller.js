@@ -217,6 +217,14 @@ define(["app",
               model: me.filteredCampaignCollection.state.gui
             });
 
+            campaignCollection.on("resortAndExpandModelView", function(model) {
+              campaignsListView.trigger("campaigns:sort");
+
+              me.filteredCampaignCollection.showPageWithModel(model);
+              model.trigger("view:expand");
+              model.trigger("notifySuccessChangeCampaignName");
+            });
+
             me.filteredCampaignCollection.on("reset", function(collection) {
 
               //on reset we're always going to want to close the sidebar

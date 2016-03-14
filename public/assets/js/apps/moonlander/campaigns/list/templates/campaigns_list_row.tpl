@@ -2,8 +2,10 @@
   <div class="panel">
     <div class="panel-heading">
       <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#campaigns-collection" href="#accord<%= id %>">
-        <%= name %>
-
+        <span class="campaign-name-text">
+          <%= name %>
+        </span>
+        
           <div class="alert-working-badge widget-menu domain-lander-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
             <span class="open_sidemenu_r label">
         

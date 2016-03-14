@@ -67,7 +67,8 @@ define(["app",
 
         activeJobsCollection.on("finishedState", function(jobModel) {
 
-          if (jobModel.get("action") === "undeployDomainFromLander") {
+          if (jobModel.get("action") === "undeployDomainFromLander" ||
+            jobModel.get("alternate_action") === "undeployDomainFromLander") {
 
             //hack to get it to not send DELETE XHR
             delete jobModel.attributes.id;

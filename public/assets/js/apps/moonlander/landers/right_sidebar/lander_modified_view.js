@@ -1,12 +1,12 @@
 define(["app",
     "tpl!assets/js/apps/moonlander/landers/right_sidebar/templates/lander_modified.tpl"
   ],
-  function(Moonlander, MenuButtonsTpl) {
+  function(Moonlander, LanderModifiedTpl) {
 
     Moonlander.module("LandersApp.RightSidebar", function(RightSidebar, Moonlander, Backbone, Marionette, $, _) {
       RightSidebar.LanderModifiedView = Marionette.ItemView.extend({
 
-        template: MenuButtonsTpl,
+        template: LanderModifiedTpl,
 
         className: "js-snippet-alert alert alert-warning lander-modified-alert",
 

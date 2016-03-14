@@ -33,6 +33,21 @@ define(["app",
             model: model
           });
 
+          this.sidebarView.on("updateCampaignName", function() {
+            model.save({}, {
+              success: function() {
+                if (model.collection.original) {
+                  model.collection.original.trigger("resortAndExpandModelView", model);
+                } else {
+                  model.collection.trigger("resortAndExpandModelView", model);
+                }
+              },
+              error: function() {
+
+              }
+            });
+          });
+
           //show it
           Moonlander.rootRegion.currentView.rightSidebarRegion.show(this.sidebarView);
 

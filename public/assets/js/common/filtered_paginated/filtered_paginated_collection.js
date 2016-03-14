@@ -322,6 +322,10 @@ define(["app",
           //set original data
           filtered.set(filtered.currentFilteredCollection);
           filtered.sort();
+          
+          original.set(filtered.currentFilteredCollection);
+          original.sort();
+
           filtered.currentFilteredCollection = filtered.models;
           var items = filtered.paginate(filtered.currentFilteredCollection);
 

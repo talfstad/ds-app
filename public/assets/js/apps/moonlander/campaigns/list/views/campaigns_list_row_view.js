@@ -31,13 +31,10 @@ define(["app",
         emptyView: DeployedListEmptyView,
         childViewContainer: "table.deployed-campaigns-region",
 
-        events: {
-          "click button.add-to-campaign": "showAddToCampaign"
-        },
-
         modelEvents: {
-          "notifySuccessDeleteDomain": "notifySuccessDeleteDomain",
-          "notifyErrorDeleteDomain": "notifyErrorDeleteDomain",
+          "notifySuccessDeleteCampaign": "notifySuccessDeleteCampaign",
+          "notifySuccessChangeCampaignName": "notifySuccessChangeCampaignName",
+          "notifyErrorDeleteCampaign": "notifyErrorDeleteCampaign",
           "change:deploy_status": "alertDeployStatus"
         },
 
@@ -59,17 +56,13 @@ define(["app",
             this.$el.find(".alert-working-badge").show();
           } else {
             this.$el.find(".deploy-status-text").text("Working...");
-          
+
             if (deployStatus !== "deployed" && deployStatus !== "not_deployed") {
               this.$el.find(".alert-working-badge").show();
             } else {
               this.$el.find(".alert-working-badge").hide();
             }
           }
-        },
-
-        showAddToCampaign: function() {
-          // Moonlander.trigger("domains:showAddToCampaign", this.model);
         },
 
         onBeforeRender: function() {
@@ -83,11 +76,15 @@ define(["app",
           this.$el.find("a:first").click();
         },
 
-        notifySuccessDeleteDomain: function() {
-          // Notification(this.model.get("domain"), "Successfully Deleted", "success", "stack_top_right");
+        notifySuccessDeleteCampaign: function() {
+          Notification(this.model.get("name"), "Successfully Deleted", "success", "stack_top_right");
         },
 
-        notifyErrorDeleteDomain: function(errorMsg) {
+        notifySuccessChangeCampaignName: function() {
+          Notification(this.model.get("name"), "Successfully Changed Name", "success", "stack_top_right");
+        },
+
+        notifyErrorDeleteCampaign: function(errorMsg) {
           // Notification(this.model.get("domain"), errorMsg, "danger", "stack_top_right");
           // this.model.trigger("reset");
         },
@@ -100,9 +97,15 @@ define(["app",
           $("#campaigns-collection .collapse").collapse("hide");
 
           this.$el.find(".domain-tab-handle-region").off();
+          this.$el.find(".domain-status-tab-handle").removeAttr("data-toggle");
+
           this.$el.find(".accordion-toggle").off();
-          this.$el.find(".lander-tab-handle-region").off()
+
+          this.$el.find(".lander-tab-handle-region").off();
+          this.$el.find(".lander-status-tab-handle").off();
+
           this.$el.off();
+
           this.$el.find(".nav.panel-tabs").off();
 
           this.$el.find(".accordion-toggle").click(function(e) {

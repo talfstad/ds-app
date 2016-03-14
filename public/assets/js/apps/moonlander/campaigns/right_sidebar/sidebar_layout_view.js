@@ -13,10 +13,41 @@ define(["app",
         id: "sidebar_right",
         className: "nano affix",
 
-        events: {
-          "click .remove-campaign-button": "showRemoveCampaignModal",
+        modelEvents: {
+          "change:alertBadCampaignName": "alertBadCampaignName"
         },
 
+        events: {
+          "click .remove-campaign-button": "showRemoveCampaignModal",
+          "click .update-campaign-name-button": "updateCampaignName"
+        },
+
+        alertBadCampaignName: function() {
+          if (this.model.get("alertBadCampaignName")) {
+            this.$el.find(".campaign-name-alert").show();
+          } else {
+            this.$el.find(".campaign-name-alert").hide();
+          }
+        },
+
+        updateCampaignName: function() {
+          var me = this;
+
+          var name = this.$el.find(".campaign-name-edit").val();
+
+          //can't be empty
+          if (name != "") {
+            
+            this.model.set({
+              "alertBadCampaignName": false,
+              "name": name
+            });
+
+            this.trigger("updateCampaignName");
+          } else {
+            this.model.set("alertBadCampaignName", true);
+          }
+        },
 
         showRemoveCampaignModal: function() {
           Moonlander.trigger("campaigns:showRemoveCampaign", this.model);

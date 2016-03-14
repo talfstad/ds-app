@@ -6,6 +6,9 @@
       <span class="close-right-sidebar panel-controls"><a href="#" class="panel-control-loader"></a><a href="#" class="panel-control-remove"></a></span>
     </div>
   </div>
+  <div class="js-snippet-alert alert alert-warning campaign-name-alert" style="display: none;">  
+      <span style="font-weight: 600">Campaign Name Can't be Empty</span>.
+  </div>
   <div class="admin-form panel-body pn pb25" style="font-size: 13px">
     <div class="name-and-optimizations-region">
       <h5 class="title-divider mt20 mb10">Campaign Name

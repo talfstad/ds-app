@@ -150,7 +150,8 @@ define(["app",
                   'domain_id': domain_id,
                   'lander_id': lander_id,
                   'campaign_id': campaign_id,
-                  'action': action
+                  'action': action,
+                  'alternate_action': 'undeployDomainFromLander'
                 };
 
                 var jobModel = new JobModel(jobAttributes);
@@ -183,6 +184,8 @@ define(["app",
             setDeployStatusForCampaign();
 
             if (!moreJobsToDo) {
+              me.trigger("notifySuccessDeleteCampaign");
+
               //triggers destroy to the server to get rid of this lander from campaign
               me.destroy();
             }

@@ -21,7 +21,9 @@ define(["app",
 
           var deployedDomainsCollection = this.model.get("deployedDomains");
           deployedDomainsCollection.on("add remove", function() {
-            me.render();
+            if (!me.isDestroyed) {
+              me.render();
+            }
           });
 
         },
