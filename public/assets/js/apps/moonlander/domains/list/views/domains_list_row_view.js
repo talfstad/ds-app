@@ -98,7 +98,10 @@ define(["app",
 
           this.$el.find(".campaign-tab-handle-region").off();
           this.$el.find(".accordion-toggle").off();
-          this.$el.find(".lander-tab-handle-region").off()
+          this.$el.find(".lander-tab-handle-region").off();
+          
+          this.$el.find(".campaign-status-tab-handle").removeAttr("data-toggle");
+
           this.$el.off();
           this.$el.find(".nav.panel-tabs").off();
 
@@ -146,6 +149,8 @@ define(["app",
           this.alertDeployStatus();
 
           this.reAlignTableHeader();
+
+
 
           //if deleting need to show delet state (which is disabling the whole thing)
           if (this.model.get("deploy_status") === "deleting") {

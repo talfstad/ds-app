@@ -1,36 +1,44 @@
 <td><%= viewIndex %></td>
-<td class="table-lander-name" style="white-space: nowrap; min-width: 145px">
+<td class="table-lander-name" style="white-space: nowrap; max-width: 305px; min-width: 145px">
       <span><%= name %></span>
 </td>
 
 <td class="absorbing-column">  
+<div class="row domains-lander-links" style="margin-left: 0;">
       
 
       <% if(deploy_status === "deployed") { %>
 
-      <select class="domain-endpoint-select form-control">
+      <div class="landers-select-container">
+
+      <select style="width: 600px" class="ml15 lander-links-select form-control select2-single">
         
         <% _.each(urlEndpoints, function(endpoint) { %>
         
-        <option> <%= endpoint.name %></option>
+        <option>http://<%= domain %>/<%= endpoint.name %></option>
 
         <% }); %>
       
-      </select>      
+      </select>
+
+      </div>
+      <div style="display: inline; position: relative; top: 3px">
+            <a style="margin-left: 10px;" class="open-link" href="#">
+              <span class="fa fa-eye"></span>
+            </a>
+
+            <a style="margin-left: 15px;" class="copy-clipboard" href="#">
+              <span class="fa fa-clipboard"></span>
+            </a>
+          </div>
 
       <% } %>
 
-      <div class="domain-action-buttons">
+      <div class="domain-action-buttons" style="position: relative; top: 3px">
 
         <% if(deploy_status === "deployed") { %>
 
-        <a class="" href="#">
-          <span class="fa fa-eye"></span>
-        </a>
-
-        <a class="" href="#">
-          <span class="fa fa-clipboard"></span>
-        </a>
+        
         
         <a class="" href="#">
           <span class="fa fa-edit"></span>
@@ -62,5 +70,5 @@
         <% } %>
 
       </div>
-
+</div>
 </td>

@@ -45,7 +45,36 @@
 	font-size: 14px;
 }
 
-
 .domain-links-column {
 	min-width: 170px;
 }
+
+.domains-lander-links .landers-select-container .select2-container--default .select2-selection--single .select2-selection__rendered {
+	color: #3f9532 !important;
+}
+
+.domains-lander-links .landers-select-container {
+	display: inline;
+	float: left;
+}
+
+.domains-lander-links .select2-container--default .select2-selection--single .select2-selection__rendered {
+	color: #3f9532 !important;
+}
+
+.domains-lander-links .select2-container--default .select2-selection--single .select2-selection__arrow b {
+	border-color: #3f9532 transparent transparent transparent;
+}
+
+.domains-lander-links .landers-select-container .select2-selection {
+	outline: none;
+	border-color: #3f9532 !important;
+}
+
+
+
+
+
+
+
+
