@@ -31,6 +31,7 @@ define(["app",
 
           //show error if no domain selected or if more than 1 is somehow selected
           var selectedRow = $("#campaigns-list-datatable").find("tr.primary");
+
           if(selectedRow.length <= 0 || selectedRow.length > 1) {
             $(".alert").addClass("alert-danger").removeClass("alert-primary");
             var currentHtml = $(".alert span").html();
@@ -42,13 +43,14 @@ define(["app",
 
           } else {
             
-            var activeCampaignAttributes = {
-              campaign_id: selectedRow.attr("data-campaign-id"),
-              name: selectedRow.text(),
-              domain_id: this.model.get("id")
-            };
+            var campaignId = selectedRow.attr("data-campaign-id");
+
+            var campaign = this.getRegion("campaignsListRegion").currentView.datatablesCollection.find(function(m) {
+              var id = m.get('campaign_id') || m.get('id')
+              return id == campaignId
+            });
             
-            Moonlander.trigger("domains:addCampaignToDomain", activeCampaignAttributes);
+            this.trigger("addCampaignToDomain", campaign.attributes);
             this.$el.modal("hide");
           }
         },

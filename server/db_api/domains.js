@@ -122,12 +122,41 @@ module.exports = function(db) {
         });
       };
 
+      var getActiveJobsForActiveCampaign = function(activeCampaign, domain, callback) {
+        var campaign_id = activeCampaign.campaign_id || activeCampaign.id;
+        var domain_id = domain.id;
+        //get all jobs attached to lander and make sure only select those. list is:
+        db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          }
+          connection.query("SELECT id,action,processing,lander_id,domain_id,campaign_id,done,error,created_on FROM jobs WHERE (user_id = ? AND campaign_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?))", [user_id, campaign_id, domain_id, true, 0],
+            function(err, dbActiveJobs) {
+              callback(dbActiveJobs);
+              connection.release();
+            });
+        });
+      };
+
+      getExtraNestedForActiveCampaign = function(activeCampaign, domain, callback) {
+        getAllLanderIdsForCampaign(activeCampaign, function(currentLanders) {
+          activeCampaign.currentLanders = currentLanders;
+
+          getActiveJobsForActiveCampaign(activeCampaign, domain, function(activeJobs){
+
+            activeCampaign.activeJobs = activeJobs;
+            callback();
+          });
+
+        });
+      };
+
       var getActiveCampaignsForDomain = function(domain, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT a.id, b.id AS active_campaign_id, a.name,b.domain_id from campaigns a JOIN campaigns_with_domains b ON a.id=b.campaign_id WHERE (a.user_id = ? AND domain_id = ?);", [user_id, domain.id],
+          connection.query("SELECT a.id AS campaign_id, b.id, a.name,b.domain_id from campaigns a JOIN campaigns_with_domains b ON a.id=b.campaign_id WHERE (a.user_id = ? AND domain_id = ?);", [user_id, domain.id],
             function(err, dbActiveCampaigns) {
 
               if (dbActiveCampaigns.length <= 0) {
@@ -135,10 +164,7 @@ module.exports = function(db) {
               } else {
                 var idx = 0;
                 for (var i = 0; i < dbActiveCampaigns.length; i++) {
-                  getAllLanderIdsForCampaign(dbActiveCampaigns[i], function(currentLanders) {
-                    var deployedLander = dbActiveCampaigns[idx];
-                    deployedLander.currentLanders = currentLanders;
-
+                  getExtraNestedForActiveCampaign(dbActiveCampaigns[i], domain, function() {
                     if (++idx == dbActiveCampaigns.length) {
                       callback(dbActiveCampaigns);
                     }
@@ -316,50 +342,6 @@ module.exports = function(db) {
         return successCallback(false, domains);
       });
 
-
-
-      ///////MOCK DATA FOR GET ALL LANDERS ////////////      
-
-      // [{
-      //   "id": 240,
-      //   "domain": "hardbodiesandboners.org",
-      //   "last_updated": "Dec 6, 2015 7:58:08 PM",
-
-      //   "deployedLanders": [{
-      //     "id": 1,
-      //     "name": "lander name",
-      //     "lander_id": 240,
-      //     "urlEndpoints": [{
-      //       "id": 8,
-      //       "name": "onetwo.html",
-      //       "lander_id": 240
-      //     }, {
-      //       "id": 9,
-      //       "name": "three.html",
-      //       "lander_id": 240,
-      //     }],
-      //     "activeJobs": []
-      //   }],
-
-      //   "activeCampaigns": [{
-      //     "id": 2,
-      //     "active_campaign_id": 434,
-      //     "name": "camp1",
-      //     "lander_id": 240,
-      //     "currentDomains": [{
-      //       "domain_id": 1,
-      //       "domain": "hardbodiesandboners.org"
-      //     }, {
-      //       "domain_id": 2,
-      //       "domain": "weightlosskey.com"
-      //     }, {
-      //       "domain_id": 3,
-      //       "domain": "notdeployed.com"
-      //     }]
-      //   }]
-
-      // }]
-
     },
 
 
@@ -453,8 +435,6 @@ module.exports = function(db) {
     }
   }
 };
-
-
 
 
 

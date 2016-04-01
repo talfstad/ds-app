@@ -21,6 +21,7 @@ define(["app",
       var loadCommonStuff = function() {
         //moonlander layout here
         EntryController.loadAnchorLayout();
+
         //load the header here
         Moonlander.trigger("header:list");
         //load the left nav here
@@ -43,6 +44,7 @@ define(["app",
       };
 
       Moonlander.on("start:moonlander", function() {
+        Moonlander.intercom.boot();
         moonlanderRoutes.showLanders();
       });
 

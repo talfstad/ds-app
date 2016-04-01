@@ -8,8 +8,6 @@
     <div class="login-links">
       <a href="#" class="notification active" title="Sign In">Sign In</a>
       <span class="text-white"> | </span>
-      <a href="pages_register.html" class="" title="Register">Register</a>
-      <span class="text-white"> | </span>
       <a href="login/reset" title="Forgot Password">Forgot Password</a>
     </div>
   </div>

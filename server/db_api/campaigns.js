@@ -136,6 +136,8 @@ module.exports = function(db) {
               var currentLanders = docs[1];
 
               delete modelAttributes.activeJobs;
+              delete modelAttributes.deployedDomains;
+              delete modelAttributes.deployedLanders;
 
               //get current lander data by id
               if (currentLanders.length > 0) {

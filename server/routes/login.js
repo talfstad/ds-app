@@ -23,11 +23,8 @@ module.exports = function(app, passport) {
         console.log(error);
         utils.sendResponse(res, error, "settingsRetrieved");
       } else {
-        //TODO: encrypt these?
-        // res.cookie('access_key_id', access_key_id, { signed: true, maxAge: config.cookieMaxAge  });
-        // res.cookie('secret_access_key', secret_access_key, { signed: true, maxAge: config.cookieMaxAge  });
-        // res.cookie('uid', uid, { signed: true, maxAge: config.cookieMaxAge  });
         res.json({
+          // id: req.user.id,
           username: req.user.user,
           logged_in: true,
           aws_access_key_id: access_key_id,

@@ -12,6 +12,13 @@ function(Moonlander, anchorTpl){
         rightSidebarRegion: "#right-sidebar",
         modalRegion: "#modal-region"
       },
+
+      initialize: function(){
+        //always update intercom when main region changes
+        this.getRegion("mainContentRegion").on("show", function(view){
+          Moonlander.intercom.update();
+        });
+      },
     
       onDomRefresh: function(){
         $("body").removeClass("sb-r-o sb-l-c").addClass("sb-r-c external-page sb-l-o onload-check");

@@ -65,8 +65,8 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
           AddToCampaignController.showAddNewCampaign(model);
         },
 
-        addCampaignToDomain: function(attr) {
-          ListController.addCampaignToDomain(attr);
+        deployCampaignLandersToDomain: function(attr) {
+          ListController.deployCampaignLandersToDomain(attr);
         },
 
         showUndeployDomainFromCampaignDialog: function(model) {
@@ -130,8 +130,8 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
         domainsAppAPI.showAddNewCampaign(model);
       });
 
-      Moonlander.on("domains:addCampaignToDomain", function(attr) {
-        domainsAppAPI.addCampaignToDomain(attr);
+      Moonlander.on("domains:deployCampaignLandersToDomain", function(attr) {
+        domainsAppAPI.deployCampaignLandersToDomain(attr);
       });
 
       Moonlander.on("domains:showUndeployDomainFromCampaignDialog", function(model) {

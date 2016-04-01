@@ -30,7 +30,7 @@ define(["app",
 
         onBeforeRender: function() {
           //sort currentLanders asc by name
-          var currentLanders = this.model.get("currentLanders")
+          var currentLanders = this.model.get("currentLanders");
           currentLanders.sort(function(a, b) {
             var keyA = a.name;
             var keyB = b.name;
@@ -39,9 +39,30 @@ define(["app",
             if (keyA > keyB) return 1;
             return 0;
           });
+
+          var deployStatus = this.model.get("deploy_status");
+          if (deployStatus === "deployed") {
+            this.model.set("deploy_status_gui", "");
+          } else if (deployStatus === "deploying") {
+            this.model.set("deploy_status_gui", "<strong>DEPLOYING</strong>");
+          } else if (deployStatus === "undeploying") {
+            this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong>");
+          }
+      
         },
 
         onRender: function() {
+          var campaignNameRow = this.$el.find(".campaign-name-row");
+
+          var deployStatus = this.model.get("deploy_status");
+          campaignNameRow.removeClass("success alert dark");
+          if (deployStatus === "deployed") {
+            campaignNameRow.addClass("dark");
+          } else if (deployStatus === "deploying" ||
+            deployStatus === "undeploying") {
+            campaignNameRow.addClass("alert");
+          }
+
           this.trigger("updateParentLayout", this.model);
         }
 

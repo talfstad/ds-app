@@ -7,6 +7,7 @@ define(["app",
 
     logoutModel.fetch({
       success: function(data) {
+        Moonlander.intercom.shutdown();
         cb(data);
       },
       error: function(one, two, three) {

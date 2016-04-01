@@ -4,7 +4,7 @@
 </td>
 
 <td class="absorbing-column">  
-<div class="row domains-lander-links" style="margin-left: 0;">
+<div class="domains-lander-links" style="margin-left: 0;">
       
 
       <% if(deploy_status === "deployed") { %>
@@ -34,13 +34,11 @@
 
       <% } %>
 
-      <div class="domain-action-buttons" style="position: relative; top: 3px">
+      <div style="float: right; margin-right: 10px; font-size: 16px">
 
         <% if(deploy_status === "deployed") { %>
-
         
-        
-        <a class="" href="#">
+        <a class="" href="#" style="margin-right: 10px">
           <span class="fa fa-edit"></span>
         </a>
 

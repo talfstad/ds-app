@@ -14,7 +14,6 @@ define(["app",
         childViewOptions: function(model) {
           model.set('viewIndex', parseInt(this.collection.indexOf(model))+1);
           model.set("domain", this.collection.domain);
-          model.set("deploy_status", this.collection.deploy_status);
         },
 
         childView: ActiveCampaignRowView,

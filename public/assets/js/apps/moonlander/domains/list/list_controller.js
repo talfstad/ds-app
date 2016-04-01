@@ -74,49 +74,66 @@ define(["app",
 
         },
 
-        addCampaignToDomain: function(modelAttributes) {
-          var me = this;
-          var addedCampaignSuccessCallback = function(activeCampaignModel) {
-            // add the model to collection
-            var domain = me.filteredDomainCollection.get(modelAttributes.domain_id);
 
-            var activeCampaignsCollection = domain.get("activeCampaigns");
-            activeCampaignsCollection.add(activeCampaignModel);
+        deployCampaignLandersToDomain: function(attr) {
 
-            var deployedLanders = domain.get("deployedLanders");
-            var currentLanders = activeCampaignModel.get("currentLanders");
+          var activeCampaignModel = attr.active_campaign_model;
+          var domainModel = attr.domain_model;
 
-            $.each(currentLanders, function(idx, lander) {
-              var lander_id = lander.lander_id || lander.id;
+          if (!domainModel) {
+            return false;
+          }
 
-              var deployedLanderModel = deployedLanders.find(function(m) {
-                var id = m.get("lander_id") || m.get("id");
-                return id == lander_id
-              });
+          var activeCampaigns = domainModel.get("activeCampaigns");
 
-              var attachedCampaigns = deployedLanderModel.get("attachedCampaigns");
-              attachedCampaigns.add(activeCampaignModel);
+          var campaign_id = activeCampaignModel.get("campaign_id");
 
-            });
-          };
+          var activeCampaignModelActiveJobs = activeCampaignModel.get("activeJobs");
+
+          var currentLandersArr = activeCampaignModel.get("currentLanders");
+
+          //loop current landers, see if its deployed, if not deploy
+          $.each(currentLandersArr, function(idx, lander) {
+
+            activeCampaignModel.set("deploy_status", "deploying");
+
+            
 
 
-          var addedCampaignErrorCallback = function() {
+          });
 
-          };
 
-          //make sure we know its add to camp to domain and not lander to camp
-          modelAttributes.action = "addToDomain";
+          // deployedLandersCollection.each(function(deployedLanderModel) {
 
-          //add the campaign to the domain first, on success close dialog
-          var campaignModel = new ActiveCampaignModel(modelAttributes);
+          //   //if there are any landers set deploy status to deploying
+          //   domainModel.set("deploy_status", "deploying");
 
-          // create the model for activeCampaign model. make sure it saves to
-          // /api/active_campaigns
-          campaignModel.save({}, {
-            success: addedCampaignSuccessCallback,
-            error: addedCampaignErrorCallback
-          })
+          //   var deployedLanderModelActiveJobs = deployedLanderModel.get("activeJobs");
+
+
+          //   //create deploy job for domain and add it to the domain and the lander model
+          //   var jobAttributes = {
+          //     action: "deployLanderToDomain",
+          //     lander_id: deployedLanderModel.get("lander_id") || deployedLanderModel.get("id"),
+          //     domain_id: domainModel.get("domain_id") || domainModel.get("id"),
+          //     campaign_id: campaign_id
+          //   };
+          //   var jobModel = new JobModel(jobAttributes);
+
+          //   deployedLanderModelActiveJobs.add(jobModel);
+
+          //   activeCampaignModelActiveJobs.add(jobModel);
+
+          //   Moonlander.trigger("job:start", jobModel);
+
+          // });
+
+          if (currentLandersArr.length <= 0) {
+            activeCampaignModel.set("deploy_status", "deployed");
+          }
+
+          activeCampaigns.add(activeCampaignModel);
+
 
         },
 
@@ -128,7 +145,7 @@ define(["app",
           //domainModel NEEDS to be passed by any models calling deployNewLander because it's
           //during creation time before filteredDomainCollection is created
           var domainModel = modelAttributes.domain_model;
-
+          var campaignModel = modelAttributes.campaign_model;
           //need lander model
           if (!landerAttributes) {
             return false;
@@ -138,7 +155,10 @@ define(["app",
 
 
           //any campaign triggered deploy will include a campaign_id
-          var campaign_id = modelAttributes.campaign_id;
+          var campaign_id;
+          if (campaignModel) {
+            campaign_id = campaignModel.get("campaign_id") || campaignModel.get("id");
+          }
 
 
           //create active job model to deploy this lander to a domain
@@ -157,6 +177,12 @@ define(["app",
           }
 
           if (!domainModel) return false;
+
+          //show undeploying/deploying for campaign
+          if (campaignModel) {
+            var campaignActiveJobs = campaignModel.get("activeJobs");
+            campaignActiveJobs.add(jobModel);
+          }
 
           //check if this domain_id is already there, if it is instead of adding a new domain_model
           //just add this job to it
@@ -288,8 +314,8 @@ define(["app",
 
                   var activeCampaignsCollection = domainView.model.get("activeCampaigns");
                   //set landername to be used by campaign models dialog
+
                   activeCampaignsCollection.domain = domainView.model.get("domain");
-                  activeCampaignsCollection.deploy_status = domainView.model.get("deploy_status");
 
                   var activeCampaignsView = new ActiveCampaignsView({
                     collection: activeCampaignsCollection
