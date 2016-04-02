@@ -2,19 +2,12 @@
 
     <div class="col-xs-6 pln">
       <a href="#" title="Return to Dashboard">
-        <img src="/assets/img/logos/moonlanderlogo.png" title="Moonlander Logo" class="img-responsive w250">
+        <img src="/assets/img/logos/landerds_logo_white1.png" title="Moonlander Logo" class="img-responsive w250">
       </a>
     </div>
 
     <div class="col-xs-6 va-b">
-    <!--   <div class="login-links text-right">
-        <a href="#" class="" title="False Credentials">Password Reset</a>
-      </div> -->
-      <div class="login-links text-right">
-          <a href="/login" title="Sign In">Sign In</a>
-          <span class="text-white"> | </span>
-          <a href="/reset" class="notification active" title="Forgot Password">Create New Password</a>
-        </div>
+    
     </div>
 
   </div>

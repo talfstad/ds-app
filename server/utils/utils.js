@@ -1,59 +1,63 @@
 module.exports = function() {
 
-    var module = {};
+  var module = {};
 
-    var nodemailer = require('nodemailer');
+  var nodemailer = require('nodemailer');
+  var xoauth2 = require('xoauth2');
 
-    module.sendEmail = function(fromAddress, fromPassword, toAddress, emailSubject, message, callback) {
-        var transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: fromAddress,
-                pass: fromPassword
-            }
-        });
+  module.sendEmail = function(fromAddress, fromPassword, toAddress, emailSubject, message, callback) {
 
-        transporter.sendMail({
-            from: fromAddress,
-            to: toAddress,
-            subject: emailSubject,
-            text: message
-        }, function(err, info){
-            if(err){
-                console.log(err);
-                callback(err);
-            } else {
-                console.log(info);
-                callback(err);
-            }
-        });
-    };
 
-    //if error == null => successful response
-    //booleanName is the key of the boolean value in the response
-    //if error => responseObject.booleanName = false
-    //if booleanOverride is present => responseObject.booleanName = booleanOverride
-    module.sendResponse = function(res, error, booleanName, booleanOverride, responseObject) {
-        if(!responseObject) {
-            responseObject = {};
-        }
+    var transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: fromAddress,
+        pass: fromPassword
+      }
+    });
 
-        if(error) {
-           responseObject.error = error;
-           responseObject[booleanName] = false; 
-        }
-        else {
-           responseObject.error = '';
-           responseObject[booleanName] = true; 
-        }
+    transporter.sendMail({
+      from: fromAddress,
+      to: toAddress,
+      subject: emailSubject,
+      html: message
+    }, function(err, info) {
+      if (err) {
+        console.log(err);
+        callback(err);
+      } else {
+        console.log(info);
+        callback(err);
+      }
+    });
 
-        if(typeof booleanOverride != "undefined") {
-            responseObject[booleanName] = booleanOverride;
-        }
 
-        res.json(responseObject);
-    };
+  };
 
-    return module;
+  //if error == null => successful response
+  //booleanName is the key of the boolean value in the response
+  //if error => responseObject.booleanName = false
+  //if booleanOverride is present => responseObject.booleanName = booleanOverride
+  module.sendResponse = function(res, error, booleanName, booleanOverride, responseObject) {
+    if (!responseObject) {
+      responseObject = {};
+    }
 
-}            
+    if (error) {
+      responseObject.error = error;
+      responseObject[booleanName] = false;
+    } else {
+      responseObject.error = '';
+      responseObject[booleanName] = true;
+    }
+
+    if (typeof booleanOverride != "undefined") {
+      responseObject[booleanName] = booleanOverride;
+    }
+
+    res.json(responseObject);
+  };
+
+  return module;
+
+}

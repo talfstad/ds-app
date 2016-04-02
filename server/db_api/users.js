@@ -97,13 +97,13 @@ module.exports = function(db) {
       });
     },
 
-    addUser: function(username, hash, uid, callback) {
+    addUser: function(email, hash, callback) {
       var error;
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("INSERT INTO users(user, hash, approved, uid) VALUES (?, ?, ?, ?);", [username, hash, 0, uid], function(err, docs) {
+          connection.query("INSERT INTO users(user, hash, approved) VALUES (?, ?, ?, ?);", [email, hash, 1], function(err, docs) {
             if (err) {
               console.log(err);
               error = "Username invalid or already taken";

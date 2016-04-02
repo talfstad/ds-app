@@ -7,6 +7,8 @@ module.exports = function(app, passport) {
   var utils = require('../utils/utils.js')();
   var config = require("../config");
   var db = require("../db_api");
+  var _ = require("underscore-node");
+  var fs = require("fs");
 
   app.post("/api/login", passport.authenticate(), function(req, res) {
     //this is only executed if login succeeded
@@ -24,7 +26,7 @@ module.exports = function(app, passport) {
         utils.sendResponse(res, error, "settingsRetrieved");
       } else {
         res.json({
-          // id: req.user.id,
+          user_id: req.user.id,
           username: req.user.user,
           logged_in: true,
           aws_access_key_id: access_key_id,
@@ -58,12 +60,11 @@ module.exports = function(app, passport) {
   });
 
   app.post("/api/login/signup", function(req, res) {
-    var uid = puid.generate(); // generate puid (short-version 12-chars) without nodeId / **Shortcut**
     var username = req.body.username;
     var password = req.body.password;
 
     if (validator.isEmail(username)) { //username is an email
-      db.users.addUser(username, bcrypt.hashSync(password, bcrypt.genSaltSync(8)), uid, function(error) {
+      db.users.addUser(username, bcrypt.hashSync(password, bcrypt.genSaltSync(8)), function(error) {
         if (error) {
           res.json({
             error: error,
@@ -95,33 +96,46 @@ module.exports = function(app, passport) {
   });
 
   app.post("/api/login/request/reset", function(req, res) {
-    var username = req.body.email;
+    var email = req.body.email;
 
-    db.users.requestResetPassword(username, function(error, code) {
+    db.users.requestResetPassword(email, function(error, code) {
       if (error) {
         res.json({
           emailSent: false,
           error: error
         });
       } else {
-        var message = "Reset password by clicking this link: https://localhost:3000/login/reset/" + code;
-        var subject = "Reset your Moonlander password.";
 
-        utils.sendEmail(config.adminEmail, config.adminEmailPassword, username, subject, message, function(error) {
-          if (error) {
-            res.json({
-              emailSent: false,
-              error: "Error sending email to: " + username
-            });
+        var link = "https://panel.landerds.com/login/reset/" + code;
+        var filePath = __dirname + "/../html_email_templates/reset_password_template.tpl";
+
+        fs.readFile(filePath, 'utf8', function(err, file) {
+          if (err) {
+            console.log(err);
           } else {
-            res.json({
-              emailSent: true
+
+            var tpl = _.template(file);
+            var message = tpl({ reset_password_link: link });
+
+            var subject = "LanderDS Password Reset";
+
+            utils.sendEmail(config.adminEmail, config.adminEmailPassword, email, subject, message, function(err) {
+              if (err) {
+                res.json({
+                  error: "Error sending email to: " + email
+                });
+              } else {
+                res.json({
+                  emailSent: true
+                });
+              }
             });
           }
         });
       }
     });
   });
+
 
   app.post("/api/login/reset/check", function(req, res) {
     var code = req.body.code;

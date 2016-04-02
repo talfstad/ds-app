@@ -2,7 +2,7 @@
 
     <div class="col-xs-6 pln">
       <a href="#" title="Return to Dashboard">
-        <img src="/assets/img/logos/landerds_logo_white.png" title="Lander DS Logo" class="img-responsive w200">
+        <img src="/assets/img/logos/landerds_logo_white1.png" title="Lander DS Logo" class="img-responsive w200">
       </a>
     </div>
 
@@ -12,11 +12,8 @@
       </div> -->
       <div class="login-links text-right">
           <a href="/login" title="Sign In">Sign In</a>
-          <span class="text-white"> | </span>
-          <a href="/reset" class="notification active" title="Forgot Password">Forgot Password</a>
-        </div>
+      </div>
     </div>
-
   </div>
 
   <div class="panel panel-info heading-border br-n">
