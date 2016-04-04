@@ -60,6 +60,12 @@ define(["app",
 
                     } else {
                       awsModel.set("alertUpdatedAwsKeys", true);
+                      
+                      Moonlander.loginModel.set({
+                        accessKeyId: awsModel.get("accessKeyId"),
+                        secretAccessKey: awsModel.get("secretAccessKey")
+                      });
+
                     }
 
                   },

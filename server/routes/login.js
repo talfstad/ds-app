@@ -38,12 +38,23 @@ module.exports = function(app, passport) {
   });
 
   app.get('/api/login', function(req, res) {
+    var user = req.user;
+
     if (req.user) {
-      // logged in
-      res.json({
-        username: req.user.user,
-        logged_in: true
-      });
+      db.users.getUserSettings(user, function(error, access_key_id, secret_access_key, uid) {
+        if (error) {
+          console.log(error);
+          utils.sendResponse(res, error, "settingsRetrieved");
+        } else {
+          res.json({
+            user_id: req.user.id,
+            username: req.user.user,
+            logged_in: true,
+            aws_access_key_id: access_key_id,
+            aws_secret_access_key: secret_access_key,
+          });
+        }
+      }); //getAmazonAPIKeys
     } else {
       // not logged in
       res.json({

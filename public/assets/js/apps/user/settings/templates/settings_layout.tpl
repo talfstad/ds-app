@@ -10,9 +10,9 @@
           <li role="presentation" class="active">
             <a href="#aws" aria-controls="aws" role="tab" data-toggle="tab"><span class="fa fa-cog pr5"></span> AWS Settings</a>
           </li>
-          <li role="presentation">
+          <!-- <li role="presentation">
             <a href="#account" aria-controls="account" role="tab" data-toggle="tab"><span class="fa fa-user pr5"></span> Account</a>
-          </li>
+          </li> -->
         </ul>
       </div>
     </header>
@@ -43,7 +43,7 @@
             </div>
           </div>
         </div>
-        <div role="tabpanel" class="tab-pane" id="account">ACCOUNT</div>
+        <!-- <div role="tabpanel" class="tab-pane" id="account">ACCOUNT</div> -->
       </div>
     </div>
     <div class="modal-footer">
