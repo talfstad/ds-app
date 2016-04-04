@@ -28,6 +28,7 @@
     "datatables": "1.10.10",
     "bootstrap-fileinput": "4.2.8",
     "jstz": "1af1e80448",
-    "select2": "4.0.1"
+    "select2": "4.0.1",
+    "fancybox": "~2.1.5"
   }
 }

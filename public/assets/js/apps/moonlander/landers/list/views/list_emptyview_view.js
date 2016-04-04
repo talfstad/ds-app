@@ -1,5 +1,6 @@
 define(["app",
-    "tpl!assets/js/apps/moonlander/landers/list/templates/landers_empty_items.tpl"
+    "tpl!assets/js/apps/moonlander/landers/list/templates/landers_empty_items.tpl",
+    "fancybox"
   ],
   function(Moonlander, landersListEmptyItemsTpl) {
 
@@ -29,6 +30,21 @@ define(["app",
             this.model.set("showAwsHelp", true);
           }
 
+          this.model.set('filterVal', $('.lander-search').val());
+
+        },
+
+        onRender: function() {
+          this.$el.find(".fancybox")
+            .attr('rel', 'gallery')
+            .fancybox({
+              openEffect: 'none',
+              closeEffect: 'none',
+              nextEffect: 'none',
+              prevEffect: 'none',
+              padding: 0,
+              margin: [20, 60, 20, 60] // Increase left/right margin
+            });
         }
 
       });

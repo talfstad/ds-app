@@ -27,10 +27,14 @@ requirejs.config({
     "bootstrap.fileinput": 'vendor/bower_installed/bootstrap-fileinput/js/fileinput.min',
     jstz: "vendor/bower_installed/jstz/jstz",
     "moment-timezone": "vendor/bower_installed/moment-timezone/builds/moment-timezone-with-data-2010-2020",
-    "select2": "vendor/bower_installed/select2/dist/js/select2.full"
+    "select2": "vendor/bower_installed/select2/dist/js/select2.full",
+    "fancybox": "vendor/bower_installed/fancybox/source/jquery.fancybox"
   },
   shim: {
     "select2": {
+      deps: ['jquery']
+    },
+    "fancybox": {
       deps: ['jquery']
     },
     jstz: {
