@@ -4,9 +4,10 @@ define(["app", "/assets/js/apps/moonlander/campaigns/list/list_controller.js",
     "/assets/js/apps/moonlander/campaigns/add_new_campaign/add_new_campaign_controller.js",
     "/assets/js/apps/moonlander/campaigns/add_new_lander/add_new_lander_controller.js",
     "/assets/js/apps/moonlander/campaigns/add_new_domain/add_new_domain_controller.js",
+    "/assets/js/apps/moonlander/campaigns/remove_lander/remove_lander_controller.js",
   ],
   function(Moonlander, ListController, CommonLogin, SidemenuController, AddNewCampaignController,
-    AddNewLanderController, AddNewDomainController) {
+    AddNewLanderController, AddNewDomainController, RemoveLanderController) {
     Moonlander.module("CampaignsApp", function(CampaignsApp, Moonlander, Backbone, Marionette, $, _) {
 
       var campaignsAppAPI = {
