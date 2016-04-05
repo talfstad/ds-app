@@ -80,16 +80,19 @@ module.exports = function(db) {
       });
     },
 
-    removeFromLandersWithCampaigns: function(user, id, successCallback) {
+    removeFromLandersWithCampaigns: function(user, id, callback) {
       var user_id = user.id;
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
           connection.query("DELETE FROM landers_with_campaigns WHERE user_id = ? AND id = ?", [user_id, id],
             function(err, dbSuccessDelete) {
-
-              successCallback(dbSuccessDelete);
+              if(err){
+                callback(err);
+              } else {
+                callback(dbSuccessDelete);
+              }
 
               //release connection
               connection.release();
@@ -103,13 +106,15 @@ module.exports = function(db) {
       var user_id = user.id;
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
           connection.query("DELETE FROM campaigns_with_domains WHERE user_id = ? AND id = ?", [user_id, id],
             function(err, dbSuccessDelete) {
-
-              successCallback(dbSuccessDelete);
-
+              if (err) {
+                callback(err);
+              } else {
+                successCallback(false, dbSuccessDelete);
+              }
               //release connection
               connection.release();
             });
