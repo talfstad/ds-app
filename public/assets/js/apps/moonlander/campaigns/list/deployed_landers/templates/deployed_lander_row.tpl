@@ -10,28 +10,25 @@
       
           <div class="domains-select-container">
 
-          <select style="width: 300px" class="ml15 domain-select form-control select2-single">
+          <select style="width: 600px" class="ml15 domain-select form-control select2-single">
           
-           <% _.each(deployed_domains_gui, function(domain) { %> 
-           <option><%= domain.domain %></option>
-           <% }); %>   
+            <% _.each(deployed_domains_gui, function(domain) { %> 
+            <optgroup label="<%= domain.domain %>">
+           
+
+              <% _.each(urlEndpoints, function(endpoint) { %>
+            
+              <option> <%= domain.domain %>/<%= endpoint.name %></option>
+
+              <% }); %>
+
+            </optgroup>
+            <% }); %>   
             
           </select>
           </div>
 
-          <div class="landers-select-container">
-
-          <select style="width: 300px" class="lander-endpoint-select form-control select2-single">
-        
-            <% _.each(urlEndpoints, function(endpoint) { %>
-            
-            <option> <%= endpoint.name %></option>
-
-            <% }); %>
-
-          </select>
-          </div>
-          <div style="display: inline">
+          <div style="display: inline; position: relative; top: 4px">
             <a style="margin-left: 10px;" class="open-link" href="#">
               <span class="fa fa-eye"></span>
             </a>
@@ -44,7 +41,7 @@
       <% } %>
 
      
-      <div class="domain-action-buttons">
+      <div class="domain-action-buttons" style="position: relative; top: 2px">
 
         <% if(deploy_status === "deployed") { %>
 

@@ -88,7 +88,7 @@ module.exports = function(db) {
         } else {
           connection.query("DELETE FROM landers_with_campaigns WHERE user_id = ? AND id = ?", [user_id, id],
             function(err, dbSuccessDelete) {
-              if(err){
+              if (err) {
                 callback(err);
               } else {
                 callback(dbSuccessDelete);
@@ -283,7 +283,7 @@ module.exports = function(db) {
         });
       };
 
-      var getActiveJobsForLander = function(lander, campaign, callback) {
+      var getActiveJobsForDeployedLander = function(lander, campaign, callback) {
         var lander_id = lander.lander_id || lander.id;
         var campaign_id = campaign.id;
 
@@ -301,35 +301,32 @@ module.exports = function(db) {
       };
 
 
-      var getEndpointsForLander = function(lander, callback) {
+      var getEndpointsForDeployedLander = function(lander, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
             callback(err);
           }
-          connection.query("SELECT id,name,lander_id from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.id],
+
+          connection.query("SELECT id,name,lander_id from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.lander_id],
             function(err, dbUrlEndpoints) {
               if (err) {
                 callback(err);
               } else {
-                if (dbUrlEndpoints.length <= 0) {
-                  callback(false, []);
-                } else {
-                  callback(false, dbUrlEndpoints);
-                }
+                callback(false, dbUrlEndpoints);
               }
               connection.release();
             });
         });
       };
 
-      var getExtraNestedForLander = function(lander, campaign, callback) {
-        getEndpointsForLander(lander, function(err, endpoints) {
+      var getExtraNestedForDeployedLander = function(lander, campaign, callback) {
+        getEndpointsForDeployedLander(lander, function(err, endpoints) {
           if (err) {
             callback(err);
           } else {
             lander.urlEndpoints = endpoints;
 
-            getActiveJobsForLander(lander, campaign, function(err, activeJobs) {
+            getActiveJobsForDeployedLander(lander, campaign, function(err, activeJobs) {
               if (err) {
                 callback(err);
               } else {
@@ -356,7 +353,7 @@ module.exports = function(db) {
               } else {
                 var idx = 0;
                 for (var i = 0; i < dbLandersOnCampaign.length; i++) {
-                  getExtraNestedForLander(dbLandersOnCampaign[i], campaign, function(err) {
+                  getExtraNestedForDeployedLander(dbLandersOnCampaign[i], campaign, function(err) {
                     if (err) {
                       callback(err);
                     } else {

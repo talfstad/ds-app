@@ -14,7 +14,7 @@
 
 .campaigns-lander-links .landers-select-container .select2-selection {
 	outline: none;
-	border-radius: 0px 4px 4px 0px;
+	/*border-radius: 0px 4px 4px 0px;*/
 	border-color: #3f9532 !important;
 }
 
@@ -24,7 +24,7 @@
 
 
 .campaigns-lander-links .domains-select-container .select2-selection {
-	border-radius: 4px 0px 0px 4px;
+	/*border-radius: 4px 0px 0px 4px;*/
 	outline: none;
 	border-color: #3f9532 !important;
 }

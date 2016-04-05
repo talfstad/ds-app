@@ -54,9 +54,9 @@ define(["app",
 
         getCurrentLink: function() {
           //return the combination of selects
-          var domainVal = this.$el.find(".domain-select").val();
+          var linkVal = this.$el.find(".domain-select").val();
           var endpointVal = this.$el.find(".lander-endpoint-select").val();
-          return "http://" + domainVal + "/" + endpointVal;
+          return "http://" + linkVal;
         },
 
         openLanderLink: function() {
@@ -99,6 +99,8 @@ define(["app",
           } catch (err) {}
 
           textArea.remove();
+
+          return false;
 
         },
 
