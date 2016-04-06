@@ -105,7 +105,7 @@ define(["app",
             var jobAttributes = {
               action: "deployLanderToDomain",
               lander_id: deployedLanderModel.get("lander_id"),
-              domain_id: deployedDomainModel.get("id"),
+              domain_id: deployedDomainModel.get("domain_id"),
               campaign_id: campaign_id
             };
             var jobModel = new JobModel(jobAttributes);

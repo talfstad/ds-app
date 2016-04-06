@@ -35,7 +35,7 @@ define(["app",
               "sInfo": "showing _START_ to _END_ of _TOTAL_ domains",
               "sLengthMenu": "Show _MENU_ Domains",
               "sInfoEmpty": "You currently don't have any domains",
-              "sZeroRecords": "This lander is already deployed on all your domains."
+              "sZeroRecords": "This campaign is already deployed on all your domains."
             },
             //set the domain id on the row so we can use it to know which to deploy to
             //in the layout view

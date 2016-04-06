@@ -11,11 +11,11 @@
 
       <div class="landers-select-container">
 
-      <select style="width: 600px" class="ml15 lander-links-select form-control select2-single">
+      <select style="width: 300px" class="ml15 lander-links-select form-control select2-single">
         
         <% _.each(urlEndpoints, function(endpoint) { %>
         
-        <option>http://<%= domain %>/<%= endpoint.name %></option>
+        <option><%= domain %>/<%= endpoint.name %></option>
 
         <% }); %>
       
@@ -42,7 +42,7 @@
           <span class="fa fa-edit"></span>
         </a>
 
-        <% if(attached_campaigns_gui.length > 0) { %>
+        <% if(hasActiveCampaigns) { %>
 
           <a class="campaign-tab-link" href="#">
             <span class="icon-campaigns_icon">

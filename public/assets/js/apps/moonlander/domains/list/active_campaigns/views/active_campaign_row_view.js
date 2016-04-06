@@ -29,9 +29,9 @@ define(["app",
         },
 
         onBeforeRender: function() {
-          //sort currentLanders asc by name
-          var currentLanders = this.model.get("currentLanders");
-          currentLanders.sort(function(a, b) {
+          //sort deployedLanders asc by name
+          var deployedLanders = this.model.get("deployedLanders");
+          deployedLanders.sort(function(a, b) {
             var keyA = a.name;
             var keyB = b.name;
             // Compare the 2 vals

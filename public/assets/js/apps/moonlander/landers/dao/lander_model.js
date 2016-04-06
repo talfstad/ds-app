@@ -2,12 +2,12 @@ define(["app",
     "/assets/js/jobs/jobs_base_gui_model.js",
     "/assets/js/apps/moonlander/domains/dao/domain_collection.js",
     "/assets/js/apps/moonlander/landers/dao/url_endpoint_collection.js",
-    "/assets/js/apps/moonlander/landers/dao/deployed_location_collection.js",
-    "/assets/js/apps/moonlander/landers/dao/deployed_location_collection.js",
+    "/assets/js/apps/moonlander/landers/dao/deployed_lander_collection.js",
+    "/assets/js/apps/moonlander/landers/dao/deployed_lander_collection.js",
     "/assets/js/apps/moonlander/landers/dao/active_campaign_collection.js"
   ],
   function(Moonlander, JobsGuiBaseModel, DomainCollection, UrlEndpointCollection,
-    DeployedLocationCollection, DeployedLocationsCollection, ActiveCampaignCollection) {
+    deployedLanderCollection, DeployedLandersCollection, ActiveCampaignCollection) {
     var LanderModel = JobsGuiBaseModel.extend({
       urlRoot: "/api/landers",
 
@@ -70,16 +70,16 @@ define(["app",
 
         ////////
 
-        //1. build deployedLocations collection
+        //1. build deployedLanders collection
         //2. build urlendpoint collection
         var activeCampaignAttributes = this.get("activeCampaigns");
         var urlEndpointAttributes = this.get("urlEndpoints");
-        var deployedLocationsAttributes = this.get("deployedLocations");
+        var deployedLandersAttributes = this.get("deployedLanders");
 
-        var deployedLocationsCollection = new DeployedLocationsCollection(deployedLocationsAttributes);
+        var deployedLandersCollection = new DeployedLandersCollection(deployedLandersAttributes);
         //extra things it needs
-        deployedLocationsCollection.urlEndpoints = urlEndpointAttributes;
-        deployedLocationsCollection.landerName = this.get("name");
+        deployedLandersCollection.urlEndpoints = urlEndpointAttributes;
+        deployedLandersCollection.landerName = this.get("name");
 
         var applyUpdatedDeployStatusToLander = function() {
           //update deploy status view UNLESS we're initializing or deleting. if initializing needs to be changed
@@ -88,7 +88,7 @@ define(["app",
           if (me.get("deploy_status") !== "initializing" &&
             me.get("deploy_status") !== "deleting") {
             var deployStatus = "deployed";
-            deployedLocationsCollection.each(function(deployedDomainModel) {
+            deployedLandersCollection.each(function(deployedDomainModel) {
               if (deployedDomainModel.get("activeJobs").length > 0) {
                 deployStatus = "deploying";
               } else if(deployedDomainModel.get("deploy_status") === "modified") {
@@ -97,7 +97,7 @@ define(["app",
             });
 
             //catch if there are no models, set to not_deployed
-            if (deployedLocationsCollection.length <= 0) {
+            if (deployedLandersCollection.length <= 0) {
               deployStatus = "not_deployed"
             }
 
@@ -106,11 +106,11 @@ define(["app",
         }
 
         //whenever deployed domain coll updates deploy_status, update master lander deploy status
-        deployedLocationsCollection.on("add change:deploy_status", function(domainModel) {
+        deployedLandersCollection.on("add change:deploy_status", function(domainModel) {
           applyUpdatedDeployStatusToLander();
         });
 
-        this.set("deployedLocations", deployedLocationsCollection);
+        this.set("deployedLanders", deployedLandersCollection);
 
         var urlEndpointCollection = new UrlEndpointCollection(urlEndpointAttributes);
         this.set("urlEndpoints", urlEndpointCollection);
@@ -118,9 +118,9 @@ define(["app",
         var activeCampaignsCollection = new ActiveCampaignCollection();
 
         // when adding models to the active campaign collection, make sure that each
-        // campaigns current domains is in deployedLocations. if not then trigger a deploy on
+        // campaigns current domains is in deployedLanders. if not then trigger a deploy on
         // 
-        var deployedLocationsCollection = this.get("deployedLocations");
+        var deployedLandersCollection = this.get("deployedLanders");
 
         activeCampaignsCollection.on("add", function(campaignModel, campaignCollection, options) {
           // check all deployed locations make sure all campaign model deployed domains is deployed if not then trigger
@@ -130,7 +130,7 @@ define(["app",
             var isDeployed = false;
             var isUndeploying = false;
             var isDeploying = false;
-            deployedLocationsCollection.each(function(deployLocationModel) {
+            deployedLandersCollection.each(function(deployLocationModel) {
 
               if (currentDomain.domain_id == deployLocationModel.id) {
                 isDeployed = true;
@@ -145,8 +145,8 @@ define(["app",
 
                 //add this campaign info to the deployed location so we can see that it belongs to
                 //this campaign in the deployed tab
-                var attachedCampaigns = deployLocationModel.get("attachedCampaigns");
-                attachedCampaigns.add(campaignModel);
+                var activeCampaigns = deployLocationModel.get("activeCampaigns");
+                activeCampaigns.add(campaignModel);
               }
             });
 
@@ -177,25 +177,25 @@ define(["app",
           Moonlander.trigger("landers:updateTopbarTotals");
 
           var deployStatus = this.get("deploy_status");
-          deployedLocationsCollection.deploy_status = deployStatus;
+          deployedLandersCollection.deploy_status = deployStatus;
           activeCampaignsCollection.deploy_status = deployStatus;
 
         });
 
         
 
-        deployedLocationsCollection.on("destroy", function(domainModel) {
+        deployedLandersCollection.on("destroy", function(domainModel) {
           applyUpdatedDeployStatusToLander();
         });
 
 
         //set deploy_status based on our new model
 
-        //deployedLocation Jobs
+        //deployedLander Jobs
         var deployStatus = "not_deployed";
-        if (deployedLocationsCollection.length > 0) {
+        if (deployedLandersCollection.length > 0) {
           deployStatus = "deployed";
-          deployedLocationsCollection.each(function(location) {
+          deployedLandersCollection.each(function(location) {
 
             location.get("activeJobs").each(function(job) {
               if (job.get("action") === "undeployLanderFromDomain") {
@@ -208,7 +208,7 @@ define(["app",
           });
         }
 
-        //lander level jobs override deployedLocation jobs
+        //lander level jobs override deployedLander jobs
         if (activeJobsCollection.length > 0) {
           activeJobsCollection.each(function(job) {
             if (job.get("action") === "deletingLander") {
@@ -223,7 +223,7 @@ define(["app",
         this.set("deploy_status", deployStatus);
 
         if(this.get("modified")) {
-          deployedLocationsCollection.each(function(location){
+          deployedLandersCollection.each(function(location){
             location.set("deploy_status", "modified");
           });
         }
@@ -239,7 +239,7 @@ define(["app",
         optimize_images: false,
         optimize_gzip: false,
         urlEndpoints: [],
-        deployedLocations: [],
+        deployedLanders: [],
         activeCampaigns: [],
         //gui update attributes
         deploy_status: 'not_deployed',
@@ -251,3 +251,57 @@ define(["app",
     });
     return LanderModel;
   });
+
+[
+  {
+    "id": 129,
+    "domain": "andlucky11.com",
+    "nameservers": [
+      "ns-1935.awsdns-49.co.uk",
+      "ns-848.awsdns-42.net",
+      "ns-493.awsdns-61.com",
+      "ns-1179.awsdns-19.org"
+    ],
+    "created_on": "Mar 1, 2016 2:38:06 AM",
+    "deployedLanders": [
+      {
+        "id": 3761,
+        "name": "1122TREVY dup dup dup dup",
+        "lander_id": 240,
+        "domain_id": 129,
+        "urlEndpoints": [
+          {
+            "id": 8,
+            "name": "onetwo.html",
+            "lander_id": 240
+          },
+          {
+            "id": 9,
+            "name": "three.html",
+            "lander_id": 240
+          }
+        ],
+        "activeJobs": []
+      },
+      {
+        "id": 3765,
+        "name": "111",
+        "lander_id": 292,
+        "domain_id": 129,
+        "urlEndpoints": [],
+        "activeJobs": []
+      }
+    ],
+    "activeCampaigns": [
+      {
+        "campaign_id": 55,
+        "id": 473,
+        "name": "asdf",
+        "domain_id": 129,
+        "deployedLanders": [],
+        "activeJobs": []
+      }
+    ],
+    "activeJobs": []
+  }
+]

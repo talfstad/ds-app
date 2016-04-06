@@ -21,11 +21,11 @@ define(["app",
 
           //render on attached campaigns change/destroy. needs to be rendered because
           //changes the text
-          var attachedCampaigns = this.model.get("attachedCampaigns");
-          this.listenTo(attachedCampaigns, "destroy", function() {
+          var activeCampaigns = this.model.get("activeCampaigns");
+          this.listenTo(activeCampaigns, "destroy", function() {
             me.render();
           });
-          this.listenTo(attachedCampaigns, "add", function() {
+          this.listenTo(activeCampaigns, "add", function() {
             me.render();
           });
 
@@ -103,7 +103,7 @@ define(["app",
         },
 
         onBeforeRender: function() {
-
+          var me = this;
           var deployStatus = this.model.get("deploy_status");
           if (deployStatus === "deployed") {
             this.model.set("deploy_status_gui", "");
@@ -113,12 +113,23 @@ define(["app",
             this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong>");
           }
 
-          //add attached campaigns to template
-          var attachedCampaignNamesArray = [];
-          this.model.get("attachedCampaigns").each(function(campaign) {
-            attachedCampaignNamesArray.push(campaign.get("name"));
+          var activeCampaignCollection = this.model.get("activeCampaignCollection");
+          
+          activeCampaignCollection.each(function(campaign) {
+
+            var deployedLanders = campaign.get('deployedLanders');
+            
+            var landerId = me.model.get("lander_id");
+
+            if (deployedLanders.find(function(m) {
+            var id = m.lander_id || m.id;
+              return id == landerId
+            })) {
+              me.model.set("hasActiveCampaigns", true);
+            }
+
           });
-          this.model.set("attached_campaigns_gui", attachedCampaignNamesArray);
+
         },
 
         onDestroy: function() {
@@ -129,7 +140,7 @@ define(["app",
 
           this.$el.find(".lander-links-select").select2();
 
-          
+
           var deployStatus = this.model.get("deploy_status");
           this.$el.removeClass("success alert warning");
           if (deployStatus === "deployed") {

@@ -1,5 +1,6 @@
 module.exports = function(db) {
 
+
   return {
 
     //remove domain from all campaigns that have it
@@ -114,9 +115,13 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT a.lander_id,b.name FROM landers_with_campaigns a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.id],
+          connection.query("SELECT a.lander_id,b.name FROM landers_with_campaigns a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.campaign_id],
             function(err, dbDomainIdsForCampaign) {
-              callback(dbDomainIdsForCampaign);
+              if (err) {
+
+              } else {
+                callback(dbDomainIdsForCampaign);
+              }
               connection.release();
             });
         });
@@ -139,10 +144,10 @@ module.exports = function(db) {
       };
 
       getExtraNestedForActiveCampaign = function(activeCampaign, domain, callback) {
-        getAllLanderIdsForCampaign(activeCampaign, function(currentLanders) {
-          activeCampaign.currentLanders = currentLanders;
+        getAllLanderIdsForCampaign(activeCampaign, function(deployedLanders) {
+          activeCampaign.deployedLanders = deployedLanders;
 
-          getActiveJobsForActiveCampaign(activeCampaign, domain, function(activeJobs){
+          getActiveJobsForActiveCampaign(activeCampaign, domain, function(activeJobs) {
 
             activeCampaign.activeJobs = activeJobs;
             callback();
@@ -244,8 +249,8 @@ module.exports = function(db) {
           getActiveJobsForLander(lander, function(activeJobs) {
 
             lander.activeJobs = activeJobs;
-
             callback();
+
           });
 
         });
@@ -435,6 +440,3 @@ module.exports = function(db) {
     }
   }
 };
-
-
-

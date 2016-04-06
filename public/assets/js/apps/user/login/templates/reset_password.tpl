@@ -7,9 +7,6 @@
     </div>
 
     <div class="col-xs-6 va-b">
-    <!--   <div class="login-links text-right">
-        <a href="#" class="" title="False Credentials">Password Reset</a>
-      </div> -->
       <div class="login-links text-right">
           <a href="/login" title="Sign In">Sign In</a>
       </div>

@@ -30,7 +30,7 @@ define(["app",
           model.set('viewIndex', parseInt(this.collection.indexOf(model)) + 1);
           model.set('domain', this.collection.domain);
           model.set('domain_id', this.collection.domain_id);
-
+          model.set('activeCampaignCollection', this.collection.activeCampaignCollection);
           //return options ONLY used by our empty view.
           return {
             isInitializing: this.collection.isInitializing || false

@@ -101,11 +101,6 @@ define(["app",
 
         });
 
-
-        //build attachedCampaigns collection
-        // var attachedCampaignsCollection = new AttachedCampaignsCollection();
-        // this.set("attachedCampaigns", attachedCampaignsCollection);
-
         this.startActiveJobs();
 
       },
@@ -117,7 +112,6 @@ define(["app",
         //gui attributes
         //should default true since deployed_domains is where this model is used
         deploy_status: 'not_deployed',
-        // attachedCampaigns: []
       }
 
 

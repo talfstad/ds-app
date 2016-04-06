@@ -20,11 +20,11 @@ define(["app",
 
           //render on attached campaigns change/destroy. needs to be rendered because
           //changes the text
-          var attachedCampaigns = this.model.get("attachedCampaigns");
-          this.listenTo(attachedCampaigns, "destroy", function() {
+          var activeCampaigns = this.model.get("activeCampaigns");
+          this.listenTo(activeCampaigns, "destroy", function() {
             me.render();
           });
-          this.listenTo(attachedCampaigns, "add", function() {
+          this.listenTo(activeCampaigns, "add", function() {
             me.render();
           });
 
@@ -77,10 +77,10 @@ define(["app",
 
           //add attached campaigns to template
           var attachedCampaignNamesArray = [];
-          this.model.get("attachedCampaigns").each(function(campaign) {
+          this.model.get("activeCampaigns").each(function(campaign) {
             attachedCampaignNamesArray.push(campaign.get("name"));
           });
-          this.model.set("attached_campaigns_gui", attachedCampaignNamesArray);
+          this.model.set("active_campaigns_gui", attachedCampaignNamesArray);
         },
 
         onRender: function() {

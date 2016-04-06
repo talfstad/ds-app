@@ -31,16 +31,16 @@ define(["app",
         //in which case we would want to save it anyway
         updateToModifiedAndSave: function() {
 
-          var deployedLocationCollection = this.landerModel.get("deployedLocations");
+          var deployedLanderCollection = this.landerModel.get("deployedLanders");
 
           //1. set modified if it is deployed
-          if (deployedLocationCollection.length > 0) {
+          if (deployedLanderCollection.length > 0) {
             this.landerModel.set("modified", true);
           }
           //2. save it no matter what
           this.landerModel.save({}, {
             success: function() {
-              deployedLocationCollection.each(function(location) {
+              deployedLanderCollection.each(function(location) {
                 var deployStatus = location.get("deploy_status");
                 if (deployStatus != "undeploying" && deployStatus != "deploying") {
                   location.set("deploy_status", "modified");

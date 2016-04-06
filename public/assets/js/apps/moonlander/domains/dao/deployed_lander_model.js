@@ -1,9 +1,9 @@
 define(["app",
     "/assets/js/jobs/jobs_base_gui_model.js",
-    "/assets/js/apps/moonlander/domains/dao/attached_campaigns_collection.js",
+    "/assets/js/apps/moonlander/domains/dao/active_campaign_collection.js",
     "/assets/js/jobs/jobs_app.js"
   ],
-  function(Moonlander, JobsGuiBaseModel, AttachedCampaignsCollection) {
+  function(Moonlander, JobsGuiBaseModel, ActiveCampaignCollection) {
     var DeployedLanderModel = JobsGuiBaseModel.extend({
 
       url: '/',
@@ -106,11 +106,6 @@ define(["app",
 
         });
 
-
-        //build attachedCampaigns collection
-        var attachedCampaignsCollection = new AttachedCampaignsCollection();
-        this.set("attachedCampaigns", attachedCampaignsCollection);
-
         this.startActiveJobs();
 
       },
@@ -122,7 +117,7 @@ define(["app",
         //gui attributes
         //should default true since deployed_domains is where this model is used
         deploy_status: 'deployed',
-        attachedCampaigns: []
+        hasActiveCampaigns: false
       }
 
 

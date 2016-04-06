@@ -14,9 +14,13 @@ define(["app",
         this.each(function(campaign){
           campaignId = campaign.get("id");
 
-          if(!campaignsToFilterOutCollection.get(campaignId)) {
+          if (!campaignsToFilterOutCollection.find(function(m) {
+            var id = m.get('campaign_id') || m.get('id')
+              return id == campaignId
+            })) {
             items.add(campaign);
           }
+
         });
 
         return items;

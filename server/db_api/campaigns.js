@@ -138,27 +138,27 @@ module.exports = function(db) {
             } else {
               modelAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
 
-              var currentLanders = docs[1];
+              var deployedLanders = docs[1];
 
               delete modelAttributes.activeJobs;
               delete modelAttributes.deployedDomains;
               delete modelAttributes.deployedLanders;
 
               //get current lander data by id
-              if (currentLanders.length > 0) {
+              if (deployedLanders.length > 0) {
 
-                dbLanders.getAll(user, function(currentLandersArr) {
+                dbLanders.getAll(user, function(deployedLandersArr) {
                   //add the current lander data and return!
 
-                  modelAttributes.currentLanders = currentLandersArr
+                  modelAttributes.deployedLanders = deployedLandersArr
 
                   callback(modelAttributes);
 
-                }, currentLanders);
+                }, deployedLanders);
 
               } else {
 
-                modelAttributes.currentLanders = []
+                modelAttributes.deployedLanders = []
 
                 callback(modelAttributes);
 
@@ -199,6 +199,31 @@ module.exports = function(db) {
         }
       });
 
+    },
+
+    getActiveCampaignsForLander: function(user, lander, callback) {
+      this.getAll(user, function(err, campaigns) {
+
+        var activeCampaigns = [];
+
+        for (var i = 0; i < campaigns.length; i++) {
+
+          //loop deployed landers on each campaign and push if deployed lander matches lander we're looking for
+          var deployedLanders = campaigns[i].deployedLanders;
+
+          for (var j = 0; j < deployedLanders.length; j++) {
+            
+            var lander_id = lander.lander_id || lander.id;
+            
+            if (deployedLanders[j].lander_id == lander_id) {
+              activeCampaigns.push(deployedLanders[j]);
+            }
+          }
+        }
+
+        callback(activeCampaigns);
+
+      });
     },
 
     getAll: function(user, callback) {

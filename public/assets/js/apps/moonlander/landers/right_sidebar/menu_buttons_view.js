@@ -19,8 +19,8 @@ define(["app",
           e.preventDefault();
 
           
-          var deployedLocationCollection = me.model.get("deployedLocations");
-          deployedLocationCollection.each(function(location) {
+          var deployedLanderCollection = me.model.get("deployedLanders");
+          deployedLanderCollection.each(function(location) {
             location.set("shouldSetModifiedWhenJobsFinish", false);
           });
 

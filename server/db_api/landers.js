@@ -87,7 +87,7 @@ module.exports = function(db) {
                 duplicateLanderAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
                 duplicateLanderAttributes.last_updated = docs[1][0].last_updated;
                 //remove any attributes we dont want to overwrite
-                delete duplicateLanderAttributes.deployedLocations;
+                delete duplicateLanderAttributes.deployedLanders;
                 delete duplicateLanderAttributes.activeJobs;
                 delete duplicateLanderAttributes.activeCampaigns;
                 delete duplicateLanderAttributes.urlEndpoints;
@@ -218,7 +218,7 @@ module.exports = function(db) {
         });
       };
 
-      var getActiveJobsForDeployedLocation = function(deployedLocation, callback) {
+      var getActiveJobsFordeployedLander = function(deployedLander, callback) {
         //get all jobs attached to lander and make sure only select those. list is:
         // 1. deployLanderToDomain
         // 2. undeployLanderFromDomain
@@ -226,7 +226,7 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT id,action,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, deployedLocation.lander_id, deployedLocation.id, true],
+          connection.query("SELECT id,action,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, deployedLander.lander_id, deployedLander.id, true],
             function(err, dbActiveJobs) {
               callback(dbActiveJobs);
               connection.release();
@@ -234,7 +234,7 @@ module.exports = function(db) {
         });
       };
 
-      var getDeployedLocationsForLander = function(lander, callback) {
+      var getdeployedLandersForLander = function(lander, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
@@ -246,7 +246,7 @@ module.exports = function(db) {
               } else {
                 var idx = 0;
                 for (var i = 0; i < dbDeployedLanders.length; i++) {
-                  getActiveJobsForDeployedLocation(dbDeployedLanders[i], function(activeJobs) {
+                  getActiveJobsFordeployedLander(dbDeployedLanders[i], function(activeJobs) {
                     var deployedLander = dbDeployedLanders[idx];
                     deployedLander.activeJobs = activeJobs;
 
@@ -322,9 +322,9 @@ module.exports = function(db) {
 
           lander.urlEndpoints = endpoints;
 
-          getDeployedLocationsForLander(lander, function(deployedLocations) {
+          getdeployedLandersForLander(lander, function(deployedLanders) {
 
-            lander.deployedLocations = deployedLocations;
+            lander.deployedLanders = deployedLanders;
 
             getActiveCampaignsForLander(lander, function(activeCampaigns) {
 
@@ -440,7 +440,7 @@ module.exports = function(db) {
       //     "lander_id": 1,
       //     "activeSnippets": []
       //   }],
-      //   "deployedLocations": [{
+      //   "deployedLanders": [{
       //     "id": 1,
       //     "domain": "hardbodiesandboners.org",
       //     "lander_id": 1,
@@ -472,7 +472,7 @@ module.exports = function(db) {
       //       "name": "test"
       //     }]
       //   }],
-      //   "deployedLocations": [{
+      //   "deployedLanders": [{
       //     "id": 1,
       //     "domain": "hardbodiesandboners.org",
       //     "lander_id": 2,
@@ -506,7 +506,7 @@ module.exports = function(db) {
       //     "lander_id": 3,
       //     "activeSnippets": []
       //   }],
-      //   "deployedLocations": [{
+      //   "deployedLanders": [{
       //     "id": 2,
       //     "domain": "weightlosskey.com",
       //     "lander_id": 3,
@@ -527,7 +527,7 @@ module.exports = function(db) {
       //     "lander_id": 4,
       //     "activeSnippets": []
       //   }],
-      //   "deployedLocations": [],
+      //   "deployedLanders": [],
       //   "activeCampaigns": []
       // }]
 

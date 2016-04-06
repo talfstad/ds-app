@@ -23,7 +23,7 @@
   </td>
 </tr>
 
-<% _.each(currentLanders, function(lander) { %>
+<% _.each(deployedLanders, function(lander) { %>
   <tr class="lander-on-campaign-row">
     <td></td>
     <td>
