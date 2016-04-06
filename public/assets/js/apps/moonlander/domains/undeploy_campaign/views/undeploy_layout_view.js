@@ -27,8 +27,20 @@ define(["app",
           "click .undeploy-confirm": "confirmedRemoveCampaignFromLander"
         },
 
+        initialize: function() {
+          this.campaignModel = this.options.campaign_model;
+          this.domainModel = this.options.domain_model;
+        },
+
+        templateHelpers: function() {
+          return {
+            campaign_name: this.campaignModel.get("name"),
+            domain_name: this.domainModel.get("domain")
+          }
+        },
+
         confirmedRemoveCampaignFromLander: function() {
-          this.trigger("removeCampaignFromLander", this.model);      
+          this.trigger("removeCampaignFromDomain", this.model);      
         },
 
         onRender: function() {

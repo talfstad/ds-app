@@ -7,35 +7,15 @@ define(["app",
     Moonlander.module("DomainsApp.Domains.List.Deployed", function(Deployed, Moonlander, Backbone, Marionette, $, _) {
       Deployed.DeployedRowView = Marionette.ItemView.extend({
 
-        initialize: function() {
-          var me = this;
-
-          //listen for destroy/change events to active jobs
-          var activeJobsCollection = this.model.get("activeJobs");
-          this.listenTo(activeJobsCollection, "change", function() {
-            me.render();
-          });
-          this.listenTo(activeJobsCollection, "destroy", function() {
-            me.render();
-          });
-
-          //render on attached campaigns change/destroy. needs to be rendered because
-          //changes the text
-          var activeCampaigns = this.model.get("activeCampaigns");
-          this.listenTo(activeCampaigns, "destroy", function() {
-            me.render();
-          });
-          this.listenTo(activeCampaigns, "add", function() {
-            me.render();
-          });
-
-        },
-
         template: DeployedDomainRowTpl,
         tagName: "tr",
 
         modelEvents: {
-          "change": "render"
+          "change": "render",
+          "change:activeJobs": "render",
+          "destroy:activeJobs": "render",
+          "destroy:activeCampaigns": "render",
+          "add:activeCampaigns": "render"
         },
 
         events: {
@@ -127,9 +107,7 @@ define(["app",
             })) {
               me.model.set("hasActiveCampaigns", true);
             }
-
           });
-
         },
 
         onDestroy: function() {

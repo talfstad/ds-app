@@ -26,55 +26,6 @@ define(["app",
 
         filteredDomainCollection: null,
 
-        //takes an array of objects, keys off domain_id to undeploy each domain
-        removeCampaignFromLander: function(campaignModel) {
-          var me = this;
-          var domain_id = campaignModel.get("domain_id");
-          var campaign_id = campaignModel.get("campaign_id") || campaignModel.get("id");
-
-          var domain = me.filteredDomainCollection.get(domain_id);
-          var deployedLanders = domain.get("deployedLanders");
-
-
-          //trigger undeploy job on each deployed domain that belongs to this campaign
-          $.each(campaignModel.get("deployedLanders"), function(idx, lander) {
-            var lander_id = lander.lander_id || lander.id;
-
-            var deployedLanderModel = deployedLanders.find(function(m) {
-              var id = m.get("lander_id") || m.get("id");
-              return id == lander_id
-            })
-
-            var activeJobsCollection = deployedLanderModel.get("activeJobs");
-
-
-            var jobAttributes = {
-              action: "undeployLanderFromDomain",
-              lander_id: lander_id,
-              domain_id: domain_id,
-              campaign_id: campaign_id
-            }
-
-            //create job and add to models activeJobs
-
-            //get lander so we can add jobs to the deployed domains we want to undeploy
-
-            //only undeploy lander if this is the only campaign attached to the domain
-            var activeCampaigns = deployedLanderModel.get("activeCampaigns");
-            if (activeCampaigns.length <= 0) {
-              //create the new job model
-              var jobModel = new JobModel(jobAttributes);
-              activeJobsCollection.add(jobModel);
-
-              Moonlander.trigger("job:start", jobModel);
-
-            }
-
-          });
-
-        },
-
-
         deployCampaignLandersToDomain: function(attr) {
 
           var activeCampaignModel = attr.active_campaign_model;
@@ -101,7 +52,8 @@ define(["app",
             var landerIsDeployed = false;
 
             currentDeployedLanderCollection.each(function(deployedLanderModel) {
-              if (campaignLander.id == deployedLanderModel.get("lander_id")) {
+              deployedLanderModelId = deployedLanderModel.get("lander_id") || deployedLanderModel.get("id")
+              if (campaignLander.id == deployedLanderModelId) {
                 deployedLanderModel.set("hasActiveCampaigns", true);
                 landerIsDeployed = true;
               }
@@ -333,6 +285,14 @@ define(["app",
 
                   var activeCampaignsView = new ActiveCampaignsView({
                     collection: activeCampaignsCollection
+                  });
+
+                  activeCampaignsCollection.on("showUndeployDomainFromCampaignDialog", function(campaignModel) {
+                    var attr = {
+                      campaign_model: campaignModel,
+                      domain_model: domainView.model
+                    };
+                    Moonlander.trigger("domains:showUndeployDomainFromCampaignDialog", attr);
                   });
 
                   activeCampaignsView.on("childview:updateParentLayout", function(childView, options) {

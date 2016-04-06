@@ -24,7 +24,7 @@
 </tr>
 
 <% _.each(deployedLanders, function(lander) { %>
-  <tr class="lander-on-campaign-row">
+  <tr class="lander-on-campaign-row primary">
     <td></td>
     <td>
       <div style="margin-left: 100px"> <%= lander.name %> </div>

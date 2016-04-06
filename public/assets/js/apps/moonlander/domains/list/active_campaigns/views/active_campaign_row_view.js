@@ -17,7 +17,8 @@ define(["app",
           e.preventDefault();
           e.stopPropagation();
 
-          Moonlander.trigger("domains:showUndeployDomainFromCampaignDialog", this.model);
+          this.model.trigger("showUndeployDomainFromCampaignDialog", this.model);
+
         },
 
         modelEvents: {

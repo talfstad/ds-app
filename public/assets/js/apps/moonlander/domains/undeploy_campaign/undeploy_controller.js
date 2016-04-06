@@ -1,47 +1,71 @@
 define(["app",
-    "/assets/js/apps/moonlander/domains/undeploy_campaign/views/undeploy_layout_view.js"
+    "/assets/js/apps/moonlander/domains/undeploy_campaign/views/undeploy_layout_view.js",
+    "/assets/js/jobs/jobs_model.js"
   ],
   function(Moonlander, UndeployLayoutView, JobModel) {
     Moonlander.module("DomainsApp.Domains.UndeployCampaign", function(UndeployCampaign, Moonlander, Backbone, Marionette, $, _) {
 
       UndeployCampaign.Controller = {
 
-        showUndeployDomainFromCampaignDialog: function(model) {
+        showUndeployDomainFromCampaignDialog: function(attr) {
+          var activeCampaignModel = attr.campaign_model;
+          var domainModel = attr.domain_model;
+          var campaign_id = activeCampaignModel.get("campaign_id");
 
-          var undeployCampaignLayout = new UndeployLayoutView({
-            model: model
+          var removeDomainFromCampaignLayout = new UndeployLayoutView({
+            campaign_model: activeCampaignModel,
+            domain_model: domainModel
           });
-          undeployCampaignLayout.render();
 
-          Moonlander.rootRegion.currentView.modalRegion.show(undeployCampaignLayout);
+          removeDomainFromCampaignLayout.render();
 
+          Moonlander.rootRegion.currentView.modalRegion.show(removeDomainFromCampaignLayout);
 
-          undeployCampaignLayout.on("removeCampaignFromLander", function(model) {
+          //on add save the camp to db
+          removeDomainFromCampaignLayout.on("removeCampaignFromDomain", function() {
 
-            //delete the active campaign. need to set id = to the active_campaign_id because
-            //we have the id stored as the original campaign id to make sure the filtering is correct
-            //in add campaign to lander logic.
+            var activeCampaignModelActiveJobs = activeCampaignModel.get("activeJobs");
 
-            model.set("id", model.get("active_campaign_id"));
+            var deployedLandersCollection = domainModel.get("deployedLanders");
 
-            model.set("action", "domain");
-            
-            model.destroy({
-              success: function(model, response) {
+            $.each(activeCampaignModel.get("deployedLanders"), function(idx, deployedLanderAttr) {
 
-                //on success remove the active campaign from the collection it belongs to
-                Moonlander.trigger("domains:removeCampaignFromLander", model);
+              deployedLandersCollection.each(function(deployedLanderModel) {
+                var deployedLanderModelActiveJobs = deployedLanderModel.get("activeJobs");
+                
+                //find the deployed landers that belong to this campaign
+                campaignLanderId = deployedLanderAttr.lander_id || deployedLanderAttr.id;
+                deployedLanderModelId = deployedLanderModel.get("lander_id") || deployedLanderModel.get("id")
+                if (campaignLanderId == deployedLanderModelId) {
 
-                //this triggers a remove on the collection which we can make cause an undeploy of the landers
-                //belonging to that collection
+                  //create undeploy job for domain and add it to the domain and the lander model
+                  var jobAttributes = {
+                    action: "undeployLanderFromDomain",
+                    lander_id: deployedLanderModel.get("lander_id") || deployedLanderModel.get("id"),
+                    domain_id: domainModel.get("domain_id") || domainModel.get("id"),
+                    campaign_id: campaign_id
+                  };
 
-              }
+                  var jobModel = new JobModel(jobAttributes);
+
+                  deployedLanderModelActiveJobs.add(jobModel);
+                  activeCampaignModelActiveJobs.add(jobModel);
+
+                  Moonlander.trigger("job:start", jobModel);
+
+                }
+
+              });
+
             });
 
+
+            //no landers on campaign so nothing needs to be undeployed. just destroy it
+            if (activeCampaignModel.get("deployedLanders").length <= 0) {
+              activeCampaignModel.destroy();
+            }
           });
-
         }
-
       }
     });
 
