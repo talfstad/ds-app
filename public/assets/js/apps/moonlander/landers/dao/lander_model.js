@@ -243,65 +243,14 @@ define(["app",
         activeCampaigns: [],
         //gui update attributes
         deploy_status: 'not_deployed',
-        active_campaigns_count: 0,
         totalNumJsSnippets: 0,
-        modified: false
+        modified: false,
+        deployed_domains_count: 0,
+        active_campaigns_count: 0
+
       }
 
     });
     return LanderModel;
   });
 
-[
-  {
-    "id": 129,
-    "domain": "andlucky11.com",
-    "nameservers": [
-      "ns-1935.awsdns-49.co.uk",
-      "ns-848.awsdns-42.net",
-      "ns-493.awsdns-61.com",
-      "ns-1179.awsdns-19.org"
-    ],
-    "created_on": "Mar 1, 2016 2:38:06 AM",
-    "deployedLanders": [
-      {
-        "id": 3761,
-        "name": "1122TREVY dup dup dup dup",
-        "lander_id": 240,
-        "domain_id": 129,
-        "urlEndpoints": [
-          {
-            "id": 8,
-            "name": "onetwo.html",
-            "lander_id": 240
-          },
-          {
-            "id": 9,
-            "name": "three.html",
-            "lander_id": 240
-          }
-        ],
-        "activeJobs": []
-      },
-      {
-        "id": 3765,
-        "name": "111",
-        "lander_id": 292,
-        "domain_id": 129,
-        "urlEndpoints": [],
-        "activeJobs": []
-      }
-    ],
-    "activeCampaigns": [
-      {
-        "campaign_id": 55,
-        "id": 473,
-        "name": "asdf",
-        "domain_id": 129,
-        "deployedLanders": [],
-        "activeJobs": []
-      }
-    ],
-    "activeJobs": []
-  }
-]

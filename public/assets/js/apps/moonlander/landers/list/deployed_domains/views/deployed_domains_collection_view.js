@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/apps/moonlander/landers/list/deployed/views/deployed_domain_row_view.js",
-    "/assets/js/apps/moonlander/landers/list/deployed/views/deployed_domains_empty_view.js"
+    "/assets/js/apps/moonlander/landers/list/deployed_domains/views/deployed_domain_row_view.js",
+    "/assets/js/apps/moonlander/landers/list/deployed_domains/views/deployed_domains_empty_view.js"
   ],
   function(Moonlander, DeployedDomainRowView, EmptyView) {
 
@@ -10,6 +10,19 @@ define(["app",
         childView: DeployedDomainRowView,
         emptyView: EmptyView,
 
+        onAddChild: function(childView) {
+          this.reIndex();
+        },
+
+        onRemoveChild: function(childView) {
+          this.reIndex();
+        },
+
+        reIndex: function() {
+          this.collection.each(function(deployedDomainModel, idx) {
+            deployedDomainModel.set("viewIndex", idx + 1);
+          });
+        },
 
         //pass the deployed list its rendered index for # column
         childViewOptions: function(model) {

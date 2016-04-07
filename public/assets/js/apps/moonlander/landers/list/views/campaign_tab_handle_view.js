@@ -13,9 +13,29 @@ define(["app",
             "data-toggle": "tab"
           }
         },
+
         template: campaignTabHandleTpl,
 
+        modelEvents: {
+          "change:active_campaigns_count": "render",
+        },
+
+        events: {
+          "click .add-link-plus": "addNewCampaign"
+        },
+
+        addNewCampaign: function() {
+          Moonlander.trigger("landers:showAddNewCampaign", this.model);
+        },
+
         onRender: function() {
+          var me = this;
+
+          //on render show the plus if tab is active
+          if (this.$el.parent().hasClass("active")) {
+            me.$el.find(".add-link-plus").css("display", "inline");
+          }
+
           //remove tab capability if deleting
           if (this.model.get("deploy_status") === "deleting") {
             this.$el.removeAttr("data-toggle");
@@ -25,10 +45,14 @@ define(["app",
             e.preventDefault();
           });
 
-        },
+          this.$el.on("hide.bs.tab", function(e) {
+            me.$el.find(".add-link-plus").hide();
+          });
 
-        modelEvents: {
-          "change:active_campaigns_count": "render"
+          this.$el.on("show.bs.tab", function(e) {
+            me.$el.find(".add-link-plus").css("display", "inline");
+          });
+
         }
       });
     });

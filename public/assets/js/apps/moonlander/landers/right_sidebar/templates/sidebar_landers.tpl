@@ -18,7 +18,7 @@
               <% }) %>
           </select>
         </div>
-        <button type="button" style="border-left:none; height: 39px; border-radius: 0 4px 4px 0" class="open-test-link pl10 pt5 pb5 btn btn-default btn-gradient dark">
+        <button type="button" style="width: 90px; border-left:none; height: 39px; border-radius: 0 4px 4px 0" class="open-test-link pl10 pt5 pb5 btn btn-default btn-gradient dark">
           <span style="font-size: 14px" class="text-info fa fa-eye pr5"></span>Preview
         </button>
       </div>
@@ -31,7 +31,7 @@
     </div>
     
 
-    <div class="admin-form panel-body pn pb25" style="font-size: 13px">
+    <div class="admin-form panel-body pn pb25" style="border-top: none; font-size: 13px">
       <div class="name-and-optimizations-region">
       </div>
       <h5 class="title-divider mt30 mb0">

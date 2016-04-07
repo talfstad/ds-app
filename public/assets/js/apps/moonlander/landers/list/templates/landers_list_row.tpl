@@ -4,9 +4,27 @@
       <div class="panel-heading">
         <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#landers-collection" href="#accord<%= id %>">
           <%= name %>
+
+          <div class="alert-working-badge widget-menu domain-campaign-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
+            <span class="open_sidemenu_r label">
+        
+          <div class="text-alert">
+            <span style="position: relative; top: 2px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>  
+           <span>Working...</span>
+           </div>
+            </span>
+          </div>
+          <div class="alert-modified-badge widget-menu domain-campaign-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
+            <span class="open_sidemenu_r label">
+        
+          <div class="text-warning">
+           <span>Modified</span>
+           </div>
+            </span>
+          </div>
        
         <div class="widget-menu domain-campaign-notification">
-           <span class="fs11 text-muted" title="Currently deployed on 2 domains"><%= last_updated_gui %></span>
+           <span class="fs11" title="created on <%= last_updated_gui %>"><%= last_updated_gui %></span>
         </div>
          </a>
        
@@ -20,7 +38,7 @@
           <div class="tab-pane " role="tabpanel" id="domains-tab-id-<%= id %>">
             <div class="panel-menu clearfix">
               <div class="row" style="margin-left: 0px; margin-right: 0px;">
-                <div style="margin-left: 5px; padding-top: 10px; float: left;" class="clearfix">
+                <div style="display: block" class="clearfix deployed-landers-header-container">
                   <span style="width: 20px">#</span>
                   <span style="margin-left: 15px">Deployed Domains</span>
                 </div>
@@ -39,7 +57,7 @@
           <div class="tab-pane" role="tabpanel" id="campaigns-tab-id-<%= id %>">
             <div class="panel-menu clearfix">
               <div class="row" style="margin-left: 0px; margin-right: 0px;">
-                <div style="margin-left: 5px; padding-top: 10px; float: left;" class="clearfix">
+                <div style="display: block;" class="clearfix deployed-landers-header-container">
                   <span style="width: 20px">#</span>
                   <span style="margin-left: 15px">Current Campaigns</span>
                 </div>

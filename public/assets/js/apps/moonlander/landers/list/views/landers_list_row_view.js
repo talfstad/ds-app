@@ -1,13 +1,13 @@
 define(["app",
-    "tpl!assets/js/apps/moonlander/landers/list/templates/landers_child_item.tpl",
-    "/assets/js/apps/moonlander/landers/list/deployed/views/deployed_domains_collection_view.js",
-    "/assets/js/apps/moonlander/landers/list/deployed/views/deployed_domains_empty_view.js",
+    "tpl!assets/js/apps/moonlander/landers/list/templates/landers_list_row.tpl",
+    "/assets/js/apps/moonlander/landers/list/deployed_domains/views/deployed_domains_collection_view.js",
+    "/assets/js/apps/moonlander/landers/list/deployed_domains/views/deployed_domains_empty_view.js",
     "/assets/js/apps/moonlander/landers/dao/sidebar_model.js",
     "moment-timezone",
-    "/assets/js/apps/moonlander/landers/list/views/deploy_status_view.js",
+    "/assets/js/apps/moonlander/landers/list/views/domain_tab_handle_view.js",
     "/assets/js/apps/moonlander/landers/list/views/campaign_tab_handle_view.js",
     "/assets/js/apps/moonlander/landers/list/active_campaigns/views/active_campaigns_collection_view.js",
-    "/assets/js/apps/moonlander/landers/list/deployed/views/deployed_domains_collection_view.js",
+    "/assets/js/apps/moonlander/landers/list/deployed_domains/views/deployed_domains_collection_view.js",
     "bootstrap",
     "jstz"
   ],
@@ -36,13 +36,37 @@ define(["app",
           "click button.add-to-campaign": "showAddToCampaign"
         },
 
+        modelEvents: {
+          "change:deploy_status": "alertDeployStatus"
+        },
+
         regions: {
           'deploy_status_region': '.deploy-status-region',
           'deployed_domains_region': '.deployed-domains-region',
           'campaign_tab_handle_region': '.campaign-tab-handle-region',
-          'active_campaigns_region': '.active_campaigns_region',
-          'deploy_to_new_domain_region': '.deploy-to-new-domain-region',
-          'add_to_new_campaign_region': '.add-to-new-campaign-region'
+          'active_campaigns_region': '.active_campaigns_region'
+        },
+
+        alertDeployStatus: function() {
+          var capitalizeFirstLetter = function(string) {
+            string = string.toLowerCase();
+            return string.charAt(0).toUpperCase() + string.slice(1);
+          }
+
+          //show correct one
+          var deployStatus = this.model.get("deploy_status");
+
+          if (deployStatus === "modified") {
+            this.$el.find(".alert-modified-badge").show();
+            this.$el.find(".alert-working-badge").hide();
+          } else {
+            this.$el.find(".alert-modified-badge").hide();
+            if (deployStatus !== "deployed" && deployStatus !== "not_deployed") {
+              this.$el.find(".alert-working-badge").show();
+            } else {
+              this.$el.find(".alert-working-badge").hide();
+            }
+          }
         },
 
         showDeployLanderToDomain: function() {
@@ -97,6 +121,8 @@ define(["app",
 
           var me = this;
 
+          this.alertDeployStatus();
+
           //if deleting need to show delet state (which is disabling the whole thing)
           if (this.model.get("deploy_status") === "deleting") {
             this.disableAccordionPermanently();
@@ -131,6 +157,8 @@ define(["app",
 
               $(e.currentTarget).find("li.active").removeClass("active");
               $(e.currentTarget).find(".accordion-toggle").removeClass('active');
+              $(e.currentTarget).find(".add-link-plus").hide();
+
             });
 
             this.$el.on('show.bs.collapse', function(e) {
@@ -152,10 +180,16 @@ define(["app",
                 //show clicked on tab
                 currentTab.addClass("active");
                 currentTabData.addClass("active");
+                currentTab.find(".add-link-plus").css("display", "inline");
+
               } else {
                 //no tab show domains tab
-                $(e.currentTarget).find("li.deploy-status-region").addClass("active");
+                var tabHandle = $(e.currentTarget).find("li.deploy-status-region");
+
+                tabHandle.addClass("active");
                 $(e.currentTarget).find("div[id^='domains-tab']").addClass("active");
+                tabHandle.find(".add-link-plus").css("display", "inline");
+
               }
 
 

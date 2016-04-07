@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!assets/js/apps/moonlander/landers/list/deployed/templates/empty.tpl"
+    "tpl!assets/js/apps/moonlander/landers/list/deployed_domains/templates/empty.tpl"
   ],
   function(Moonlander, EmptyTpl) {
 
@@ -7,7 +7,7 @@ define(["app",
       List.EmptyView = Marionette.ItemView.extend({
         template: EmptyTpl,
         tagName: "tr",
-        className: "primary",
+        className: "dark",
 
         isInitializing: false,
 

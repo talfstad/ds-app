@@ -51,13 +51,13 @@
 
       <% } %>
     
-      <% if(total_not_deployed > 0) { %>
+      <!-- <% if(total_not_deployed > 0) { %>
       
       <div>
         <span class="badge-primary badge"><%= total_not_deployed %></span> <%= lander %> Not Deployed
       </div>
       
-      <% } %>
+      <% } %> -->
       
       <% if(total_deploying > 0) { %>
 

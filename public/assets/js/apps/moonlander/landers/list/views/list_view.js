@@ -1,12 +1,12 @@
 define(["app",
-    "/assets/js/apps/moonlander/landers/list/views/list_childview_view.js",
+    "/assets/js/apps/moonlander/landers/list/views/landers_list_row_view.js",
     "/assets/js/apps/moonlander/landers/list/views/list_emptyview_view.js",
     "tpl!assets/js/apps/moonlander/landers/list/templates/list_container.tpl",
     "moment",
     "fancytree",
     "bootstrap"
   ],
-  function(Moonlander, landersListItemView, landersEmptyView, landersListContainerTemplate, moment) {
+  function(Moonlander, landersListRowView, landersEmptyView, landersListContainerTemplate, moment) {
 
     Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
@@ -14,7 +14,7 @@ define(["app",
         id: "landers-collection",
         className: "accordion",
         emptyView: landersEmptyView,
-        childView: landersListItemView,
+        childView: landersListRowView,
         
         initialize: function() {
           this.listenTo(this, "landers:sort", this.triggerSort);

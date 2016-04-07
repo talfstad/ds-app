@@ -9,6 +9,19 @@ define(["app",
         tagName: "table",
         className: "table",
 
+        onAddChild: function(childView) {
+          this.reIndex();
+        },
+
+        onRemoveChild: function(childView) {
+          this.reIndex();
+        },
+
+        reIndex: function() {
+          this.collection.each(function(activeCampaignModel, idx) {
+            activeCampaignModel.set("viewIndex", idx + 1);
+          });
+        },
 
         //pass the deployed list its rendered index for # column
         childViewOptions: function(model) {

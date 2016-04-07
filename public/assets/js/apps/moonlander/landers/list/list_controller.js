@@ -6,22 +6,20 @@ define(["app",
     "/assets/js/common/filtered_paginated/paginated_button_view.js",
     "/assets/js/apps/moonlander/landers/list/views/topbar_view.js",
     "/assets/js/apps/moonlander/landers/list/views/loading_view.js",
-    "/assets/js/apps/moonlander/landers/list/views/deploy_status_view.js",
+    "/assets/js/apps/moonlander/landers/list/views/domain_tab_handle_view.js",
     "/assets/js/apps/moonlander/landers/list/views/campaign_tab_handle_view.js",
-    "/assets/js/apps/moonlander/landers/list/deployed/views/deployed_domains_collection_view.js",
+    "/assets/js/apps/moonlander/landers/list/deployed_domains/views/deployed_domains_collection_view.js",
     "/assets/js/apps/moonlander/domains/dao/domain_collection.js",
     "/assets/js/apps/moonlander/landers/list/active_campaigns/views/active_campaigns_collection_view.js",
     "/assets/js/apps/moonlander/landers/dao/deployed_lander_model.js",
     "/assets/js/jobs/jobs_model.js",
     "/assets/js/apps/moonlander/landers/dao/active_campaign_model.js",
-    "/assets/js/apps/moonlander/landers/list/views/deploy_to_new_domain_view.js",
-    "/assets/js/apps/moonlander/landers/list/views/add_to_new_campaign_view.js",
     "/assets/js/apps/moonlander/landers/list/views/list_layout_view.js"
   ],
   function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
     PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView,
     DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView, deployedLanderModel,
-    JobModel, ActiveCampaignModel, DeployToNewDomainView, AddToNewCampaignView) {
+    JobModel, ActiveCampaignModel) {
     Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
       List.Controller = {
@@ -275,7 +273,7 @@ define(["app",
               if (this.length > 0) {
                 landersListView.children.each(function(landerView) {
 
-                  var deployStatusView = new DeployStatusView({
+                  var domainTabHandleView = new DeployStatusView({
                     model: landerView.model
                   });
 
@@ -307,25 +305,29 @@ define(["app",
                     deployedDomainsCollection.isInitializing = true;
                   }
 
-                  deployedDomainsCollection.on("destroy", function() {
-                    deployedDomainsView.trigger("childview:updateParentLayout");
-                  });
-
-                  var deployToNewDomainView = new DeployToNewDomainView({
-                    model: landerView.model
-                  });
-
-                  var addToNewCampaignView = new AddToNewCampaignView({
-                    model: landerView.model
-                  })
-
                   var deployedDomainsView = new DeployedDomainsView({
                     collection: deployedDomainsCollection
+                  });
+
+                  deployedDomainsCollection.on("showRemoveDomain", function(domainModel) {
+                    var attr = {
+                      lander_model: landerView.model,
+                      domain_model: domainModel
+                    };
+                    Moonlander.trigger("landers:showRemoveDomain", attr);
                   });
 
                   //when campaign link selected go to camp tab (this is from deployed domains campaign name link)
                   deployedDomainsView.on("childview:selectCampaignTab", function(one, two, three) {
                     landerView.$el.find("a[href=#campaigns-tab-id-" + landerView.model.get("id") + "]").tab('show')
+                  });
+
+
+                  deployedDomainsView.on("childview:updateParentLayout", function(childView, options) {
+                    //update the campaign count for lander
+                    var length = this.children.length;
+                    if (childView.isDestroyed) --length;
+                    domainTabHandleView.model.set("deployed_domains_count", length);
                   });
 
 
@@ -358,12 +360,10 @@ define(["app",
 
 
 
-                  landerView.deploy_status_region.show(deployStatusView);
+                  landerView.deploy_status_region.show(domainTabHandleView);
                   landerView.campaign_tab_handle_region.show(campaignTabHandleView);
                   landerView.deployed_domains_region.show(deployedDomainsView);
                   landerView.active_campaigns_region.show(activeCampaignsView);
-                  landerView.deploy_to_new_domain_region.show(deployToNewDomainView);
-                  landerView.add_to_new_campaign_region.show(addToNewCampaignView);
                 });
               }
 

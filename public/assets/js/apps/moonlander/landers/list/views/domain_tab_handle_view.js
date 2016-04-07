@@ -1,9 +1,9 @@
 define(["app",
-    "tpl!assets/js/apps/moonlander/campaigns/list/templates/domain_tab_handle.tpl"
+    "tpl!assets/js/apps/moonlander/landers/list/templates/domain_tab_handle.tpl"
   ],
   function(Moonlander, domainTabHandleTpl) {
 
-    Moonlander.module("CampaignsApp.Campaigns.List.CollectionView.RowView", function(RowView, Moonlander, Backbone, Marionette, $, _) {
+    Moonlander.module("LandersApp.Landers.List.CollectionView.RowView", function(RowView, Moonlander, Backbone, Marionette, $, _) {
       RowView.DomainTabHandle = Marionette.ItemView.extend({
         className: "domain-status-tab-handle",
         tagName: "a",
@@ -24,18 +24,18 @@ define(["app",
           "click .add-link-plus": "addNewDomain"
         },
 
-        addNewDomain: function() {
-          Moonlander.trigger("campaigns:showAddNewDomain", this.model);
+        addNewDomain: function(){
+          Moonlander.trigger("landers:showDeployToDomain", this.model);
         },
 
         onRender: function() {
           var me = this;
 
           //on render show the plus if tab is active
-          if (this.$el.parent().hasClass("active")) {
+          if(this.$el.parent().hasClass("active")){
             me.$el.find(".add-link-plus").css("display", "inline");
           }
-
+          
           //remove tab capability if deleting
           if (this.model.get("deploy_status") === "deleting") {
             this.$el.removeAttr("data-toggle");
@@ -56,5 +56,5 @@ define(["app",
         }
       });
     });
-    return Moonlander.CampaignsApp.Campaigns.List.CollectionView.RowView.DomainTabHandle;
+    return Moonlander.LandersApp.Landers.List.CollectionView.RowView.DomainTabHandle;
   });
