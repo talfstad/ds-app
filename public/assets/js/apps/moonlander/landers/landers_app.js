@@ -13,7 +13,7 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
     "/assets/js/apps/moonlander/landers/js_snippets/js_snippets_controller.js"
   ],
   function(Moonlander, ListController, CommonLogin, SidemenuController, EditController, DeployToDomainController,
-    AddToCampaignController, UndeployLanderController, UndeployCampaignController, AddNewLanderController, DeleteLanderController,
+    AddNewCampaignController, UndeployLanderController, UndeployCampaignController, AddNewLanderController, DeleteLanderController,
     DuplicateLanderController, RipNewLanderController, JsSnippetsController) {
     Moonlander.module("LandersApp", function(LandersApp, Moonlander, Backbone, Marionette, $, _) {
 
@@ -66,8 +66,8 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
         showDeployToDomain: function(model) {
           DeployToDomainController.showDeployLanderToDomain(model);
         },
-        showAddToCampaign: function(model) {
-          AddToCampaignController.showAddToCampaign(model);
+        showAddNewCampaign: function(model) {
+          AddNewCampaignController.showAddNewCampaign(model);
         },
         showAddNewLanderModal: function() {
           AddNewLanderController.showAddNewLanderModal();
@@ -104,8 +104,15 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
         },
         addLander: function(landerModel) {
           ListController.addLander(landerModel);
+        },
+        deployCampaignLandersToDomain: function(attr) {
+          ListController.deployCampaignLandersToDomain(attr);
         }
       };
+
+      Moonlander.on("landers:deployCampaignLandersToDomain", function(attr) {
+        landersAppAPI.deployCampaignLandersToDomain(attr);
+      });
 
       Moonlander.on("landers:list", function() {
         landersAppAPI.showLanders();
@@ -181,8 +188,8 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
       Moonlander.on("landers:updateAllActiveSnippetNames", function(model) {
         landersAppAPI.updateAllActiveSnippetNames(model);
       });
-      Moonlander.on("landers:showAddToCampaign", function(model) {
-        landersAppAPI.showAddToCampaign(model);
+      Moonlander.on("landers:showAddNewCampaign", function(model) {
+        landersAppAPI.showAddNewCampaign(model);
       });
       Moonlander.on("landers:redeploy", function(attr) {
         var landersArray = attr.landersArray;

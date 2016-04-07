@@ -9,8 +9,12 @@ module.exports = function(app, passport) {
 
   app.get('/api/landers', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
-    db.landers.getAll(user, function(rows) {
-      res.json(rows);
+    db.landers.getAll(user, function(err, rows) {
+      if(err) {
+        res.json({error: err});
+      } else {
+        res.json(rows);
+      }
     });
   });
 

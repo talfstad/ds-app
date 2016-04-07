@@ -6,10 +6,8 @@ define(["app"],
 
       defaults: {
         name: "",
-        optimize_js: false,
-        optimize_css: false,
-        optimize_images: false,
-        optimize_gzip: false,
+        optimized: true,
+        deploy_root: false,
         deploy_status: ""
       },
 

@@ -8,12 +8,12 @@
       <td>Fully Optimize Lander</td>
       <td>
         <label class="pull-right switch switch-success switch-round block mn">
-          <% if(optimize_gzip) { %>
-            <input type="checkbox" checked name="optimize_gzip" id="optimization-gzip" value="angular">
+          <% if(optimized) { %>
+            <input type="checkbox" checked name="optimized" id="optimized" value="angular">
             <% } else { %>
-              <input type="checkbox" name="optimize_gzip" id="optimization-gzip" value="angular">
+              <input type="checkbox" name="optimized" id="optimized" value="angular">
               <% } %>
-                <label for="optimization-gzip" data-on="YES" data-off="NO"></label>
+                <label for="optimized" data-on="YES" data-off="NO"></label>
         </label>
       </td>
     </tr>
@@ -21,12 +21,12 @@
       <td>Deploy to Domain Root</td>
       <td>
         <label class="pull-right switch switch-success switch-round block mn">
-          <% if(optimize_js) { %>
-            <input type="checkbox" checked name="optimize_js" id="optimization-js" value="angular">
+          <% if(deploy_root) { %>
+            <input type="checkbox" checked name="deploy_root" id="deploy-root" value="angular">
             <% } else { %>
-              <input type="checkbox" name="optimize_js" id="optimization-js" value="angular">
+              <input type="checkbox" name="deploy_root" id="deploy-root" value="angular">
               <% } %>
-                <label for="optimization-js" data-on="YES" data-off="NO"></label>
+                <label for="deploy-root" data-on="YES" data-off="NO"></label>
         </label>
       </td>
     </tr>
@@ -37,9 +37,8 @@
                 <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
               </a>
             </h5>
-  <div>
-    <input id="lander-name-edit" name="name" style="width: 193px; border-radius: 4px 0 0 4px; float: left;" class="form-control" type="text" value="<%= name %>">
-    <button type="button" style="border-left: none; line-height: 1.4; border-radius: 0 4px 4px 0;" class="btn disabled btn-default btn-gradient dark"><span class="fa fa-save pr5"></span>Save</button>
+
+<div class="clearfix">
+    <input id="lander-name-edit" name="name" style="width: 100%; float: left;" class="form-control" type="text" value="<%= name %>">
+    
   </div>
-
-

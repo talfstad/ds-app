@@ -24,7 +24,7 @@ define(["app",
           "click .add-link-plus": "addNewCampaign"
         },
 
-        addNewCampaign: function(){
+        addNewCampaign: function() {
           Moonlander.trigger("domains:showAddNewCampaign", this.model);
         },
 
@@ -32,10 +32,10 @@ define(["app",
           var me = this;
 
           //on render show the plus if tab is active
-          if(this.$el.parent().hasClass("active")){
+          if (this.$el.parent().hasClass("active")) {
             me.$el.find(".add-link-plus").css("display", "inline");
           }
-          
+
           //remove tab capability if deleting
           if (this.model.get("deploy_status") === "deleting") {
             this.$el.removeAttr("data-toggle");

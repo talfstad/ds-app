@@ -9,19 +9,16 @@ module.exports = function(db) {
 
       var user_id = user.id;
       var lander_id = attr.id;
-      var optimize_gzip = attr.optimize_gzip;
-      var optimize_css = attr.optimize_css;
-      var optimize_js = attr.optimize_js;
-      var optimize_images = attr.optimize_images;
+      var optimized = attr.optimized;
       var modified = attr.modified;
       //values for query
-      var attrArr = [optimize_gzip, optimize_css, optimize_js, optimize_images, modified, user_id, lander_id];
+      var attrArr = [optimized, modified, user_id, lander_id];
 
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("UPDATE landers SET optimize_gzip = ?, optimize_css = ?, optimize_js = ?, optimize_images = ?, modified = ? WHERE user_id = ? AND id = ?", attrArr,
+          connection.query("UPDATE landers SET optimized = ?, modified = ? WHERE user_id = ? AND id = ?", attrArr,
             function(err, docs) {
 
               if (err) {
@@ -65,16 +62,13 @@ module.exports = function(db) {
 
       var user_id = user.id;
       var lander_name = duplicateLanderAttributes.name;
-      var optimize_js = duplicateLanderAttributes.optimize_js;
-      var optimize_css = duplicateLanderAttributes.optimize_css;
-      var optimize_images = duplicateLanderAttributes.optimize_images;
-      var optimize_gzip = duplicateLanderAttributes.optimize_gzip;
+      var optimized = duplicateLanderAttributes.optimized;
 
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("CALL save_new_duplicate_lander(?, ?, ?, ?, ?, ?)", [lander_name, user_id, optimize_js, optimize_css, optimize_images, optimize_gzip],
+          connection.query("CALL save_new_duplicate_lander(?, ?, ?, ?, ?, ?)", [lander_name, user_id, optimized],
             function(err, docs) {
               if (err) {
                 console.log(err);
@@ -177,16 +171,63 @@ module.exports = function(db) {
 
       var user_id = user.id;
 
-      var getAllDomainIdsForCampaign = function(campaign, callback) {
+      var getAllDeployedDomainsForCampaign = function(campaign, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
+          } else {
+            connection.query("SELECT a.domain_id,b.domain FROM campaigns_with_domains a JOIN domains b ON a.domain_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.campaign_id],
+              function(err, dbDomainIdsForCampaign) {
+                if (err) {
+                  callback(err)
+                } else {
+                  callback(false, dbDomainIdsForCampaign);
+                }
+                connection.release();
+              });
           }
-          connection.query("SELECT a.domain_id,b.domain FROM campaigns_with_domains a JOIN domains b ON a.domain_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.id],
-            function(err, dbDomainIdsForCampaign) {
-              callback(dbDomainIdsForCampaign);
-              connection.release();
+        });
+      };
+
+      var getActiveJobsForActiveCampaign = function(activeCampaign, lander, callback) {
+        var campaign_id = activeCampaign.campaign_id || activeCampaign.id;
+        var lander_id = lander.id;
+        //get all jobs attached to lander and make sure only select those. list is:
+        db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          } else {
+            connection.query("SELECT id,action,processing,lander_id,domain_id,campaign_id,done,error,created_on FROM jobs WHERE (user_id = ? AND campaign_id = ? AND lander_id = ? AND processing = ? AND (done IS NULL OR done = ?))", [user_id, campaign_id, lander_id, true, 0],
+              function(err, dbActiveJobs) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false, dbActiveJobs);
+                  connection.release();
+                }
+
+              });
+          }
+        });
+      };
+
+      getExtraNestedForActiveCampaign = function(activeCampaign, lander, callback) {
+        getAllDeployedDomainsForCampaign(activeCampaign, function(err, deployedDomains) {
+          if (err) {
+            callback(err);
+          } else {
+
+            activeCampaign.deployedDomains = deployedDomains;
+
+            getActiveJobsForActiveCampaign(activeCampaign, lander, function(err, activeJobs) {
+              if (err) {
+                callback(err);
+              } else {
+                activeCampaign.activeJobs = activeJobs;
+                callback(false);
+              }
             });
+          }
         });
       };
 
@@ -195,21 +236,23 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT a.id, b.id AS active_campaign_id, a.name,b.lander_id from campaigns a JOIN landers_with_campaigns b ON a.id=b.campaign_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
+          connection.query("SELECT a.id AS campaign_id, b.id, a.name,b.lander_id from campaigns a JOIN landers_with_campaigns b ON a.id=b.campaign_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
             function(err, dbActiveCampaigns) {
 
               if (dbActiveCampaigns.length <= 0) {
-                callback([]);
+                callback(false, []);
               } else {
                 var idx = 0;
                 for (var i = 0; i < dbActiveCampaigns.length; i++) {
-                  getAllDomainIdsForCampaign(dbActiveCampaigns[i], function(currentDomains) {
-                    var deployedLander = dbActiveCampaigns[idx];
-                    deployedLander.currentDomains = currentDomains;
-
-                    if (++idx == dbActiveCampaigns.length) {
-                      callback(dbActiveCampaigns);
+                  getExtraNestedForActiveCampaign(dbActiveCampaigns[i], lander, function(err) {
+                    if (err) {
+                      callback(err);
+                    } else {
+                      if (++idx == dbActiveCampaigns.length) {
+                        callback(false, dbActiveCampaigns);
+                      }
                     }
+
                   });
                 }
               }
@@ -224,13 +267,14 @@ module.exports = function(db) {
         // 2. undeployLanderFromDomain
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
+          } else {
+            connection.query("SELECT id,action,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, deployedLander.lander_id, deployedLander.id, true],
+              function(err, dbActiveJobs) {
+                callback(false, dbActiveJobs);
+                connection.release();
+              });
           }
-          connection.query("SELECT id,action,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, deployedLander.lander_id, deployedLander.id, true],
-            function(err, dbActiveJobs) {
-              callback(dbActiveJobs);
-              connection.release();
-            });
         });
       };
 
@@ -238,39 +282,45 @@ module.exports = function(db) {
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
-          }
-          connection.query("SELECT a.id,a.domain,b.lander_id from domains a JOIN deployed_landers b ON a.id=b.domain_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
-            function(err, dbDeployedLanders) {
-              if (dbDeployedLanders.length <= 0) {
-                callback([]);
-              } else {
-                var idx = 0;
-                for (var i = 0; i < dbDeployedLanders.length; i++) {
-                  getActiveJobsFordeployedLander(dbDeployedLanders[i], function(activeJobs) {
-                    var deployedLander = dbDeployedLanders[idx];
-                    deployedLander.activeJobs = activeJobs;
+          } else {
+            connection.query("SELECT a.id,a.domain,b.lander_id from domains a JOIN deployed_landers b ON a.id=b.domain_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
+              function(err, dbDeployedLanders) {
+                if (err) {
+                  callback(err)
+                } else {
+                  if (dbDeployedLanders.length <= 0) {
+                    callback(false, []);
+                  } else {
+                    var idx = 0;
+                    for (var i = 0; i < dbDeployedLanders.length; i++) {
+                      getActiveJobsFordeployedLander(dbDeployedLanders[i], function(activeJobs) {
+                        var deployedLander = dbDeployedLanders[idx];
+                        deployedLander.activeJobs = activeJobs;
 
-                    if (++idx == dbDeployedLanders.length) {
-                      callback(dbDeployedLanders);
+                        if (++idx == dbDeployedLanders.length) {
+                          callback(false, dbDeployedLanders);
+                        }
+                      });
                     }
-                  });
+                  }
                 }
-              }
-              connection.release();
-            });
+                connection.release();
+              });
+          }
         });
       };
 
       var getActiveSnippetsForUrlEndpoint = function(urlEndpoint, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
+          } else {
+            connection.query("SELECT a.id, b.name, a.snippet_id FROM active_snippets a JOIN snippets b ON a.snippet_id=b.id WHERE (a.user_id = ? AND a.url_endpoint_id = ?)", [user_id, urlEndpoint.id],
+              function(err, dbActiveSnippets) {
+                callback(false, dbActiveSnippets);
+                connection.release();
+              });
           }
-          connection.query("SELECT a.id, b.name, a.snippet_id FROM active_snippets a JOIN snippets b ON a.snippet_id=b.id WHERE (a.user_id = ? AND a.url_endpoint_id = ?)", [user_id, urlEndpoint.id],
-            function(err, dbActiveSnippets) {
-              callback(dbActiveSnippets);
-              connection.release();
-            });
         });
       };
 
@@ -278,25 +328,31 @@ module.exports = function(db) {
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
-          }
-          connection.query("SELECT id,name,lander_id from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.id],
-            function(err, dbUrlEndpoints) {
-              if (dbUrlEndpoints.length <= 0) {
-                callback([]);
-              } else {
-                var idx = 0;
-                for (var i = 0; i < dbUrlEndpoints.length; i++) {
-                  getActiveSnippetsForUrlEndpoint(dbUrlEndpoints[i], function(activeSnippets) {
-                    var endpoint = dbUrlEndpoints[idx];
-                    endpoint.activeSnippets = activeSnippets;
-                    if (++idx == dbUrlEndpoints.length) {
-                      callback(dbUrlEndpoints);
+          } else {
+            connection.query("SELECT id,name,lander_id from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.id],
+              function(err, dbUrlEndpoints) {
+                if (err) {
+                  callback(err);
+                } else {
+
+                  if (dbUrlEndpoints.length <= 0) {
+                    callback(false, []);
+                  } else {
+                    var idx = 0;
+                    for (var i = 0; i < dbUrlEndpoints.length; i++) {
+                      getActiveSnippetsForUrlEndpoint(dbUrlEndpoints[i], function(activeSnippets) {
+                        var endpoint = dbUrlEndpoints[idx];
+                        endpoint.activeSnippets = activeSnippets;
+                        if (++idx == dbUrlEndpoints.length) {
+                          callback(false, dbUrlEndpoints);
+                        }
+                      });
                     }
-                  });
+                  }
                 }
-              }
-              connection.release();
-            });
+                connection.release();
+              });
+          }
         });
       };
 
@@ -307,229 +363,145 @@ module.exports = function(db) {
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
+          } else {
+            connection.query("SELECT id,action,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addNewLander", "deleteLander", "ripNewLander", user_id, lander.id, true],
+              function(err, dbActiveJobs) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false, dbActiveJobs);
+                  connection.release();
+                }
+
+              });
           }
-          connection.query("SELECT id,action,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addNewLander", "deleteLander", "ripNewLander", user_id, lander.id, true],
-            function(err, dbActiveJobs) {
-              callback(dbActiveJobs);
-              connection.release();
-            });
         });
       };
 
 
       var getExtraNestedForLander = function(lander, callback) {
-        getEndpointsForLander(lander, function(endpoints) {
+        getEndpointsForLander(lander, function(err, endpoints) {
 
           lander.urlEndpoints = endpoints;
 
-          getdeployedLandersForLander(lander, function(deployedLanders) {
+          getdeployedLandersForLander(lander, function(err, deployedLanders) {
+            if (err) {
+              callback(err);
+            } else {
+              lander.deployedLanders = deployedLanders;
 
-            lander.deployedLanders = deployedLanders;
+              getActiveCampaignsForLander(lander, function(err, activeCampaigns) {
+                if (err) {
+                  callback(err);
+                } else {
 
-            getActiveCampaignsForLander(lander, function(activeCampaigns) {
+                  lander.activeCampaigns = activeCampaigns;
 
-              lander.activeCampaigns = activeCampaigns;
-
-              getActiveJobsForLander(lander, function(activeJobsForLander) {
-                lander.activeJobs = activeJobsForLander;
-                callback();
-
+                  getActiveJobsForLander(lander, function(err, activeJobsForLander) {
+                    if (err) {
+                      callback(err)
+                    } else {
+                      lander.activeJobs = activeJobsForLander;
+                      callback(false);
+                    }
+                  });
+                }
               });
+            }
 
+          });
+
+        });
+      };
+
+      var getAllLandersDb = function(callback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          } else {
+            connection.query("SELECT id,name,optimized,modified,DATE_FORMAT(last_updated, '%b %e, %Y %l:%i:%s %p') AS last_updated FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
+              if (err) {
+                callback(err);
+              } else {
+                var idx = 0;
+                for (var i = 0; i < dblanders.length; i++) {
+                  getExtraNestedForLander(dblanders[i], function() {
+
+                    if (++idx == dblanders.length) {
+                      callback(false, dblanders);
+                    }
+
+                  });
+                }
+                if (dblanders.length <= 0) {
+                  callback(false, dblanders);
+                }
+              }
+              connection.release();
             });
-
-          });
-
+          }
         });
       };
 
-      var getAllLandersDb = function(gotLandersCallback) {
+      var getLandersById = function(landersToGetArr, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
-          }
-          connection.query("SELECT id,name,optimize_css,optimize_js,optimize_images,optimize_gzip,modified,DATE_FORMAT(last_updated, '%b %e, %Y %l:%i:%s %p') AS last_updated FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
-            if (err) {
-              console.log(err);
-            } else {
-              var idx = 0;
-              for (var i = 0; i < dblanders.length; i++) {
-                getExtraNestedForLander(dblanders[i], function() {
+            callback(err);
+          } else {
 
-                  if (++idx == dblanders.length) {
-                    gotLandersCallback(dblanders);
-                  }
-
-                });
-              }
-              if (dblanders.length <= 0) {
-                gotLandersCallback(dblanders);
+            var queryIds = "AND";
+            for (var i = 0; i < landersToGetArr.length; i++) {
+              queryIds += " id = " + landersToGetArr[i].lander_id
+              if (i + 1 < landersToGetArr.length) {
+                queryIds += " OR";
               }
             }
-            connection.release();
-          });
+
+            var queryString = "SELECT id,name,optimized,modified,DATE_FORMAT(last_updated, '%b %e, %Y %l:%i:%s %p') AS last_updated FROM landers WHERE user_id = ? " + queryIds;
+
+            connection.query(queryString, [user_id], function(err, dblanders) {
+              if (err) {
+                console.log(err);
+              } else {
+                var idx = 0;
+                for (var i = 0; i < dblanders.length; i++) {
+                  getExtraNestedForLander(dblanders[i], function() {
+
+                    if (++idx == dblanders.length) {
+                      callback(false, dblanders);
+                    }
+
+                  });
+                }
+                if (dblanders.length <= 0) {
+                  callback(false, dblanders);
+                }
+              }
+              connection.release();
+            });
+          }
         });
       };
-
-      var getLandersById = function(landersToGetArr, gotLandersCallback) {
-        db.getConnection(function(err, connection) {
-          if (err) {
-            console.log(err);
-          }
-
-          var queryIds = "AND";
-          for (var i = 0; i < landersToGetArr.length; i++) {
-            queryIds += " id = " + landersToGetArr[i].lander_id
-            if(i + 1 < landersToGetArr.length){
-              queryIds += " OR";
-            }
-          }
-
-          var queryString = "SELECT id,name,optimize_css,optimize_js,optimize_images,optimize_gzip,modified,DATE_FORMAT(last_updated, '%b %e, %Y %l:%i:%s %p') AS last_updated FROM landers WHERE user_id = ? " + queryIds;
-
-          connection.query(queryString, [user_id], function(err, dblanders) {
-            if (err) {
-              console.log(err);
-            } else {
-              var idx = 0;
-              for (var i = 0; i < dblanders.length; i++) {
-                getExtraNestedForLander(dblanders[i], function() {
-
-                  if (++idx == dblanders.length) {
-                    gotLandersCallback(dblanders);
-                  }
-
-                });
-              }
-              if (dblanders.length <= 0) {
-                gotLandersCallback(dblanders);
-              }
-            }
-            connection.release();
-          });
-        });
-      };
-
 
       //if landersToGetArr is here then just get those landers. arr of objects with id as key
       if (landersToGetArr) {
-        getLandersById(landersToGetArr, function(landers) {
-          return successCallback(landers);
+        getLandersById(landersToGetArr, function(err, landers) {
+          if(err) {
+            return successCallback(err);
+          } else {
+            return successCallback(false, landers);            
+          }
         });
       } else {
         //call to get all and return rows
-        getAllLandersDb(function(landers) {
-          return successCallback(landers);
+        getAllLandersDb(function(err, landers) {
+          if(err){
+            return successCallback(err);
+          } else {
+            return successCallback(false, landers);
+          }
         });
       }
-
-
-
-      ///////MOCK DATA FOR GET ALL LANDERS ////////////      
-      // [{
-      //   "id": 1,
-      //   "name": "test lander 1",
-      //   "optimize_css": 1,
-      //   "optimize_js": 1,
-      //   "optimize_images": 0,
-      //   "optimize_gzip": 0,
-      //   "last_updated": "2015-04-15T07:00:00.000Z",
-      //   "urlEndpoints": [{
-      //     "id": 1,
-      //     "name": "index.html",
-      //     "lander_id": 1,
-      //     "activeSnippets": []
-      //   }],
-      //   "deployedLanders": [{
-      //     "id": 1,
-      //     "domain": "hardbodiesandboners.org",
-      //     "lander_id": 1,
-      //     "activeJobs": []
-      //   }],
-      //   "activeCampaigns": []
-      // }, {
-      //   "id": 2,
-      //   "name": "test lander 2",
-      //   "optimize_css": 0,
-      //   "optimize_js": 0,
-      //   "optimize_images": 1,
-      //   "optimize_gzip": 1,
-      //   "last_updated": "2015-03-15T19:30:00.000Z",
-      //   "urlEndpoints": [{
-      //     "id": 2,
-      //     "name": "index.html",
-      //     "lander_id": 2,
-      //     "activeSnippets": [{
-      //       "id": 3,
-      //       "name": "JS No-referrer"
-      //     }]
-      //   }, {
-      //     "id": 5,
-      //     "name": "index1.html",
-      //     "lander_id": 2,
-      //     "activeSnippets": [{
-      //       "id": 4,
-      //       "name": "test"
-      //     }]
-      //   }],
-      //   "deployedLanders": [{
-      //     "id": 1,
-      //     "domain": "hardbodiesandboners.org",
-      //     "lander_id": 2,
-      //     "activeJobs": []
-      //   }, {
-      //     "id": 2,
-      //     "domain": "weightlosskey.com",
-      //     "lander_id": 2,
-      //     "activeJobs": []
-      //   }],
-      //   "activeCampaigns": [{
-      //     "id": 1,
-      //     "name": "default",
-      //     "lander_id": 2
-      //   }, {
-      //     "id": 2,
-      //     "name": "camp1",
-      //     "lander_id": 2
-      //   }]
-      // }, {
-      //   "id": 3,
-      //   "name": "test lander 3",
-      //   "optimize_css": 0,
-      //   "optimize_js": 1,
-      //   "optimize_images": 1,
-      //   "optimize_gzip": 0,
-      //   "last_updated": "2015-05-31T19:30:00.000Z",
-      //   "urlEndpoints": [{
-      //     "id": 3,
-      //     "name": "index.html",
-      //     "lander_id": 3,
-      //     "activeSnippets": []
-      //   }],
-      //   "deployedLanders": [{
-      //     "id": 2,
-      //     "domain": "weightlosskey.com",
-      //     "lander_id": 3,
-      //     "activeJobs": []
-      //   }],
-      //   "activeCampaigns": []
-      // }, {
-      //   "id": 4,
-      //   "name": "test lander 4",
-      //   "optimize_css": 1,
-      //   "optimize_js": 0,
-      //   "optimize_images": 0,
-      //   "optimize_gzip": 1,
-      //   "last_updated": "2015-06-15T19:30:00.000Z",
-      //   "urlEndpoints": [{
-      //     "id": 4,
-      //     "name": "index.html",
-      //     "lander_id": 4,
-      //     "activeSnippets": []
-      //   }],
-      //   "deployedLanders": [],
-      //   "activeCampaigns": []
-      // }]
 
     }
   }

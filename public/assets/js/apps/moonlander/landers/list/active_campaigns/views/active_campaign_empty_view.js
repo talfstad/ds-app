@@ -6,15 +6,8 @@ define(["app",
     Moonlander.module("LandersApp.Landers.List.ActiveCampaigns", function(ActiveCampaigns, Moonlander, Backbone, Marionette, $, _) {
       ActiveCampaigns.EmptyView = Marionette.ItemView.extend({
         template: EmptyTpl,
-        tagName: "tr",
-        className: "dark",
-
-
-        onRender: function() {
-          if (this.model.get("deploy_status") === "initializing") {
-            this.$el.removeClass("primary").addClass("alert");
-          }
-        }
+        tagName: "tbody",
+        className: "dark"
 
       });
     });

@@ -55,11 +55,7 @@ define(["app",
               success: addedDomainToCampaignSuccessCallback,
               error: addedDomainToCampaignErrorCallback
             });
-
-            
           });
-
-
           
           //show loading
           var loadingView = new LoadingView();
@@ -84,14 +80,7 @@ define(["app",
             addCampaignToDomainLayout.campaignsListRegion.show(campaignsListView)
 
           });
-
-
-
-
-
-
         }
-
       }
     });
 
