@@ -29,7 +29,8 @@ define(["app",
           model.set('viewIndex', parseInt(this.collection.indexOf(model)) + 1);
           model.set('urlEndpoints', this.collection.urlEndpoints);
           model.set('landerName', this.collection.landerName);
-
+          model.set('activeCampaignCollection', this.collection.activeCampaignCollection);
+          
           //return options ONLY used by our empty view.
           return {
             isInitializing: this.collection.isInitializing || false

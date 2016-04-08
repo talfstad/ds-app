@@ -35,7 +35,7 @@ define(["app",
           $.when(deferredDomainsCollection).done(function(domainsCollection) {
 
             //filter this collection, take out domains that lander is already deployed to
-            var filteredDomainsCollection = domainsCollection.filterOutDomains(model.get("deployedLanders"));
+            var filteredDomainsCollection = domainsCollection.filterOutDomains(model.get("deployedDomains"));
 
             //create the view, pass collection in as a var to be used to dynamically add to DT
             //show dt in view

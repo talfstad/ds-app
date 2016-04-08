@@ -4,7 +4,7 @@ define(["app",
     "/assets/js/jobs/jobs_app.js"
   ],
   function(Moonlander, JobsGuiBaseModel, ActiveCampaignCollection) {
-    var deployedLanderModel = JobsGuiBaseModel.extend({
+    var deployedDomainModel = JobsGuiBaseModel.extend({
 
       url: '/',
 
@@ -90,12 +90,12 @@ define(["app",
         //gui attributes
         //should default true since deployed_domains is where this model is used
         deploy_status: 'deployed',
-        activeCampaigns: []
+        hasActiveCampaigns: false
       }
 
 
     });
 
-    return deployedLanderModel;
+    return deployedDomainModel;
 
   });

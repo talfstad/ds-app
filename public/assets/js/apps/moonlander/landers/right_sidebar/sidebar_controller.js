@@ -31,7 +31,7 @@ define(["app",
         //in which case we would want to save it anyway
         updateToModifiedAndSave: function() {
 
-          var deployedLanderCollection = this.landerModel.get("deployedLanders");
+          var deployedLanderCollection = this.landerModel.get("deployedDomains");
 
           //1. set modified if it is deployed
           if (deployedLanderCollection.length > 0) {

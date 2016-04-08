@@ -11,6 +11,7 @@ define(["app",
 
         events: {
           "click .remove-domain": "showRemoveDomain",
+          "click .campaign-tab-link": "selectCampaignTab"
         },
 
         modelEvents: {
@@ -21,7 +22,13 @@ define(["app",
           this.trigger("updateParentLayout", this.model);
         },
 
+        selectCampaignTab: function(e) {
+          e.preventDefault();
+          this.trigger("selectCampaignTab");
+        },
+
         onBeforeRender: function() {
+          var me = this;
 
           var deployStatus = this.model.get("deploy_status");
           if (deployStatus === "deployed") {
@@ -33,6 +40,22 @@ define(["app",
           } else if(deployStatus === "modified"){
             this.model.set("deploy_status_gui", "<strong>MODIFIED</strong>");
           }
+
+          var activeCampaignCollection = this.model.get("activeCampaignCollection");
+          
+          activeCampaignCollection.each(function(campaign) {
+
+            var deployedDomains = campaign.get('deployedDomains');
+            
+            var domainId = me.model.get("domain_id");
+
+            if (deployedDomains.find(function(m) {
+            var id = m.domain_id || m.id;
+              return id == domainId
+            })) {
+              me.model.set("hasActiveCampaigns", true);
+            }
+          });
 
         },
 

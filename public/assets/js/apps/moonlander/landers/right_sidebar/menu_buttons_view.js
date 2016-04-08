@@ -19,7 +19,7 @@ define(["app",
           e.preventDefault();
 
           
-          var deployedLanderCollection = me.model.get("deployedLanders");
+          var deployedLanderCollection = me.model.get("deployedDomains");
           deployedLanderCollection.each(function(location) {
             location.set("shouldSetModifiedWhenJobsFinish", false);
           });

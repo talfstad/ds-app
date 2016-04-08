@@ -11,14 +11,14 @@ define(["app",
     "/assets/js/apps/moonlander/landers/list/deployed_domains/views/deployed_domains_collection_view.js",
     "/assets/js/apps/moonlander/domains/dao/domain_collection.js",
     "/assets/js/apps/moonlander/landers/list/active_campaigns/views/active_campaigns_collection_view.js",
-    "/assets/js/apps/moonlander/landers/dao/deployed_lander_model.js",
+    "/assets/js/apps/moonlander/landers/dao/deployed_domain_model.js",
     "/assets/js/jobs/jobs_model.js",
     "/assets/js/apps/moonlander/landers/dao/active_campaign_model.js",
     "/assets/js/apps/moonlander/landers/list/views/list_layout_view.js"
   ],
   function(Moonlander, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
     PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView,
-    DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLanderModel,
+    DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView, DeployedDomainModel,
     JobModel, ActiveCampaignModel) {
     Moonlander.module("LandersApp.Landers.List", function(List, Moonlander, Backbone, Marionette, $, _) {
 
@@ -41,9 +41,9 @@ define(["app",
 
           var activeCampaignModelActiveJobs = activeCampaignModel.get("activeJobs");
 
-          var campaignLandersArr = activeCampaignModel.get("deployedLanders");
+          var campaignLandersArr = activeCampaignModel.get("deployedDomains");
 
-          var currentDeployedLanderCollection = landerModel.get("deployedLanders");
+          var currentDeployedLanderCollection = landerModel.get("deployedDomains");
           var landersToDeploy = [];
 
           //loop current landers, see if its deployed, if not deploy
@@ -51,20 +51,20 @@ define(["app",
 
             var landerIsDeployed = false;
 
-            currentDeployedLanderCollection.each(function(deployedLanderModel) {
-              deployedLanderModelId = deployedLanderModel.get("lander_id") || deployedLanderModel.get("id")
-              if (campaignLander.id == deployedLanderModelId) {
-                deployedLanderModel.set("hasActiveCampaigns", true);
+            currentDeployedLanderCollection.each(function(deployedDomainModel) {
+              deployedDomainModelId = deployedDomainModel.get("lander_id") || deployedDomainModel.get("id")
+              if (campaignLander.id == deployedDomainModelId) {
+                deployedDomainModel.set("hasActiveCampaigns", true);
                 landerIsDeployed = true;
               }
             });
 
             if (!landerIsDeployed) {
-              var newDeployedLanderModel = new DeployedLanderModel(campaignLander);
-              newDeployedLanderModel.set("lander_id", newDeployedLanderModel.get("id"));
-              newDeployedLanderModel.unset("id");
-              newDeployedLanderModel.set("hasActiveCampaigns", true);
-              landersToDeploy.push(newDeployedLanderModel);
+              var newDeployedDomainModel = new DeployedDomainModel(campaignLander);
+              newDeployedDomainModel.set("lander_id", newDeployedDomainModel.get("id"));
+              newDeployedDomainModel.unset("id");
+              newDeployedDomainModel.set("hasActiveCampaigns", true);
+              landersToDeploy.push(newDeployedDomainModel);
             }
           });
 
@@ -75,25 +75,25 @@ define(["app",
           if (landersToDeploy.length > 0) {
             activeCampaignModel.set("deploy_status", "deploying");
 
-            $.each(landersToDeploy, function(idx, deployedLanderModelToDeploy) {
+            $.each(landersToDeploy, function(idx, deployedDomainModelToDeploy) {
 
-              var deployedLanderModelToDeployActiveJobs = deployedLanderModelToDeploy.get("activeJobs");
+              var deployedDomainModelToDeployActiveJobs = deployedDomainModelToDeploy.get("activeJobs");
 
               //create deploy job for domain and add it to the domain and the lander model
               var jobAttributes = {
                 action: "deployLanderToDomain",
                 lander_id: landerModel.get("id") || landerModel.get("lander_id"),
-                domain_id: deployedLanderModelToDeploy.get("domain_id") || deployedLanderModelToDeploy.get("id"),
+                domain_id: deployedDomainModelToDeploy.get("domain_id") || deployedDomainModelToDeploy.get("id"),
                 campaign_id: campaign_id
               };
               var jobModel = new JobModel(jobAttributes);
 
-              deployedLanderModelToDeployActiveJobs.add(jobModel);
+              deployedDomainModelToDeployActiveJobs.add(jobModel);
               activeCampaignModelActiveJobs.add(jobModel);
 
               //add deployed lander model to the list controller
-              var domainModelDeployedLanderCollection = landerModel.get("deployedLanders");
-              domainModelDeployedLanderCollection.add(deployedLanderModelToDeploy);
+              var domainModelDeployedLanderCollection = landerModel.get("deployedDomains");
+              domainModelDeployedLanderCollection.add(deployedDomainModelToDeploy);
 
               Moonlander.trigger("job:start", jobModel);
 
@@ -205,30 +205,30 @@ define(["app",
             Moonlander.trigger("job:start", undeployStartingAttr);
           };
 
-          //get list of all deployedLanders first
-          var deployedLandersList = [];
+          //get list of all deployedDomains first
+          var deployedDomainsList = [];
           $.each(landerModelsArray, function(idx, landerModel) {
             //get list of all locations to 
-            var deployedLanderCollection = landerModel.get("deployedLanders");
+            var deployedLanderCollection = landerModel.get("deployedDomains");
             deployedLanderCollection.each(function(deployedLander) {
-              deployedLandersList.push(deployedLander);
+              deployedDomainsList.push(deployedLander);
             });
           });
 
           //now i have the list, start the jobs for each, when completed call the
           //callback
-          if (deployedLandersList.length <= 0) {
+          if (deployedDomainsList.length <= 0) {
             //nothing to redeploy
             doneAddingAllRedeployJobsToAllLandersCallback();
           } else {
-            var deployedLandersCount = 0;
-            $.each(deployedLandersList, function(idx, deployedLander) {
+            var deployedDomainsCount = 0;
+            $.each(deployedDomainsList, function(idx, deployedLander) {
               //create undeploy job
               startRedeployJobs(deployedLander, function() {
-                deployedLandersCount++;
+                deployedDomainsCount++;
 
                 //if we're equal then we're done all jobs have finished async
-                if (deployedLandersCount == deployedLandersList.length) {
+                if (deployedDomainsCount == deployedDomainsList.length) {
                   //call this once everything has been guaranteed started for every lander
                   doneAddingAllRedeployJobsToAllLandersCallback();
                 }
@@ -374,7 +374,9 @@ define(["app",
                     campaignTabHandleView.model.set("active_campaigns_count", length);
                   });
 
-                  var deployedDomainsCollection = landerView.model.get("deployedLanders");
+                  var deployedDomainsCollection = landerView.model.get("deployedDomains");
+
+                  deployedDomainsCollection.activeCampaignCollection = activeCampaignsCollection;
 
                   //if this lander is initializing set the collection level variable to be picked up
                   //by collections childviewoptions
@@ -510,11 +512,11 @@ define(["app",
           //check if this domain_id is already there, if it is instead of adding a new domain_model
           //just add this job to it
 
-          var deployedLanders = landerModel.get("deployedLanders");
+          var deployedDomains = landerModel.get("deployedDomains");
 
-          //search deployedLanders for the domain_id if found use that
+          //search deployedDomains for the domain_id if found use that
           var existingDomainModel = null;
-          deployedLanders.each(function(location) {
+          deployedDomains.each(function(location) {
             if (location.get("id") == modelAttributes.id) {
               existingDomainModel = location;
             }
@@ -525,10 +527,10 @@ define(["app",
             activeJobs.add(jobModel);
           } else {
             //create the deployed location model
-            var domainModel = new DeployedLanderModel(modelAttributes);
+            var domainModel = new DeployedDomainModel(modelAttributes);
             var activeJobs = domainModel.get("activeJobs");
             activeJobs.add(jobModel);
-            deployedLanders.add(domainModel);
+            deployedDomains.add(domainModel);
           }
 
           //set new lander to deploying by default
@@ -548,13 +550,13 @@ define(["app",
             var activeCampaignsCollection = lander.get("activeCampaigns");
             activeCampaignsCollection.add(activeCampaignModel);
 
-            var deployedLanders = lander.get("deployedLanders");
+            var deployedDomains = lander.get("deployedDomains");
 
             //add the model to the activeCampaigns for the campaigns currentDomains
             $.each(activeCampaignModel.get("currentDomains"), function(idx, domain) {
               var domain_id = domain.domain_id;
 
-              var deployedDomainModel = deployedLanders.get(domain_id);
+              var deployedDomainModel = deployedDomains.get(domain_id);
 
               var activeCampaigns = deployedDomainModel.get("activeCampaigns");
               activeCampaigns.add(activeCampaignModel);
@@ -584,14 +586,14 @@ define(["app",
           var lander_id = campaignModel.get("lander_id");
 
           var lander = me.filteredLanderCollection.get(lander_id);
-          var deployedLanders = lander.get("deployedLanders");
+          var deployedDomains = lander.get("deployedDomains");
 
 
           //trigger undeploy job on each deployed domain that belongs to this campaign
           $.each(campaignModel.get("currentDomains"), function(idx, domain) {
             var domain_id = domain.domain_id;
 
-            var deployedDomainModel = deployedLanders.get(domain_id);
+            var deployedDomainModel = deployedDomains.get(domain_id);
             var activeJobsCollection = deployedDomainModel.get("activeJobs");
 
 

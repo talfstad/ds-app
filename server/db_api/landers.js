@@ -81,7 +81,7 @@ module.exports = function(db) {
                 duplicateLanderAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
                 duplicateLanderAttributes.last_updated = docs[1][0].last_updated;
                 //remove any attributes we dont want to overwrite
-                delete duplicateLanderAttributes.deployedLanders;
+                delete duplicateLanderAttributes.deployedDomains;
                 delete duplicateLanderAttributes.activeJobs;
                 delete duplicateLanderAttributes.activeCampaigns;
                 delete duplicateLanderAttributes.urlEndpoints;
@@ -261,7 +261,7 @@ module.exports = function(db) {
         });
       };
 
-      var getActiveJobsFordeployedLander = function(deployedLander, callback) {
+      var getActiveJobsFordeployedDomain = function(deployedDomain, callback) {
         //get all jobs attached to lander and make sure only select those. list is:
         // 1. deployLanderToDomain
         // 2. undeployLanderFromDomain
@@ -269,7 +269,7 @@ module.exports = function(db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT id,action,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, deployedLander.lander_id, deployedLander.id, true],
+            connection.query("SELECT id,action,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, deployedDomain.lander_id, deployedDomain.id, true],
               function(err, dbActiveJobs) {
                 callback(false, dbActiveJobs);
                 connection.release();
@@ -278,27 +278,27 @@ module.exports = function(db) {
         });
       };
 
-      var getdeployedLandersForLander = function(lander, callback) {
+      var getdeployedDomainsForLander = function(lander, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
           } else {
-            connection.query("SELECT a.id,a.domain,b.lander_id from domains a JOIN deployed_landers b ON a.id=b.domain_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
-              function(err, dbDeployedLanders) {
+            connection.query("SELECT a.id AS domain_id,a.domain,b.id,b.lander_id from domains a JOIN deployed_landers b ON a.id=b.domain_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
+              function(err, dbDeployedDomains) {
                 if (err) {
                   callback(err)
                 } else {
-                  if (dbDeployedLanders.length <= 0) {
+                  if (dbDeployedDomains.length <= 0) {
                     callback(false, []);
                   } else {
                     var idx = 0;
-                    for (var i = 0; i < dbDeployedLanders.length; i++) {
-                      getActiveJobsFordeployedLander(dbDeployedLanders[i], function(activeJobs) {
-                        var deployedLander = dbDeployedLanders[idx];
-                        deployedLander.activeJobs = activeJobs;
+                    for (var i = 0; i < dbDeployedDomains.length; i++) {
+                      getActiveJobsFordeployedDomain(dbDeployedDomains[i], function(activeJobs) {
+                        var deployedDomain = dbDeployedDomains[idx];
+                        deployedDomain.activeJobs = activeJobs;
 
-                        if (++idx == dbDeployedLanders.length) {
-                          callback(false, dbDeployedLanders);
+                        if (++idx == dbDeployedDomains.length) {
+                          callback(false, dbDeployedDomains);
                         }
                       });
                     }
@@ -384,11 +384,11 @@ module.exports = function(db) {
 
           lander.urlEndpoints = endpoints;
 
-          getdeployedLandersForLander(lander, function(err, deployedLanders) {
+          getdeployedDomainsForLander(lander, function(err, deployedDomains) {
             if (err) {
               callback(err);
             } else {
-              lander.deployedLanders = deployedLanders;
+              lander.deployedDomains = deployedDomains;
 
               getActiveCampaignsForLander(lander, function(err, activeCampaigns) {
                 if (err) {
