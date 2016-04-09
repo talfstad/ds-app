@@ -121,51 +121,6 @@ define(["app",
         // 
         var deployedDomainsCollection = this.get("deployedDomains");
 
-        activeCampaignsCollection.on("add", function(campaignModel, campaignCollection, options) {
-          // check all deployed locations make sure all campaign model deployed domains is deployed if not then trigger
-          // a deploy here
-          $.each(campaignModel.get("currentDomains"), function(idx, currentDomain) {
-
-            var isDeployed = false;
-            var isUndeploying = false;
-            var isDeploying = false;
-            deployedDomainsCollection.each(function(deployLocationModel) {
-
-              if (currentDomain.domain_id == deployLocationModel.id) {
-                isDeployed = true;
-
-                deployLocationModel.get("activeJobs").each(function(job) {
-                  if (job.get("action") == "undeployLanderFromDomain") {
-                    isUndeploying = true;
-                  } else if (job.get("action") == "deployLanderToDomain") {
-                    isDeploying = true;
-                  }
-                });
-
-                //add this campaign info to the deployed location so we can see that it belongs to
-                //this campaign in the deployed tab
-                var activeCampaigns = deployLocationModel.get("activeCampaigns");
-                activeCampaigns.add(campaignModel);
-              }
-            });
-
-            //if currentDomain is deployed do nothing, if not trigger a deploy on it
-            if (!isDeployed || isUndeploying || isDeploying) {
-              //trigger deploy
-
-              
-              var attr = {
-                lander_id: me.get("id"),
-                id: currentDomain.domain_id,
-                lander_model: me,
-                domain: currentDomain.domain,
-                campaign_id: campaignModel.get("campaign_id") || campaignModel.get("id")
-              }
-              Moonlander.trigger("landers:deployLanderToNewDomain", attr);
-            }
-          });
-        }, this);
-
         this.set("activeCampaigns", activeCampaignsCollection);
 
         activeCampaignsCollection.add(activeCampaignAttributes);
@@ -231,7 +186,7 @@ define(["app",
 
       defaults: {
         name: "",
-        last_updated: "",
+        created_on: "",
         urlEndpointsJSON: [],
         optimized: true,
         deploy_root: false,

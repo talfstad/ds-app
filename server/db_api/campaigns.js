@@ -173,7 +173,7 @@ module.exports = function(db) {
       });
     },
 
-    addActiveCampaign: function(user, modelAttributes, callback) {
+    addActiveCampaignToLander: function(user, modelAttributes, callback) {
       var user_id = user.id;
 
       db.getConnection(function(err, connection) {

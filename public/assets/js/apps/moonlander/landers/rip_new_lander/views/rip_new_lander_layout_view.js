@@ -27,10 +27,21 @@ define(["app",
           "click .rip-new-lander-confirm": "confirmedRipNewLander"
         },
 
+        modelEvents: {
+          "change:alertLoading": "alertLoading"
+        },
+
+        alertLoading: function() {
+          if (this.model.get("alertLoading")) {
+            this.$el.find(".alert-loading").fadeIn();
+          } else {
+            this.$el.find(".alert-loading").hide();
+          }
+        },
+
         confirmedRipNewLander: function(e) {
 
           var me = this;
-
           e.preventDefault();
 
           //key fields are valid
@@ -40,16 +51,10 @@ define(["app",
           if (newLanderData.landerName != "" && newLanderData.landerUrl != "") {
 
             //1. set the new values into the job model
-            this.model.set("lander_name", newLanderData.landerName);
+            this.model.set("name", newLanderData.landerName);
             this.model.set("lander_url", newLanderData.landerUrl);
 
-            //2. save the job
-            this.model.save({}, {
-              success: function(jobModel) {
-                me.trigger("ripLanderAddedAndProcessing", jobModel);
-              },
-              error: function() {}
-            });
+            me.trigger("ripLanderConfirmed");
 
           } else {
             var alert = this.$el.find(".new-lander-info-alert");
@@ -91,6 +96,10 @@ define(["app",
         },
 
         onClose: function() {
+          this.$el.modal('hide');
+        },
+
+        closeModal: function(){
           this.$el.modal('hide');
         },
 

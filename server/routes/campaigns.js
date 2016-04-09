@@ -5,27 +5,27 @@ module.exports = function(app, passport) {
 
 
   ////ACTIVE CAMPS BELONGING TO A LANDER!
-  app.post('/api/active_campaigns', passport.isAuthenticated(), function(req, res) {
+  app.post('/api/active_campaigns_on_lander', passport.isAuthenticated(), function(req, res) {
     // campaign_id: "2"
     // lander_id: 1
     // name: "camp1"
     var modelAttributes = req.body;
     var user = req.user;
 
-    db.campaigns.addActiveCampaign(user, modelAttributes, function(row) {
-      res.json(row)
+    db.campaigns.addActiveCampaignToLander(user, modelAttributes, function(row) {
+      res.json(row);
     });
 
   });
 
   //updates an active lander on campaign model
-  app.put('/api/active_campaigns/:id', passport.isAuthenticated(), function(req, res) {
+  app.put('/api/active_campaigns_on_lander/:id', passport.isAuthenticated(), function(req, res) {
 
     res.json({});
 
   });
 
-  app.delete('/api/active_campaigns/:id', passport.isAuthenticated(), function(req, res) {
+  app.delete('/api/active_campaigns_on_lander/:id', passport.isAuthenticated(), function(req, res) {
 
     //remove this by id from the landers with campaigns table
 

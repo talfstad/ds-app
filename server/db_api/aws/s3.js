@@ -5,7 +5,6 @@ module.exports = function(db) {
   var s3 = require('s3');
   var AWS = require('aws-sdk');
   var uuid = require('uuid');
-  var s3 = require('s3');
   var mkdirp = require('mkdirp');
   var rimraf = require('rimraf');
   var config = require('../../config');
@@ -222,17 +221,40 @@ module.exports = function(db) {
       var aws_s3_client = new AWS.S3();
 
       var params = {
-          Bucket: baseBucketName,
-          Key: 'domains/'+ domain + '/'
-        };
-        aws_s3_client.deleteObject(params, function(err, data) {
-          if (err) {
-            callback(err);
-          } else {
-            // console.log("added " + username + " snippets folder"); // successful response
-            callback();
-          }
-        });
+        Bucket: baseBucketName,
+        Key: 'domains/' + domain + '/'
+      };
+      aws_s3_client.deleteObject(params, function(err, data) {
+        if (err) {
+          callback(err);
+        } else {
+          // console.log("added " + username + " snippets folder"); // successful response
+          callback();
+        }
+      });
+    },
+
+    createDirectory: function(username, baseBucketName, folder, credentials, callback) {
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+      AWS.config.update(credentials);
+      var aws_s3_client = new AWS.S3();
+
+      var params = {
+        Bucket: baseBucketName,
+        Key: username + folder,
+        ACL: 'bucket-owner-full-control'
+      };
+      aws_s3_client.putObject(params, function(err, data) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(false);
+        }
+      });
+
     },
 
     createLanderDSBaseDirectoryStructure: function(username, baseBucketName, credentials, completeCallback) {
@@ -426,13 +448,20 @@ module.exports = function(db) {
       });
     },
 
-    removeStagingArea: function(stagingPath, callback) {
+    deleteStagingArea: function(stagingPath, callback) {
       rimraf(stagingPath, function() {
         callback();
       });
     },
 
-    copyDirFromStagingToS3: function(stagingPath, credentials, username, bucketName, callback) {
+    copyDirFromStagingToS3: function(stagingPath, credentials, username, bucketName, directory, callback) {
+
+      if (directory) {
+        var fullDir = username + directory;
+      } else {
+        fullDir = username;
+      }
+
       var s3_client = s3.createClient({
         maxAsyncS3: 20, // this is the default
         s3RetryCount: 0, // this is the default
@@ -442,7 +471,7 @@ module.exports = function(db) {
         s3Options: {
           accessKeyId: credentials.accessKeyId,
           secretAccessKey: credentials.secretAccessKey,
-          region: config.awsRegion
+          region: config.awsRegion,
         }
       });
 
@@ -452,7 +481,8 @@ module.exports = function(db) {
 
         s3Params: {
           Bucket: bucketName,
-          Prefix: username
+          Prefix: fullDir,
+          ACL:'public-read'
         }
       };
 
@@ -516,12 +546,12 @@ module.exports = function(db) {
             } else {
               // console.log("successfully downloaded dir to staging");
 
-              me.copyDirFromStagingToS3(stagingPath, newCredentials, username, buckets.newBucketName, function(err) {
+              me.copyDirFromStagingToS3(stagingPath, newCredentials, username, buckets.newBucketName, null, function(err) {
                 if (err) {
                   callback(err);
                 } else {
                   // console.log("successfully uploaded dir from staging");
-                  me.removeStagingArea(stagingPath, function() {
+                  me.deleteStagingArea(stagingPath, function() {
                     // console.log("successfully deleted staging dir");
                     callback();
                   });

@@ -13,8 +13,6 @@ module.exports = function(app, db) {
 
 
   module.deployLanderToDomain = require('./deploy_lander_to_domain')(app, db);
-  module.addNewLander = require('./add_new_lander')(app, db);
-  module.ripNewLander = require('./rip_new_lander')(app, db);
   module.deleteLander = require('./delete_lander')(app, db);
   module.deleteDomain = require('./delete_domain')(app, db);
   module.deleteCampaign = require('./delete_campaign')(app, db);

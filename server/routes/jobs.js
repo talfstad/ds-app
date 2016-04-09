@@ -28,22 +28,32 @@ module.exports = function(app, passport) {
       jobModelAttributes.landerFile = req.files['landerFile'];
 
       //need to save the lander first since its new to get an id before triggering register job
-      db.landers.saveNewLander(user, jobModelAttributes.landerName, function(landerAttributes) {
-        jobModelAttributes.lander_id = landerAttributes.id;
-        jobModelAttributes.last_updated = landerAttributes.last_updated;
-        db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob, registerError)
+      db.landers.saveNewLander(user, jobModelAttributes.landerName, function(err, landerAttributes) {
+        if (err) {
+
+        } else {
+          jobModelAttributes.lander_id = landerAttributes.id;
+          jobModelAttributes.created_on = landerAttributes.created_on;
+          db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob, registerError)
+        }
+
       });
 
-    }
-    else if(jobModelAttributes.action === "ripNewLander"){
+    } else if (jobModelAttributes.action === "ripNewLander") {
       //need to save the lander first since its new to get an id before triggering register job
-      db.landers.saveNewLander(user, jobModelAttributes.lander_name, function(landerAttributes) {
-        jobModelAttributes.lander_id = landerAttributes.id;
-        jobModelAttributes.last_updated = landerAttributes.last_updated;
-        db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob, registerError)
+      db.landers.saveNewLander(user, jobModelAttributes.lander_name, function(err, landerAttributes) {
+        if (err) {
+          res.json({
+            err: err
+          });
+        } else {
+          jobModelAttributes.lander_id = landerAttributes.id;
+          jobModelAttributes.created_on = landerAttributes.created_on;
+          db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob, registerError)
+        }
+
       });
-    }
-    else {
+    } else {
 
       //TODO: validate job model is valid to begin
       db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob, registerError)

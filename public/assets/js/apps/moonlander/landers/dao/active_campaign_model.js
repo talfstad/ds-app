@@ -4,7 +4,7 @@ define(["app",
   function(Moonlander, JobsGuiBaseModel) {
     var ActiveCampaignModel = JobsGuiBaseModel.extend({
 
-      urlRoot: "/api/active_campaigns_on_domain",
+      urlRoot: "/api/active_campaigns_on_lander",
 
       defaults: {
         name: "",

@@ -43,25 +43,25 @@ define(["app",
 
           var campaignLandersArr = activeCampaignModel.get("deployedDomains");
 
-          var currentDeployedLanderCollection = landerModel.get("deployedDomains");
+          var currentDeployedDomainCollection = landerModel.get("deployedDomains");
           var landersToDeploy = [];
 
           //loop current landers, see if its deployed, if not deploy
-          $.each(campaignLandersArr, function(idx, campaignLander) {
+          $.each(campaignLandersArr, function(idx, campaignDomain) {
 
             var landerIsDeployed = false;
 
-            currentDeployedLanderCollection.each(function(deployedDomainModel) {
-              deployedDomainModelId = deployedDomainModel.get("lander_id") || deployedDomainModel.get("id")
-              if (campaignLander.id == deployedDomainModelId) {
+            currentDeployedDomainCollection.each(function(deployedDomainModel) {
+              deployedDomainModelId = deployedDomainModel.get("domain_id") || deployedDomainModel.get("id")
+              if (campaignDomain.domain_id == deployedDomainModelId) {
                 deployedDomainModel.set("hasActiveCampaigns", true);
                 landerIsDeployed = true;
               }
             });
 
             if (!landerIsDeployed) {
-              var newDeployedDomainModel = new DeployedDomainModel(campaignLander);
-              newDeployedDomainModel.set("lander_id", newDeployedDomainModel.get("id"));
+              var newDeployedDomainModel = new DeployedDomainModel(campaignDomain);
+              newDeployedDomainModel.set("domain_id", newDeployedDomainModel.get("id"));
               newDeployedDomainModel.unset("id");
               newDeployedDomainModel.set("hasActiveCampaigns", true);
               landersToDeploy.push(newDeployedDomainModel);
@@ -305,8 +305,6 @@ define(["app",
                 var criterion = filterCriterion.toLowerCase();
                 return function(lander) {
                   if (lander.get('name').toLowerCase().indexOf(criterion) !== -1) {
-                    // || lander.get('last_updated').toLowerCase().indexOf(criterion) !== -1) {
-                    // || lander.get('phoneNumber').toLowerCase().indexOf(criterion) !== -1){
                     return lander;
                   }
                 };
@@ -365,6 +363,14 @@ define(["app",
 
                   var activeCampaignsView = new ActiveCampaignsView({
                     collection: activeCampaignsCollection
+                  });
+
+                  activeCampaignsCollection.on("showUndeployDomainFromCampaignDialog", function(campaignModel) {
+                    var attr = {
+                      campaign_model: campaignModel,
+                      lander_model: landerView.model
+                    };
+                    Moonlander.trigger("landers:showUndeployDomainFromCampaignDialog", attr);
                   });
 
                   activeCampaignsView.on("childview:updateParentLayout", function(childView, options) {
@@ -541,87 +547,7 @@ define(["app",
 
         },
 
-        addCampaignToLander: function(modelAttributes) {
-          var me = this;
-          var addedCampaignSuccessCallback = function(activeCampaignModel) {
-            // add the model to collection
-            var lander = me.filteredLanderCollection.get(modelAttributes.lander_id);
-
-            var activeCampaignsCollection = lander.get("activeCampaigns");
-            activeCampaignsCollection.add(activeCampaignModel);
-
-            var deployedDomains = lander.get("deployedDomains");
-
-            //add the model to the activeCampaigns for the campaigns currentDomains
-            $.each(activeCampaignModel.get("currentDomains"), function(idx, domain) {
-              var domain_id = domain.domain_id;
-
-              var deployedDomainModel = deployedDomains.get(domain_id);
-
-              var activeCampaigns = deployedDomainModel.get("activeCampaigns");
-              activeCampaigns.add(activeCampaignModel);
-
-            });
-
-
-          };
-          var addedCampaignErrorCallback = function() {
-
-          };
-          //add the campaign to the lander first, on success close dialog
-          var campaignModel = new ActiveCampaignModel(modelAttributes);
-
-          // create the model for activeCampaign model. make sure it saves to
-          // /api/active_campaigns
-          campaignModel.save({}, {
-            success: addedCampaignSuccessCallback,
-            error: addedCampaignErrorCallback
-          })
-
-        },
-
-        //takes an array of objects, keys off domain_id to undeploy each domain
-        removeCampaignFromLander: function(campaignModel) {
-          var me = this;
-          var lander_id = campaignModel.get("lander_id");
-
-          var lander = me.filteredLanderCollection.get(lander_id);
-          var deployedDomains = lander.get("deployedDomains");
-
-
-          //trigger undeploy job on each deployed domain that belongs to this campaign
-          $.each(campaignModel.get("currentDomains"), function(idx, domain) {
-            var domain_id = domain.domain_id;
-
-            var deployedDomainModel = deployedDomains.get(domain_id);
-            var activeJobsCollection = deployedDomainModel.get("activeJobs");
-
-
-            var jobAttributes = {
-              action: "undeployLanderFromDomain",
-              lander_id: lander_id,
-              domain_id: domain_id,
-            }
-
-            //create job and add to models activeJobs
-
-            //get lander so we can add jobs to the deployed domains we want to undeploy
-
-            //only undeploy lander if this is the only campaign attached to the domain
-            var activeCampaigns = deployedDomainModel.get("activeCampaigns");
-            if (activeCampaigns.length <= 0) {
-              //create the new job model
-              var jobModel = new JobModel(jobAttributes);
-              activeJobsCollection.add(jobModel);
-
-              Moonlander.trigger("job:start", jobModel);
-
-            }
-
-          });
-
-        },
-
+       
         //add the lander model to the list
         addLander: function(landerModel) {
           Moonlander.trigger('landers:closesidebar');
@@ -674,3 +600,5 @@ define(["app",
 
     return Moonlander.LandersApp.Landers.List.Controller;
   });
+
+

@@ -41,6 +41,12 @@ define(["app",
             //registers the job and starts it on server (if no other jobs are blocking it)
             jobModel.save({}, {
               success: function(model, response) {
+                //post register job callback
+                var onAfterRegister = jobModel.get("onAfterRegister");
+                if(onAfterRegister) {
+                  onAfterRegister();
+                }
+
                 addToUpdater(model, response);
                 if (newJobAddedCallback) {
                   newJobAddedCallback();

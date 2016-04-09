@@ -79,7 +79,7 @@ module.exports = function(db) {
 
 
                 duplicateLanderAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
-                duplicateLanderAttributes.last_updated = docs[1][0].last_updated;
+                duplicateLanderAttributes.created_on = docs[1][0].created_on;
                 //remove any attributes we dont want to overwrite
                 delete duplicateLanderAttributes.deployedDomains;
                 delete duplicateLanderAttributes.activeJobs;
@@ -92,33 +92,28 @@ module.exports = function(db) {
             });
         }
       });
-
-
     },
 
-    saveNewLander: function(user, landerName, successCallback) {
+    saveNewLander: function(user, landerData, callback) {
+
+      var lander_name = landerData.name;
+      var lander_url = landerData.lander_url;
+      var s3_folder_name = landerData.s3_folder_name;
 
       var user_id = user.id;
-      console.log("saving lander" + landerName + user_id);
-
       //param order: working_node_id, action, processing, lander_id, domain_id, campaign_id, user_id
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err)
         } else {
-          connection.query("CALL save_new_lander(?, ?)", [landerName, user_id],
-
+          connection.query("CALL save_new_lander(?, ?, ?, ?)", [lander_name, lander_url, s3_folder_name, user_id],
             function(err, docs) {
               if (err) {
-                console.log(err);
-                errorCallback("Error registering new job in DB call");
+                callback(err);
               } else {
-                var modelAttributes = {
-                  name: landerName,
-                  id: docs[0][0]["LAST_INSERT_ID()"],
-                  last_updated: docs[1][0].last_updated
-                };
-                successCallback(modelAttributes);
+                landerData.id = docs[0][0]["LAST_INSERT_ID()"];
+                landerData.created_on = docs[1][0].created_on;
+                callback(false);
               }
               connection.release();
             });
@@ -419,7 +414,7 @@ module.exports = function(db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT id,name,optimized,modified,DATE_FORMAT(last_updated, '%b %e, %Y %l:%i:%s %p') AS last_updated FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
+            connection.query("SELECT id,name,optimized,modified,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
               if (err) {
                 callback(err);
               } else {
@@ -457,7 +452,7 @@ module.exports = function(db) {
               }
             }
 
-            var queryString = "SELECT id,name,optimized,modified,DATE_FORMAT(last_updated, '%b %e, %Y %l:%i:%s %p') AS last_updated FROM landers WHERE user_id = ? " + queryIds;
+            var queryString = "SELECT id,name,optimized,modified,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ? " + queryIds;
 
             connection.query(queryString, [user_id], function(err, dblanders) {
               if (err) {

@@ -4,8 +4,8 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
     "/assets/js/apps/moonlander/landers/edit/edit_controller.js",
     "/assets/js/apps/moonlander/landers/deploy_to_domain/deploy_to_domain_controller.js",
     "/assets/js/apps/moonlander/landers/add_to_campaign/add_to_campaign_controller.js",
-    "/assets/js/apps/moonlander/landers/remove_domain/remove_domain_controller.js",
-    "/assets/js/apps/moonlander/landers/remove_campaign/remove_campaign_controller.js",
+    "/assets/js/apps/moonlander/landers/undeploy_domain/undeploy_domain_controller.js",
+    "/assets/js/apps/moonlander/landers/undeploy_campaign/undeploy_campaign_controller.js",
     "/assets/js/apps/moonlander/landers/add_new_lander/add_new_lander_controller.js",
     "/assets/js/apps/moonlander/landers/delete_lander/delete_lander_controller.js",
     "/assets/js/apps/moonlander/landers/duplicate_lander/duplicate_lander_controller.js",
@@ -13,7 +13,7 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
     "/assets/js/apps/moonlander/landers/js_snippets/js_snippets_controller.js"
   ],
   function(Moonlander, ListController, CommonLogin, SidemenuController, EditController, DeployToDomainController,
-    AddNewCampaignController, UndeployLanderController, UndeployCampaignController, AddNewLanderController, DeleteLanderController,
+    AddNewCampaignController, RemoveDomainController, RemoveCampaignController, AddNewLanderController, DeleteLanderController,
     DuplicateLanderController, RipNewLanderController, JsSnippetsController) {
     Moonlander.module("LandersApp", function(LandersApp, Moonlander, Backbone, Marionette, $, _) {
 
@@ -73,13 +73,13 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
           AddNewLanderController.showAddNewLanderModal();
         },
         showRemoveDomain: function(model) {
-          UndeployLanderController.showRemoveDomain(model);
+          RemoveDomainController.showRemoveDomain(model);
         },
         showEditJsSnippetsModal: function(landerModel, snippet_id, showDescription) {
           JsSnippetsController.showEditJsSnippetsModal(landerModel, snippet_id, showDescription);
         },
-        showRemoveLanderFromCampaignDialog: function(model) {
-          UndeployCampaignController.showRemoveLanderFromCampaignDialog(model);
+        showUndeployDomainFromCampaignDialog: function(attr) {
+          RemoveCampaignController.showUndeployDomainFromCampaignDialog(attr);
         },
         removeCampaignFromLander: function(campaignModel) {
           ListController.removeCampaignFromLander(campaignModel);
@@ -151,8 +151,8 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
         landersAppAPI.showDeleteLanderModal(model);
       });
 
-      Moonlander.on("landers:showRemoveLanderFromCampaignDialog", function(model) {
-        landersAppAPI.showRemoveLanderFromCampaignDialog(model);
+      Moonlander.on("landers:showUndeployDomainFromCampaignDialog", function(attr) {
+        landersAppAPI.showUndeployDomainFromCampaignDialog(attr);
       });
 
       Moonlander.on("landers:list:addNewDuplicatedLander", function(model) {

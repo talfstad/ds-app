@@ -78,10 +78,10 @@ define(["app",
         },
 
         onBeforeRender: function() {
-          var lastUpdatedRawMysqlDateTime = this.model.get("last_updated");
+          var lastUpdatedRawMysqlDateTime = this.model.get("created_on");
           var timezoneName = new jstz().timezone_name;
           var formattedTime = moment.utc(lastUpdatedRawMysqlDateTime, "MMM DD, YYYY h:mm A").tz(timezoneName).format("MMM DD, YYYY h:mm A");
-          this.model.set("last_updated_gui", formattedTime);
+          this.model.set("created_on_gui", formattedTime);
         },
 
         expandAccordion: function() {

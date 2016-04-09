@@ -24,7 +24,7 @@
           </div>
        
         <div class="widget-menu domain-campaign-notification">
-           <span class="fs11" title="created on <%= last_updated_gui %>"><%= last_updated_gui %></span>
+           <span class="fs11" title="created on <%= created_on_gui %>"><%= created_on_gui %></span>
         </div>
          </a>
        

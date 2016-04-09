@@ -1,5 +1,5 @@
 define(["app",
-    "/assets/js/apps/moonlander/landers/remove_domain/views/remove_domain_layout_view.js",
+    "/assets/js/apps/moonlander/landers/undeploy_domain/views/undeploy_domain_layout_view.js",
     "/assets/js/jobs/jobs_model.js"
   ],
   function(Moonlander, RemoveDomainLayout, JobModel) {

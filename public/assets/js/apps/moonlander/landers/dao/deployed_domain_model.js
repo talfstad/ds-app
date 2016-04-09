@@ -75,11 +75,6 @@ define(["app",
 
         });
 
-
-        //build activeCampaigns collection
-        var activeCampaigns = new ActiveCampaignCollection();
-        this.set("activeCampaigns", activeCampaigns);
-
         this.startActiveJobs();
 
       },

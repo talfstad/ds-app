@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!assets/js/apps/moonlander/landers/remove_campaign/templates/remove_campaign_layout.tpl"
+    "tpl!assets/js/apps/moonlander/landers/undeploy_campaign/templates/undeploy_campaign_layout.tpl"
   ],
   function(Moonlander, UndeployLayoutTemplate) {
 
@@ -27,8 +27,20 @@ define(["app",
           "click .undeploy-confirm": "confirmedRemoveCampaignFromLander"
         },
 
+        initialize: function() {
+          this.campaignModel = this.options.campaign_model;
+          this.landerModel = this.options.lander_model;
+        },
+
+        templateHelpers: function() {
+          return {
+            campaign_name: this.campaignModel.get("name"),
+            lander_name: this.landerModel.get("name")
+          }
+        },
+
         confirmedRemoveCampaignFromLander: function() {
-          this.trigger("removeCampaignFromLander", this.model);      
+          this.trigger("removeCampaignFromDomain", this.model);      
         },
 
         onRender: function() {

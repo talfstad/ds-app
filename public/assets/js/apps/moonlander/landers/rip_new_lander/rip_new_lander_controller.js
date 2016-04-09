@@ -1,46 +1,46 @@
 define(["app",
     "/assets/js/apps/moonlander/landers/rip_new_lander/views/rip_new_lander_layout_view.js",
-    "/assets/js/jobs/jobs_model.js",
     "/assets/js/apps/moonlander/landers/dao/lander_model.js"
   ],
-  function(Moonlander, RipNewLanderLayoutView, JobModel, LanderModel) {
+  function(Moonlander, RipNewLanderLayoutView, LanderModel) {
     Moonlander.module("LandersApp.Landers.RipNewLander", function(RipNewLander, Moonlander, Backbone, Marionette, $, _) {
 
       RipNewLander.Controller = {
 
         showRipNewLanderModal: function() {
 
-          //make new lander model for it
-          var jobModel = new JobModel({
-            action: "ripNewLander"
+          var landerModel = new LanderModel({
+            source: "rip"
           });
 
           var ripNewLanderLayout = new RipNewLanderLayoutView({
-            model: jobModel
+            model: landerModel
           });
 
-          ripNewLanderLayout.on("ripLanderAddedAndProcessing", function(jobModel){
-            //1. create a new lander model
-            var landerModel = new LanderModel({
-              id: jobModel.get("lander_id"),
-              name: jobModel.get("lander_name"),
-              last_updated: jobModel.get("last_updated"),
-              deploy_status: "initializing",
-              lander_url: jobModel.get("lander_url")
-            });
-            //2. add jobmodel to lander model
-            var activeJobs = landerModel.get("activeJobs");
-            activeJobs.add(jobModel);
-            Moonlander.trigger("job:start", jobModel);
-            //3. trigger add lander model on the landers collection
-            Moonlander.trigger("landers:list:addLander", landerModel);
+          ripNewLanderLayout.on("ripLanderConfirmed", function() {
+
+            landerModel.set("alertLoading", true);
+
+            landerModel.save({}, {
+              success: function() {
+                landerModel.set("alertLoading", false);
+                ripNewLanderLayout.closeModal();
+                Moonlander.trigger("landers:list:addLander", landerModel);
+              },
+              error: function() {
+
+              }
+
+            })
+
+
           });
 
 
           ripNewLanderLayout.render();
 
           Moonlander.rootRegion.currentView.modalRegion.show(ripNewLanderLayout);
-        
+
         }
 
       }

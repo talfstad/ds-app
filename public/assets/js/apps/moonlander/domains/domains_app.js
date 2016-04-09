@@ -134,8 +134,8 @@ define(["app", "/assets/js/apps/moonlander/domains/list/list_controller.js",
         domainsAppAPI.deployCampaignLandersToDomain(attr);
       });
 
-      Moonlander.on("domains:showUndeployDomainFromCampaignDialog", function(model) {
-        domainsAppAPI.showUndeployDomainFromCampaignDialog(model);
+      Moonlander.on("domains:showUndeployDomainFromCampaignDialog", function(attr) {
+        domainsAppAPI.showUndeployDomainFromCampaignDialog(attr);
       });
 
       Moonlander.on("domains:removeCampaignFromDomain", function(model) {

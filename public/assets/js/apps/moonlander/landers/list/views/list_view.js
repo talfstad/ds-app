@@ -64,8 +64,8 @@ define(["app",
             
             me.collection.comparator = function(a, b) {
 
-              var aLastUpdated = moment(new Date(a.get("last_updated"))).unix(); 
-              var bLastUpdated = moment(new Date(b.get("last_updated"))).unix();
+              var aLastUpdated = moment(new Date(a.get("created_on"))).unix(); 
+              var bLastUpdated = moment(new Date(b.get("created_on"))).unix();
 
               if(aLastUpdated === bLastUpdated) {
                 return 0;

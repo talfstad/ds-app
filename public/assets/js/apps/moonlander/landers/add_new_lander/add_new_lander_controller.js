@@ -28,7 +28,7 @@ define(["app",
             var landerModel = new LanderModel({
               id: jobAttributes.lander_id,
               name: jobAttributes.landerName,
-              last_updated: jobAttributes.last_updated,
+              created_on: jobAttributes.created_on,
               deploy_status: "initializing"
             });
             //4. add jobmodel to lander model

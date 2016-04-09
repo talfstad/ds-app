@@ -28,7 +28,8 @@ RUN npm install
 RUN npm install bower -g
 RUN bower install
 
-
+#fix the server date ?
+#sudo ntpdate time.nist.gov
 
 #start the app
 EXPOSE 3000

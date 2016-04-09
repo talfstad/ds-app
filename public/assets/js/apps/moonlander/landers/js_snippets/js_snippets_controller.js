@@ -51,8 +51,6 @@ define(["app",
                 var criterion = filterCriterion.toLowerCase();
                 return function(snippet) {
                   if (snippet.get('name').toLowerCase().indexOf(criterion) !== -1) {
-                    // || lander.get('last_updated').toLowerCase().indexOf(criterion) !== -1) {
-                    // || lander.get('phoneNumber').toLowerCase().indexOf(criterion) !== -1){
                     return snippet;
                   }
                 };

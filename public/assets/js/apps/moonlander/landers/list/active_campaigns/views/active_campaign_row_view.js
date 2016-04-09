@@ -18,7 +18,6 @@ define(["app",
           e.stopPropagation();
 
           this.model.trigger("showUndeployDomainFromCampaignDialog", this.model);
-
         },
 
         modelEvents: {
