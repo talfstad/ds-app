@@ -37,12 +37,11 @@ module.exports = function(app, passport) {
         if (err) {
           res.json({error: err});
         } else {
-
-          console.log(JSON.stringify(returnData));
-
           res.json({
             id: landerData.id,
-            created_on: landerData.created_on
+            created_on: landerData.created_on,
+            urlEndpointsJSON: landerData.urlEndpoints,
+            s3_folder_name: landerData.s3_folder_name
           });
         }
       });

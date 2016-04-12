@@ -14,6 +14,10 @@ var methodOverride = require('method-override');
 var config = require("./config");
 var db = require("./db_api");
 
+//gzip
+var compress = require('compression');
+app.use(compress());
+
 var login = require("./passport_login");
 login.initialize(app, db);
 

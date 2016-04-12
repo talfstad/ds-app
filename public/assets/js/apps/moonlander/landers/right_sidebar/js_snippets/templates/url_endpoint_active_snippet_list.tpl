@@ -2,7 +2,7 @@
 <span class="fancytree-icon fancytree-icon-folder">
 <i style="font-size: 18px !important" class="fa fa-file fs12 pr5"></i>
 </span>
-<span style="cursor: inherit" class="fancytree-title"><%= name %></span>
+<span style="cursor: inherit" class="fancytree-title"><%= filename %></span>
 </span>
 
-  <ul class="active-snippets-list"></ul>
+<ul class="active-snippets-list"></ul>

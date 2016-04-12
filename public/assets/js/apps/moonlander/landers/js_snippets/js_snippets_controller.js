@@ -142,7 +142,7 @@ define(["app",
                 if (isAvailable)
                   availableUrlEndpoints.push({
                     id: endpoint.get("id"),
-                    name: endpoint.get("name")
+                    filename: endpoint.get("filename")
                   });
               });
               model.set("availableUrlEndpoints", availableUrlEndpoints);

@@ -19,9 +19,9 @@ define(["app",
             model: jobModel
           });
 
-          addNewLanderLayout.on("fileUploadComplete", function(data){
+          addNewLanderLayout.on("fileUploadComplete", function(data) {
             var jobAttributes = data.response;
-             //// server returns job id, lander id
+            //// server returns job id, lander id
             //2. create new jobmodel with jobid and action and lander id
             var jobModel = new JobModel(jobAttributes);
             //3. create a new lander model
@@ -46,7 +46,7 @@ define(["app",
           addNewLanderLayout.render();
 
           Moonlander.rootRegion.currentView.modalRegion.show(addNewLanderLayout);
-        
+
         }
 
       }

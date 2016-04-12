@@ -5,7 +5,7 @@ define(["app",
     "/assets/js/apps/moonlander/landers/dao/deployed_domain_collection.js",
     "/assets/js/apps/moonlander/landers/dao/active_campaign_collection.js"
   ],
-  function(Moonlander, JobsGuiBaseModel, DomainCollection, UrlEndpointCollection, 
+  function(Moonlander, JobsGuiBaseModel, DomainCollection, UrlEndpointCollection,
     DeployedDomainsCollection, ActiveCampaignCollection) {
     var LanderModel = JobsGuiBaseModel.extend({
       urlRoot: "/api/landers",
@@ -65,12 +65,15 @@ define(["app",
 
         this.startActiveJobs();
 
-
-
         ////////
 
         //1. build deployedDomains collection
         //2. build urlendpoint collection
+
+        this.set("originalValueOptimized", this.get("optimized"));
+        this.set("originalValueDeploymentFolderName", this.get("deployment_folder_name"));
+        this.set("originalValueDeployRoot", this.get("deploy_root"));
+
         var activeCampaignAttributes = this.get("activeCampaigns");
         var urlEndpointAttributes = this.get("urlEndpoints");
         var deployedDomainAttributes = this.get("deployedDomains");
@@ -90,7 +93,7 @@ define(["app",
             deployedDomainsCollection.each(function(deployedDomainModel) {
               if (deployedDomainModel.get("activeJobs").length > 0) {
                 deployStatus = "deploying";
-              } else if(deployedDomainModel.get("deploy_status") === "modified") {
+              } else if (deployedDomainModel.get("deploy_status") === "modified") {
                 deployStatus = "modified";
               }
             });
@@ -136,7 +139,7 @@ define(["app",
 
         });
 
-        
+
 
         deployedDomainsCollection.on("destroy", function(domainModel) {
           applyUpdatedDeployStatusToLander();
@@ -176,8 +179,8 @@ define(["app",
         }
         this.set("deploy_status", deployStatus);
 
-        if(this.get("modified")) {
-          deployedDomainsCollection.each(function(location){
+        if (this.get("modified")) {
+          deployedDomainsCollection.each(function(location) {
             location.set("deploy_status", "modified");
           });
         }
@@ -205,4 +208,3 @@ define(["app",
     });
     return LanderModel;
   });
-

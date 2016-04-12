@@ -50,7 +50,6 @@ define(["app",
               });
             }
           });
-
         },
 
         //whenever sidebar is open it has the real lander model as its model not a stupid sidebar model
@@ -71,11 +70,16 @@ define(["app",
           //when optimizations modified save them and set correct deploy status
           //when changing deploy status must start with the deployed locations status
           //it will propogate up to the lander model
-          optimizationView.on("modified", function() {
-
-            me.updateToModifiedAndSave();
-
-
+          optimizationView.on("modified", function(isModified) {
+            if (isModified) {
+              model.set("deploy_status", "modified");
+            } else {
+              if (model.get("deployedDomains").length > 0) {
+                model.set("deploy_status", "not_deployed");
+              } else {
+                model.set("deploy_status", "not_deployed");
+              }
+            }
           });
 
           //show it

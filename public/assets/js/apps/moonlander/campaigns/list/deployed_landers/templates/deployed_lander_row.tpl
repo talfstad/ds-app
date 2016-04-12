@@ -18,7 +18,7 @@
 
               <% _.each(urlEndpoints, function(endpoint) { %>
             
-              <option> <%= domain.domain %>/<%= endpoint.name %></option>
+              <option> <%= domain.domain %>/<%= endpoint.filename %></option>
 
               <% }); %>
 

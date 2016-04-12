@@ -256,7 +256,7 @@ module.exports = function(db) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("SELECT aws_access_key_id, aws_secret_access_key FROM users WHERE id=?;", [user_id], function(err, docs) {
+          connection.query("SELECT aws_access_key_id, aws_secret_access_key, aws_root_bucket FROM users WHERE id=?;", [user_id], function(err, docs) {
             if (!err) {
               var access_key_id = null;
               var secret_access_key = null;
@@ -268,10 +268,10 @@ module.exports = function(db) {
                 if (docs[0].aws_secret_access_key) {
                   secret_access_key = docs[0].aws_secret_access_key;
                 }
-                if (docs[0].uid) {
-                  uid = docs[0].uid;
+                if (docs[0].aws_root_bucket) {
+                  aws_root_bucket = docs[0].aws_root_bucket;
                 }
-                callback(null, access_key_id, secret_access_key, uid)
+                callback(null, access_key_id, secret_access_key, aws_root_bucket)
               } else {
                 callback("Unable to get user settings for user: " + user, null);
               }

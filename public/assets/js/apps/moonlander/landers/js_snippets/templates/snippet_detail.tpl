@@ -32,7 +32,7 @@
         <select class="snippets-endpoint-select select2-single form-control">
           <% _.each(availableUrlEndpoints, function(endpoint) { %>
             <option value="<%= endpoint.id %>">
-              <%= endpoint.name %>
+              <%= endpoint.filename %>
             </option>
             <% }) %>
         </select>

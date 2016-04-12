@@ -24,11 +24,27 @@ define(["app",
           "click button.lander-edit": "showEditLander",
           "click .delete-lander-button": "showDeleteLanderModal",
           "click .duplicate-lander-button": "showDuplicateLanderModal",
-          "click .add-snippet-button": "showJsSnippetsModal"
+          "click .add-snippet-button": "showJsSnippetsModal",
+          "click .open-preview-link": "openPreviewLink"
         },
 
         modelEvents: {
           "change:deploy_status": "showAlerts"
+        },
+
+        openPreviewLink: function(e){
+          e.preventDefault();
+
+          // <aws_root_bucket>.s3-website-us-west-2.amazonaws.com/<user>/landers/<s3_folder_name>
+          var rootBucket = Moonlander.loginModel.get("aws_root_bucket");
+          var username = Moonlander.loginModel.get("username");
+          var s3FolderName = this.model.get("s3_folder_name");
+          var filename = $(".preview-link-endpoints-select option:selected").text().trim();
+          var link = "http://" + rootBucket + ".s3-website-us-west-2.amazonaws.com/" + username + "/landers/" + s3FolderName + "/" + filename;
+
+          window.open(link, '_blank');
+          return false;
+
         },
 
         //show modified alert if 
@@ -64,11 +80,11 @@ define(["app",
         },
 
         onRender: function() {
-          this.$el.find(".test-link-endpoints-select").select2();
+          this.$el.find(".preview-link-endpoints-select").select2();
 
-          //disable open test link if no endpoints
+          //disable open preview link if no endpoints
           if (this.model.get("urlEndpointsJSON").length <= 0) {
-            this.$el.find(".open-test-link").addClass("disabled");
+            this.$el.find(".open-preview-link").addClass("disabled");
           }
         },
 

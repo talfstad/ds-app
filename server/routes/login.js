@@ -20,7 +20,7 @@ module.exports = function(app, passport) {
     }
 
     var user = req.user;
-    db.users.getUserSettings(user, function(error, access_key_id, secret_access_key, uid) {
+    db.users.getUserSettings(user, function(error, access_key_id, secret_access_key, aws_root_bucket) {
       if (error) {
         console.log(error);
         utils.sendResponse(res, error, "settingsRetrieved");
@@ -31,6 +31,7 @@ module.exports = function(app, passport) {
           logged_in: true,
           aws_access_key_id: access_key_id,
           aws_secret_access_key: secret_access_key,
+          aws_root_bucket: aws_root_bucket
         });
       }
     }); //getAmazonAPIKeys
@@ -41,7 +42,7 @@ module.exports = function(app, passport) {
     var user = req.user;
 
     if (req.user) {
-      db.users.getUserSettings(user, function(error, access_key_id, secret_access_key, uid) {
+      db.users.getUserSettings(user, function(error, access_key_id, secret_access_key, aws_root_bucket) {
         if (error) {
           console.log(error);
           utils.sendResponse(res, error, "settingsRetrieved");
@@ -52,6 +53,7 @@ module.exports = function(app, passport) {
             logged_in: true,
             aws_access_key_id: access_key_id,
             aws_secret_access_key: secret_access_key,
+            aws_root_bucket: aws_root_bucket
           });
         }
       }); //getAmazonAPIKeys

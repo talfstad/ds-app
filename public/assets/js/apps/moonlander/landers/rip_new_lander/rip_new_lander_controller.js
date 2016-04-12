@@ -22,7 +22,12 @@ define(["app",
             landerModel.set("alertLoading", true);
 
             landerModel.save({}, {
-              success: function() {
+              success: function(savedLanderModel) {
+
+                //set endpoints
+                var endpoints = landerModel.get("urlEndpoints");
+                endpoints.add(savedLanderModel.get("urlEndpointsJSON"));
+
                 landerModel.set("alertLoading", false);
                 ripNewLanderLayout.closeModal();
                 Moonlander.trigger("landers:list:addLander", landerModel);

@@ -8,19 +8,32 @@ define(["app",
     Moonlander.module("LandersApp.RightSidebar", function(RightSidebar, Moonlander, Backbone, Marionette, $, _) {
       RightSidebar.NameOptimizationsView = Marionette.ItemView.extend({
 
+        initialize: function() {
+          
+        },
+
         template: NameOptimizationsTpl,
 
         events: {
-          "change #optimization-gzip": "landerIsModified",
-          "change #optimization-js": "landerIsModified",
-          "change #optimization-css": "landerIsModified",
-          "change #optimization-images": "landerIsModified"
+          "change #optimized": "landerIsModified",
+          "change #deploy-root": "landerIsModified",
+          "keyup #deploy-folder-edit": "landerIsModified"
         },
 
         landerIsModified: function() {
           //set new vals to model
           this.model.set(Backbone.Syphon.serialize(this));
-          this.trigger("modified");
+
+          if (this.model.get("optimized") == this.model.get("originalValueOptimized") &&
+            this.model.get("deployment_folder_name") == this.model.get("originalValueDeploymentFolderName") &&
+            this.model.get("originalValueDeployRoot") == this.model.get("deploy_root")) {
+            
+            this.trigger("modified", false);
+          
+          } else {
+          
+            this.trigger("modified", true);
+          }
         }
 
       });

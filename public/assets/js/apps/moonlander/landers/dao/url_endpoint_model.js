@@ -12,7 +12,7 @@ function(Moonlander, ActiveSnippetCollection){
     },
 
   	defaults: {
-
+      filename: ""
     }
      
   });

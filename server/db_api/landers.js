@@ -100,6 +100,8 @@ module.exports = function(db) {
       var lander_url = landerData.lander_url;
       var s3_folder_name = landerData.s3_folder_name;
 
+      var urlEndpoints = landerData.urlEndpoints;
+
       var user_id = user.id;
       //param order: working_node_id, action, processing, lander_id, domain_id, campaign_id, user_id
       db.getConnection(function(err, connection) {
@@ -111,15 +113,33 @@ module.exports = function(db) {
               if (err) {
                 callback(err);
               } else {
+                //TODO loop url endpoints and save them here
+                //for each endpoint call insert into urlEndpoints here and do a idx counter to determine when to callback
                 landerData.id = docs[0][0]["LAST_INSERT_ID()"];
                 landerData.created_on = docs[1][0].created_on;
-                callback(false);
+
+                var endpointsIdx = 0;
+                for (var i = 0; i < urlEndpoints.length; i++) {
+                  var filename = urlEndpoints[i].filename;
+
+                  connection.query("INSERT INTO url_endpoints(filename, user_id, lander_id) VALUES (?, ?, ?)", [filename, user_id, landerData.id],
+                    function(err, endpointDocs) {
+                      if (err) {
+                        callback(err);
+                      } else {
+                        endpointsIdx++;
+
+                        if (endpointsIdx == urlEndpoints.length) {
+                          callback(false);
+                        }
+                      }
+                      connection.release();
+                    });
+                }
               }
-              connection.release();
             });
         }
       });
-
     },
 
     deployLanderToDomain: function(user, lander_id, domain_id, successCallback) {
@@ -324,7 +344,7 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           } else {
-            connection.query("SELECT id,name,lander_id from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.id],
+            connection.query("SELECT id,filename,lander_id from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.id],
               function(err, dbUrlEndpoints) {
                 if (err) {
                   callback(err);
@@ -335,11 +355,15 @@ module.exports = function(db) {
                   } else {
                     var idx = 0;
                     for (var i = 0; i < dbUrlEndpoints.length; i++) {
-                      getActiveSnippetsForUrlEndpoint(dbUrlEndpoints[i], function(activeSnippets) {
-                        var endpoint = dbUrlEndpoints[idx];
-                        endpoint.activeSnippets = activeSnippets;
-                        if (++idx == dbUrlEndpoints.length) {
-                          callback(false, dbUrlEndpoints);
+                      getActiveSnippetsForUrlEndpoint(dbUrlEndpoints[i], function(err, activeSnippets) {
+                        if (err) {
+                          callback(err);
+                        } else {
+                          var endpoint = dbUrlEndpoints[idx];
+                          endpoint.activeSnippets = activeSnippets;
+                          if (++idx == dbUrlEndpoints.length) {
+                            callback(false, dbUrlEndpoints);
+                          }
                         }
                       });
                     }
@@ -414,7 +438,7 @@ module.exports = function(db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT id,name,optimized,modified,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
+            connection.query("SELECT id,name,optimized,modified,s3_folder_name,deploy_root,deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
               if (err) {
                 callback(err);
               } else {
@@ -452,7 +476,7 @@ module.exports = function(db) {
               }
             }
 
-            var queryString = "SELECT id,name,optimized,modified,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ? " + queryIds;
+            var queryString = "SELECT id,name,optimized,modified,s3_folder_name,deploy_root,deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ? " + queryIds;
 
             connection.query(queryString, [user_id], function(err, dblanders) {
               if (err) {
@@ -481,16 +505,16 @@ module.exports = function(db) {
       //if landersToGetArr is here then just get those landers. arr of objects with id as key
       if (landersToGetArr) {
         getLandersById(landersToGetArr, function(err, landers) {
-          if(err) {
+          if (err) {
             return successCallback(err);
           } else {
-            return successCallback(false, landers);            
+            return successCallback(false, landers);
           }
         });
       } else {
         //call to get all and return rows
         getAllLandersDb(function(err, landers) {
-          if(err){
+          if (err) {
             return successCallback(err);
           } else {
             return successCallback(false, landers);
