@@ -14,7 +14,7 @@ define(["app",
           landerId = lander.get("lander_id") || lander.get("id");
 
           if (!landersToFilterOutCollection.find(function(m) {
-            var id = m.get('lander_id') || m.get('id')
+              var id = m.get('lander_id') || m.get('id')
               return id == landerId
             })) {
             items.add(lander);
@@ -26,31 +26,24 @@ define(["app",
 
     });
 
-    var landerCollectionInstance = null;
 
     var API = {
       getLandersCollection: function() {
         var me = this;
         var defer = $.Deferred();
 
-        if (!landerCollectionInstance) {
 
-          landerCollectionInstance = new LanderCollection();
+        landerCollectionInstance = new LanderCollection();
 
-          landerCollectionInstance.fetch({
-            success: function(landers) {
-              defer.resolve(landers);
-            },
-            error: function(one, two, three) {
-              Moonlander.execute("show:login");
-            }
-          });
-        } else {
-          //async hack to still return defer
-          setTimeout(function() {
-            defer.resolve(landerCollectionInstance);
-          }, 100);
-        }
+        landerCollectionInstance.fetch({
+          success: function(landers) {
+            defer.resolve(landers);
+          },
+          error: function(one, two, three) {
+            Moonlander.execute("show:login");
+          }
+        });
+
 
         var promise = defer.promise();
         return promise;

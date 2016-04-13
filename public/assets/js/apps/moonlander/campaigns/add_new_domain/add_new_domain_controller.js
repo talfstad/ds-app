@@ -51,7 +51,6 @@ define(["app",
             deployedDomainModel.unset("id");
 
             // create the model for activeCampaign model. make sure it saves to
-            // /api/active_campaigns_for_domain
             deployedDomainModel.save({}, {
               success: addedDomainToCampaignSuccessCallback,
               error: addedDomainToCampaignErrorCallback

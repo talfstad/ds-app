@@ -212,9 +212,9 @@ module.exports = function(db) {
           var deployedLanders = campaigns[i].deployedLanders;
 
           for (var j = 0; j < deployedLanders.length; j++) {
-            
+
             var lander_id = lander.lander_id || lander.id;
-            
+
             if (deployedLanders[j].lander_id == lander_id) {
               activeCampaigns.push(deployedLanders[j]);
             }
@@ -295,6 +295,7 @@ module.exports = function(db) {
             function(err, dbActiveJobs) {
               if (err) {
                 callback(err);
+                console.log(err);
               } else {
                 if (dbActiveJobs <= 0) {
                   callback(false, []);
@@ -330,17 +331,17 @@ module.exports = function(db) {
         db.getConnection(function(err, connection) {
           if (err) {
             callback(err);
+          } else {
+            connection.query("SELECT id,filename,lander_id from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.lander_id],
+              function(err, dbUrlEndpoints) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false, dbUrlEndpoints);
+                }
+                connection.release();
+              });
           }
-
-          connection.query("SELECT id,name,lander_id from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.lander_id],
-            function(err, dbUrlEndpoints) {
-              if (err) {
-                callback(err);
-              } else {
-                callback(false, dbUrlEndpoints);
-              }
-              connection.release();
-            });
         });
       };
 
@@ -350,7 +351,6 @@ module.exports = function(db) {
             callback(err);
           } else {
             lander.urlEndpoints = endpoints;
-
             getActiveJobsForDeployedLander(lander, campaign, function(err, activeJobs) {
               if (err) {
                 callback(err);
@@ -404,7 +404,6 @@ module.exports = function(db) {
             callback(err);
           } else {
             campaign.deployedLanders = landers;
-
             getDeployedDomainsForCampaign(campaign, function(err, domains) {
               if (err) {
                 callback(err);
@@ -436,7 +435,7 @@ module.exports = function(db) {
           connection.query("SELECT id,name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM campaigns WHERE user_id = ?", [user_id],
             function(err, dbCampaigns) {
               if (err) {
-                console.log(err);
+                callback(err);
               } else {
                 var idx = 0;
                 for (var i = 0; i < dbCampaigns.length; i++) {

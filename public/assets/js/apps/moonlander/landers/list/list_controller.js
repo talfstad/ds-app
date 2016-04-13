@@ -61,7 +61,7 @@ define(["app",
 
             if (!landerIsDeployed) {
               var newDeployedDomainModel = new DeployedDomainModel(campaignDomain);
-              newDeployedDomainModel.set("domain_id", newDeployedDomainModel.get("id"));
+              newDeployedDomainModel.set("domain_id", newDeployedDomainModel.get("domain_id") || newDeployedDomainModel.get("id"));
               newDeployedDomainModel.unset("id");
               newDeployedDomainModel.set("hasActiveCampaigns", true);
               landersToDeploy.push(newDeployedDomainModel);
@@ -82,7 +82,7 @@ define(["app",
               //create deploy job for domain and add it to the domain and the lander model
               var jobAttributes = {
                 action: "deployLanderToDomain",
-                lander_id: landerModel.get("id") || landerModel.get("lander_id"),
+                lander_id: landerModel.get("lander_id") || landerModel.get("id"),
                 domain_id: deployedDomainModelToDeploy.get("domain_id") || deployedDomainModelToDeploy.get("id"),
                 campaign_id: campaign_id
               };

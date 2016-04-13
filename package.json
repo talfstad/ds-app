@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "aws-sdk": "2.2.0",
+    "aws-sdk": "2.3.3",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "1.9.2",
     "compression": "^1.6.1",

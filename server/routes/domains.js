@@ -100,6 +100,8 @@ module.exports = function(app, passport) {
                   //2. create a cloud front for domain
                   db.aws.cloudfront.makeCloudfrontDistribution(credentials, domain, "/" + path, rootBucket, function(err, cloudfrontDomainName, cloudfrontId) {
                     if (err) {
+              console.log("here");
+                      
                       res.json({
                         error: {
                           code: "couldNotCreateCloudfrontDistribution",
@@ -140,7 +142,7 @@ module.exports = function(app, passport) {
                       } else {
                         //3. create the route 53 for that if not subdomain
                         db.aws.route53.createHostedZone(credentials, domain, cloudfrontDomainName, function(err, nameservers, hostedZoneId) {
-                          if (err) {
+                          if (err) {                            
                             //error so remove CF distro
                             db.aws.cloudfront.deleteDistribution(credentials, cloudfrontId, function(err) {
                               res.json({

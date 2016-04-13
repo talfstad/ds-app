@@ -93,7 +93,7 @@ module.exports = function(db) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("CALL register_job(?, ?, ?, ?, ?, ?, ?, ?, ?)", [config.id, modelAttributes.action, modelAttributes.alternate_action, true, modelAttributes.lander_id, modelAttributes.domain_id, modelAttributes.campaign_id, user_id, modelAttributes.lander_url || null],
+          connection.query("CALL register_job(?, ?, ?, ?, ?, ?, ?, ?)", [config.id, modelAttributes.action, modelAttributes.alternate_action, true, modelAttributes.lander_id, modelAttributes.domain_id, modelAttributes.campaign_id, user_id],
 
             function(err, docs) {
               if (err) {
@@ -217,22 +217,3 @@ module.exports = function(db) {
   }
 
 };
-
-
-// [
-//   [{
-//     "LAST_INSERT_ID()": 6
-//   }],
-//   [{
-//     "created_on": "2015-12-30T02:11:19.000Z"
-//   }], {
-//     "fieldCount": 0,
-//     "affectedRows": 0,
-//     "insertId": 0,
-//     "serverStatus": 2,
-//     "warningCount": 0,
-//     "message": "",
-//     "protocol41": true,
-//     "changedRows": 0
-//   }
-// ]

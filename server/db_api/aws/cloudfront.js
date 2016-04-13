@@ -43,7 +43,7 @@ module.exports = function(db) {
               Cookies: { /* required */
                 Forward: 'none' /* required */
               },
-              QueryString: false,
+              QueryString: true,
               /* required */
             },
             MinTTL: 0,
