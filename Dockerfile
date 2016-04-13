@@ -11,7 +11,7 @@ RUN apt-get install -y curl
 #RUN curl -O https://bootstrap.pypa.io/get-pip.py && python get-pip.py
 
 # Install Node.JS latest
-RUN cd /usr/local && curl http://nodejs.org/dist/latest-argon/node-v4.3.2-linux-x64.tar.gz | tar --strip-components=1 -zxf- && cd
+RUN cd /usr/local && curl http://nodejs.org/dist/latest-argon/node-v4.4.3-linux-x64.tar.gz | tar --strip-components=1 -zxf- && cd
 RUN npm -g update npm
 
 
