@@ -26,11 +26,7 @@
     </div>
 
     <div class="lander-modified-region"></div>
-    <div class="js-snippet-alert alert alert-warning lander-modified-alert">
-      <span style="font-weight: 600">Lander Modified</span>. Deploy is Required.
-    </div>
     
-
     <div class="admin-form panel-body pn pb25" style="border-top: none; font-size: 13px">
       <div class="name-and-optimizations-region">
       </div>

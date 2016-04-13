@@ -35,7 +35,7 @@ module.exports = function(app, passport) {
 
       ripLander.new(user, landerData, function(err, returnData) {
         if (err) {
-          res.json({error: err});
+          res.json({ error: err });
         } else {
           res.json({
             id: landerData.id,
@@ -56,8 +56,12 @@ module.exports = function(app, passport) {
     var user = req.user;
     var modelAttributes = req.body;
 
-    db.landers.updateLanderData(user, modelAttributes, function(returnModelAttributes) {
-      res.json(returnModelAttributes);
+    db.landers.updateLanderData(user, modelAttributes, function(err, returnModelAttributes) {
+      if (err) {
+        res.json({error: err});
+      } else {
+        res.json(returnModelAttributes);
+      }
     });
 
   });
@@ -66,4 +70,3 @@ module.exports = function(app, passport) {
   return module;
 
 }
-

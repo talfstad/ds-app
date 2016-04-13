@@ -5,32 +5,42 @@ module.exports = function(db) {
   return {
 
     //save optimzations and modified
-    updateLanderData: function(user, attr, successCallback) {
+    updateLanderData: function(user, attr, callback) {
 
       var user_id = user.id;
       var lander_id = attr.id;
       var optimized = attr.optimized;
-      var modified = attr.modified;
+      var deploy_root = attr.deploy_root;
+      var deployment_folder_name = attr.deployment_folder_name;
+
+
+      //validate inputs
+      if (optimized != true || optimized != false) {
+        if (deploy_root != true || deploy_root != false) {
+          if (!deployment_folder_name.match(/^[a-z0-9]+$/i)) {
+            callback({ code: "InvalidInput" });
+          }
+        }
+      }
+
+
       //values for query
-      var attrArr = [optimized, modified, user_id, lander_id];
+      var attrArr = [optimized, deploy_root, deployment_folder_name, user_id, lander_id];
 
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("UPDATE landers SET optimized = ?, modified = ? WHERE user_id = ? AND id = ?", attrArr,
+          connection.query("UPDATE landers SET optimized = ?, deploy_root = ?, deployment_folder_name = ? WHERE user_id = ? AND id = ?", attrArr,
             function(err, docs) {
-
               if (err) {
-                console.log(err);
-                errorCallback();
+                callback(err);
               } else {
-                successCallback({
+                callback(false, {
                   id: attr.id
                 });
               }
               connection.release();
-
             });
         }
       });

@@ -11,15 +11,19 @@ define(["app",
         className: "js-snippet-alert alert alert-warning lander-modified-alert",
 
         modelEvents: {
-          'change:deploy_status': 'render'
+          'change:deploy_status': 'display'
         },
 
-        onRender: function() {
+        display: function() {
           if (this.model.get("deploy_status") != "modified") {
             this.$el.hide();
           } else {
             this.$el.fadeIn();
           }
+        },
+
+        onRender: function() {
+          this.display();
         }
 
 

@@ -4,10 +4,11 @@ define(["app",
     "/assets/js/apps/moonlander/landers/dao/sidebar_model.js",
     "/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/views/active_snippets_list_view.js",
     "/assets/js/apps/moonlander/landers/right_sidebar/menu_buttons_view.js",
-    "/assets/js/apps/moonlander/landers/right_sidebar/lander_modified_view.js"
+    "/assets/js/apps/moonlander/landers/right_sidebar/lander_modified_view.js",
+    "/assets/js/common/notification.js",
   ],
   function(Moonlander, SidebarLayoutView, OptimizationsView, SidebarModel, ActiveJsSnippetsListView,
-    SidebarMenuButtonsView, LanderModifiedView) {
+    SidebarMenuButtonsView, LanderModifiedView, Notification) {
     Moonlander.module("LandersApp.RightSidebar", function(RightSidebar, Moonlander, Backbone, Marionette, $, _) {
 
       RightSidebar.Controller = {
@@ -87,6 +88,30 @@ define(["app",
           //deploy button region view
           var sidebarMenuButtonsView = new SidebarMenuButtonsView({
             model: model
+          });
+
+          sidebarMenuButtonsView.on("save", function() {
+            //save optimized, deployment_folder_name, deploy_root
+            model.save({}, {
+              success: function(data) {
+                if (data.error) {
+                  //show fail message
+                  Notification("Error Saving Lander", data.error.code, "danger", "stack_top_right");
+                } else {
+                  //show success save message
+                  Notification("Lander Saved", "Successfully Updated Lander", "success", "stack_top_right");
+                  model.set("deploy_status", "not_deployed");
+                  
+                }
+
+              },
+              error: function(errorMsg) {
+                //show fail message
+                Notification("Error Saving Lander", "", "danger", "stack_top_right");
+
+              }
+            });
+
           });
 
           var landerModifiedView = new LanderModifiedView({

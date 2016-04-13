@@ -93,7 +93,7 @@ define(["app", "pnotify"], function(Moonlander, PNotify) {
         },
         stack: stacks[noteStack],
         width: findWidth(),
-        delay: 10000
+        delay: 5000
       });
 
 

@@ -11,14 +11,23 @@ define(["app",
         className: "btn-group",
 
         events: {
-          'click .redeploy-all-locations': "redeploy"
+          'click .redeploy-all-locations': "redeploy",
+          'click .save-button': "save"
+        },
+
+        modelEvents: {
+          "change:deploy_status": "render"
+        },
+
+        save: function() {
+          this.trigger("save");
         },
 
         redeploy: function(e) {
           var me = this;
           e.preventDefault();
 
-          
+
           var deployedLanderCollection = me.model.get("deployedDomains");
           deployedLanderCollection.each(function(location) {
             location.set("shouldSetModifiedWhenJobsFinish", false);
