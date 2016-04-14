@@ -7,13 +7,19 @@ RUN apt-get update -y && apt-get upgrade -y
 # Install some packages we need
 RUN apt-get install -y curl
 
+RUN apt-get install -y python
+
 # Install latest version of pip
-#RUN curl -O https://bootstrap.pypa.io/get-pip.py && python get-pip.py
+RUN curl -O https://bootstrap.pypa.io/get-pip.py && python get-pip.py
 
 # Install Node.JS latest
-RUN cd /usr/local && curl http://nodejs.org/dist/latest-argon/node-v4.4.3-linux-x64.tar.gz | tar --strip-components=1 -zxf- && cd
-RUN npm -g update npm
+#RUN cd /usr/local && curl http://nodejs.org/dist/latest-argon/node-v4.4.3-linux-x64.tar.gz | tar --strip-components=1 -zxf- && cd
 
+#Install Node.JS latest 4.x version
+RUN curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+RUN sudo apt-get install -y nodejs
+
+RUN npm -g update npm
 
 # Install the app
 RUN mkdir -p /usr/src/app
