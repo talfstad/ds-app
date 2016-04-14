@@ -81,6 +81,7 @@ module.exports = function(app, passport) {
     var user = req.user;
     db.campaigns.getAll(user, function(err, rows) {
       if (err) {
+        res.json({error: err});
       }
       res.json(rows);
     });

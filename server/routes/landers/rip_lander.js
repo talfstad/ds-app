@@ -25,6 +25,7 @@ module.exports = function(app, passport) {
 
           landerData.urlEndpoints.push(urlEndpoint);
           landerData.s3_folder_name = stagingDir;
+          landerData.deployment_folder_name = stagingDir;
 
           db.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
             if (err) {

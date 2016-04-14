@@ -57,7 +57,7 @@ define(["app",
         },
 
         showDuplicateLanderModal: function() {
-          Moonlander.trigger("landers:showDuplicateLanderModal", this.model);
+          Moonlander.trigger("landers:showDuplicateLanderModal", this.model.attributes);
         },
 
         showDeleteLanderModal: function() {

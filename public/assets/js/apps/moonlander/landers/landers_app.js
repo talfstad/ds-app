@@ -51,8 +51,8 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
         updateTopbarTotals: function() {
           ListController.updateTopbarTotals();
         },
-        showDuplicateLanderModal: function(landerModelToDuplicate) {
-          DuplicateLanderController.showDuplicateLander(landerModelToDuplicate);
+        showDuplicateLanderModal: function(landerModelToDuplicateAttr) {
+          DuplicateLanderController.showDuplicateLander(landerModelToDuplicateAttr);
         },
         addCampaignToLander: function(attr) {
           ListController.addCampaignToLander(attr);
@@ -166,8 +166,8 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
       Moonlander.on("landers:removeCampaignFromLander", function(campaignModel) {
         landersAppAPI.removeCampaignFromLander(campaignModel);
       });
-      Moonlander.on("landers:showDuplicateLanderModal", function(model) {
-        landersAppAPI.showDuplicateLanderModal(model);
+      Moonlander.on("landers:showDuplicateLanderModal", function(attr) {
+        landersAppAPI.showDuplicateLanderModal(attr);
       });
 
       Moonlander.on("landers:showRipNewLanderModal", function(model) {

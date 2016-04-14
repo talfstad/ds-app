@@ -27,6 +27,18 @@ define(["app",
           "click .duplicate-lander-confirm": "confirmedDuplicateLander"
         },
 
+        modelEvents: {
+          "change:alertLoading": "alertLoading"
+        },
+
+        alertLoading: function() {
+          if (this.model.get("alertLoading")) {
+            this.$el.find(".alert-loading").fadeIn();
+          } else {
+            this.$el.find(".alert-loading").hide();
+          }
+        },
+
         confirmedDuplicateLander: function(e) {
 
           var me = this;
@@ -39,7 +51,7 @@ define(["app",
           //just a very small amount of validation, all really done on server
           if (newLanderData.landerName != "") {
 
-            this.trigger("duplicateLander", newLanderData.landerName);
+            this.trigger("duplicateLanderConfirm", newLanderData.landerName);
 
           } else {
             var alert = this.$el.find(".new-lander-info-alert");
@@ -51,7 +63,6 @@ define(["app",
             alert.addClass("alert-danger");
             alert.removeClass("alert-default");
             alert.html("You must choose a new lander name before duplicating this lander");
-
 
             setTimeout(function() {
               adminForm.removeClass("has-error");
@@ -81,6 +92,10 @@ define(["app",
         },
 
         onClose: function() {
+          this.$el.modal('hide');
+        },
+
+        closeModal: function(){
           this.$el.modal('hide');
         },
 

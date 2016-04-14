@@ -7,13 +7,18 @@ define(["app",
 
       DuplicateLander.Controller = {
 
-        showDuplicateLander: function(landerModelToDuplicate) {
+        showDuplicateLander: function(landerModelToDuplicateAttributes) {
           //take the lander model to dup and put it in a state to be re-initialized empty. setting attributes and
           //not using .set doesnt trigger a render of the right sidebar even though its changing.. kind of a hack        
-          
-          var duplicatedLanderModel = new LanderModel({
-            
-          })
+
+          var duplicateLanderModelAttr = {
+            fromName: landerModelToDuplicateAttributes.name,
+            from_s3_folder_name: landerModelToDuplicateAttributes.s3_folder_name,
+            source: "copy",
+            urlEndpoints: landerModelToDuplicateAttributes.urlEndpointsJSON
+          };
+
+          var duplicatedLanderModel = new LanderModel(duplicateLanderModelAttr)
 
           duplicatedLanderModel.attributes.active_campaigns_count = 0;
 
@@ -21,21 +26,32 @@ define(["app",
             endpoint.activeSnippets = []; //no active snippets carried over
           });
 
-          delete duplicatedLanderModel.attributes.id;
-
-
           var duplicateLanderLayout = new DuplicateLanderLayoutView({
             model: duplicatedLanderModel
           });
 
-          duplicateLanderLayout.on("duplicateLander", function(newLanderName) {
+          duplicateLanderLayout.on("duplicateLanderConfirm", function(newLanderName) {
             var me = this;
+
+            duplicatedLanderModel.set("alertLoading", true);
+
 
             this.model.set("name", newLanderName);
 
             //1. save the lander as a new lander
             this.model.save({}, {
               success: function(landerModel, two, three) {
+
+                duplicatedLanderModel.set("alertLoading", false);
+                
+                duplicateLanderLayout.closeModal();
+
+                var urlEndpoints = duplicatedLanderModel.get("urlEndpoints");
+                urlEndpoints.each(function(endpoint) {
+                  var activeSnippets = endpoint.get("activeSnippets");
+                  activeSnippets.reset();
+                });
+
                 Moonlander.trigger("landers:list:addNewDuplicatedLander", landerModel);
 
               },

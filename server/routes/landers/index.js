@@ -7,6 +7,7 @@ module.exports = function(app, passport) {
   var db = require("../../db_api");
 
   var ripLander = require("./rip_lander")(app, passport);
+  var copyLander = require("./copy_lander")(app, passport);
 
   app.get('/api/landers', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
@@ -41,12 +42,27 @@ module.exports = function(app, passport) {
             id: landerData.id,
             created_on: landerData.created_on,
             urlEndpointsJSON: landerData.urlEndpoints,
-            s3_folder_name: landerData.s3_folder_name
+            s3_folder_name: landerData.s3_folder_name,
+            deployment_folder_name: landerData.deployment_folder_name
           });
         }
       });
 
 
+    } else if (source == "copy") {
+
+      copyLander.new(user, landerData, function(err, returnData) {
+        if (err) {
+          res.json({ error: err });
+        } else {
+          res.json({
+            id: landerData.id,
+            created_on: landerData.created_on,
+            s3_folder_name: landerData.s3_folder_name,
+            deployment_folder_name: landerData.deployment_folder_name
+          });
+        }
+      });
     }
 
   });
@@ -58,7 +74,7 @@ module.exports = function(app, passport) {
 
     db.landers.updateLanderData(user, modelAttributes, function(err, returnModelAttributes) {
       if (err) {
-        res.json({error: err});
+        res.json({ error: err });
       } else {
         res.json(returnModelAttributes);
       }

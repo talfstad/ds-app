@@ -496,7 +496,14 @@ module.exports = function(db) {
 
     },
 
-    copyDirFromS3ToStaging: function(stagingPath, credentials, username, bucketName, callback) {
+    copyDirFromS3ToStaging: function(stagingPath, credentials, username, bucketName, directory, callback) {
+      
+      if (directory) {
+        var fullDir = username + directory;
+      } else {
+        fullDir = username;
+      }
+
       var s3_client = s3.createClient({
         maxAsyncS3: 20, // this is the default
         s3RetryCount: 0, // this is the default
@@ -516,7 +523,7 @@ module.exports = function(db) {
 
         s3Params: {
           Bucket: bucketName,
-          Prefix: username
+          Prefix: fullDir
         }
       };
 

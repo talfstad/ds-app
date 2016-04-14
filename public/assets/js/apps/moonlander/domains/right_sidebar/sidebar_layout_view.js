@@ -26,10 +26,6 @@ define(["app",
           Moonlander.trigger("domains:showJsSnippetsModal", this.model);
         },
 
-        showDuplicateLanderModal: function() {
-          Moonlander.trigger("domains:showDuplicateLanderModal", this.model);
-        },
-
         showDeleteDomainModal: function() {
           Moonlander.trigger("domains:showDeleteDomainModal", this.model);
         },
