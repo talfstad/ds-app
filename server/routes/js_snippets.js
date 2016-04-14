@@ -17,7 +17,6 @@ module.exports = function(app, passport) {
     var params = req.body;
 
     db.js_snippets.saveNewSnippet(user, params, function(returnObj) {
-      console.log("snippet successfully saved");
       res.json(returnObj);      
     });
 

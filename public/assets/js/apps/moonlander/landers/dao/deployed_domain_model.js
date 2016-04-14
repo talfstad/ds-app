@@ -17,11 +17,11 @@ define(["app",
         var activeJobsCollection = this.get("activeJobs");
 
         //set initial deploy status
-        var setDeployStatusForLocation = function() {
+        var setDeployStatusForDomain = function() {
           if (activeJobsCollection.length > 0) {
             var deployStatus = "deploying";
             activeJobsCollection.each(function(job) {
-              if (job.get("action") === "undeployLanderFromDomain") {
+              if (job.get("action") === "undeployLanderFromDomain" || job.get("action") === "undeployDomainFromLander") {
                 deployStatus = "undeploying";
               }
             });
@@ -31,20 +31,21 @@ define(["app",
           }
         };
 
-        setDeployStatusForLocation();
+        setDeployStatusForDomain();
 
         activeJobsCollection.on("add remove", function() {
-          setDeployStatusForLocation();
+          setDeployStatusForDomain();
         });
 
         activeJobsCollection.on("startState", function(attr) {
           var actualAddedJobModel = attr.actualAddedJobModel;
           var jobModelToReplace = attr.jobModelToReplace;
 
+
           var action = actualAddedJobModel.get("action");
           var deployStatus = "deployed";
 
-          if (action === "undeployLanderFromDomain") {
+          if (action === "undeployLanderFromDomain" || action === "undeployDomainFromLander") {
             deployStatus = "undeploying";
           } else if (action === "deployLanderToDomain") {
             deployStatus = "deploying";
@@ -58,43 +59,40 @@ define(["app",
           //must remove it at the correct index and put the new one in the correct index
           if (jobModelToReplace) {
             var index = activeJobsCollection.indexOf(jobModelToReplace);
-            activeJobsCollection.remove(jobModelToReplace, {silent: true})
-            activeJobsCollection.add(actualAddedJobModel, {at: index, silent: true});
+            activeJobsCollection.remove(jobModelToReplace, { silent: true })
+            activeJobsCollection.add(actualAddedJobModel, { at: index, silent: true });
           }
-
         });
 
         activeJobsCollection.on("finishedState", function(jobModel) {
 
-          if (jobModel.get("action") === "undeployLanderFromDomain") {
-            //destroy only if we dont have any other jobs for this
-            //1. if we have a deploy to do
-            var moreJobsToDo = false;
-            activeJobsCollection.each(function(job) {
-              if (job.get("action") == "deployLanderToDomain") {
-                moreJobsToDo = true;
-              }
-            });
-            if (!moreJobsToDo) {
-              me.trigger('destroy', me, me.collection);
-            }
+          if (jobModel.get("action") === "undeployDomainFromLander" ||
+            jobModel.get("action") === "undeployLanderFromDomain" ||
+            jobModel.get("alternate_action") === "undeployDomainFromLander") {
 
             //hack to get it to not send DELETE XHR
             delete jobModel.attributes.id;
             jobModel.destroy();
 
-          } else if (jobModel.get("action") === "deployLanderToDomain") {
+            //destroy only if we dont have any other jobs for this
+            //1. if we have a deploy to do
+            var moreJobsToDo = false;
+            if (activeJobsCollection.length > 0) {
+              moreJobsToDo = true;
+            }
+
+            setDeployStatusForDomain();
+
+            if (!moreJobsToDo) {
+              //triggers destroy to the server to get rid of this lander from campaign
+              me.destroy();
+            }
+          } else {
 
             //finished with this job so destroy the jobModel
             //hack to get it to not send DELETE XHR
             delete jobModel.attributes.id;
             jobModel.destroy();
-
-            if (me.get("shouldSetModifiedWhenJobsFinish")) {
-              me.set("deploy_status", "modified");
-            } else {
-              me.set("deploy_status", "deployed");
-            }
           }
 
           //trigger to start the next job on the list

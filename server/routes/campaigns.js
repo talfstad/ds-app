@@ -12,17 +12,19 @@ module.exports = function(app, passport) {
     var modelAttributes = req.body;
     var user = req.user;
 
-    db.campaigns.addActiveCampaignToLander(user, modelAttributes, function(row) {
-      res.json(row);
+    db.campaigns.addActiveCampaignToLander(user, modelAttributes, function(err, row) {
+      if(err){
+        json.res({error: err});
+      } else {
+        res.json(row);
+      }
     });
 
   });
 
   //updates an active lander on campaign model
   app.put('/api/active_campaigns_on_lander/:id', passport.isAuthenticated(), function(req, res) {
-
     res.json({});
-
   });
 
   app.delete('/api/active_campaigns_on_lander/:id', passport.isAuthenticated(), function(req, res) {
@@ -30,14 +32,10 @@ module.exports = function(app, passport) {
     //remove this by id from the landers with campaigns table
 
     db.campaigns.removeFromLandersWithCampaigns(req.user, req.params.id, function() {
-
       res.json({
         success: "true"
       });
-
     });
-
-
 
   });
 
@@ -67,10 +65,13 @@ module.exports = function(app, passport) {
     var modelAttributes = req.body;
     var user = req.user;
 
-    db.campaigns.addActiveCampaignToDomain(user, modelAttributes, function(row) {
-      res.json(row)
+    db.campaigns.addActiveCampaignToDomain(user, modelAttributes, function(err, row) {
+      if(err){
+        res.json({error: err});
+      } else {
+        res.json(row);
+      }
     });
-
   });
 
 
@@ -80,7 +81,6 @@ module.exports = function(app, passport) {
     var user = req.user;
     db.campaigns.getAll(user, function(err, rows) {
       if (err) {
-        console.log("error getting campaigns: " + JSON.stringify(err));
       }
       res.json(rows);
     });
@@ -119,9 +119,6 @@ module.exports = function(app, passport) {
         res.json({});
       }
     });
-
-
-
   });
 
   app.delete('/api/campaigns/:id', passport.isAuthenticated(), function(req, res) {

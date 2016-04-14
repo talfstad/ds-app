@@ -294,7 +294,7 @@ module.exports = function(db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT id,action,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, deployedDomain.lander_id, deployedDomain.id, true],
+            connection.query("SELECT id,action,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, deployedDomain.lander_id, deployedDomain.domain_id, true],
               function(err, dbActiveJobs) {
                 callback(false, dbActiveJobs);
                 connection.release();
@@ -318,12 +318,16 @@ module.exports = function(db) {
                   } else {
                     var idx = 0;
                     for (var i = 0; i < dbDeployedDomains.length; i++) {
-                      getActiveJobsFordeployedDomain(dbDeployedDomains[i], function(activeJobs) {
-                        var deployedDomain = dbDeployedDomains[idx];
-                        deployedDomain.activeJobs = activeJobs;
+                      getActiveJobsFordeployedDomain(dbDeployedDomains[i], function(err, activeJobs) {
+                        if (err) {
+                          callback(err);
+                        } else {
+                          var deployedDomain = dbDeployedDomains[idx];
+                          deployedDomain.activeJobs = activeJobs;
 
-                        if (++idx == dbDeployedDomains.length) {
-                          callback(false, dbDeployedDomains);
+                          if (++idx == dbDeployedDomains.length) {
+                            callback(false, dbDeployedDomains);
+                          }
                         }
                       });
                     }

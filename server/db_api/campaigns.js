@@ -102,7 +102,7 @@ module.exports = function(db) {
 
     },
 
-    removeFromCampaignsWithDomains: function(user, id, successCallback) {
+    removeFromCampaignsWithDomains: function(user, id, callback) {
       var user_id = user.id;
       db.getConnection(function(err, connection) {
         if (err) {
@@ -113,7 +113,7 @@ module.exports = function(db) {
               if (err) {
                 callback(err);
               } else {
-                successCallback(false, dbSuccessDelete);
+                callback(false, dbSuccessDelete);
               }
               //release connection
               connection.release();
@@ -129,12 +129,11 @@ module.exports = function(db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
           connection.query("CALL add_domain_to_campaign(?, ?, ?)", [modelAttributes.domain_id, modelAttributes.campaign_id, user_id], function(err, docs) {
             if (err) {
-              console.log(err);
-              callback("Error adding active campaign");
+              callback(err);
             } else {
               modelAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
 
@@ -147,12 +146,14 @@ module.exports = function(db) {
               //get current lander data by id
               if (deployedLanders.length > 0) {
 
-                dbLanders.getAll(user, function(deployedLandersArr) {
-                  //add the current lander data and return!
-
-                  modelAttributes.deployedLanders = deployedLandersArr
-
-                  callback(modelAttributes);
+                dbLanders.getAll(user, function(err, deployedLandersArr) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    //add the current lander data and return!
+                    modelAttributes.deployedLanders = deployedLandersArr
+                    callback(false, modelAttributes);
+                  }
 
                 }, deployedLanders);
 
@@ -160,7 +161,7 @@ module.exports = function(db) {
 
                 modelAttributes.deployedLanders = []
 
-                callback(modelAttributes);
+                callback(false, modelAttributes);
 
               }
 
@@ -182,15 +183,14 @@ module.exports = function(db) {
         } else {
           connection.query("CALL add_campaign_to_lander(?, ?, ?)", [modelAttributes.lander_id, modelAttributes.campaign_id, user_id], function(err, docs) {
             if (err) {
-              console.log(err);
-              callback("Error adding active campaign");
+              callback(err);
             } else {
               modelAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
               modelAttributes.currentDomains = docs[1];
 
               delete modelAttributes.activeJobs;
 
-              callback(modelAttributes);
+              callback(false, modelAttributes);
             }
 
             //release connection
@@ -221,7 +221,7 @@ module.exports = function(db) {
           }
         }
 
-        callback(activeCampaigns);
+        callback(false, activeCampaigns);
 
       });
     },

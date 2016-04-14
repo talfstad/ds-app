@@ -14,7 +14,7 @@
     "backbone.marionette": "2.4.2",
     "requirejs": "2.1.22",
     "requirejs-text": "2.0.14",
-    "requirejs-tpl": "7438735aa8",
+    "requirejs-underscore-tpl": "824a9c4e9e",
     "json2": "c98948ae19",
     "backbone.syphon": "0.6.2",
     "backbone.validation": "0.7.1",

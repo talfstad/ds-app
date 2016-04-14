@@ -100,8 +100,6 @@ module.exports = function(app, passport) {
                   //2. create a cloud front for domain
                   db.aws.cloudfront.makeCloudfrontDistribution(credentials, domain, "/" + path, rootBucket, function(err, cloudfrontDomainName, cloudfrontId) {
                     if (err) {
-              console.log("here");
-                      
                       res.json({
                         error: {
                           code: "couldNotCreateCloudfrontDistribution",

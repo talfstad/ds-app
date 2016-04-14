@@ -113,14 +113,14 @@ module.exports = function(db) {
       var getAllLanderIdsForCampaign = function(campaign, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
           }
           connection.query("SELECT a.lander_id,b.name FROM landers_with_campaigns a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.campaign_id],
             function(err, dbDomainIdsForCampaign) {
               if (err) {
 
               } else {
-                callback(dbDomainIdsForCampaign);
+                callback(false, dbDomainIdsForCampaign);
               }
               connection.release();
             });
@@ -137,41 +137,52 @@ module.exports = function(db) {
           }
           connection.query("SELECT id,action,processing,lander_id,domain_id,campaign_id,done,error,created_on FROM jobs WHERE (user_id = ? AND campaign_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?))", [user_id, campaign_id, domain_id, true, 0],
             function(err, dbActiveJobs) {
-              callback(dbActiveJobs);
-              connection.release();
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, dbActiveJobs);
+                connection.release();
+              }
             });
         });
       };
 
       getExtraNestedForActiveCampaign = function(activeCampaign, domain, callback) {
-        getAllLanderIdsForCampaign(activeCampaign, function(deployedLanders) {
-          activeCampaign.deployedLanders = deployedLanders;
+        getAllLanderIdsForCampaign(activeCampaign, function(err, deployedLanders) {
+          if (err) {
+            callback(err);
+          } else {
+            activeCampaign.deployedLanders = deployedLanders;
 
-          getActiveJobsForActiveCampaign(activeCampaign, domain, function(activeJobs) {
+            getActiveJobsForActiveCampaign(activeCampaign, domain, function(err, activeJobs) {
+              if (err) {
+                callback(err);
+              } else {
+                activeCampaign.activeJobs = activeJobs;
+                callback();
+              }
 
-            activeCampaign.activeJobs = activeJobs;
-            callback();
-          });
-
+            });
+          }
         });
       };
 
       var getActiveCampaignsForDomain = function(domain, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
           }
           connection.query("SELECT a.id AS campaign_id, b.id, a.name,b.domain_id from campaigns a JOIN campaigns_with_domains b ON a.id=b.campaign_id WHERE (a.user_id = ? AND domain_id = ?);", [user_id, domain.id],
             function(err, dbActiveCampaigns) {
 
               if (dbActiveCampaigns.length <= 0) {
-                callback([]);
+                callback(false, []);
               } else {
                 var idx = 0;
                 for (var i = 0; i < dbActiveCampaigns.length; i++) {
                   getExtraNestedForActiveCampaign(dbActiveCampaigns[i], domain, function() {
                     if (++idx == dbActiveCampaigns.length) {
-                      callback(dbActiveCampaigns);
+                      callback(false, dbActiveCampaigns);
                     }
                   });
                 }
@@ -187,22 +198,22 @@ module.exports = function(db) {
         // 1. deleteDomain
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
-          }
-          connection.query("SELECT id,action,processing,lander_id,domain_id,campaign_id,done,error,created_on FROM jobs WHERE action = ? AND user_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?)", ["deleteDomain", user_id, domain.id, true, 0],
-            function(err, dbActiveJobs) {
-              if (err) {
-                console.log(err);
-              } else {
-                if (dbActiveJobs <= 0) {
-                  callback([]);
+            callback(err);
+          } else {
+            connection.query("SELECT id,action,processing,lander_id,domain_id,campaign_id,done,error,created_on FROM jobs WHERE action = ? AND user_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?)", ["deleteDomain", user_id, domain.id, true, 0],
+              function(err, dbActiveJobs) {
+                if (err) {
+                  callback(err);
                 } else {
-                  callback(dbActiveJobs);
+                  if (dbActiveJobs <= 0) {
+                    callback(false, []);
+                  } else {
+                    callback(false, dbActiveJobs);
+                  }
                 }
-              }
-
-              connection.release();
-            });
+                connection.release();
+              });
+          }
         });
       };
 
@@ -214,105 +225,120 @@ module.exports = function(db) {
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
+            callback(err);
+          } else {
+            connection.query("SELECT id,action,processing,lander_id,domain_id,campaign_id,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?))", ["addNewLander", "deleteLander", "ripNewLander", "deployLanderToDomain", "undeployLanderFromDomain", user_id, lander_id, domain_id, true, 0],
+              function(err, dbActiveJobs) {
+                callback(false, dbActiveJobs);
+                connection.release();
+              });
           }
-          connection.query("SELECT id,action,processing,lander_id,domain_id,campaign_id,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?))", ["addNewLander", "deleteLander", "ripNewLander", "deployLanderToDomain", "undeployLanderFromDomain", user_id, lander_id, domain_id, true, 0],
-            function(err, dbActiveJobs) {
-              callback(dbActiveJobs);
-              connection.release();
-            });
         });
       };
 
       var getEndpointsForLander = function(lander, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
+          } else {
+            connection.query("SELECT id,filename,lander_id from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.lander_id],
+              function(err, dbUrlEndpoints) {
+                if (dbUrlEndpoints.length <= 0) {
+                  callback(false, []);
+                } else {
+                  callback(false, dbUrlEndpoints);
+                }
+                connection.release();
+              });
           }
-          connection.query("SELECT id,filename,lander_id from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.lander_id],
-            function(err, dbUrlEndpoints) {
-              if (dbUrlEndpoints.length <= 0) {
-                callback([]);
-              } else {
-                callback(dbUrlEndpoints);
-              }
-              connection.release();
-            });
         });
       };
 
 
       var getExtraNestedForLander = function(lander, domain, callback) {
-        getEndpointsForLander(lander, function(endpoints) {
+        getEndpointsForLander(lander, function(err, endpoints) {
+          if (err) {
+            callback(err);
+          } else {
+            lander.urlEndpoints = endpoints;
 
-          lander.urlEndpoints = endpoints;
-
-          getActiveJobsForLander(lander, function(activeJobs) {
-
-            lander.activeJobs = activeJobs;
-            callback();
-
-          });
-
+            getActiveJobsForLander(lander, function(err, activeJobs) {
+              if (err) {
+                callback(err);
+              } else {
+                lander.activeJobs = activeJobs;
+                callback(false);
+              }
+            });
+          }
         });
       };
 
       var getDeployedLandersForDomain = function(domain, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
-          }
-          connection.query("SELECT a.id, b.name, a.lander_id, a.domain_id FROM deployed_landers a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.domain_id = ?)", [user_id, domain.id],
-            function(err, dbDeployedLanders) {
-              if (dbDeployedLanders.length <= 0) {
-                callback([]);
-              } else {
-                var idx = 0;
-                for (var i = 0; i < dbDeployedLanders.length; i++) {
-                  getExtraNestedForLander(dbDeployedLanders[i], domain, function() {
-                    if (++idx == dbDeployedLanders.length) {
-                      callback(dbDeployedLanders);
-                    }
-                  });
-                }
+            callback(err);
+          } else {
+            connection.query("SELECT a.id, b.name, a.lander_id, a.domain_id FROM deployed_landers a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.domain_id = ?)", [user_id, domain.id],
+              function(err, dbDeployedLanders) {
                 if (dbDeployedLanders.length <= 0) {
-                  callback([dbDeployedLanders]);
+                  callback(false, []);
+                } else {
+                  var idx = 0;
+                  for (var i = 0; i < dbDeployedLanders.length; i++) {
+                    getExtraNestedForLander(dbDeployedLanders[i], domain, function() {
+                      if (++idx == dbDeployedLanders.length) {
+                        callback(false, dbDeployedLanders);
+                      }
+                    });
+                  }
+                  if (dbDeployedLanders.length <= 0) {
+                    callback(false, [dbDeployedLanders]);
+                  }
                 }
-              }
-              connection.release();
-            });
+                connection.release();
+              });
+          }
+
         });
       };
 
 
       var getExtraNestedForDomain = function(domain, callback) {
-        getDeployedLandersForDomain(domain, function(landers) {
+        getDeployedLandersForDomain(domain, function(err, landers) {
+          if (err) {
+            callback(err);
+          } else {
+            domain.deployedLanders = landers;
 
-          domain.deployedLanders = landers;
+            getActiveCampaignsForDomain(domain, function(err, activeCampaigns) {
+              if (err) {
+                callback(err);
+              } else {
+                domain.activeCampaigns = activeCampaigns;
 
-          getActiveCampaignsForDomain(domain, function(activeCampaigns) {
-
-            domain.activeCampaigns = activeCampaigns;
-
-            getActiveJobsForDomain(domain, function(activeJobs) {
-
-              domain.activeJobs = activeJobs;
-
-              callback();
-
+                getActiveJobsForDomain(domain, function(err, activeJobs) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    domain.activeJobs = activeJobs;
+                    callback();
+                  }
+                });
+              }
             });
-          });
-
+          }
         });
       };
 
-      var getAllDomainsDb = function(gotDomainsCallback) {
+      var getAllDomainsDb = function(callback) {
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
           }
           connection.query("SELECT id,domain,nameservers,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM domains WHERE aws_root_bucket = ?", [rootBucket], function(err, dbdomains) {
             if (err) {
-              console.log(err);
+              callback(err);
             } else {
               var idx = 0;
               for (var i = 0; i < dbdomains.length; i++) {
@@ -323,17 +349,18 @@ module.exports = function(db) {
                   dbdomains[i].nameservers = nameserversArray;
                 }
 
-                getExtraNestedForDomain(dbdomains[i], function() {
-
-                  if (++idx == dbdomains.length) {
-
-                    gotDomainsCallback(dbdomains);
+                getExtraNestedForDomain(dbdomains[i], function(err) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    if (++idx == dbdomains.length) {
+                      callback(false, dbdomains);
+                    }
                   }
-
                 });
               }
               if (dbdomains.length <= 0) {
-                gotDomainsCallback(dbdomains);
+                callback(false, dbdomains);
               }
             }
             connection.release();
@@ -343,26 +370,25 @@ module.exports = function(db) {
 
 
       //call to get all and return rows
-      getAllDomainsDb(function(domains) {
+      getAllDomainsDb(function(err, domains) {
         return successCallback(false, domains);
       });
 
     },
 
 
-    saveDomain: function(user, model, successCallback, errorCallback) {
+    saveDomain: function(user, model, callback) {
       //update model stuff into domains where id= model.id
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
           connection.query("UPDATE domains SET domain = ?, nameservers = ? WHERE user_id = ? AND id = ?", [model.domain, model.nameservers, user.id, model.id],
             function(err, docs) {
               if (err) {
-                console.log(err);
-                errorCallback("\nError saving domain.");
+                callback(err);
               } else {
-                successCallback(docs);
+                callback(false, docs);
               }
               connection.release();
             });
@@ -377,13 +403,11 @@ module.exports = function(db) {
       //update model stuff into domains where id= model.id
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
           callback(err);
         } else {
           connection.query("DELETE FROM domains WHERE user_id = ? AND id = ?", [user_id, domain_id],
             function(err, docs) {
               if (err) {
-                console.log(err);
                 callback({
                   code: "Error deleting domain from db."
                 });
@@ -402,7 +426,6 @@ module.exports = function(db) {
       //get all domains for user and check if they are in the subdomain
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
           callback(err);
         } else {
           connection.query("SELECT * from domains WHERE aws_root_bucket = ?", [rootBucket],
@@ -434,9 +457,6 @@ module.exports = function(db) {
             });
         }
       });
-
-
-
     }
   }
 };

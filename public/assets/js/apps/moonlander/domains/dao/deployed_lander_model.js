@@ -68,7 +68,8 @@ define(["app",
 
         activeJobsCollection.on("finishedState", function(jobModel) {
 
-          if (jobModel.get("action") === "undeployLanderFromDomain") {
+          if (jobModel.get("action") === "undeployLanderFromDomain" ||
+            jobModel.get("action") === "undeployDomainFromLander") {
             //destroy only if we dont have any other jobs for this
             //1. if we have a deploy to do
             var moreJobsToDo = false;

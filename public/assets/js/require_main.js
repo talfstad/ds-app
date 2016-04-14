@@ -15,7 +15,6 @@ requirejs.config({
     moment: "vendor/bower_installed/moment/moment",
     marionette: "vendor/bower_installed/backbone.marionette/lib/backbone.marionette",
     text: "vendor/bower_installed/requirejs-text/text",
-    // tpl: "vendor/bower_installed/requirejs-tpl/tpl",
     tpl: "vendor/bower_installed/requirejs-underscore-tpl/underscore-tpl",
     underscore: "vendor/bower_installed/underscore/underscore",
     json2: "vendor/bower_installed/json2/json2",
