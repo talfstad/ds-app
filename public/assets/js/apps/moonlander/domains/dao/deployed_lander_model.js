@@ -26,7 +26,7 @@ define(["app",
               } else if (job.get("action") === "deployLanderToDomain") {
                 deployStatus = "deploying";
               }
-              if(job.get("deploy_status") === "invalidating") {
+              if (job.get("deploy_status") === "invalidating") {
                 deployStatus = "invalidating";
               }
             });
@@ -50,21 +50,6 @@ define(["app",
           var actualAddedJobModel = attr.actualAddedJobModel;
           var jobModelToReplace = attr.jobModelToReplace;
 
-          var action = actualAddedJobModel.get("action");
-          var deployStatus = "deployed";
-          var jobDeployStatus = actualAddedJobModel.get("deploy_status");
-          
-          if (action === "undeployLanderFromDomain") {
-            deployStatus = "undeploying";
-          } else if (action === "deployLanderToDomain") {
-            deployStatus = "deploying";
-          }
-          if (jobDeployStatus == "invalidating") {
-            deployStatus = "invalidating";
-          }
-          
-          me.set("deploy_status", deployStatus);
-
           //on start remove the created job model and replace with the job model on the updater.
           //this allows us to have one job model across multiple things. (camps, domains, etc)
           //no events should fire it should just be quick and dirty ;)
@@ -74,6 +59,21 @@ define(["app",
             activeJobsCollection.remove(jobModelToReplace, { silent: true })
             activeJobsCollection.add(actualAddedJobModel, { at: index, silent: true });
           }
+
+          var action = actualAddedJobModel.get("action");
+          var deployStatus = "deployed";
+          var jobDeployStatus = actualAddedJobModel.get("deploy_status");
+
+          if (action === "undeployLanderFromDomain") {
+            deployStatus = "undeploying";
+          } else if (action === "deployLanderToDomain") {
+            deployStatus = "deploying";
+          }
+          if (jobDeployStatus == "invalidating") {
+            deployStatus = "invalidating";
+          }
+
+          me.set("deploy_status", deployStatus);
 
         });
 

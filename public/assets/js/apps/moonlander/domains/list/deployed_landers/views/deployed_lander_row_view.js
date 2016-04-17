@@ -91,6 +91,8 @@ define(["app",
             this.model.set("deploy_status_gui", "<strong>DEPLOYING</strong>");
           } else if (deployStatus === "undeploying") {
             this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong>");
+          } else if (deployStatus === "modified") {
+            this.model.set("deploy_status_gui", "<strong>MODIFIED</strong>");
           } else if (deployStatus === "invalidating") {
             this.model.set("deploy_status_gui", "<strong>PUSHING TO EDGE LOCATIONS</strong>");
           }

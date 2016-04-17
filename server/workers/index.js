@@ -12,7 +12,7 @@ module.exports = function(app, db) {
   module.undeployDomainFromLander = require('./undeploy_lander_from_domain')(app, db);
 
 
-  module.deployLanderToDomain = require('./deploy_lander_to_domain')(app, db);
+  module.deployLanderToDomain = require('./deploy_lander_to_domain/index')(app, db);
   module.deleteLander = require('./delete_lander')(app, db);
   module.deleteDomain = require('./delete_domain')(app, db);
   module.deleteCampaign = require('./delete_campaign')(app, db);

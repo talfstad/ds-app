@@ -460,7 +460,9 @@ module.exports = function(db) {
         s3Params: {
           Bucket: bucketName,
           Prefix: fullDir,
-          ACL: 'public-read'
+          ACL: 'public-read',
+          CacheControl: 'max-age=604800',
+          Expires: new Date || 'Wed Dec 31 1969 16:00:00 GMT-0800 (PST)' || 123456789
         }
       };
 

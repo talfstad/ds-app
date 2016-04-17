@@ -386,6 +386,7 @@ define(["app",
                   var deployedDomainsCollection = landerView.model.get("deployedDomains");
 
                   deployedDomainsCollection.activeCampaignCollection = activeCampaignsCollection;
+                  deployedDomainsCollection.deployment_folder_name = landerView.model.get("deployment_folder_name");
 
                   //if this lander is initializing set the collection level variable to be picked up
                   //by collections childviewoptions

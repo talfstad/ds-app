@@ -48,6 +48,15 @@ define(["app",
           var actualAddedJobModel = attr.actualAddedJobModel;
           var jobModelToReplace = attr.jobModelToReplace;
 
+          //on start remove the created job model and replace with the job model on the updater.
+          //this allows us to have one job model across multiple things. (camps, domains, etc)
+          //no events should fire it should just be quick and dirty ;)
+          //must remove it at the correct index and put the new one in the correct index
+          if (jobModelToReplace) {
+            var index = activeJobsCollection.indexOf(jobModelToReplace);
+            activeJobsCollection.remove(jobModelToReplace, { silent: true })
+            activeJobsCollection.add(actualAddedJobModel, { at: index, silent: true });
+          }
 
           var action = actualAddedJobModel.get("action");
           var jobDeployStatus = actualAddedJobModel.get("deploy_status");
@@ -64,15 +73,7 @@ define(["app",
 
           me.set("deploy_status", deployStatus);
 
-          //on start remove the created job model and replace with the job model on the updater.
-          //this allows us to have one job model across multiple things. (camps, domains, etc)
-          //no events should fire it should just be quick and dirty ;)
-          //must remove it at the correct index and put the new one in the correct index
-          if (jobModelToReplace) {
-            var index = activeJobsCollection.indexOf(jobModelToReplace);
-            activeJobsCollection.remove(jobModelToReplace, { silent: true })
-            activeJobsCollection.add(actualAddedJobModel, { at: index, silent: true });
-          }
+          
         });
 
         activeJobsCollection.on("finishedState", function(jobModel) {
