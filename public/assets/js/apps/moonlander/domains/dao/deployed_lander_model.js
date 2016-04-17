@@ -26,6 +26,9 @@ define(["app",
               } else if (job.get("action") === "deployLanderToDomain") {
                 deployStatus = "deploying";
               }
+              if(job.get("deploy_status") === "invalidating") {
+                deployStatus = "invalidating";
+              }
             });
             me.set("deploy_status", deployStatus);
           } else {
@@ -39,19 +42,27 @@ define(["app",
           setDeployStatusForDeployedLander();
         });
 
+        activeJobsCollection.on("updateDeployStatus", function(deployStatus) {
+          me.set("deploy_status", deployStatus);
+        });
+
         activeJobsCollection.on("startState", function(attr) {
           var actualAddedJobModel = attr.actualAddedJobModel;
           var jobModelToReplace = attr.jobModelToReplace;
 
           var action = actualAddedJobModel.get("action");
           var deployStatus = "deployed";
-
+          var jobDeployStatus = actualAddedJobModel.get("deploy_status");
+          
           if (action === "undeployLanderFromDomain") {
             deployStatus = "undeploying";
           } else if (action === "deployLanderToDomain") {
             deployStatus = "deploying";
           }
-
+          if (jobDeployStatus == "invalidating") {
+            deployStatus = "invalidating";
+          }
+          
           me.set("deploy_status", deployStatus);
 
           //on start remove the created job model and replace with the job model on the updater.
@@ -60,8 +71,8 @@ define(["app",
           //must remove it at the correct index and put the new one in the correct index
           if (jobModelToReplace) {
             var index = activeJobsCollection.indexOf(jobModelToReplace);
-            activeJobsCollection.remove(jobModelToReplace, {silent: true})
-            activeJobsCollection.add(actualAddedJobModel, {at: index, silent: true});
+            activeJobsCollection.remove(jobModelToReplace, { silent: true })
+            activeJobsCollection.add(actualAddedJobModel, { at: index, silent: true });
           }
 
         });

@@ -15,7 +15,7 @@
         
         <% _.each(urlEndpoints, function(endpoint) { %>
         
-        <option><%= domain %>/<%= endpoint.filename %></option>
+        <option><%= domain %>/<%= deployment_folder_name %>/<%= endpoint.filename %></option>
 
         <% }); %>
       

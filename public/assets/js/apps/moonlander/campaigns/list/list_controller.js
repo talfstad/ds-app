@@ -55,7 +55,8 @@ define(["app",
               action: "deployLanderToDomain",
               lander_id: deployedLanderModel.get("lander_id") || deployedLanderModel.get("id"),
               domain_id: deployedDomainModel.get("domain_id") || deployedDomainModel.get("id"),
-              campaign_id: campaign_id
+              campaign_id: campaign_id,
+              deploy_status: "deploying"
             };
             var jobModel = new JobModel(jobAttributes);
 
@@ -106,7 +107,8 @@ define(["app",
               action: "deployLanderToDomain",
               lander_id: deployedLanderModel.get("lander_id"),
               domain_id: deployedDomainModel.get("domain_id"),
-              campaign_id: campaign_id
+              campaign_id: campaign_id,
+              deploy_status: "deploying"
             };
             var jobModel = new JobModel(jobAttributes);
 

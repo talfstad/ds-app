@@ -24,7 +24,8 @@ define(["app",
 
             var jobAttributes = {
               action: "deleteCampaign",
-              campaign_id: campaign_id
+              campaign_id: campaign_id,
+              deploy_status: "deleting"
             };
 
             var jobModel = new JobModel(jobAttributes);

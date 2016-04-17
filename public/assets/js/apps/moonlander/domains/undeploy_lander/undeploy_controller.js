@@ -23,6 +23,7 @@ define(["app",
               action: "undeployLanderFromDomain",
               lander_id: model.get("lander_id") || model.get("id"),
               domain_id: model.get("domain_id"),
+              deploy_status: "undeploying"
             }
 
             //create job and add to models activeJobs

@@ -38,6 +38,19 @@
                 </div>
               </div>
             </div>
+            <div class="form-group">
+              <label style="margin-top: 15px" for="name" class="col-lg-12 control-label">Loading Location:</label>
+              <div class="col-lg-12">
+                <div class="bs-component">
+                  <div>
+                  <input type="radio" name="load_before_dom" id="load-before-dom" class="load-before-dom form-control" value=""><span>Before Dom Load</span>
+                  </div>
+                  <div>
+                  <input type="radio" name="load_before_dom" id="load-before-dom" class="load-before-dom form-control" value=""><span>After Dom Load</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </form>
           <div class="btn-group ml10">
             <button type="button" style="width: 85px" class="mt10 save-new-snippet-button btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Save</button>

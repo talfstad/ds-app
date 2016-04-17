@@ -5,8 +5,75 @@ module.exports = function(db) {
   var AWS = require('aws-sdk');
   var uuid = require('uuid');
   var moment = require('moment');
+  var config = require('../../config');
 
   return {
+
+    createInvalidation: function(credentials, distribution_id, invalidationPath, callback) {
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+      AWS.config.update(credentials);
+      var cloudfront_client = new AWS.CloudFront();
+
+      var callerRef = uuid.v4();
+
+      var params = {
+        DistributionId: distribution_id,
+        InvalidationBatch: {
+          CallerReference: callerRef,
+          Paths: {
+            Quantity: 1,
+            Items: [
+              invalidationPath
+            ]
+          }
+        }
+      };
+
+      cloudfront_client.createInvalidation(params, function(err, data) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(false, data);
+        }
+      });
+
+    },
+
+    waitForInvalidationComplete: function(credentials, distribution_id, invalidation_id, callback) {
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+      AWS.config.update(credentials);
+      var cloudfront_client = new AWS.CloudFront();
+
+      var params = {
+        DistributionId: distribution_id,
+        Id: invalidation_id,
+      };
+      var getInvalidation = function() {
+        cloudfront_client.getInvalidation(params, function(err, data) {
+          if (err) {
+            console.log(err, err.stack);
+            callback(err);
+          } else {
+            setTimeout(function() {
+              if (data.Invalidation.Status === "Completed") {
+                callback(false);
+              } else {
+                getInvalidation();
+              }
+            }, config.cloudfront.invalidationPollDuration);
+          }
+        });
+      }
+
+      getInvalidation();
+
+    },
 
     makeCloudfrontDistribution: function(credentials, domain, path, bucketName, callback) {
       //needs a / in the beginning because aws appends it to domain name
@@ -272,7 +339,7 @@ module.exports = function(db) {
     },
 
     deleteDistribution: function(credentials, distributionId, callback) {
-        //set keys before every action
+      //set keys before every action
       AWS.config.update({
         region: 'us-west-2',
         maxRetries: 0

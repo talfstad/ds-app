@@ -84,7 +84,8 @@ define(["app",
                 action: "deployLanderToDomain",
                 lander_id: landerModel.get("lander_id") || landerModel.get("id"),
                 domain_id: deployedDomainModelToDeploy.get("domain_id") || deployedDomainModelToDeploy.get("id"),
-                campaign_id: campaign_id
+                campaign_id: campaign_id,
+                deploy_status: "deploying"
               };
               var jobModel = new JobModel(jobAttributes);
 
@@ -171,7 +172,8 @@ define(["app",
             var undeployAttr = {
               lander_id: deployedLander.get("lander_id"),
               domain_id: deployedLander.get("id"),
-              action: "undeployLanderFromDomain"
+              action: "undeployLanderFromDomain",
+              deploy_status: "undeploying"
             }
 
             //create job and add to models activeJobs
@@ -185,7 +187,8 @@ define(["app",
                 var deployAttr = {
                   lander_id: deployedLander.get("lander_id"),
                   domain_id: deployedLander.get("id"),
-                  action: "deployLanderToDomain"
+                  action: "deployLanderToDomain",
+                  deploy_status: "deploying"
                 }
 
                 //create job and add to models activeJobs
@@ -503,7 +506,8 @@ define(["app",
             action: "deployLanderToDomain",
             lander_id: modelAttributes.lander_id,
             domain_id: modelAttributes.id,
-            campaign_id: campaign_id
+            campaign_id: campaign_id,
+            deploy_status: "deploying"
           }
 
           //create job and add to models activeJobs
@@ -579,8 +583,10 @@ define(["app",
 
           var jobAttributes = {
             action: "deleteLander",
-            lander_id: landerModel.get("id")
-          }
+            lander_id: landerModel.get("id"),
+            deploy_status: "deleting"
+          };
+          
           var jobModel = new JobModel(jobAttributes);
 
           var activeJobCollection = landerModel.get("activeJobs");

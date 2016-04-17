@@ -27,6 +27,18 @@ define(["app",
           "click .add-new-lander-confirm": "confirmedAddNewLander"
         },
 
+        modelEvents: {
+          "change:alertLoading": "alertLoading"
+        },
+
+        alertLoading: function() {
+          if (this.model.get("alertLoading")) {
+            this.$el.find(".alert-loading").fadeIn();
+          } else {
+            this.$el.find(".alert-loading").hide();
+          }
+        },
+
         confirmedAddNewLander: function(e) {
 
           var me = this;
@@ -46,11 +58,9 @@ define(["app",
 
             this.model.set("landerName", newLanderData.landerName);
 
-            //////save lander & add to collection
-
-            //1. trigger upload. server adds the lander to db, registers active job, and starts job
+            //trigger upload. server adds the lander to db, registers active job, and starts job
             $("#new-lander-file").fileinput("upload");
-
+            
           } else {
             var alert = this.$el.find(".new-lander-info-alert");
             var adminForm = this.$el.find(".admin-form");
@@ -102,7 +112,7 @@ define(["app",
           });
 
           this.$el.on('shown.bs.modal', function(e) {
-              $(".lander-name").focus();
+            $(".lander-name").focus();
           });
 
           this.$el.modal('show');
@@ -112,9 +122,11 @@ define(["app",
         onClose: function() {
           this.$el.modal('hide');
         },
-
+        closeModal: function() {
+          this.$el.modal('hide');
+        },
         onDomRefresh: function() {
-        
+
         }
       });
 

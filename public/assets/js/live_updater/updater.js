@@ -31,15 +31,17 @@ define(["app"], function(Moonlander) {
         if (me.updateCollection.length <= 0) return;
 
         $.each(modelData, function(idx, modelAttributes) {
+          var actualJobModel = me.updateCollection.get(modelAttributes.id);
           if (!modelAttributes.processing) {
             //done, update original model
-            var actualJobModel = me.updateCollection.get(modelAttributes.id);
             if (modelAttributes.error) {
               actualJobModel.set("error", modelAttributes.error_code);
               actualJobModel.trigger("errorState", actualJobModel);
             } else {
               actualJobModel.trigger("finishedState", actualJobModel);
             }
+          } else {
+            actualJobModel.trigger("updateDeployStatus", modelAttributes.deploy_status);
           }
         });
       };

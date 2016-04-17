@@ -34,7 +34,7 @@ module.exports = function(app, passport) {
 
               var username = user.user;
               var baseBucketName = awsData.aws_root_bucket;
-              var directory = "/landers/" + stagingDir + "/";
+              var directory = username + "/landers/" + stagingDir + "/";
 
               var credentials = {
                 accessKeyId: awsData.aws_access_key_id,
@@ -53,7 +53,7 @@ module.exports = function(app, passport) {
                     } else {
 
                       //4. remove the staging
-                      me.deleteStagingArea(stagingPath, function(err) {
+                      db.common.deleteStagingArea(stagingPath, function(err) {
                         db.landers.saveNewLander(user, landerData, function(err, returnData) {
                           if (err) {
                             callback(err);
@@ -141,15 +141,7 @@ module.exports = function(app, passport) {
       }).catch(function(err) {
         callback(err);
       });
-    },
-
-    deleteStagingArea: function(stagingPath, callback) {
-      rimraf(stagingPath, function() {
-        callback(false);
-      });
     }
-
-
   };
 
   return module;

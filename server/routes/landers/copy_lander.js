@@ -16,7 +16,7 @@ module.exports = function(app, passport) {
       var me = this;
 
       //1. rip the lander and its resources into staging
-      this.createStagingArea(function(err, stagingPath, stagingDir) {
+      db.common.createStagingArea(function(err, stagingPath, stagingDir) {
         if (err) {
           callback(err);
         } else {
@@ -33,7 +33,7 @@ module.exports = function(app, passport) {
               var baseBucketName = awsData.aws_root_bucket;
               
               var fromDirectory = "/landers/" + landerData.from_s3_folder_name + "/";
-              var directory = "/landers/" + landerData.s3_folder_name + "/";
+              var directory = username + "/landers/" + landerData.s3_folder_name + "/";
 
               var credentials = {
                 accessKeyId: awsData.aws_access_key_id,
@@ -57,7 +57,7 @@ module.exports = function(app, passport) {
                         } else {
 
                           //4. remove the staging
-                          me.deleteStagingArea(stagingPath, function(err) {
+                          db.common.deleteStagingArea(stagingPath, function(err) {
                             db.landers.saveNewLander(user, landerData, function(err, returnData) {
                               if (err) {
                                 callback(err);
@@ -79,29 +79,7 @@ module.exports = function(app, passport) {
         }
 
       });
-    },
-
-    createStagingArea: function(callback) {
-      var error;
-      var staging_dir = uuid.v4();
-
-      var staging_path = "./staging/" + staging_dir;
-
-      mkdirp(staging_path, function(err) {
-        if (err) {
-          callback(err);
-        } else {
-          callback(false, staging_path, staging_dir);
-        }
-      });
-    },
-
-    deleteStagingArea: function(stagingPath, callback) {
-      rimraf(stagingPath, function() {
-        callback(false);
-      });
     }
-
 
   };
 

@@ -84,7 +84,8 @@ define(["app",
                 action: "deployLanderToDomain",
                 lander_id: deployedLanderModelToDeploy.get("lander_id") || deployedLanderModelToDeploy.get("id"),
                 domain_id: domainModel.get("id") || domainModel.get("domain_id"),
-                campaign_id: campaign_id
+                campaign_id: campaign_id,
+                deploy_status: "deploying"
               };
               var jobModel = new JobModel(jobAttributes);
 
@@ -131,7 +132,8 @@ define(["app",
             action: "deployLanderToDomain",
             lander_id: landerAttributes.lander_id || landerAttributes.id,
             domain_id: modelAttributes.domain_id,
-            campaign_id: campaign_id
+            campaign_id: campaign_id,
+            deploy_status: "deploying"
           };
 
           //create job and add to models activeJobs
@@ -414,7 +416,8 @@ define(["app",
 
           var jobAttributes = {
             action: "deleteDomain",
-            domain_id: domainModel.get("id")
+            domain_id: domainModel.get("id"),
+            deploy_status: "deleting"
           }
           var jobModel = new JobModel(jobAttributes);
 

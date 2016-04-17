@@ -20,12 +20,21 @@ module.exports = function(app, db) {
   module.startJob = function(action, user, attr) {
 
     try {
-
-      //get all jobs for user with lander_id and domain_id
-      db.jobs.getAllProcessingForLanderDomain(user, attr, function(jobs) {
-        module[action](user, attr);
+      console.log("action: " + action);
+      
+      module[action](user, attr, function(err, jobIdArr) {
+        if (err) {
+          //set error and be done
+          db.jobs.setErrorAndStop(err.code, jobIdArr[0], function(){
+            console.log("set error and stopped jobs: " + JSON.stringify(jobIdArr));
+          });
+        } else {
+          //finish successfully
+          db.jobs.finishedJobSuccessfully(user, jobIdArr, function() {
+            console.log("finished " + JSON.stringify(jobIdArr));
+          });
+        }
       });
-
     } catch (e) {
       console.log("job worker method does not exist!!!! must implement it.")
     }

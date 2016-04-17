@@ -24,6 +24,9 @@ define(["app",
               if (job.get("action") === "undeployLanderFromDomain" || job.get("action") === "undeployDomainFromLander") {
                 deployStatus = "undeploying";
               }
+              if (job.get("deploy_status") === "invalidating") {
+                deployStatus = "invalidating";
+              }
             });
             me.set("deploy_status", deployStatus);
           } else {
@@ -37,19 +40,27 @@ define(["app",
           setDeployStatusForDomain();
         });
 
+        activeJobsCollection.on("updateDeployStatus", function(deployStatus) {
+          me.set("deploy_status", deployStatus);
+        });
+
         activeJobsCollection.on("startState", function(attr) {
           var actualAddedJobModel = attr.actualAddedJobModel;
           var jobModelToReplace = attr.jobModelToReplace;
 
 
           var action = actualAddedJobModel.get("action");
-          var deployStatus = "deployed";
+          var jobDeployStatus = actualAddedJobModel.get("deploy_status");
 
           if (action === "undeployLanderFromDomain" || action === "undeployDomainFromLander") {
             deployStatus = "undeploying";
           } else if (action === "deployLanderToDomain") {
             deployStatus = "deploying";
           }
+          if (jobDeployStatus == "invalidating") {
+            deployStatus = "invalidating";
+          }
+
 
           me.set("deploy_status", deployStatus);
 

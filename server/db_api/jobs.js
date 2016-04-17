@@ -93,7 +93,7 @@ module.exports = function(db) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("CALL register_job(?, ?, ?, ?, ?, ?, ?, ?)", [config.id, modelAttributes.action, modelAttributes.alternate_action, true, modelAttributes.lander_id, modelAttributes.domain_id, modelAttributes.campaign_id, user_id],
+          connection.query("CALL register_job(?, ?, ?, ?, ?, ?, ?, ?, ?)", [modelAttributes.deploy_status, config.id, modelAttributes.action, modelAttributes.alternate_action, true, modelAttributes.lander_id, modelAttributes.domain_id, modelAttributes.campaign_id, user_id],
 
             function(err, docs) {
               if (err) {
@@ -152,6 +152,25 @@ module.exports = function(db) {
       } else {
         successCallback();
       }
+    },
+
+    updateDeployStatus: function(user, jobId, deployStatus, callback) {
+      var user_id = user.id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          callback(err);
+        } else {
+          connection.query("UPDATE jobs SET deploy_status = ? WHERE id = ? AND user_id = ?", [deployStatus, jobId, user_id], function(err, docs) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(false);
+            }
+            connection.release();
+          });
+        }
+      });
     },
 
     setErrorAndStop: function(code, errorJobId, callback) {

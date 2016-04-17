@@ -151,7 +151,8 @@ define(["app",
                   'lander_id': lander_id,
                   'campaign_id': campaign_id,
                   'action': action,
-                  'alternate_action': 'undeployDomainFromLander'
+                  'alternate_action': 'undeployDomainFromLander',
+                  'deploy_status': 'undeploying'
                 };
 
                 var jobModel = new JobModel(jobAttributes);

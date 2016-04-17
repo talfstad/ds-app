@@ -14,3 +14,4 @@
   exports.updater = require('./updater')(db);
   exports.jobs = require('./jobs')(db);
   exports.aws = require('./aws')(db);
+  exports.common = require('./common')(db);

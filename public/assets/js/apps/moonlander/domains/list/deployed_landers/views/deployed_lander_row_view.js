@@ -31,7 +31,7 @@ define(["app",
         getCurrentLink: function() {
           //return the combination of selects
           var endpointVal = this.$el.find(".lander-links-select").val();
-          return endpointVal;
+          return "http://" + endpointVal;
         },
 
         openLanderLink: function() {
@@ -91,20 +91,22 @@ define(["app",
             this.model.set("deploy_status_gui", "<strong>DEPLOYING</strong>");
           } else if (deployStatus === "undeploying") {
             this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong>");
+          } else if (deployStatus === "invalidating") {
+            this.model.set("deploy_status_gui", "<strong>PUSHING TO EDGE LOCATIONS</strong>");
           }
 
           var activeCampaignCollection = this.model.get("activeCampaignCollection");
-          
+
           activeCampaignCollection.each(function(campaign) {
 
             var deployedLanders = campaign.get('deployedLanders');
-            
+
             var landerId = me.model.get("lander_id");
 
             if (deployedLanders.find(function(m) {
-            var id = m.lander_id || m.id;
-              return id == landerId
-            })) {
+                var id = m.lander_id || m.id;
+                return id == landerId
+              })) {
               me.model.set("hasActiveCampaigns", true);
             }
           });
@@ -124,7 +126,8 @@ define(["app",
           if (deployStatus === "deployed") {
             this.$el.addClass("success");
           } else if (deployStatus === "deploying" ||
-            deployStatus === "undeploying") {
+            deployStatus === "undeploying" ||
+            deployStatus === "invalidating") {
             this.$el.addClass("alert");
           } else if (deployStatus === "modified") {
             this.$el.addClass("warning");

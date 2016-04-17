@@ -1,7 +1,5 @@
 module.exports = function(db) {
 
-  var deferred = require('deferred');
-
   return {
 
     //save optimzations and modified
@@ -111,6 +109,7 @@ module.exports = function(db) {
       var s3_folder_name = landerData.s3_folder_name;
 
       var urlEndpoints = landerData.urlEndpoints;
+      if(!urlEndpoints) urlEndpoints = [];
 
       var user_id = user.id;
       //param order: working_node_id, action, processing, lander_id, domain_id, campaign_id, user_id
@@ -152,7 +151,7 @@ module.exports = function(db) {
       });
     },
 
-    deployLanderToDomain: function(user, lander_id, domain_id, successCallback) {
+    addLanderToDeployedLanders: function(user, lander_id, domain_id, successCallback) {
       var user_id = user.id;
 
       //insert into deployed_landers
@@ -222,7 +221,7 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           } else {
-            connection.query("SELECT id,action,processing,lander_id,domain_id,campaign_id,done,error,created_on FROM jobs WHERE (user_id = ? AND campaign_id = ? AND lander_id = ? AND processing = ? AND (done IS NULL OR done = ?))", [user_id, campaign_id, lander_id, true, 0],
+            connection.query("SELECT id,action,deploy_status,processing,lander_id,domain_id,campaign_id,done,error,created_on FROM jobs WHERE (user_id = ? AND campaign_id = ? AND lander_id = ? AND processing = ? AND (done IS NULL OR done = ?))", [user_id, campaign_id, lander_id, true, 0],
               function(err, dbActiveJobs) {
                 if (err) {
                   callback(err);
@@ -294,7 +293,7 @@ module.exports = function(db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT id,action,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, deployedDomain.lander_id, deployedDomain.domain_id, true],
+            connection.query("SELECT id,action,deploy_status,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, deployedDomain.lander_id, deployedDomain.domain_id, true],
               function(err, dbActiveJobs) {
                 callback(false, dbActiveJobs);
                 connection.release();
@@ -397,7 +396,7 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           } else {
-            connection.query("SELECT id,action,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addNewLander", "deleteLander", "ripNewLander", user_id, lander.id, true],
+            connection.query("SELECT id,action,lander_id,deploy_status,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addNewLander", "deleteLander", "ripNewLander", user_id, lander.id, true],
               function(err, dbActiveJobs) {
                 if (err) {
                   callback(err);

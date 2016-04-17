@@ -238,7 +238,7 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT id,action,processing,done,error,lander_id,domain_id,campaign_id,created_on FROM jobs WHERE user_id = ? AND campaign_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?)", [user_id, campaign.id, deployedDomain.domain_id, true, 0],
+          connection.query("SELECT id,action,processing,deploy_status,done,error,lander_id,domain_id,campaign_id,created_on FROM jobs WHERE user_id = ? AND campaign_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?)", [user_id, campaign.id, deployedDomain.domain_id, true, 0],
             function(err, dbActiveJobs) {
               if (err) {
                 callback(err);
@@ -291,7 +291,7 @@ module.exports = function(db) {
           if (err) {
             callback(err);
           }
-          connection.query("SELECT id,action,processing,done,error,lander_id,domain_id,campaign_id,created_on FROM jobs WHERE action = ? AND user_id = ? AND campaign_id = ? AND processing = ? AND (done IS NULL OR done = ?)", ["deleteCampaign", user_id, campaign.id, true, 0],
+          connection.query("SELECT id,action,processing,deploy_status,done,error,lander_id,domain_id,campaign_id,created_on FROM jobs WHERE action = ? AND user_id = ? AND campaign_id = ? AND processing = ? AND (done IS NULL OR done = ?)", ["deleteCampaign", user_id, campaign.id, true, 0],
             function(err, dbActiveJobs) {
               if (err) {
                 callback(err);
@@ -318,7 +318,7 @@ module.exports = function(db) {
           if (err) {
             callback(err);
           }
-          connection.query("SELECT id,action,processing,done,error,lander_id,domain_id,campaign_id,created_on FROM jobs WHERE user_id = ? AND lander_id = ? AND campaign_id = ? AND processing = ? AND (done IS NULL OR done = ?)", [user_id, lander_id, campaign_id, true, 0],
+          connection.query("SELECT id,action,processing,deploy_status,done,error,lander_id,domain_id,campaign_id,created_on FROM jobs WHERE user_id = ? AND lander_id = ? AND campaign_id = ? AND processing = ? AND (done IS NULL OR done = ?)", [user_id, lander_id, campaign_id, true, 0],
             function(err, dbActiveJobs) {
               callback(false, dbActiveJobs);
               connection.release();

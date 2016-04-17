@@ -16,6 +16,12 @@ module.exports = {
   adminEmail: 'trevor@buildcave.com',
   adminEmailPassword: 'Wewillrockyou1986!',
   resetCodeLifespanMinutes: 240,
-  awsRegion: "us-west-2"
+  awsRegion: "us-west-2",
+  workers: {
+    checkOthersFinishedRate: 1000 * 30 // 30 seconds
+  },
+  cloudfront: {
+    invalidationPollDuration: 1000 * 30 // 30 seconds
+  }
 
 };

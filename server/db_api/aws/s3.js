@@ -432,32 +432,10 @@ module.exports = function(db) {
       }
     },
 
-    createStagingArea: function(callback) {
-      var error;
-      var staging_dir = uuid.v4();
-
-      var staging_path = "./staging/" + staging_dir;
-
-      mkdirp(staging_path, function(err) {
-        if (err) {
-          console.log(err);
-          error = "Server error making staging directory."
-        } else {
-          callback(staging_path, error);
-        }
-      });
-    },
-
-    deleteStagingArea: function(stagingPath, callback) {
-      rimraf(stagingPath, function() {
-        callback();
-      });
-    },
-
     copyDirFromStagingToS3: function(stagingPath, credentials, username, bucketName, directory, callback) {
-
+      var fullDir;
       if (directory) {
-        var fullDir = username + directory;
+        fullDir = directory;
       } else {
         fullDir = username;
       }
@@ -482,7 +460,7 @@ module.exports = function(db) {
         s3Params: {
           Bucket: bucketName,
           Prefix: fullDir,
-          ACL:'public-read'
+          ACL: 'public-read'
         }
       };
 
@@ -497,9 +475,9 @@ module.exports = function(db) {
     },
 
     copyDirFromS3ToStaging: function(stagingPath, credentials, username, bucketName, directory, callback) {
-      
+      var fullDir;
       if (directory) {
-        var fullDir = username + directory;
+        fullDir = username + directory;
       } else {
         fullDir = username;
       }
@@ -544,7 +522,7 @@ module.exports = function(db) {
       } else {
         var me = this;
 
-        this.createStagingArea(function(stagingPath) {
+        db.common.createStagingArea(function(stagingPath) {
           // console.log("made staging dir " + stagingPath);
 
           me.copyDirFromS3ToStaging(stagingPath, oldCredentials, username, buckets.oldBucketName, function(err) {
@@ -558,7 +536,7 @@ module.exports = function(db) {
                   callback(err);
                 } else {
                   // console.log("successfully uploaded dir from staging");
-                  me.deleteStagingArea(stagingPath, function() {
+                  db.common.deleteStagingArea(stagingPath, function() {
                     // console.log("successfully deleted staging dir");
                     callback();
                   });

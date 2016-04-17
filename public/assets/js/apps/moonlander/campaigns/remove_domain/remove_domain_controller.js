@@ -36,7 +36,8 @@ define(["app",
                 action: "undeployDomainFromLander",
                 lander_id: deployedLanderModel.get("lander_id") || deployedLanderModel.get("id"),
                 domain_id: deployedDomainModel.get("domain_id") || deployedDomainModel.get("id"),
-                campaign_id: campaign_id
+                campaign_id: campaign_id,
+                deploy_status: "undeploying"
               };
 
               var jobModel = new JobModel(jobAttributes);

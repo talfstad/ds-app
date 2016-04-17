@@ -8,12 +8,13 @@ module.exports = function(db) {
       var code = "";
       var name = attr.name;
       var description = attr.description;
+      var load_before_dom = attr.load_before_dom;
 
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         }
-        connection.query("call add_new_snippet(?, ?, ?)", [user_id, name, description], function(err, docs) {
+        connection.query("call add_new_snippet(?, ?, ?, ?)", [user_id, name, description, load_before_dom], function(err, docs) {
           if (err) {
             console.log(err);
           } else {
