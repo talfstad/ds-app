@@ -95,6 +95,8 @@ define(["app",
             this.model.set("deploy_status_gui", "<strong>MODIFIED</strong>");
           } else if (deployStatus === "invalidating") {
             this.model.set("deploy_status_gui", "<strong>PUSHING TO EDGE LOCATIONS</strong>");
+          } else if (deployStatus === "optimizing") {
+            this.model.set("deploy_status_gui", "<strong>OPTIMIZING</strong>");
           }
 
           var activeCampaignCollection = this.model.get("activeCampaignCollection");
@@ -124,7 +126,8 @@ define(["app",
             this.$el.addClass("success");
           } else if (deployStatus === "deploying" ||
             deployStatus === "undeploying" ||
-            deployStatus === "invalidating") {
+            deployStatus === "invalidating" ||
+            deployStatus === "optimizing") {
             this.$el.addClass("alert");
           } else if (deployStatus === "modified") {
             this.$el.addClass("warning");

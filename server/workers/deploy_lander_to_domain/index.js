@@ -121,24 +121,27 @@ module.exports = function(app, db) {
                           } else {
 
                             optimizations.optimizeJs(staging_path, function(err) {
+                              console.log("optimizing js");
                               if (err) {
                                 callback({ code: "CouldNotOptimizeJs" }, [myJobId]);
                               } else {
-                                console.log("optimizing js");
-
                                 optimizations.optimizeCss(staging_path, function(err) {
+                                  console.log("optimizing css");
                                   if (err) {
                                     callback({ code: "CouldNotOptimizeCss" }, [myJobId]);
                                   } else {
-                                    console.log("optimizing css");
-
+                                    console.log("optimizing html");
                                     optimizations.optimizeHtml(staging_path, function(err) {
                                       if (err) {
                                         callback({ code: "CouldNotOptimizeHtml" }, [myJobId]);
                                       } else {
-                                        console.log("optimizing html");
-
-                                        pushToS3AndInvalidate();
+                                        optimizations.optimizeImages(staging_path, function(err) {
+                                          if (err) {
+                                            callback({ code: "CouldNotOptimizeImages" }, [myJobId]);
+                                          } else {
+                                            pushToS3AndInvalidate();
+                                          }
+                                        })
                                       }
                                     });
                                   }
