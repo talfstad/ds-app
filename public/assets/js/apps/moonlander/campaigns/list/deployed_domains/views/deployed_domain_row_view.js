@@ -42,7 +42,10 @@ define(["app",
           } else if (deployStatus === "deploying" ||
             deployStatus === "undeploying") {
             this.$el.addClass("alert");
-          } else if (deployStatus === "modified") {
+          }
+
+          if (this.model.get("modified")) {
+            this.$el.removeClass("success alert warning");
             this.$el.addClass("warning");
           }
 

@@ -1,7 +1,7 @@
 define(["app",
     "/assets/js/apps/moonlander/domains/right_sidebar/sidebar_layout_view.js",
     "/assets/js/apps/moonlander/domains/dao/sidebar_model.js",
-    "/assets/js/apps/moonlander/domains/right_sidebar/nameservers_view.js" 
+    "/assets/js/apps/moonlander/domains/right_sidebar/nameservers_view.js"
   ],
   function(Moonlander, SidebarLayoutView, SidebarModel, NameserversView) {
     Moonlander.module("DomainsApp.RightSidebar", function(RightSidebar, Moonlander, Backbone, Marionette, $, _) {
@@ -37,12 +37,7 @@ define(["app",
           this.domainModel.save({}, {
             success: function() {
               deployedLanderCollection.each(function(location) {
-                var deployStatus = location.get("deploy_status");
-                if (deployStatus != "undeploying" && deployStatus != "deploying") {
-                  location.set("deploy_status", "modified");
-                } else {
-                  location.set("shouldSetModifiedWhenJobsFinish", true);
-                }
+                location.set("deploy_status", "modified");
               });
             }
           });

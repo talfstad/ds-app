@@ -42,12 +42,8 @@ define(["app",
           this.landerModel.save({}, {
             success: function() {
               deployedLanderCollection.each(function(location) {
-                var deployStatus = location.get("deploy_status");
-                if (deployStatus != "undeploying" && deployStatus != "deploying") {
-                  location.set("deploy_status", "modified");
-                } else {
-                  location.set("shouldSetModifiedWhenJobsFinish", true);
-                }
+                location.set("deploy_status", "modified");
+
               });
             }
           });
@@ -73,13 +69,9 @@ define(["app",
           //it will propogate up to the lander model
           optimizationView.on("modified", function(isModified) {
             if (isModified) {
-              model.set("deploy_status", "modified");
+              model.set("modified", true);
             } else {
-              if (model.get("deployedDomains").length > 0) {
-                model.set("deploy_status", "not_deployed");
-              } else {
-                model.set("deploy_status", "not_deployed");
-              }
+              model.set("modified", false);
             }
           });
 
@@ -101,7 +93,7 @@ define(["app",
                   //show success save message
                   Notification("Lander Saved", "Successfully Updated Lander", "success", "stack_top_right");
                   model.set("deploy_status", "not_deployed");
-                  
+
                 }
 
               },

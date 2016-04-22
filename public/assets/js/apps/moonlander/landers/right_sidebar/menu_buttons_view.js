@@ -16,7 +16,8 @@ define(["app",
         },
 
         modelEvents: {
-          "change:deploy_status": "render"
+          "change:deploy_status": "render",
+          "change:modified": "render"
         },
 
         save: function() {
@@ -27,27 +28,8 @@ define(["app",
           var me = this;
           e.preventDefault();
 
-
-          var deployedLanderCollection = me.model.get("deployedDomains");
-          deployedLanderCollection.each(function(location) {
-            location.set("shouldSetModifiedWhenJobsFinish", false);
-          });
-
-          var attr = {
-            landersArray: [this.model],
-            successCallback: function() {
-              me.model.set("modified", false);
-              me.model.save({});
-            }
-          }
-
-          Moonlander.trigger("landers:redeploy", attr);
-        },
-
-        modelEvents: {
-          'change:deploy_status': 'render'
+          Moonlander.trigger("landers:redeploy", this.model);
         }
-
 
       });
     });

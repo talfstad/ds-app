@@ -106,11 +106,8 @@ define(["app",
             delete jobModel.attributes.id;
             jobModel.destroy();
 
-            if (me.get("shouldSetModifiedWhenJobsFinish")) {
-              me.set("deploy_status", "modified");
-            } else {
-              me.set("deploy_status", "deployed");
-            }
+            me.set("deploy_status", "deployed");
+
           }
 
           //trigger to start the next job on the list

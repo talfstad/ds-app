@@ -25,14 +25,15 @@ define(["app",
           "click .delete-lander-button": "showDeleteLanderModal",
           "click .duplicate-lander-button": "showDuplicateLanderModal",
           "click .add-snippet-button": "showJsSnippetsModal",
-          "click .open-preview-link": "openPreviewLink"
+          "click .open-preview-link": "openPreviewLink",
+          "click .snippet-help-button": "showEmptyViewJsSnippetsModal"
         },
 
         modelEvents: {
           "change:deploy_status": "showAlerts"
         },
 
-        openPreviewLink: function(e){
+        openPreviewLink: function(e) {
           e.preventDefault();
 
           // <aws_root_bucket>.s3-website-us-west-2.amazonaws.com/<user>/landers/<s3_folder_name>
@@ -54,6 +55,10 @@ define(["app",
 
         showJsSnippetsModal: function(e) {
           Moonlander.trigger("landers:showJsSnippetsModal", this.model);
+        },
+
+        showEmptyViewJsSnippetsModal: function(e) {
+          Moonlander.trigger("landers:showEmptyJsSnippetsModal", this.model);
         },
 
         showDuplicateLanderModal: function() {
@@ -80,6 +85,7 @@ define(["app",
         },
 
         onRender: function() {
+
           this.$el.find(".preview-link-endpoints-select").select2();
 
           //disable open preview link if no endpoints

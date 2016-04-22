@@ -184,16 +184,19 @@ define(["app",
           original.each(function(model) {
             totalLanders++;
             var deployStatus = model.get("deploy_status");
-            if (deployStatus === "not_deployed") {
-              notDeployedTotal++;
-            } else if (deployStatus === "deploying") {
-              deployingTotal++;
-            } else if (deployStatus === "initializing") {
-              initializing++;
-            } else if (deployStatus === "deleting") {
-              deleting++;
-            } else if (deployStatus === "modified") {
+            var modifiedAttr = model.get("modified");
+            if (modifiedAttr) {
               modified++;
+            } else {
+              if (deployStatus === "not_deployed") {
+                notDeployedTotal++;
+              } else if (deployStatus === "deploying") {
+                deployingTotal++;
+              } else if (deployStatus === "initializing") {
+                initializing++;
+              } else if (deployStatus === "deleting") {
+                deleting++;
+              }
             }
           });
           filtered.state.gui.set("total_not_deployed", notDeployedTotal);
@@ -322,7 +325,7 @@ define(["app",
           //set original data
           filtered.set(filtered.currentFilteredCollection);
           filtered.sort();
-          
+
           original.set(filtered.currentFilteredCollection);
           original.sort();
 

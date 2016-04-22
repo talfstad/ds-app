@@ -30,8 +30,8 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
         addNewDuplicatedLander: function(model) {
           ListController.addNewDuplicatedLander(model);
         },
-        redeployLanders: function(landersArray, successCallback) {
-          ListController.redeployLanders(landersArray, successCallback);
+        redeployLanders: function(model) {
+          ListController.redeployLanders(model);
         },
         removeSnippetFromAllLanders: function(attr) {
           ListController.removeSnippetFromAllLanders(attr);
@@ -47,6 +47,9 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
         },
         showJsSnippetsModal: function(model) {
           JsSnippetsController.showJsSnippetsModal(model);
+        },
+        showEmptyJsSnippetsModal: function(model) {
+          JsSnippetsController.showEmptyJsSnippetsModal(model);
         },
         updateTopbarTotals: function() {
           ListController.updateTopbarTotals();
@@ -181,7 +184,9 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
       Moonlander.on("landers:showDeployToDomain", function(model) {
         landersAppAPI.showDeployToDomain(model);
       });
-
+      Moonlander.on("landers:showEmptyJsSnippetsModal", function(model) {
+        landersAppAPI.showEmptyJsSnippetsModal(model);
+      });
       Moonlander.on("landers:showJsSnippetsModal", function(model) {
         landersAppAPI.showJsSnippetsModal(model);
       });
@@ -191,10 +196,8 @@ define(["app", "/assets/js/apps/moonlander/landers/list/list_controller.js",
       Moonlander.on("landers:showAddNewCampaign", function(model) {
         landersAppAPI.showAddNewCampaign(model);
       });
-      Moonlander.on("landers:redeploy", function(attr) {
-        var landersArray = attr.landersArray;
-        var successCallback = attr.successCallback;
-        landersAppAPI.redeployLanders(landersArray, successCallback);
+      Moonlander.on("landers:redeploy", function(model) {
+        landersAppAPI.redeployLanders(model);
       });
       Moonlander.on("landers:showAddNewLanderModal", function() {
         landersAppAPI.showAddNewLanderModal();

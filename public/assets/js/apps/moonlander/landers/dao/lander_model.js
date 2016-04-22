@@ -93,8 +93,6 @@ define(["app",
             deployedDomainsCollection.each(function(deployedDomainModel) {
               if (deployedDomainModel.get("activeJobs").length > 0) {
                 deployStatus = "deploying";
-              } else if (deployedDomainModel.get("deploy_status") === "modified") {
-                deployStatus = "modified";
               }
             });
 
@@ -181,7 +179,7 @@ define(["app",
 
         if (this.get("modified")) {
           deployedDomainsCollection.each(function(location) {
-            location.set("deploy_status", "modified");
+            location.set("modified", true);
           });
         }
 

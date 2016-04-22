@@ -91,10 +91,10 @@ define(["app",
             this.model.set("deploy_status_gui", "<strong>DEPLOYING</strong>");
           } else if (deployStatus === "undeploying") {
             this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong>");
-          } else if (deployStatus === "modified") {
-            this.model.set("deploy_status_gui", "<strong>MODIFIED</strong>");
           } else if (deployStatus === "invalidating") {
             this.model.set("deploy_status_gui", "<strong>PUSHING TO EDGE LOCATIONS</strong>");
+          } else if (deployStatus === "invalidating_delete") {
+            this.model.set("deploy_status_gui", "<strong>REMOVING FROM EDGE LOCATIONS</strong>");
           } else if (deployStatus === "optimizing") {
             this.model.set("deploy_status_gui", "<strong>OPTIMIZING</strong>");
           }
@@ -114,7 +114,6 @@ define(["app",
               me.model.set("hasActiveCampaigns", true);
             }
           });
-
         },
 
         onRender: function() {
@@ -126,10 +125,14 @@ define(["app",
             this.$el.addClass("success");
           } else if (deployStatus === "deploying" ||
             deployStatus === "undeploying" ||
+            deployStatus === "invalidating_delete" ||
             deployStatus === "invalidating" ||
             deployStatus === "optimizing") {
             this.$el.addClass("alert");
-          } else if (deployStatus === "modified") {
+          }
+
+          if (this.model.get("modified")) {
+            this.$el.removeClass("success alert warning");
             this.$el.addClass("warning");
           }
 

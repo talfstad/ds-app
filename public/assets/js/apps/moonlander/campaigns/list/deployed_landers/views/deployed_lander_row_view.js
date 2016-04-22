@@ -118,6 +118,12 @@ define(["app",
             this.model.set("deploy_status_gui", "<strong>DEPLOYING</strong>");
           } else if (deployStatus === "undeploying") {
             this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong>");
+          } else if (deployStatus === "invalidating") {
+            this.model.set("deploy_status_gui", "<strong>PUSHING TO EDGE LOCATIONS</strong>");
+          } else if (deployStatus === "invalidating_delete") {
+            this.model.set("deploy_status_gui", "<strong>REMOVING FROM EDGE LOCATIONS</strong>");
+          } else if (deployStatus === "optimizing") {
+            this.model.set("deploy_status_gui", "<strong>OPTIMIZING</strong>");
           }
 
           this.model.set("deployed_domains_gui", this.model.attributes.deployedDomains.toJSON());
@@ -135,9 +141,14 @@ define(["app",
           if (deployStatus === "deployed") {
             this.$el.addClass("success");
           } else if (deployStatus === "deploying" ||
-            deployStatus === "undeploying") {
+            deployStatus === "undeploying" ||
+            deployStatus === "invalidating_delete" ||
+            deployStatus === "invalidating" ||
+            deployStatus === "optimizing") {
             this.$el.addClass("alert");
-          } else if (deployStatus === "modified") {
+          }
+
+          if (this.get("modified")) {
             this.$el.addClass("warning");
           }
 

@@ -26,6 +26,42 @@ module.exports = function(db) {
 
   return {
 
+    deleteDir: function(credentials, bucketName, dirPath, callback){
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+      AWS.config.update(credentials);
+
+      var s3_client = s3.createClient({
+        maxAsyncS3: 20, // this is the default
+        s3RetryCount: 0, // this is the default
+        s3RetryDelay: 1000, // this is the default
+        multipartUploadThreshold: 20971520, // this is the default (20 MB)
+        multipartUploadSize: 15728640, // this is the default (15 MB)
+        s3Options: {
+          accessKeyId: credentials.accessKeyId,
+          secretAccessKey: credentials.secretAccessKey,
+          region: config.awsRegion,
+        }
+      });
+
+      var params = {
+        Bucket: bucketName,
+        Prefix: dirPath
+      };
+
+      var deleteDirAction = s3_client.deleteDir(params);
+      deleteDirAction.on("error", function(err) {
+        callback(err);
+      });
+      deleteDirAction.on("end", function() {
+        callback();
+      });
+
+    },
+
+
     // 1. Bucket names must be at least 3 and no more than 63 characters long.
     // 2. Bucket names must be a series of one or more labels. Adjacent labels are 
     //separated by a single period (.). Bucket names can contain lowercase letters, 

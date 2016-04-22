@@ -1,7 +1,9 @@
 <span style="padding-left: 5px;" class="fancytree-node fancytree-exp-n fancytree-ico-c">
 
 	<span class="fancytree-icon">
-		<i style="font-size: 18px !important" class="fa fa-file-code-o text-success fs12 pr5"></i>
+	<a href="#">
+		<i style="font-size: 18px !important" class="fa fa-file-code-o text-default fs12 pr5"></i>
+		</a>
 	</span>
 
 	<span class="fancytree-title">

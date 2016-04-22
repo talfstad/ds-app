@@ -54,9 +54,7 @@ define(["app",
             deployedLandersCollection.each(function(deployedLanderModel) {
               if (deployedLanderModel.get("activeJobs").length > 0) {
                 deployStatus = "deploying";
-              } else if (deployedLanderModel.get("deploy_status") === "modified") {
-                deployStatus = "modified";
-              }
+              } 
             });
 
             if (deployStatus !== "deployed") {

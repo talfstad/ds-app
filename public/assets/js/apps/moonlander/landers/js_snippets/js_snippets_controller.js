@@ -211,7 +211,7 @@ define(["app",
 
 
                     //TODO: saved snippet now need to redeploy all landers that have it!
-                    
+
 
                   },
                   error: function() {
@@ -275,7 +275,7 @@ define(["app",
 
                     //sort it now that the name probably changed
                     filteredSnippetCollection.sort();
-                    
+
                     //get the actual snippet model and change the name/description of it
                     //those models are different than the actual snippet models
                     Moonlander.trigger("landers:updateAllActiveSnippetNames", savedModel);
@@ -315,6 +315,7 @@ define(["app",
 
           var emptySnippetsDetailView = new EmptySnippetsDetailView();
           this.jsSnippetsLayoutView.snippetDetailRegion.show(emptySnippetsDetailView);
+          
 
         },
 
@@ -338,6 +339,22 @@ define(["app",
             }
 
           });
+        },
+
+        showEmptyJsSnippetsModal: function(landerModel) {
+
+          var me = this;
+          var deferInitJsSnippetsModal = this.initAndShowSnippetsModal(landerModel);
+
+          $.when(deferInitJsSnippetsModal).done(function(attr) {
+
+            var filteredSnippetCollection = attr.filteredSnippetCollection;
+            var leftNavSnippetsView = attr.leftNavSnippetsView;
+
+            me.showEmptySnippetsDetailView();
+
+          });
+
         },
 
         showEditJsSnippetsModal: function(landerModel, snippet_id, showDescription) {

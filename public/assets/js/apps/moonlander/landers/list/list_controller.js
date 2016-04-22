@@ -161,9 +161,9 @@ define(["app",
 
         },
 
-        //creates an undeploy job and a deploy job and starts them for each lander in the list
-        //you pass in
-        redeployLanders: function(landerModelsArray, doneAddingAllRedeployJobsToAllLandersCallback) {
+        redeployLanders: function(landerModel) {
+
+          // landerModel.set("modified", false);
 
           //redeploy landers and call the callback when ALL jobs have been started!
           var startRedeployJobs = function(deployedLander, successCallback) {
@@ -222,7 +222,7 @@ define(["app",
           //callback
           if (deployedDomainsList.length <= 0) {
             //nothing to redeploy
-            doneAddingAllRedeployJobsToAllLandersCallback();
+            // doneAddingAllRedeployJobsToAllLandersCallback();
           } else {
             var deployedDomainsCount = 0;
             $.each(deployedDomainsList, function(idx, deployedLander) {
@@ -233,7 +233,7 @@ define(["app",
                 //if we're equal then we're done all jobs have finished async
                 if (deployedDomainsCount == deployedDomainsList.length) {
                   //call this once everything has been guaranteed started for every lander
-                  doneAddingAllRedeployJobsToAllLandersCallback();
+                  // doneAddingAllRedeployJobsToAllLandersCallback();
                 }
               });
             });
@@ -417,6 +417,11 @@ define(["app",
                     var length = this.children.length;
                     if (childView.isDestroyed) --length;
                     domainTabHandleView.model.set("deployed_domains_count", length);
+                    landerView.reAlignTableHeader();
+                  });
+
+                  domainTabHandleView.on("reAlignHeader", function() {
+                    landerView.reAlignTableHeader();
                   });
 
 
@@ -442,11 +447,24 @@ define(["app",
                       landerView.disableAccordionPermanently();
                       //close sidebar
                       Moonlander.trigger('landers:closesidebar');
-
                     }
                   });
 
-
+                  landerView.model.on("change:modified", function() {
+                    Moonlander.trigger("landers:updateTopbarTotals");
+                    
+                    if (this.get("modified")) {
+                      //set all deployed domains to modified as well. modified is
+                      //as a whole lander, never individual deployed domains are modified
+                      deployedDomainsCollection.each(function(deployedDomain) {
+                        deployedDomain.set("modified", true);
+                      });
+                    } else {
+                      deployedDomainsCollection.each(function(deployedDomain) {
+                        deployedDomain.set("modified", false);
+                      });
+                    }
+                  });
 
 
                   landerView.deploy_status_region.show(domainTabHandleView);
@@ -552,7 +570,7 @@ define(["app",
 
         },
 
-       
+
         //add the lander model to the list
         addLander: function(landerModel) {
           Moonlander.trigger('landers:closesidebar');
@@ -587,7 +605,7 @@ define(["app",
             lander_id: landerModel.get("id"),
             deploy_status: "deleting"
           };
-          
+
           var jobModel = new JobModel(jobAttributes);
 
           var activeJobCollection = landerModel.get("activeJobs");
@@ -607,5 +625,3 @@ define(["app",
 
     return Moonlander.LandersApp.Landers.List.Controller;
   });
-
-

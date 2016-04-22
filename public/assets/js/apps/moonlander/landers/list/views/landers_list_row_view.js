@@ -37,7 +37,8 @@ define(["app",
         },
 
         modelEvents: {
-          "change:deploy_status": "alertDeployStatus"
+          "change:deploy_status": "alertDeployStatus",
+          "change:modified": "alertDeployStatus"
         },
 
         regions: {
@@ -56,16 +57,16 @@ define(["app",
           //show correct one
           var deployStatus = this.model.get("deploy_status");
 
-          if (deployStatus === "modified") {
+          this.$el.find(".alert-modified-badge").hide();
+          if (deployStatus !== "deployed" && deployStatus !== "not_deployed") {
+            this.$el.find(".alert-working-badge").show();
+          } else {
+            this.$el.find(".alert-working-badge").hide();
+          }
+
+          if (this.model.get("modified")) {
             this.$el.find(".alert-modified-badge").show();
             this.$el.find(".alert-working-badge").hide();
-          } else {
-            this.$el.find(".alert-modified-badge").hide();
-            if (deployStatus !== "deployed" && deployStatus !== "not_deployed") {
-              this.$el.find(".alert-working-badge").show();
-            } else {
-              this.$el.find(".alert-working-badge").hide();
-            }
           }
         },
 
@@ -86,6 +87,29 @@ define(["app",
 
         expandAccordion: function() {
           this.$el.find("a:first").click();
+        },
+
+        reAlignTableHeader: function() {
+          var me = this;
+
+          //setTimeout is used to let dom set to visible to extract widths/heights!
+          //run this after a very little bit so we can have the items VISIBLE!!!
+          setTimeout(function() {
+            //set the correct margin for the top headers
+            var landersColumnWidth = me.$el.find(".table-lander-name").width();
+            var newLanderLinkMargin = landersColumnWidth - 100;
+            if (newLanderLinkMargin > 0) {
+              me.$el.find(".deployed-landers-header").css("margin-left", newLanderLinkMargin);
+              me.$el.find(".deployed-landers-header").show();
+            } else {
+              me.$el.find(".deployed-landers-header").hide();
+            }
+
+            //fade  in the headers fast
+            $(".deployed-landers-header-container").show();
+
+          }, 10);
+
         },
 
 
@@ -122,6 +146,9 @@ define(["app",
           var me = this;
 
           this.alertDeployStatus();
+
+          this.reAlignTableHeader();
+
 
           //if deleting need to show delet state (which is disabling the whole thing)
           if (this.model.get("deploy_status") === "deleting") {
@@ -162,6 +189,9 @@ define(["app",
             });
 
             this.$el.on('show.bs.collapse', function(e) {
+
+              me.reAlignTableHeader();
+
               //collapse ALL others so we get an accordian effect !IMPORTANT for design
               $("#landers-collection .collapse").collapse("hide");
 

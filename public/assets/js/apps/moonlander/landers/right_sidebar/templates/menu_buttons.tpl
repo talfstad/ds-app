@@ -2,7 +2,7 @@
 
 <button type="button" style="width: 85px; padding: 9px 3px" class="duplicate-lander-button btn btn-default btn-gradient dark"><span class="fa fa-copy pr5"></span>Copy</button>
 <% if(deployedDomains.length <= 0) { %>
-<button type="button" style="width: 85px" class="save-button <% if(deploy_status != 'modified') { %>disabled<% } %> btn btn-default btn-gradient dark"><span class="fa fa-upload pr5"></span>Save</button>
+<button type="button" style="width: 85px" class="save-button <% if(!modified) { %>disabled<% } %> btn btn-default btn-gradient dark"><span class="fa fa-upload pr5"></span>Save</button>
 <% } else { %>
-<button type="button" style="width: 85px" class="redeploy-all-locations <% if(deploy_status != 'modified') { %>disabled<% } %> btn btn-default btn-gradient dark"><span class="fa fa-upload pr5"></span>Deploy</button>
+<button type="button" style="width: 85px" class="redeploy-all-locations <% if(!modified) { %>disabled<% } %> btn btn-default btn-gradient dark"><span class="fa fa-upload pr5"></span>Deploy</button>
 <% } %>

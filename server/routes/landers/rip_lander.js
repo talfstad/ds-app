@@ -53,7 +53,7 @@ module.exports = function(app, passport) {
                     } else {
 
                       //4. remove the staging
-                      db.common.deleteStagingArea(stagingPath, function(err) {
+                      // db.common.deleteStagingArea(stagingPath, function(err) {
                         db.landers.saveNewLander(user, landerData, function(err, returnData) {
                           if (err) {
                             callback(err);
@@ -61,7 +61,7 @@ module.exports = function(app, passport) {
                             callback(false, landerData);
                           }
                         });
-                      });
+                      // });
                     }
                   });
                 }

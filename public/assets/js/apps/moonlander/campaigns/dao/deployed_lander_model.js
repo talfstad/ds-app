@@ -20,11 +20,7 @@ define(["app",
           if (activeJobsCollection.length > 0) {
             var deployStatus = "deployed";
             activeJobsCollection.each(function(job) {
-              if (job.get("action") === "undeployLanderFromDomain" || job.get("action") === "undeployDomainFromLander") {
-                deployStatus = "undeploying";
-              } else if (job.get("action") === "deployLanderToDomain") {
-                deployStatus = "deploying";
-              }
+              deployStatus = job.get("deploy_status");
             });
             me.set("deploy_status", deployStatus);
           } else {
@@ -42,14 +38,7 @@ define(["app",
           var actualAddedJobModel = attr.actualAddedJobModel;
           var jobModelToReplace = attr.jobModelToReplace;
 
-          var action = actualAddedJobModel.get("action");
-          var deployStatus = "deployed";
-
-          if (action === "undeployLanderFromDomain" || action === "undeployDomainFromLander") {
-            deployStatus = "undeploying";
-          } else if (action === "deployLanderToDomain") {
-            deployStatus = "deploying";
-          }
+          var deployStatus = actualAddedJobModel.get("deploy_status");
 
           me.set("deploy_status", deployStatus);
 
