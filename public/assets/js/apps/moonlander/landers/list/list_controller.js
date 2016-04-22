@@ -162,7 +162,6 @@ define(["app",
         },
 
         redeployLanders: function(landerModel) {
-
           //update the changed stuff in lander
           landerModel.save({}, {
             success: function(response) {
@@ -182,7 +181,8 @@ define(["app",
                   deployedDomainsJobList.push({
                     lander_id: deployedDomain.get("lander_id"),
                     domain_id: deployedDomain.get("domain_id"),
-                    action: "redeploy"
+                    action: "redeploy",
+                    deploy_status: "redeploying"
                   });
                 });
 
@@ -197,8 +197,6 @@ define(["app",
                   var redeployJobAttributes = {
                     jobModel: redeployJobModel,
                     onSuccess: function(responseJobList) {
-                      landerModel.set("modified", false);
-
                       //create job models for each deployed domain and add them!
                       deployedDomainCollection.each(function(deployedDomainModel) {
                         $.each(responseJobList, function(idx, responseJobAttr) {

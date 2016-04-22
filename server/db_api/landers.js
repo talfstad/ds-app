@@ -3,29 +3,57 @@ module.exports = function(db) {
   return {
 
     //save optimzations and modified
-    updateLanderData: function(user, attr, callback) {
+    updateAllLanderData: function(user, attr, callback) {
 
       var user_id = user.id;
       var lander_id = attr.id;
       var deploy_root = attr.deploy_root;
       var deployment_folder_name = attr.deployment_folder_name;
-
+      var modified = attr.modified;
 
       //validate inputs
-      if (deploy_root != true || deploy_root != false) {
+      if (deployment_folder_name) {
         if (!deployment_folder_name.match(/^[a-z0-9\-]+$/i)) {
           callback({ code: "InvalidDeploymentFolderInput" });
         }
       }
 
       //values for query
-      var attrArr = [deploy_root, deployment_folder_name, user_id, lander_id];
+      var attrArr = [modified, deploy_root, deployment_folder_name, user_id, lander_id];
 
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("UPDATE landers SET deploy_root = ?, deployment_folder_name = ? WHERE user_id = ? AND id = ?", attrArr,
+          connection.query("UPDATE landers SET modified = ?, deploy_root = ?, deployment_folder_name = ? WHERE user_id = ? AND id = ?", attrArr,
+            function(err, docs) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, {
+                  id: attr.id
+                });
+              }
+              connection.release();
+            });
+        }
+      });
+    },
+
+    updateLanderModifiedData: function(user, attr, callback) {
+
+      var user_id = user.id;
+      var lander_id = attr.id;
+      var modified = attr.modified;
+
+      //values for query
+      var attrArr = [modified, user_id, lander_id];
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("UPDATE landers SET modified = ? WHERE user_id = ? AND id = ?", attrArr,
             function(err, docs) {
               if (err) {
                 callback(err);

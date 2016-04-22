@@ -76,7 +76,7 @@ module.exports = function(app, passport) {
 
           db.jobs.registerJob(user, list[i], function(registeredSlaveJobAttributes) {
 
-            list[i].id = registeredSlaveJobAttributes.id;
+            list[asyncIndex].id = registeredSlaveJobAttributes.id;
 
             //start slave job
             WorkerController.startJob(registeredSlaveJobAttributes.action, user, registeredSlaveJobAttributes);
@@ -84,8 +84,17 @@ module.exports = function(app, passport) {
             if (++asyncIndex == list.length) {
               //done, send response
               //put first job back on there with its id
-              list.unshift(firstJobAttributes);
-              res.json(list);
+              var attr = {
+                modified: false,
+                id: registeredSlaveJobAttributes.lander_id
+              };
+              
+              console.log("attr22: " + JSON.stringify(attr));
+
+              db.landers.updateLanderModifiedData(user, attr, function(err) {
+                list.unshift(firstJobAttributes);
+                res.json(list);
+              });
             }
           });
         }
