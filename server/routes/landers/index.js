@@ -74,7 +74,12 @@ module.exports = function(app, passport) {
 
     db.landers.updateLanderData(user, modelAttributes, function(err, returnModelAttributes) {
       if (err) {
-        res.json({ error: err });
+        if (err.code = "InvalidDeploymentFolderInput") {
+          res.json(err);
+        } else {
+          res.json({ code: "CouldNotUpdateLander" });
+        }
+
       } else {
         res.json(returnModelAttributes);
       }

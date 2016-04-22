@@ -43,13 +43,16 @@ define(["app",
               success: function(model, response) {
                 //post register job callback
                 var onAfterRegister = jobModel.get("onAfterRegister");
-                if(onAfterRegister) {
+                if (onAfterRegister) {
                   onAfterRegister();
                 }
 
-                addToUpdater(model, response);
+                if (!jobModel.get("neverAddToUpdater")) {
+                  addToUpdater(model, response);
+                }
+
                 if (newJobAddedCallback) {
-                  newJobAddedCallback();
+                  newJobAddedCallback(response);
                 }
               }
             });

@@ -65,7 +65,10 @@ define(["app",
             deployStatus = "undeploying";
           } else if (action === "deployLanderToDomain") {
             deployStatus = "deploying";
+          } else if (action == "redeploy") {
+            deployStatus = "redeploying";
           }
+          
           if (jobDeployStatus == "invalidating") {
             deployStatus = "invalidating";
           }
@@ -73,7 +76,7 @@ define(["app",
 
           me.set("deploy_status", deployStatus);
 
-          
+
         });
 
         activeJobsCollection.on("finishedState", function(jobModel) {

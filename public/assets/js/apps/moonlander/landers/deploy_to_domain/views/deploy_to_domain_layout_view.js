@@ -52,7 +52,7 @@ define(["app",
         startDeployingToNewDomain: function(domainId, domain){
           var attrs = {
             domain: domain,
-            id: domainId,
+            domain_id: domainId,
             lander_id: this.model.get("id")
           }
           // triggers add row to deployed domains and starts job 

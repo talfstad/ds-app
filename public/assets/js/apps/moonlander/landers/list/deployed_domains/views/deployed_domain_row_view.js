@@ -97,6 +97,8 @@ define(["app",
             this.model.set("deploy_status_gui", "<strong>REMOVING FROM EDGE LOCATIONS</strong>");
           } else if (deployStatus === "optimizing") {
             this.model.set("deploy_status_gui", "<strong>OPTIMIZING</strong>");
+          } else if (deployStatus === "redeploying") {
+            this.model.set("deploy_status_gui", "<strong>REDEPLOYING</strong>");
           }
 
           var activeCampaignCollection = this.model.get("activeCampaignCollection");
@@ -127,6 +129,7 @@ define(["app",
             deployStatus === "undeploying" ||
             deployStatus === "invalidating_delete" ||
             deployStatus === "invalidating" ||
+            deployStatus === "redeploying" ||
             deployStatus === "optimizing") {
             this.$el.addClass("alert");
           }

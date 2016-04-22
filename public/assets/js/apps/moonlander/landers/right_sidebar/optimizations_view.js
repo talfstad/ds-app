@@ -20,8 +20,29 @@ define(["app",
           "keyup #deploy-folder-edit": "landerIsModified"
         },
 
+        validateDeploymentFolderName: function() {
+          var deploymentFolderVal = this.$el.find("#deploy-folder-edit").val();
+          if (deploymentFolderVal.match(/^[a-z0-9\-]+$/i)) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+
         onRender: function() {
-          this.$el.find(".tool-tip").tooltip();          
+          var me = this;
+          this.$el.find(".tool-tip").tooltip();
+          var input = this.$el.find("#deploy-folder-edit")
+          input.keyup(function() {
+            if (!me.validateDeploymentFolderName()) {
+              //set error
+              input.parent().addClass("has-error");
+              me.model.set("deploymentFolderInvalid", true);
+            } else {
+              input.parent().removeClass("has-error");
+              me.model.set("deploymentFolderInvalid", false);
+            }
+          });
         },
 
         landerIsModified: function() {

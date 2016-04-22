@@ -7,29 +7,25 @@ module.exports = function(db) {
 
       var user_id = user.id;
       var lander_id = attr.id;
-      var optimized = attr.optimized;
       var deploy_root = attr.deploy_root;
       var deployment_folder_name = attr.deployment_folder_name;
 
 
       //validate inputs
-      if (optimized != true || optimized != false) {
-        if (deploy_root != true || deploy_root != false) {
-          if (!deployment_folder_name.match(/^[a-z0-9]+$/i)) {
-            callback({ code: "InvalidInput" });
-          }
+      if (deploy_root != true || deploy_root != false) {
+        if (!deployment_folder_name.match(/^[a-z0-9\-]+$/i)) {
+          callback({ code: "InvalidDeploymentFolderInput" });
         }
       }
 
-
       //values for query
-      var attrArr = [optimized, deploy_root, deployment_folder_name, user_id, lander_id];
+      var attrArr = [deploy_root, deployment_folder_name, user_id, lander_id];
 
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("UPDATE landers SET optimized = ?, deploy_root = ?, deployment_folder_name = ? WHERE user_id = ? AND id = ?", attrArr,
+          connection.query("UPDATE landers SET deploy_root = ?, deployment_folder_name = ? WHERE user_id = ? AND id = ?", attrArr,
             function(err, docs) {
               if (err) {
                 callback(err);
@@ -109,7 +105,7 @@ module.exports = function(db) {
       var s3_folder_name = landerData.s3_folder_name;
 
       var urlEndpoints = landerData.urlEndpoints;
-      if(!urlEndpoints) urlEndpoints = [];
+      if (!urlEndpoints) urlEndpoints = [];
 
       var user_id = user.id;
       //param order: working_node_id, action, processing, lander_id, domain_id, campaign_id, user_id
@@ -151,20 +147,22 @@ module.exports = function(db) {
       });
     },
 
-    addLanderToDeployedLanders: function(user, lander_id, domain_id, successCallback) {
+    addLanderToDeployedLanders: function(user, lander_id, domain_id, callback) {
       var user_id = user.id;
 
       //insert into deployed_landers
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
-          connection.query("INSERT IGNORE INTO deployed_landers(user_id, lander_id, domain_id) VALUES (?, ?, ?);", [user_id, lander_id, domain_id], function(err, docs) {
+          connection.query("CALL add_deployed_lander(?, ?, ?);", [user_id, lander_id, domain_id], function(err, docs) {
             if (err) {
               console.log(err);
+              callback(err);
             } else {
-              successCallback();
+              // return the ID
+              callback(false, docs[0][0]["LAST_INSERT_ID()"]);
             }
             connection.release();
           });

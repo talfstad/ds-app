@@ -21,14 +21,18 @@ define(["app",
         },
 
         save: function() {
-          this.trigger("save");
+          //save if deployment folder is valid
+          if (!this.model.get("deploymentFolderInvalid")) {
+            this.trigger("save");
+          }
         },
 
         redeploy: function(e) {
           var me = this;
           e.preventDefault();
-
-          Moonlander.trigger("landers:redeploy", this.model);
+          if (!this.model.get("deploymentFolderInvalid")) {
+            Moonlander.trigger("landers:redeploy", this.model);
+          }
         }
 
       });
