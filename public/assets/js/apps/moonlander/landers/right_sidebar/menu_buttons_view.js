@@ -21,7 +21,7 @@ define(["app",
           "change:modified": "render"
         },
 
-        updateOriginalValues: function(){
+        updateOriginalValues: function() {
           this.model.set("originalValueDeployRoot", this.model.get("deploy_root"));
           this.model.set("originalValueDeploymentFolderName", this.model.get("deployment_folder_name"));
         },
@@ -29,6 +29,7 @@ define(["app",
         save: function() {
           //save if deployment folder is valid
           if (!this.model.get("deploymentFolderInvalid")) {
+            this.model.set("modified", false);
             this.updateOriginalValues();
             this.trigger("save");
           }
