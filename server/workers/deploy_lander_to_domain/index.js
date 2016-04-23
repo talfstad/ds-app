@@ -115,46 +115,19 @@ module.exports = function(app, db) {
                         });
                       }
 
-                      //- check if optimized
-                      if (optimized) {
-                        db.jobs.updateDeployStatus(user, myJobId, "optimizing", function(err) {
-                          if (err) {
-                            callback({ code: "CouldNotUpdateDeployStatusOptimizing" }, [myJobId]);
-                          } else {
-
-                            optimizations.optimizeJs(staging_path, function(err) {
-                              console.log("optimizing js");
-                              if (err) {
-                                callback({ code: "CouldNotOptimizeJs" }, [myJobId]);
-                              } else {
-                                optimizations.optimizeCss(staging_path, function(err) {
-                                  console.log("optimizing css");
-                                  if (err) {
-                                    callback({ code: "CouldNotOptimizeCss" }, [myJobId]);
-                                  } else {
-                                    console.log("optimizing html");
-                                    optimizations.optimizeHtml(staging_path, function(err) {
-                                      if (err) {
-                                        callback({ code: "CouldNotOptimizeHtml" }, [myJobId]);
-                                      } else {
-                                        optimizations.optimizeImages(staging_path, function(err) {
-                                          if (err) {
-                                            callback({ code: "CouldNotOptimizeImages" }, [myJobId]);
-                                          } else {
-                                            pushToS3AndInvalidate();
-                                          }
-                                        })
-                                      }
-                                    });
-                                  }
-                                });
-                              }
-                            });
-                          }
-                        });
-                      } else {
-                        pushToS3AndInvalidate();
-                      }
+                      db.jobs.updateDeployStatus(user, myJobId, "optimizing", function(err) {
+                        if (err) {
+                          callback({ code: "CouldNotUpdateDeployStatusOptimizing" }, [myJobId]);
+                        } else {
+                          optimizations.fullyOptimize(staging_path, function(err) {
+                            if (err) {
+                              callback({ code: "CouldNotOptimizeJs" }, [myJobId]);
+                            } else {
+                              pushToS3AndInvalidate();
+                            }
+                          });
+                        }
+                      });
                     }
                   });
                 }

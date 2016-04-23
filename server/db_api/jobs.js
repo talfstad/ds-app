@@ -55,6 +55,50 @@ module.exports = function(db) {
 
     },
 
+    getSlaveJobsStillWorking: function(user, masterJobId, callback) {
+      var user_id = user.id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+
+          connection.query("SELECT * FROM jobs WHERE master_job_id = ? AND done = ? AND id = ?", [user_id, false, masterJobId],
+            function(err, docs) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, docs);
+              }
+              connection.release();
+            });
+        }
+      });
+    },
+
+    //returns all jobs currently processing for user with specific domain and lander ids
+    getJob: function(user, id, callback) {
+      var user_id = user.id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+
+          connection.query("SELECT * FROM jobs WHERE user_id = ? AND id = ?", [user_id, id],
+            function(err, docs) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, docs[0]);
+              }
+              connection.release();
+            });
+        }
+      });
+
+    },
+
     getAllNotDoneForLanderDomain: function(user, attr, successCallback) {
       var user_id = user.id;
       var lander_id = attr.lander_id;

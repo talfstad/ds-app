@@ -18,10 +18,10 @@ module.exports = {
   resetCodeLifespanMinutes: 240,
   awsRegion: "us-west-2",
   workers: {
-    checkOthersFinishedRate: 1000 * 30 // 30 seconds
+    checkOthersFinishedRate: 1000 * 30, // 30 seconds
+    redeployCheckIfMasterReadyRate: 1000 * 5 // 5 seconds
   },
   cloudfront: {
     invalidationPollDuration: 1000 * 30 // 30 seconds
   }
-
 };

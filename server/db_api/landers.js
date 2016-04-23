@@ -18,6 +18,37 @@ module.exports = function(db) {
         }
       }
 
+      var updateOldDeploymentFolderName = function(callback) {
+        if (!deployment_folder_name) {
+          callback();
+        } else {
+          db.getConnection(function(err, connection) {
+            if (err) {
+              callback(err);
+            } else {
+              //set the deployment_folder_name to the old_deployment_folder_name
+              connection.query("SELECT deployment_folder_name FROM landers WHERE user_id = ? AND id = ?", [user_id, lander_id],
+                function(err, deployment_folder_name_docs) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    console.log("dep: " + JSON.stringify(deployment_folder_name_docs));
+                    var currentDeploymentFolder = deployment_folder_name_docs[0].deployment_folder_name;
+                    connection.query("UPDATE landers SET old_deployment_folder_name = ? WHERE user_id = ? AND id = ?", [currentDeploymentFolder, user_id, lander_id],
+                      function(err, docs) {
+                        if (err) {
+                          callback(err);
+                        } else {
+                          callback(false);
+                        }
+                      });
+                  }
+                });
+            }
+          });
+        }
+      };
+
       //values for query
       var attrArr = [modified, deploy_root, deployment_folder_name, user_id, lander_id];
 
@@ -25,17 +56,19 @@ module.exports = function(db) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("UPDATE landers SET modified = ?, deploy_root = ?, deployment_folder_name = ? WHERE user_id = ? AND id = ?", attrArr,
-            function(err, docs) {
-              if (err) {
-                callback(err);
-              } else {
-                callback(false, {
-                  id: attr.id
-                });
-              }
-              connection.release();
-            });
+          updateOldDeploymentFolderName(function() {
+            connection.query("UPDATE landers SET modified = ?, deploy_root = ?, deployment_folder_name = ? WHERE user_id = ? AND id = ?", attrArr,
+              function(err, docs) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false, {
+                    id: attr.id
+                  });
+                }
+                connection.release();
+              });
+          });
         }
       });
     },

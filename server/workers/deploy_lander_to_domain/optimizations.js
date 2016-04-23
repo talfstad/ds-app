@@ -9,6 +9,39 @@ module.exports = function(app, db) {
   var find = require('find');
   var fs = require('fs');
 
+  module.fullyOptimize = function(staging_path, callback) {
+
+    module.optimizeJs(staging_path, function(err) {
+      console.log("optimizing js");
+      if (err) {
+        callback({ code: "CouldNotOptimizeJs" });
+      } else {
+        module.optimizeCss(staging_path, function(err) {
+          console.log("optimizing css");
+          if (err) {
+            callback({ code: "CouldNotOptimizeCss" });
+          } else {
+            console.log("optimizing html");
+            module.optimizeHtml(staging_path, function(err) {
+              if (err) {
+                callback({ code: "CouldNotOptimizeHtml" });
+              } else {
+                module.optimizeImages(staging_path, function(err) {
+                  if (err) {
+                    callback({ code: "CouldNotOptimizeImages" });
+                  } else {
+                    callback(false);
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+
+  };
+
   module.optimizeJs = function(staging_path, callback) {
 
     //- get all the js files in the staging path
