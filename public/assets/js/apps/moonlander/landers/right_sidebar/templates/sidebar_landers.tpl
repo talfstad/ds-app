@@ -44,7 +44,31 @@
         <div id="jssnippets-tree" class="fancytree-radio ui-fancytree-source">
         </div>
       </div>
+
+      <h5 class="title-divider mt60 mb0">
+        Download
+      </h5>
+      <table class="optimizations-table table">
+  <tr>
+    <td>
+      Original Lander
+    </td>
+    <td align="right" style="width: 30px;">
+        <a href="#"><span class="fa fa-download"></span></a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Optimized Lander
+    </td>
+    <td align="right" style="width: 30px;">
+        <a href="#"><span class="fa fa-download"></span></a>
+    </td>
+  </tr>
+</table>
+
     </div>
+    
     <div class="panel-footer">
       <button type="button" class="delete-lander-button btn btn-danger btn-gradient dark"><span class="fa fa-trash pr5"></span>Delete Lander</button>
     </div>

@@ -21,7 +21,7 @@
 
 
 <h5 class="title-divider mt20 mb0"><span style="">Page Speed Scores</span>
-                <i title="Lander must be deployed to be optimized" style="font-size: 18px !important; float: right;" class="fa fa-warning tool-tip text-warning fs12 pl5 pr5"></i>
+                <i title="Lander must be deployed to show optimized page speed" style="font-size: 18px !important; float: right;" class="fa fa-warning tool-tip text-warning fs12 pl5 pr5"></i>
               </h5>
 <table class="optimizations-table table">
   <tr>
