@@ -21,12 +21,12 @@ define(["app",
         className: "nano affix",
 
         events: {
-          "click button.lander-edit": "showEditLander",
+          // "click button.lander-edit": "showEditLander",
           "click .delete-lander-button": "showDeleteLanderModal",
           "click .duplicate-lander-button": "showDuplicateLanderModal",
           "click .add-snippet-button": "showJsSnippetsModal",
           "click .open-preview-link": "openPreviewLink",
-          "click .snippet-help-button": "showEmptyViewJsSnippetsModal"
+          // "click .snippet-help-button": "showEmptyViewJsSnippetsModal"
         },
 
         modelEvents: {
@@ -74,7 +74,7 @@ define(["app",
         },
 
         onBeforeRender: function() {
-          urlEndpoints = this.model.get("urlEndpoints")
+          urlEndpoints = this.model.get("urlEndpoints");
           var urlEndpointsJSON;
           if (urlEndpoints) {
             urlEndpointsJSON = urlEndpoints.toJSON();
@@ -92,6 +92,10 @@ define(["app",
           if (this.model.get("urlEndpointsJSON").length <= 0) {
             this.$el.find(".open-preview-link").addClass("disabled");
           }
+
+          this.$el.find(".tool-tip").tooltip();
+          
+
         },
 
         onDomRefresh: function() {

@@ -162,64 +162,51 @@ define(["app",
         },
 
         redeployLanders: function(landerModel) {
-          //update the changed stuff in lander
-          landerModel.save({}, {
-            success: function(response) {
-              if (response.error) {
-                if (response.error.code == "InvalidDeploymentFolderInput") {
-                  landerModel.set("deploymentFolderInvalid", true);
-                } else {
-                  //TODO add notification here error
-                }
-              } else {
-                //get list of all deployedDomains first
-                var deployedDomainsJobList = [];
-                var deployedDomainCollection = landerModel.get("deployedDomains");
 
-                //get list of all locations to 
-                deployedDomainCollection.each(function(deployedDomain) {
-                  deployedDomainsJobList.push({
-                    lander_id: deployedDomain.get("lander_id"),
-                    domain_id: deployedDomain.get("domain_id"),
-                    action: "redeploy",
-                    deploy_status: "redeploying"
-                  });
-                });
+          //get list of all deployedDomains first
+          var deployedDomainsJobList = [];
+          var deployedDomainCollection = landerModel.get("deployedDomains");
 
-                if (deployedDomainsJobList.length > 0) {
-
-                  var redeployJobModel = new JobModel({
-                    action: "redeploy",
-                    list: deployedDomainsJobList,
-                    neverAddToUpdater: true
-                  });
-                  //create a list of redeploy jobs for each deployed domain
-                  var redeployJobAttributes = {
-                    jobModel: redeployJobModel,
-                    onSuccess: function(responseJobList) {
-                      //create job models for each deployed domain and add them!
-                      deployedDomainCollection.each(function(deployedDomainModel) {
-                        $.each(responseJobList, function(idx, responseJobAttr) {
-                          if (deployedDomainModel.get("domain_id") == responseJobAttr.domain_id) {
-                            //create new individual job model for
-                            var activeJobs = deployedDomainModel.get("activeJobs");
-                            var newRedeployJob = new JobModel(responseJobAttr)
-                            activeJobs.add(newRedeployJob);
-                            //call start for each job 
-                            Moonlander.trigger("job:start", newRedeployJob);
-                          }
-                        });
-                      });
-                    }
-                  };
-
-                  Moonlander.trigger("job:start", redeployJobAttributes);
-
-                }
-              }
-            }
+          //get list of all locations to 
+          deployedDomainCollection.each(function(deployedDomain) {
+            deployedDomainsJobList.push({
+              lander_id: deployedDomain.get("lander_id"),
+              domain_id: deployedDomain.get("domain_id"),
+              action: "redeploy",
+              deploy_status: "redeploying"
+            });
           });
 
+          if (deployedDomainsJobList.length > 0) {
+
+            var redeployJobModel = new JobModel({
+              action: "redeploy",
+              list: deployedDomainsJobList,
+              model: landerModel,
+              neverAddToUpdater: true
+            });
+
+            var redeployJobAttributes = {
+              jobModel: redeployJobModel,
+              onSuccess: function(responseJobList) {
+                //create job models for each deployed domain and add them!
+                deployedDomainCollection.each(function(deployedDomainModel) {
+                  $.each(responseJobList, function(idx, responseJobAttr) {
+                    if (deployedDomainModel.get("domain_id") == responseJobAttr.domain_id) {
+                      //create new individual job model for
+                      var activeJobs = deployedDomainModel.get("activeJobs");
+                      var newRedeployJob = new JobModel(responseJobAttr)
+                      activeJobs.add(newRedeployJob);
+                      //call start for each job 
+                      Moonlander.trigger("job:start", newRedeployJob);
+                    }
+                  });
+                });
+              }
+            };
+
+            Moonlander.trigger("job:start", redeployJobAttributes);
+          }
         },
 
         updateAllActiveSnippetNames: function(savedModel) {
@@ -367,8 +354,12 @@ define(["app",
                   var deployedDomainsCollection = landerView.model.get("deployedDomains");
 
                   deployedDomainsCollection.activeCampaignCollection = activeCampaignsCollection;
-                  deployedDomainsCollection.deployment_folder_name = landerView.model.get("deployment_folder_name");
+                  deployedDomainsCollection.urlEndpoints = landerView.model.get("urlEndpoints");
 
+                  var landerViewDeploymentFolderName = landerView.model.get("deployment_folder_name");
+                  deployedDomainsCollection.deployment_folder_name = landerViewDeploymentFolderName
+
+                  
                   //if this lander is initializing set the collection level variable to be picked up
                   //by collections childviewoptions
                   if (landerView.model.get("deploy_status") == "initializing") {
@@ -516,7 +507,7 @@ define(["app",
             campaign_id: campaign_id,
             deploy_status: "deploying",
           };
-          
+
           var deployJobModel = new JobModel(jobAttr);
 
           var jobStartAttributes = {

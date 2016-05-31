@@ -84,6 +84,15 @@ define(["app",
         onBeforeRender: function() {
           var me = this;
 
+          urlEndpoints = this.model.get("urlEndpoints");
+          var urlEndpointsJSON;
+          if (urlEndpoints) {
+            urlEndpointsJSON = urlEndpoints.toJSON();
+          } else {
+            urlEndpointsJSON = [];
+          }
+          this.model.set("urlEndpointsJSON", urlEndpointsJSON);
+          
           var deployStatus = this.model.get("deploy_status");
           if (deployStatus === "deployed") {
             this.model.set("deploy_status_gui", "");

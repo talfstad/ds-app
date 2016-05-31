@@ -48,6 +48,11 @@ define(["app",
           } else {
             Notification("Invalid Deployment Folder", "Fix deployment folder name", "danger", "stack_top_right");
           }
+        },
+
+        onRender: function(){
+          this.$el.find(".tool-tip").tooltip();
+          
         }
 
       });

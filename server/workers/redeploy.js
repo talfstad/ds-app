@@ -13,30 +13,23 @@ module.exports = function(app, db) {
     var user_id = user.id;
     var lander_id = attr.lander_id;
     var domain_id = attr.domain_id;
-
     var master_job_id = attr.master_job_id;
-
-    var jobAttr = {
-      lander_id: lander_id,
-      domain_id: domain_id
-    };
-
     var myJobId = attr.id;
-
     var aws_root_bucket = user.aws_root_bucket;
     var username = user.user;
     var credentials = {
       accessKeyId: user.aws_access_key_id,
       secretAccessKey: user.aws_secret_access_key
     }
-
     var landersToGet = [{
       lander_id: lander_id
     }];
+
     db.landers.getAll(user, function(err, landers) {
       if (err) {
         callback({ code: "CouldNotGetLanderFromDb" }, [myJobId]);
       } else {
+
         db.domains.getDomain(user, domain_id, function(err, domain) {
           if (err) {
             callback({ code: "CouldNotGetDomainInformation" });
@@ -44,7 +37,7 @@ module.exports = function(app, db) {
 
             var lander = landers[0];
             var s3_folder_name = lander.s3_folder_name;
-
+            var awsS3FolderPath = "/landers/" + s3_folder_name;
             var deployment_folder_name = lander.deployment_folder_name;
             var currently_deployed_deployment_folder_name = lander.old_deployment_folder_name;
 
@@ -70,17 +63,17 @@ module.exports = function(app, db) {
             var invalidateIfOldDeploymentFolderDifferent = function(callback) {
 
               //-if deployment_folder is different invalidate the old deployment_folder path
-              if (old_deployment_folder_name != "" && deployment_folder_name != old_deployment_folder_name) {
+              if (currently_deployed_deployment_folder_name != "" && deployment_folder_name != currently_deployed_deployment_folder_name) {
 
                 //- create invalidation for this undeployment
-                var invalidationPath = "/" + old_deployment_folder_name + "/*";
-                console.log("invalidation old deployment folder path: " + invalidationPath);
+                var invalidationPath = "/" + currently_deployed_deployment_folder_name + "/*";
+                console.log("invalidating the old deployed path because we changed it: " + invalidationPath);
                 db.aws.cloudfront.createInvalidation(credentials, cloudfront_id, invalidationPath, function(err, invalidationData) {
                   if (err) {
                     console.log(err);
                     callback({ code: "CouldNotCreateInvalidation" }, [myJobId]);
                   } else {
-                    console.log("old invalidationData: " + JSON.stringify(invalidationData));
+                    console.log("invalidationData: " + JSON.stringify(invalidationData));
                     callback(false);
                   }
                 });
@@ -88,22 +81,36 @@ module.exports = function(app, db) {
             };
 
             //only master job will actually do the work in this function
-            masterPrepareLander = function(callback) {
+            masterPrepareLanderStagingArea = function(callback) {
               if (master_job_id) {
                 callback(false);
               } else {
 
                 //-create staging area
+                db.common.createStagingDirectory(function(err, staging_path, staging_dir) {
+                  if (err) {
 
+                  } else {
+                    //-bring lander into staging area from s3
+                    db.aws.s3.copyDirFromS3ToStaging(staging_path, credentials, username, aws_root_bucket, awsS3FolderPath, function(err) {
+                      if (err) {
+                        callback({ code: "CouldNotCopyLanderFromS3ToStaging" }, [myJobId]);
+                      } else {
+                        console.log("copied lander, staging path: " + staging_path);
 
-                //-bring lander into staging area
-
-
-                //-optimize it
+                           //-optimize it
                 // optimizations.fullyOptimize(staging_path, function(err) {
 
 
                 // });
+                      }
+                    });
+                  }
+                });
+
+
+
+             
 
 
                 callback(false);
@@ -118,7 +125,7 @@ module.exports = function(app, db) {
                 callback(false);
               } else {
                 var interval = setInterval(function() {
-                  db.jobs.getJob(master_job_id, function(err, job) {
+                  db.jobs.getJob(user, master_job_id, function(err, job) {
                     if (job.deploy_status == "deploying" ||
                       job.deploy_status == "invalidating") {
 
@@ -148,7 +155,7 @@ module.exports = function(app, db) {
                 callback(false);
               } else {
                 var interval = setInterval(function() {
-                  db.jobs.getSlaveJobsStillWorking(master_job_id, function(err, slaveJobs) {
+                  db.jobs.getSlaveJobsStillWorking(user, master_job_id, function(err, slaveJobs) {
                     if (slaveJobs.length <= 0) {
                       clearInterval(interval);
                       callback(false);
@@ -177,7 +184,7 @@ module.exports = function(app, db) {
                   if (err) {
                     callback(err);
                   } else {
-                    masterPrepareLander(function(err) {
+                    masterPrepareLanderStagingArea(function(err) {
                       if (err) {
                         callback(err);
                       } else {

@@ -90,6 +90,10 @@ define(["app",
                   //show fail message
                   Notification("Error Saving Lander", data.error.code, "danger", "stack_top_right");
                 } else {
+
+                  //update the deployment folder name for the deployed domains children links
+                  model.get("deployedDomains").deployment_folder_name = model.get("deployment_folder_name");
+
                   //show success save message
                   Notification("Lander Saved", "Successfully Updated Lander", "success", "stack_top_right");
                   model.set("deploy_status", "not_deployed");

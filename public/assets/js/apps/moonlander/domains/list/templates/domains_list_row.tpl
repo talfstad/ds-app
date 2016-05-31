@@ -8,9 +8,8 @@
             <span class="open_sidemenu_r label">
         
           <div class="text-alert">
-            <span style="position: relative; top: 2px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>  
-           <span>Working...</span>
-           </div>
+            <span style="position: relative; top: 2px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span><span>Working...</span>
+          </div>
             </span>
           </div>
 

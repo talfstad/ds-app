@@ -52,6 +52,8 @@ define(["app",
           if (this.model.get("deployment_folder_name") == this.model.get("originalValueDeploymentFolderName") &&
             this.model.get("originalValueDeployRoot") == this.model.get("deploy_root")) {
 
+            //check active snippets havent changed
+              
             this.trigger("modified", false);
 
           } else {

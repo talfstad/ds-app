@@ -283,6 +283,7 @@ module.exports = function(db) {
         Key: username + folder,
         ACL: 'bucket-owner-full-control'
       };
+
       aws_s3_client.putObject(params, function(err, data) {
         if (err) {
           callback(err);

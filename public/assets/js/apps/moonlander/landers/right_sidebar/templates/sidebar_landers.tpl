@@ -32,12 +32,12 @@
       </div>
       <h5 class="title-divider mt30 mb0">
               Active Javascript Snippets 
-              <a class="snippet-help-button" style="float: right" href="#">
+              <a class="snippet-help-button tool-tip" title="Javascript Snippets feature isn't quite ready yet!" style="float: right" href="#">
                 <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
               </a>
-              <a class="add-snippet-button" style="float: right" title="Add a new snippet" href="#">
+              <!-- <a class="add-snippet-button" style="float: right" title="Add a new snippet" href="#">
                 <i style="font-size: 18px !important" class="fa fa-plus text-info fs12 pl5 pr5"></i>
-              </a>
+              </a> -->
 
             </h5>
       <div id="jssnippets-tree-container" class="snippets-container fancytree-radio">

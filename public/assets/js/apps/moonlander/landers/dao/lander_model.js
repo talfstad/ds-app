@@ -73,6 +73,7 @@ define(["app",
         this.set("originalValueOptimized", this.get("optimized"));
         this.set("originalValueDeploymentFolderName", this.get("deployment_folder_name"));
         this.set("originalValueDeployRoot", this.get("deploy_root"));
+        this.set("originalActiveSnippets", this.get("activeSnippets"));
 
         var activeCampaignAttributes = this.get("activeCampaigns");
         var urlEndpointAttributes = this.get("urlEndpoints");

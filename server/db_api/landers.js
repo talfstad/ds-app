@@ -510,7 +510,7 @@ module.exports = function(db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT id,name,optimized,modified,s3_folder_name,deploy_root,deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
+            connection.query("SELECT id,name,optimized,modified,s3_folder_name,deploy_root,deployment_folder_name,old_deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
               if (err) {
                 callback(err);
               } else {
@@ -548,7 +548,7 @@ module.exports = function(db) {
               }
             }
 
-            var queryString = "SELECT id,name,optimized,modified,s3_folder_name,deploy_root,deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ? " + queryIds;
+            var queryString = "SELECT id,name,optimized,modified,s3_folder_name,deploy_root,deployment_folder_name,old_deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ? " + queryIds;
 
             connection.query(queryString, [user_id], function(err, dblanders) {
               if (err) {

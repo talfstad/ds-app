@@ -11,14 +11,27 @@ define(["app",
 
         var items = new DomainCollection();
 
-        this.each(function(domain){
+        this.each(function(domain) {
           domainId = domain.get("id");
 
           if (!domainsToFilterOutCollection.find(function(m) {
-            var id = m.get('domain_id') || m.get('id')
+              var id = m.get('domain_id') || m.get('id')
               return id == domainId
             })) {
-            items.add(domain);
+
+            var activeJobs = domain.get("activeJobs");
+            var isDeleting = false;
+
+            activeJobs.each(function(activeJob) {
+              if (activeJob.get("action") == "deleteDomain") {
+                isDeleting = true;
+              }
+            });
+
+            if (!isDeleting) {
+              items.add(domain);
+            }
+
           }
 
         });
@@ -37,16 +50,16 @@ define(["app",
 
         // if (!this.domainCollectionInstance) {
 
-          this.domainCollectionInstance = new DomainCollection();
+        this.domainCollectionInstance = new DomainCollection();
 
-          this.domainCollectionInstance.fetch({
-            success: function(domains) {
-              defer.resolve(domains);
-            },
-            error: function(one, two, three){
-              Moonlander.execute("show:login");
-            }
-          });
+        this.domainCollectionInstance.fetch({
+          success: function(domains) {
+            defer.resolve(domains);
+          },
+          error: function(one, two, three) {
+            Moonlander.execute("show:login");
+          }
+        });
         // } else {
         //   //async hack to still return defer
         //   setTimeout(function() {

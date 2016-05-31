@@ -34,7 +34,8 @@ module.exports = function(app, passport) {
 
               var username = user.user;
               var baseBucketName = awsData.aws_root_bucket;
-              var directory = username + "/landers/" + stagingDir + "/";
+              var directory = "/landers/" + stagingDir + "/";
+              var fullDirectory = username + directory;
 
               var credentials = {
                 accessKeyId: awsData.aws_access_key_id,
@@ -47,7 +48,7 @@ module.exports = function(app, passport) {
                 } else {
 
                   //3. copy the lander into the folder
-                  db.aws.s3.copyDirFromStagingToS3(stagingPath, credentials, username, baseBucketName, directory, function(err) {
+                  db.aws.s3.copyDirFromStagingToS3(stagingPath, credentials, username, baseBucketName, fullDirectory, function(err) {
                     if (err) {
                       callback(err);
                     } else {

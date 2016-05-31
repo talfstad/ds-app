@@ -148,7 +148,7 @@ define(["app",
             this.$el.addClass("alert");
           }
 
-          if (this.get("modified")) {
+          if (this.model.get("modified")) {
             this.$el.addClass("warning");
           }
 
