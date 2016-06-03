@@ -2,11 +2,12 @@ module.exports = {
   id: 1,
   port: 3000,
   dbConnectionInfo: {
-    host: '52.88.173.62',
-    // host : 'localhost',
-    user: 'root',
+    // host: '52.88.173.62', //dev
+    // host: '52.88.173.62', //dev
+    host : 'landerds-prod.cynwtdt18kyi.us-west-2.rds.amazonaws.com', //prod
+    user: 'buildcave',
     password: 'Wewillrockyou1986!',
-    database: 'moonlander',
+    database: 'landerds-prod',
     multipleStatements: true,
     connectionLimit: 10
   },
