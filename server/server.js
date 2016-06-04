@@ -9,7 +9,7 @@ var methodOverride = require('method-override');
 var cookieParser = require('cookie-parser');
 //var session = require('express-session');
 var bodyParser = require('body-parser');
-var multer = require('multer');
+// var multer = require('multer');
 var methodOverride = require('method-override');
 var config = require("./config");
 var db = require("./db_api");
@@ -34,7 +34,7 @@ app.use(bodyParser.urlencoded({
 })); // parse application/x-www-form-urlencoded
 app.use(methodOverride()); // must come after bodyParser
 
-app.use(multer());
+// app.use(multer({dest: './uploads'}));
 
 app.set('view engine', 'html');
 app.set('views', __dirname + '/');

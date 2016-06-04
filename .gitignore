@@ -9,7 +9,7 @@ logs
 *.log
 .DS_Store
 # Elastic Beanstalk Files
-.elasticbeanstalk/*
+.elasticbeanstalk/app_versions/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 server/staging

@@ -2,7 +2,8 @@ FROM ubuntu:14.04
 MAINTAINER Trevor Alfstad "trevor@buildcave.com"
 
 # Update packages
-RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get update -y
+RUN apt-get upgrade -y
 
 # Install some packages we need
 RUN apt-get install -y curl

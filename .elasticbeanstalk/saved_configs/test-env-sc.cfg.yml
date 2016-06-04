@@ -1,0 +1,44 @@
+EnvironmentConfigurationMetadata:
+  Description: Configuration created from the EB CLI using "eb config save".
+  DateCreated: '1464957614000'
+  DateModified: '1464957614000'
+SolutionStack: 64bit Amazon Linux 2016.03 v2.1.0 running Docker 1.9.1
+OptionSettings:
+  aws:elasticbeanstalk:command:
+    BatchSize: '30'
+    BatchSizeType: Percentage
+    DeploymentPolicy: Rolling
+    IgnoreHealthCheck: true
+  aws:elasticbeanstalk:sns:topics:
+    Notification Endpoint: ''
+  aws:elb:policies:
+    ConnectionDrainingEnabled: true
+    ConnectionDrainingTimeout: '20'
+  aws:elb:loadbalancer:
+    ManagedSecurityGroup: sg-70f63916
+    CrossZone: false
+  aws:elasticbeanstalk:environment:
+    ServiceRole: aws-elasticbeanstalk-service-role
+    EnvironmentType: LoadBalanced
+  aws:elasticbeanstalk:healthreporting:system:
+    SystemType: basic
+  aws:ec2:vpc:
+    Subnets: subnet-aa2c34cf
+    VPCId: vpc-976f7af2
+    ELBSubnets: subnet-aa2c34cf
+    ELBScheme: public
+    AssociatePublicIpAddress: true
+  aws:autoscaling:launchconfiguration:
+    SecurityGroups: sg-cef639a8
+    IamInstanceProfile: aws-elasticbeanstalk-ec2-role
+    InstanceType: t1.micro
+    EC2KeyName: BuildcaveKeyPair
+  aws:autoscaling:updatepolicy:rollingupdate:
+    RollingUpdateType: Health
+    RollingUpdateEnabled: true
+EnvironmentTier:
+  Type: Standard
+  Name: WebServer
+AWSConfigurationTemplateVersion: 1.1.0.0
+Tags:
+  env: test

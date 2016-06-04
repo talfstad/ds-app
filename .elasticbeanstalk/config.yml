@@ -1,0 +1,24 @@
+branch-defaults:
+  default:
+    environment: landerds
+    group_suffix: test
+  local:
+    environment: landerds-test
+    group_suffix: null
+  prod:
+    environment: landerds
+    group_suffix: prod
+  test:
+    environment: landerds
+    group_suffix: test
+    option_settings:
+    - namespace: aws:autoscaling:launchconfiguration
+      option_name: SecurityGroups
+      value: sg-f9cf359f
+global:
+  application_name: landerds-app
+  default_ec2_keyname: BuildcaveKeyPair
+  default_platform: python2.7
+  default_region: us-west-2
+  profile: null
+  sc: git
