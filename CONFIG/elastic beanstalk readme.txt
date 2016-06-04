@@ -2,6 +2,10 @@
 ####create landerds test environment:
 eb create --cfg test-env-sc landerds-test
 
+#####deploy latest commit to test:
+eb deploy landerds-test
+
+
 
 
 
