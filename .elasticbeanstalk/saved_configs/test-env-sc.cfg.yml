@@ -9,13 +9,12 @@ OptionSettings:
     BatchSizeType: Percentage
     DeploymentPolicy: Rolling
     IgnoreHealthCheck: true
-  aws:elasticbeanstalk:sns:topics:
-    Notification Endpoint: ''
   aws:elb:policies:
     ConnectionDrainingEnabled: true
     ConnectionDrainingTimeout: '20'
   aws:elb:loadbalancer:
-    ManagedSecurityGroup: sg-70f63916
+    ManagedSecurityGroup: sg-cef639a8
+    SecurityGroups: sg-cef639a8
     CrossZone: false
   aws:elasticbeanstalk:environment:
     ServiceRole: aws-elasticbeanstalk-service-role
@@ -28,11 +27,15 @@ OptionSettings:
     ELBSubnets: subnet-aa2c34cf
     ELBScheme: public
     AssociatePublicIpAddress: true
+  aws:autoscaling:asg:
+    MinSize: '1'
+    MaxSize: '4'
   aws:autoscaling:launchconfiguration:
-    SecurityGroups: sg-cef639a8
+    SecurityGroups: sg-70f63916
     IamInstanceProfile: aws-elasticbeanstalk-ec2-role
     InstanceType: t1.micro
     EC2KeyName: BuildcaveKeyPair
+    RootVolumeSize: '10'
   aws:autoscaling:updatepolicy:rollingupdate:
     RollingUpdateType: Health
     RollingUpdateEnabled: true
