@@ -13,14 +13,17 @@ OptionSettings:
     ConnectionDrainingEnabled: true
     ConnectionDrainingTimeout: '20'
   aws:elb:loadbalancer:
-    ManagedSecurityGroup: sg-cef639a8
-    SecurityGroups: sg-cef639a8
-    CrossZone: false
+    ManagedSecurityGroup: sg-d83bf4be
+    SecurityGroups: sg-d83bf4be
+    LoadBalancerHTTPSPort: '443'
+    LoadBalancerHTTPPort: '80'
+    SSLCertificateId: arn:aws:iam::834835117621:server-certificate/STAR_landerds_com.crt
+    CrossZone: true
   aws:elasticbeanstalk:environment:
     ServiceRole: aws-elasticbeanstalk-service-role
     EnvironmentType: LoadBalanced
   aws:elasticbeanstalk:healthreporting:system:
-    SystemType: basic
+    SystemType: enhanced
   aws:ec2:vpc:
     Subnets: subnet-aa2c34cf
     VPCId: vpc-976f7af2
@@ -31,7 +34,7 @@ OptionSettings:
     MinSize: '1'
     MaxSize: '4'
   aws:autoscaling:launchconfiguration:
-    SecurityGroups: sg-70f63916
+    SecurityGroups: sg-383bf45e
     IamInstanceProfile: aws-elasticbeanstalk-ec2-role
     InstanceType: t1.micro
     EC2KeyName: BuildcaveKeyPair
