@@ -1,5 +1,8 @@
-create environment with config:
+
+####create landerds test environment:
 eb create --cfg test-env-sc landerds-test
+
+
 
 
 //get logs

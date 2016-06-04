@@ -9,7 +9,7 @@
     <li class="landers">
       <a href="/landers" class="go-landers fw600">
         <span style="position: relative; top: 5px" class="fs20 icon-landers_icon"></span>
-        <span class="ml5 sidebar-title">Landing Pages</span>
+        <span class="ml5 sidebar-title">Landing Pages3</span>
       </a>
     </li>
     <li class="campaigns">
