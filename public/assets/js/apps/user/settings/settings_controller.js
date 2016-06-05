@@ -1,8 +1,8 @@
 define(["app",
-    "/assets/js/apps/user/settings/views/settings_layout_view.js",
-    "/assets/js/apps/user/settings/views/loading_view.js",
-    "/assets/js/apps/user/settings/views/aws_settings_list_view.js",
-    "/assets/js/apps/user/settings/dao/aws_model.js"
+    "assets/js/apps/user/settings/views/settings_layout_view",
+    "assets/js/apps/user/settings/views/loading_view",
+    "assets/js/apps/user/settings/views/aws_settings_list_view",
+    "assets/js/apps/user/settings/dao/aws_model"
   ],
   function(Moonlander, SettingsLayoutView, LoadingView, AwsSettingsListView, AwsModel) {
     Moonlander.module("UserApp.Settings", function(Settings, Moonlander, Backbone, Marionette, $, _) {

@@ -1,5 +1,5 @@
 define(["app",
-        "/assets/js/jobs/active_jobs_collection.js"], 
+        "assets/js/jobs/active_jobs_collection"],
 function(Moonlander, ActiveJobCollection){
 var JobsBaseGuiModel = Backbone.Model.extend({
 

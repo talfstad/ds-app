@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/apps/moonlander/landers/duplicate_lander/views/duplicate_lander_layout_view.js",
-    "/assets/js/apps/moonlander/landers/dao/lander_model.js"
+    "assets/js/apps/moonlander/landers/duplicate_lander/views/duplicate_lander_layout_view",
+    "assets/js/apps/moonlander/landers/dao/lander_model"
   ],
   function(Moonlander, DuplicateLanderLayoutView, LanderModel) {
     Moonlander.module("LandersApp.Landers.DuplicateLander", function(DuplicateLander, Moonlander, Backbone, Marionette, $, _) {

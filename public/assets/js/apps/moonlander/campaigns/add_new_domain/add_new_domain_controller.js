@@ -1,9 +1,9 @@
 define(["app",
-    "/assets/js/apps/moonlander/campaigns/add_new_domain/views/loading_view.js",
-    "/assets/js/apps/moonlander/campaigns/add_new_domain/views/domains_list_view.js",
-    "/assets/js/apps/moonlander/campaigns/add_new_domain/views/add_new_domain_layout_view.js",
-    "/assets/js/apps/moonlander/campaigns/dao/deployed_domain_model.js",
-    "/assets/js/apps/moonlander/campaigns/dao/domain_collection.js"
+    "assets/js/apps/moonlander/campaigns/add_new_domain/views/loading_view",
+    "assets/js/apps/moonlander/campaigns/add_new_domain/views/domains_list_view",
+    "assets/js/apps/moonlander/campaigns/add_new_domain/views/add_new_domain_layout_view",
+    "assets/js/apps/moonlander/campaigns/dao/deployed_domain_model",
+    "assets/js/apps/moonlander/campaigns/dao/domain_collection"
   ],
   function(Moonlander, LoadingView, DomainsListView, AddNewDomainLayoutView, DeployedDomainModel) {
     Moonlander.module("LandersApp.Landers.DeployToDomain", function(DeployToDomain, Moonlander, Backbone, Marionette, $, _) {

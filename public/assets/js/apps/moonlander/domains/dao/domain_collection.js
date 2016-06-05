@@ -1,7 +1,7 @@
 define(["app",
-    "/assets/js/apps/moonlander/domains/dao/domain_model.js",
-    "/assets/js/apps/moonlander/domains/dao/active_campaign_collection.js",
-    "/assets/js/apps/moonlander/domains/dao/url_endpoint_collection.js"
+    "assets/js/apps/moonlander/domains/dao/domain_model",
+    "assets/js/apps/moonlander/domains/dao/active_campaign_collection",
+    "assets/js/apps/moonlander/domains/dao/url_endpoint_collection"
   ],
   function(Moonlander, DomainModel, ActiveCampaignCollection, UrlEndpointCollection) {
     var DomainCollection = Backbone.Collection.extend({

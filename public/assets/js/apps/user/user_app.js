@@ -1,7 +1,7 @@
-define(["app", "/assets/js/apps/user/login/login_controller.js",
-  "/assets/js/common/login/common_login.js",
-  "/assets/js/apps/user/login/models/login_model.js",
-  "/assets/js/apps/user/settings/settings_controller.js"], 
+define(["app", "assets/js/apps/user/login/login_controller",
+  "assets/js/common/login/common_login",
+  "assets/js/apps/user/login/models/login_model",
+  "assets/js/apps/user/settings/settings_controller"], 
 function(Moonlander, LoginController, CommonLogin, LoginModel, SettingsController){
 
   Moonlander.module("UserApp", function(UserApp, Moonlander, Backbone, Marionette, $, _){

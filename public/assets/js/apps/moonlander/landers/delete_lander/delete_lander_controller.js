@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/apps/moonlander/landers/delete_lander/views/loading_view.js",
-    "/assets/js/apps/moonlander/landers/delete_lander/views/delete_lander_layout_view.js",
+    "assets/js/apps/moonlander/landers/delete_lander/views/loading_view",
+    "assets/js/apps/moonlander/landers/delete_lander/views/delete_lander_layout_view",
   ],
   function(Moonlander, LoadingView, DeleteLanderLayoutView) {
     Moonlander.module("LandersApp.Landers.DeleteLander", function(DeleteLander, Moonlander, Backbone, Marionette, $, _) {

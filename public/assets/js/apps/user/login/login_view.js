@@ -1,7 +1,7 @@
 define(["app",
     "tpl!assets/js/apps/user/login/templates/login_view.tpl",
-    "/assets/js/common/validation.js",
-    "/assets/js/common/notification.js",
+    "assets/js/common/validation",
+    "assets/js/common/notification",
     "canvasbg",
     "bootstrap"
     // "theme.utility",

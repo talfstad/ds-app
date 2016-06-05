@@ -1,7 +1,7 @@
 define(["app",
-    "/assets/js/apps/moonlander/campaigns/add_new_campaign/views/add_new_campaign_layout_view.js",
-    "/assets/js/jobs/jobs_model.js",
-    "/assets/js/apps/moonlander/campaigns/dao/campaign_model.js"
+    "assets/js/apps/moonlander/campaigns/add_new_campaign/views/add_new_campaign_layout_view",
+    "assets/js/jobs/jobs_model",
+    "assets/js/apps/moonlander/campaigns/dao/campaign_model"
   ],
   function(Moonlander, AddNewCampaignLayoutView, JobModel, CampaignModel) {
     Moonlander.module("CampaignsApp.Campaigns.AddNewCampaign", function(AddNewCampaign, Moonlander, Backbone, Marionette, $, _) {

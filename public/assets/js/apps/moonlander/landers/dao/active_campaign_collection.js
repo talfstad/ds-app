@@ -1,5 +1,5 @@
 define(["app",
-		"/assets/js/apps/moonlander/landers/dao/active_campaign_model.js"], 
+		"assets/js/apps/moonlander/landers/dao/active_campaign_model"], 
 function(Moonlander, ActiveCampaignModel) {
   
   var ActiveCampaignCollection = Backbone.Collection.extend({

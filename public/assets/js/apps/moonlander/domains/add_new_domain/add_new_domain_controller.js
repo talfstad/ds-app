@@ -1,7 +1,7 @@
 define(["app",
-    "/assets/js/apps/moonlander/domains/add_new_domain/views/add_new_domain_layout_view.js",
-    "/assets/js/jobs/jobs_model.js",
-    "/assets/js/apps/moonlander/domains/dao/domain_model.js"
+    "assets/js/apps/moonlander/domains/add_new_domain/views/add_new_domain_layout_view",
+    "assets/js/jobs/jobs_model",
+    "assets/js/apps/moonlander/domains/dao/domain_model"
   ],
   function(Moonlander, AddNewDomainLayoutView, JobModel, DomainModel) {
     Moonlander.module("DomainsApp.Domains.AddNewDomain", function(AddNewDomain, Moonlander, Backbone, Marionette, $, _) {

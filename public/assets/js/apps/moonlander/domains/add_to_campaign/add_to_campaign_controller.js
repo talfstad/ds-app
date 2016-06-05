@@ -1,9 +1,9 @@
 define(["app",
-    "/assets/js/apps/moonlander/domains/add_to_campaign/views/loading_view.js",
-    "/assets/js/apps/moonlander/domains/add_to_campaign/views/campaigns_list_view.js",
-    "/assets/js/apps/moonlander/domains/dao/active_campaign_model.js",
-    "/assets/js/apps/moonlander/domains/add_to_campaign/views/add_to_campaign_layout_view.js",
-    "/assets/js/apps/moonlander/domains/dao/campaign_collection.js"
+    "assets/js/apps/moonlander/domains/add_to_campaign/views/loading_view",
+    "assets/js/apps/moonlander/domains/add_to_campaign/views/campaigns_list_view",
+    "assets/js/apps/moonlander/domains/dao/active_campaign_model",
+    "assets/js/apps/moonlander/domains/add_to_campaign/views/add_to_campaign_layout_view",
+    "assets/js/apps/moonlander/domains/dao/campaign_collection"
   ],
   function(Moonlander, LoadingView, CampaignsListView, ActiveCampaignModel, AddToCampaignLayoutView) {
     Moonlander.module("DomainsApp.Domains.AddToCampaign", function(AddToCampaign, Moonlander, Backbone, Marionette, $, _) {

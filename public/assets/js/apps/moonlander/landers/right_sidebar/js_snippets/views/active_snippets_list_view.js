@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/views/url_endpoint_child_view.js",
-    "/assets/js/apps/moonlander/landers/right_sidebar/js_snippets/views/url_endpoint_empty_view.js"
+    "assets/js/apps/moonlander/landers/right_sidebar/js_snippets/views/url_endpoint_child_view",
+    "assets/js/apps/moonlander/landers/right_sidebar/js_snippets/views/url_endpoint_empty_view"
   ],
   function(Moonlander, listItemView, emptyView) {
 

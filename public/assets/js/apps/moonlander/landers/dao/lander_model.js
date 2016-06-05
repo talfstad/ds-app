@@ -1,9 +1,9 @@
 define(["app",
-    "/assets/js/jobs/jobs_base_gui_model.js",
-    "/assets/js/apps/moonlander/domains/dao/domain_collection.js",
-    "/assets/js/apps/moonlander/landers/dao/url_endpoint_collection.js",
-    "/assets/js/apps/moonlander/landers/dao/deployed_domain_collection.js",
-    "/assets/js/apps/moonlander/landers/dao/active_campaign_collection.js"
+    "assets/js/jobs/jobs_base_gui_model",
+    "assets/js/apps/moonlander/domains/dao/domain_collection",
+    "assets/js/apps/moonlander/landers/dao/url_endpoint_collection",
+    "assets/js/apps/moonlander/landers/dao/deployed_domain_collection",
+    "assets/js/apps/moonlander/landers/dao/active_campaign_collection"
   ],
   function(Moonlander, JobsGuiBaseModel, DomainCollection, UrlEndpointCollection,
     DeployedDomainsCollection, ActiveCampaignCollection) {

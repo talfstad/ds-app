@@ -1,5 +1,5 @@
 define(["app",
-    "/assets/js/apps/moonlander/campaigns/dao/deployed_domain_model.js"
+    "assets/js/apps/moonlander/campaigns/dao/deployed_domain_model"
   ],
   function(Moonlander, DeployedDomainModel) {
 

@@ -1,5 +1,5 @@
 define(["app",
-  "/assets/js/common/logout/logout_model.js"
+  "assets/js/common/logout/logout_model"
 ], function(Moonlander, LogoutModel) {
 
   Moonlander.logout = function(cb) {

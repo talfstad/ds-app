@@ -1,8 +1,8 @@
 define(["app",
     "tpl!assets/js/apps/user/login/templates/reset_password.tpl",
     "tpl!assets/js/apps/user/login/templates/reset_password_step2.tpl",
-    "/assets/js/common/validation.js",
-    "/assets/js/common/notification.js",
+    "assets/js/common/validation",
+    "assets/js/common/notification",
     "canvasbg"
     // "theme.utility",
     // "theme.demo",

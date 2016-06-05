@@ -35,11 +35,11 @@ define(["marionette"],
     Moonlander.on("start", function() {
 
       require([
-          "/assets/js/intercom/intercom_app.js",
-          "/assets/js/apps/user/user_app.js",
-          "/assets/js/apps/moonlander/entry_point/entry_app.js",
-          "/assets/js/live_updater/updater.js",
-          "/assets/js/jobs/jobs_app.js"
+          "assets/js/intercom/intercom_app",
+          "assets/js/apps/user/user_app",
+          "assets/js/apps/moonlander/entry_point/entry_app",
+          "assets/js/live_updater/updater",
+          "assets/js/jobs/jobs_app"
         ],
         function() {
           if (Backbone.history) {

@@ -1,6 +1,6 @@
 define(["app",
     "tpl!assets/js/apps/moonlander/landers/right_sidebar/templates/menu_buttons.tpl",
-    "/assets/js/common/notification.js"
+    "assets/js/common/notification"
   ],
   function(Moonlander, MenuButtonsTpl, Notification) {
 

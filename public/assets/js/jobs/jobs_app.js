@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/jobs/jobs_controller.js",
-    "/assets/js/common/login/common_login.js"
+    "assets/js/jobs/jobs_controller",
+    "assets/js/common/login/common_login"
   ],
   function(Moonlander, JobsController, CommonLogin) {
     Moonlander.module("JobsApp", function(JobsApp, Moonlander, Backbone, Marionette, $, _) {

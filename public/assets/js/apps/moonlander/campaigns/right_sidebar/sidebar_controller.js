@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/apps/moonlander/campaigns/right_sidebar/sidebar_layout_view.js",
-    "/assets/js/apps/moonlander/campaigns/dao/sidebar_model.js",
+    "assets/js/apps/moonlander/campaigns/right_sidebar/sidebar_layout_view",
+    "assets/js/apps/moonlander/campaigns/dao/sidebar_model",
   ],
   function(Moonlander, SidebarLayoutView, SidebarModel, NameserversView) {
     Moonlander.module("CampaignsApp.RightSidebar", function(RightSidebar, Moonlander, Backbone, Marionette, $, _) {

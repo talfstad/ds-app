@@ -2,6 +2,13 @@
   "name": "LanderDS",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "start": "node server/server.js",
+    "build": "node build_scripts/build.js",
+    "dev": "npm run build && node dest/server/server.js",
+    "test": "npm run build && cd dest && eb deploy test",
+    "prod": "npm run build && node build_scripts/deploy_prod.js"
+  },
   "dependencies": {
     "aws-sdk": "*",
     "bcrypt-nodejs": "*",
@@ -41,5 +48,11 @@
     "website-scraper": "*",
     "xoauth2": "*",
     "yuicompressor": "*"
+  },
+  "devDependencies": {
+    "exec": "^0.2.1",
+    "mkdirp": "^0.5.1",
+    "requirejs": "^2.2.0",
+    "rsync": "^0.4.0"
   }
 }

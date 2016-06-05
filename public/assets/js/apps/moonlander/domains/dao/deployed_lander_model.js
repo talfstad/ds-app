@@ -1,7 +1,7 @@
 define(["app",
-    "/assets/js/jobs/jobs_base_gui_model.js",
-    "/assets/js/apps/moonlander/domains/dao/active_campaign_collection.js",
-    "/assets/js/jobs/jobs_app.js"
+    "assets/js/jobs/jobs_base_gui_model",
+    "assets/js/apps/moonlander/domains/dao/active_campaign_collection",
+    "assets/js/jobs/jobs_app"
   ],
   function(Moonlander, JobsGuiBaseModel, ActiveCampaignCollection) {
     var DeployedLanderModel = JobsGuiBaseModel.extend({

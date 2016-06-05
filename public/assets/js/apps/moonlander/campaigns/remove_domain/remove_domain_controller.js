@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/apps/moonlander/campaigns/remove_domain/views/remove_domain_layout_view.js",
-    "/assets/js/jobs/jobs_model.js"
+    "assets/js/apps/moonlander/campaigns/remove_domain/views/remove_domain_layout_view",
+    "assets/js/jobs/jobs_model"
   ],
   function(Moonlander, RemoveDomainFromCampaignLayout, JobModel) {
     Moonlander.module("CampaignsApp.Campaigns.RemoveDomain", function(RemoveDomain, Moonlander, Backbone, Marionette, $, _) {

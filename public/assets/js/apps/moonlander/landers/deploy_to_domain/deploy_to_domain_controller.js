@@ -1,8 +1,8 @@
 define(["app",
-    "/assets/js/apps/moonlander/landers/deploy_to_domain/views/loading_view.js",
-    "/assets/js/apps/moonlander/landers/deploy_to_domain/views/domains_list_view.js",
-    "/assets/js/apps/moonlander/landers/deploy_to_domain/views/deploy_to_domain_layout_view.js",
-    "/assets/js/apps/moonlander/landers/dao/domain_collection.js"
+    "assets/js/apps/moonlander/landers/deploy_to_domain/views/loading_view",
+    "assets/js/apps/moonlander/landers/deploy_to_domain/views/domains_list_view",
+    "assets/js/apps/moonlander/landers/deploy_to_domain/views/deploy_to_domain_layout_view",
+    "assets/js/apps/moonlander/landers/dao/domain_collection"
   ],
   function(Moonlander, LoadingView, DomainsListView, DeployToDomainLayoutView) {
     Moonlander.module("LandersApp.Landers.DeployToDomain", function(DeployToDomain, Moonlander, Backbone, Marionette, $, _) {

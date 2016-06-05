@@ -1,14 +1,14 @@
 EnvironmentConfigurationMetadata:
   Description: Configuration created from the EB CLI using "eb config save".
-  DateCreated: '1464957614000'
-  DateModified: '1464957614000'
+  DateCreated: '1465066916000'
+  DateModified: '1465066916000'
 SolutionStack: 64bit Amazon Linux 2016.03 v2.1.0 running Docker 1.9.1
 OptionSettings:
   aws:elasticbeanstalk:command:
     BatchSize: '30'
     BatchSizeType: Percentage
-    DeploymentPolicy: Rolling
     IgnoreHealthCheck: true
+    DeploymentPolicy: Rolling
   aws:elb:policies:
     ConnectionDrainingEnabled: true
     ConnectionDrainingTimeout: '20'
@@ -16,13 +16,14 @@ OptionSettings:
     ManagedSecurityGroup: sg-d83bf4be
     SecurityGroups: sg-d83bf4be
     LoadBalancerHTTPSPort: '443'
+    CrossZone: true
     LoadBalancerHTTPPort: '80'
     SSLCertificateId: arn:aws:iam::834835117621:server-certificate/STAR_landerds_com.crt
-    CrossZone: true
   aws:elasticbeanstalk:environment:
     ServiceRole: aws-elasticbeanstalk-service-role
     EnvironmentType: LoadBalanced
   aws:elasticbeanstalk:healthreporting:system:
+    AWSEBHealthdGroupId: d3c98381-f798-4dc3-9a63-1a37a0978e97
     SystemType: enhanced
   aws:ec2:vpc:
     Subnets: subnet-aa2c34cf
@@ -30,15 +31,15 @@ OptionSettings:
     ELBSubnets: subnet-aa2c34cf
     ELBScheme: public
     AssociatePublicIpAddress: true
-  aws:autoscaling:asg:
-    MinSize: '1'
-    MaxSize: '4'
   aws:autoscaling:launchconfiguration:
     SecurityGroups: sg-383bf45e
+    RootVolumeSize: '10'
     IamInstanceProfile: aws-elasticbeanstalk-ec2-role
     InstanceType: t1.micro
     EC2KeyName: BuildcaveKeyPair
-    RootVolumeSize: '10'
+  aws:autoscaling:asg:
+    MinSize: '1'
+    MaxSize: '4'
   aws:autoscaling:updatepolicy:rollingupdate:
     RollingUpdateType: Health
     RollingUpdateEnabled: true

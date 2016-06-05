@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/apps/moonlander/landers/js_snippets/views/js_snippets_list_item_view.js",
-    "/assets/js/apps/moonlander/landers/js_snippets/views/js_snippets_empty_item_view.js"
+    "assets/js/apps/moonlander/landers/js_snippets/views/js_snippets_list_item_view",
+    "assets/js/apps/moonlander/landers/js_snippets/views/js_snippets_empty_item_view"
   ],
   function(Moonlander, SnippetsListItem, SnippetsEmptyView) {
 

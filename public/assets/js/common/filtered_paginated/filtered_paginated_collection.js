@@ -2,7 +2,7 @@
 //https://github.com/davidsulc/structuring-backbone-with-requirejs-and-marionette
 
 define(["app",
-    "/assets/js/common/filtered_paginated/paginated_model.js"
+    "assets/js/common/filtered_paginated/paginated_model"
   ],
   function(Moonlander, PaginatedModel) {
     Moonlander.module("Entities", function(Entities, Moonlander, Backbone, Marionette, $, _) {

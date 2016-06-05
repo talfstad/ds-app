@@ -1,6 +1,6 @@
 define(["app", 
-        "/assets/js/apps/moonlander/header/list/list_controller.js",
-        "/assets/js/common/login/common_login.js"], 
+        "assets/js/apps/moonlander/header/list/list_controller",
+        "assets/js/common/login/common_login"], 
 function(Moonlander, ListController, CommonLogin){
   Moonlander.module("HeaderApp", function(Header, Moonlander, Backbone, Marionette, $, _){
 

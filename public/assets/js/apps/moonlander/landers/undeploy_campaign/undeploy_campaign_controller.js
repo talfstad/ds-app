@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/apps/moonlander/landers/undeploy_campaign/views/undeploy_campaign_layout_view.js",
-    "/assets/js/jobs/jobs_model.js"
+    "assets/js/apps/moonlander/landers/undeploy_campaign/views/undeploy_campaign_layout_view",
+    "assets/js/jobs/jobs_model"
   ],
   function(Moonlander, UndeployLayoutView, JobModel) {
     Moonlander.module("LandersApp.Landers.List.Campaign.Undeploy", function(Undeploy, Moonlander, Backbone, Marionette, $, _) {

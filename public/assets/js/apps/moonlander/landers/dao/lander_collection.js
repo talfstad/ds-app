@@ -1,7 +1,7 @@
 define(["app",
-    "/assets/js/apps/moonlander/landers/dao/lander_model.js",
-    "/assets/js/apps/moonlander/landers/dao/active_campaign_collection.js",
-    "/assets/js/apps/moonlander/landers/dao/url_endpoint_collection.js"
+    "assets/js/apps/moonlander/landers/dao/lander_model",
+    "assets/js/apps/moonlander/landers/dao/active_campaign_collection",
+    "assets/js/apps/moonlander/landers/dao/url_endpoint_collection"
   ],
   function(Moonlander, LanderModel, ActiveCampaignCollection, UrlEndpointCollection) {
     var LanderCollection = Backbone.Collection.extend({

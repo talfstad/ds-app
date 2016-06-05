@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/apps/moonlander/landers/list/active_campaigns/views/active_campaign_row_view.js",
-    "/assets/js/apps/moonlander/landers/list/active_campaigns/views/active_campaign_empty_view.js"
+    "assets/js/apps/moonlander/landers/list/active_campaigns/views/active_campaign_row_view",
+    "assets/js/apps/moonlander/landers/list/active_campaigns/views/active_campaign_empty_view"
   ],
   function(Moonlander, ActiveCampaignRowView, EmptyView) {
 

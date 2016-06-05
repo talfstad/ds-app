@@ -1,5 +1,5 @@
 define(["app",
-    "/assets/js/common/login/login_check_model.js"
+    "assets/js/common/login/login_check_model"
   ],
   function(Moonlander, LoginCheckModel) {
     Moonlander.CommonLogin = {};

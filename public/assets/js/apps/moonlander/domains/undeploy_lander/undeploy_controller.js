@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/apps/moonlander/domains/undeploy_lander/views/undeploy_layout_view.js",
-    "/assets/js/jobs/jobs_model.js"
+    "assets/js/apps/moonlander/domains/undeploy_lander/views/undeploy_layout_view",
+    "assets/js/jobs/jobs_model"
   ],
   function(Moonlander, UndeployLayoutView, JobModel) {
     Moonlander.module("DomainsApp.Domains.List.Lander.Undeploy", function(Undeploy, Moonlander, Backbone, Marionette, $, _) {

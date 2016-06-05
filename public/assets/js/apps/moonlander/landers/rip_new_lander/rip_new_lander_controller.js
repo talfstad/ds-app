@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/apps/moonlander/landers/rip_new_lander/views/rip_new_lander_layout_view.js",
-    "/assets/js/apps/moonlander/landers/dao/lander_model.js"
+    "assets/js/apps/moonlander/landers/rip_new_lander/views/rip_new_lander_layout_view",
+    "assets/js/apps/moonlander/landers/dao/lander_model"
   ],
   function(Moonlander, RipNewLanderLayoutView, LanderModel) {
     Moonlander.module("LandersApp.Landers.RipNewLander", function(RipNewLander, Moonlander, Backbone, Marionette, $, _) {

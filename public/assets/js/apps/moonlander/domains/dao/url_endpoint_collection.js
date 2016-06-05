@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/apps/moonlander/domains/dao/url_endpoint_model.js",
-    "/assets/js/apps/moonlander/domains/dao/url_endpoint_collection.js"
+    "assets/js/apps/moonlander/domains/dao/url_endpoint_model",
+    "assets/js/apps/moonlander/domains/dao/url_endpoint_collection"
   ],
   function(Moonlander, UrlEndpointModel, UrlEndPointCollection) {
 

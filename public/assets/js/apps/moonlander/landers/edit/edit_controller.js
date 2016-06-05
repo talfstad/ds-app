@@ -1,5 +1,5 @@
 define(["app",
-        "/assets/js/apps/moonlander/landers/edit/views/edit_layout_view.js"], 
+        "assets/js/apps/moonlander/landers/edit/views/edit_layout_view"],
 function(Moonlander, EditLayoutView){
   Moonlander.module("LandersApp.Landers.Edit", function(Edit, Moonlander, Backbone, Marionette, $, _){
 

@@ -29,5 +29,8 @@
     "jstz": "1af1e80448",
     "select2": "4.0.1",
     "fancybox": "~2.1.5"
+  },
+  "devDependencies": {
+    "almond": "^0.3.2"
   }
 }

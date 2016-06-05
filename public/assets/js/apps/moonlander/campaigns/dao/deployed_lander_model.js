@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/jobs/jobs_base_gui_model.js",
-    "/assets/js/jobs/jobs_app.js"
+    "assets/js/jobs/jobs_base_gui_model",
+    "assets/js/jobs/jobs_app"
   ],
   function(Moonlander, JobsGuiBaseModel) {
     var DeployedLanderModel = JobsGuiBaseModel.extend({

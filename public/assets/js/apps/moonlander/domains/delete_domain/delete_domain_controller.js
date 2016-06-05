@@ -1,6 +1,6 @@
 define(["app",
-    "/assets/js/apps/moonlander/domains/delete_domain/views/loading_view.js",
-    "/assets/js/apps/moonlander/domains/delete_domain/views/delete_domain_layout_view.js",
+    "assets/js/apps/moonlander/domains/delete_domain/views/loading_view",
+    "assets/js/apps/moonlander/domains/delete_domain/views/delete_domain_layout_view",
   ],
   function(Moonlander, LoadingView, DeleteDomainLayoutView) {
     Moonlander.module("DomainsApp.Domains.DeleteDomain", function(DeleteDomain, Moonlander, Backbone, Marionette, $, _) {

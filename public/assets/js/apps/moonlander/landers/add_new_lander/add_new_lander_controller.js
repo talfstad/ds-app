@@ -1,7 +1,7 @@
 define(["app",
-    "/assets/js/apps/moonlander/landers/add_new_lander/views/add_new_lander_layout_view.js",
-    "/assets/js/jobs/jobs_model.js",
-    "/assets/js/apps/moonlander/landers/dao/lander_model.js"
+    "assets/js/apps/moonlander/landers/add_new_lander/views/add_new_lander_layout_view",
+    "assets/js/jobs/jobs_model",
+    "assets/js/apps/moonlander/landers/dao/lander_model"
   ],
   function(Moonlander, AddNewLanderLayoutView, JobModel, LanderModel) {
     Moonlander.module("LandersApp.Landers.AddNewLander", function(AddNewLander, Moonlander, Backbone, Marionette, $, _) {

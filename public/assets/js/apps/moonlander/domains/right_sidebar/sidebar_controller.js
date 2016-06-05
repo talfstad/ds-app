@@ -1,7 +1,7 @@
 define(["app",
-    "/assets/js/apps/moonlander/domains/right_sidebar/sidebar_layout_view.js",
-    "/assets/js/apps/moonlander/domains/dao/sidebar_model.js",
-    "/assets/js/apps/moonlander/domains/right_sidebar/nameservers_view.js"
+    "assets/js/apps/moonlander/domains/right_sidebar/sidebar_layout_view",
+    "assets/js/apps/moonlander/domains/dao/sidebar_model",
+    "assets/js/apps/moonlander/domains/right_sidebar/nameservers_view"
   ],
   function(Moonlander, SidebarLayoutView, SidebarModel, NameserversView) {
     Moonlander.module("DomainsApp.RightSidebar", function(RightSidebar, Moonlander, Backbone, Marionette, $, _) {
