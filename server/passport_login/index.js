@@ -60,6 +60,7 @@ exports.initialize = function(app, db_ref) {
   app.use(require('express-session')({
     secret: config.cookieSecret,
     resave: false,
+    cookie: { _expires: config.cookieMaxAge },
     saveUninitialized: false
   }));
 
