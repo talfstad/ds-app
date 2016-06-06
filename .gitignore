@@ -13,3 +13,5 @@ logs
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 server/staging
+built
+built.zip

@@ -5,12 +5,14 @@
   "scripts": {
     "start": "node server/server.js",
     "build": "node build_scripts/build.js",
-    "dev": "npm run build && node dest/server/server.js",
-    "test": "npm run build && cd dest && eb deploy test",
-    "prod": "npm run build && node build_scripts/deploy_prod.js"
+    "dev": "npm run build && node build_scripts/deploy_dev.js",
+    "test": "npm run build && eb deploy test",
+    "prod": "npm run build && eb deploy prod"
   },
   "dependencies": {
+    "async": "*",
     "aws-sdk": "*",
+    "forEachAsync": "*",
     "bcrypt-nodejs": "*",
     "body-parser": "*",
     "compression": "*",
@@ -52,7 +54,10 @@
   "devDependencies": {
     "exec": "^0.2.1",
     "mkdirp": "^0.5.1",
+    "node-cmd": "^1.1.1",
     "requirejs": "^2.2.0",
-    "rsync": "^0.4.0"
+    "rimraf": "^2.5.2",
+    "rsync": "^0.4.0",
+    "zip-folder": "^1.0.0"
   }
 }
