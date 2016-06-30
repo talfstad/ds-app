@@ -8,8 +8,8 @@ define(["app",
     // "theme.demo",
     // "theme.main"
   ],
-  function(Moonlander, LoginViewTpl, Validation, Notification) {
-    Moonlander.module("UserApp.Login", function(Login, Moonlander, Backbone, Marionette, $, _) {
+  function(Landerds, LoginViewTpl, Validation, Notification) {
+    Landerds.module("UserApp.Login", function(Login, Landerds, Backbone, Marionette, $, _) {
 
       Login.showLogin = Marionette.ItemView.extend({
         id: "login-container",
@@ -70,5 +70,5 @@ define(["app",
       });
     });
 
-    return Moonlander.UserApp.Login;
+    return Landerds.UserApp.Login;
   });

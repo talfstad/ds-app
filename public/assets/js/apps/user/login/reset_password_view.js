@@ -8,8 +8,8 @@ define(["app",
     // "theme.demo",
     // "theme.main"
   ],
-  function(Moonlander, ResetPasswordTpl, ResetPasswordStep2Tpl, Validation, Notification) {
-    Moonlander.module("UserApp.Login", function(Login, Moonlander, Backbone, Marionette, $, _) {
+  function(Landerds, ResetPasswordTpl, ResetPasswordStep2Tpl, Validation, Notification) {
+    Landerds.module("UserApp.Login", function(Login, Landerds, Backbone, Marionette, $, _) {
 
       Login.showForgotPassword = Marionette.ItemView.extend({
         id: "reset-password-login",
@@ -94,5 +94,5 @@ define(["app",
       });
     });
 
-    return Moonlander.UserApp.Login;
+    return Landerds.UserApp.Login;
   });

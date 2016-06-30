@@ -2,7 +2,7 @@ define(["app",
     "tpl!assets/js/common/filtered_paginated/templates/paginated_buttons.tpl",
     "assets/js/common/filtered_paginated/paginated_model"
     ],
-  function(Moonlander, paginatedButtonsTpl, Model) {
+  function(Landerds, paginatedButtonsTpl, Model) {
 
     PaginatedButtons = Marionette.ItemView.extend({
 

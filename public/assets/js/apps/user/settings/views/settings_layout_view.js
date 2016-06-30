@@ -2,9 +2,9 @@ define(["app",
     "tpl!assets/js/apps/user/settings/templates/settings_layout.tpl",
     "syphon"
   ],
-  function(Moonlander, SettingsLayoutTpl) {
+  function(Landerds, SettingsLayoutTpl) {
 
-    Moonlander.module("UserApp.Settings", function(Settings, Moonlander, Backbone, Marionette, $, _) {
+    Landerds.module("UserApp.Settings", function(Settings, Landerds, Backbone, Marionette, $, _) {
 
       Settings.Layout = Marionette.LayoutView.extend({
 
@@ -191,5 +191,5 @@ define(["app",
       });
 
     });
-    return Moonlander.UserApp.Settings.Layout;
+    return Landerds.UserApp.Settings.Layout;
   });

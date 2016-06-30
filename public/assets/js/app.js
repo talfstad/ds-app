@@ -1,43 +1,43 @@
 define(["marionette"],
   function(Marionette, LoginModel) {
 
-    var Moonlander = new Marionette.Application();
+    var Landerds = new Marionette.Application();
 
-    Moonlander.addRegions({
+    Landerds.addRegions({
       rootRegion: "#root-region"
     });
 
-    Moonlander.navigate = function(route, options) {
+    Landerds.navigate = function(route, options) {
       options || (options = {});
       Backbone.history.navigate(route, options);
     };
 
-    Moonlander.getCurrentRoute = function() {
+    Landerds.getCurrentRoute = function() {
       return Backbone.history.fragment
     };
 
-    Moonlander.startSubApp = function(appName, args) {
-      var currentApp = appName ? Moonlander.module(appName) : null;
-      if (Moonlander.currentApp === currentApp) {
+    Landerds.startSubApp = function(appName, args) {
+      var currentApp = appName ? Landerds.module(appName) : null;
+      if (Landerds.currentApp === currentApp) {
         return;
       }
 
-      if (Moonlander.currentApp) {
-        Moonlander.currentApp.stop();
+      if (Landerds.currentApp) {
+        Landerds.currentApp.stop();
       }
 
-      Moonlander.currentApp = currentApp;
+      Landerds.currentApp = currentApp;
       if (currentApp) {
         currentApp.start(args);
       }
     };
 
-    Moonlander.on("start", function() {
+    Landerds.on("start", function() {
 
       require([
           "assets/js/intercom/intercom_app",
           "assets/js/apps/user/user_app",
-          "assets/js/apps/moonlander/entry_point/entry_app",
+          "assets/js/apps/landerds/entry_point/entry_app",
           "assets/js/live_updater/updater",
           "assets/js/jobs/jobs_app"
         ],
@@ -67,11 +67,11 @@ define(["marionette"],
 
 
             //START LIVE UPDATER
-            Moonlander.updater.initialize();
+            Landerds.updater.initialize();
 
           }
         });
     });
 
-    return Moonlander;
+    return Landerds;
   });

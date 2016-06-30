@@ -1,5 +1,5 @@
 define(["app"], 
-  function(Moonlander) {
+  function(Landerds) {
   var AwsModel = Backbone.Model.extend({
     urlRoot: "/api/updateAccessKeys",
 

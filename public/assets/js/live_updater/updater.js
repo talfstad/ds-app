@@ -1,6 +1,6 @@
-define(["app"], function(Moonlander) {
+define(["app"], function(Landerds) {
 
-  Moonlander.updater = {
+  Landerds.updater = {
 
     updateCollection: null,
 
@@ -130,5 +130,5 @@ define(["app"], function(Moonlander) {
   };
 
 
-  return Moonlander.updater;
+  return Landerds.updater;
 });

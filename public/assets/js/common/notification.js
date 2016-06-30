@@ -1,5 +1,5 @@
-define(["app", "pnotify"], function(Moonlander, PNotify) {
-  Moonlander.notification = {};
+define(["app", "pnotify"], function(Landerds, PNotify) {
+  Landerds.notification = {};
 
   var stacks = {
       stack_top_right: {
@@ -50,7 +50,7 @@ define(["app", "pnotify"], function(Moonlander, PNotify) {
       },
     };
 
-    Moonlander.notification = function(title, message, style, location) {
+    Landerds.notification = function(title, message, style, location) {
       // A "stack" controls the direction and position
       // of a notification. Here we create an array w
       // with several custom stacks that we use later
@@ -98,5 +98,5 @@ define(["app", "pnotify"], function(Moonlander, PNotify) {
 
 
     };
-  return Moonlander.notification;
+  return Landerds.notification;
 });

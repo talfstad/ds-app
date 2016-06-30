@@ -1,7 +1,7 @@
 define(["app",
     "assets/js/jobs/jobs_model"
   ],
-  function(Moonlander, JobsModel) {
+  function(Landerds, JobsModel) {
 
     var ActiveJobsCollection = Backbone.Collection.extend({
       model: JobsModel,

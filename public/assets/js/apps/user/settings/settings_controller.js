@@ -4,8 +4,8 @@ define(["app",
     "assets/js/apps/user/settings/views/aws_settings_list_view",
     "assets/js/apps/user/settings/dao/aws_model"
   ],
-  function(Moonlander, SettingsLayoutView, LoadingView, AwsSettingsListView, AwsModel) {
-    Moonlander.module("UserApp.Settings", function(Settings, Moonlander, Backbone, Marionette, $, _) {
+  function(Landerds, SettingsLayoutView, LoadingView, AwsSettingsListView, AwsModel) {
+    Landerds.module("UserApp.Settings", function(Settings, Landerds, Backbone, Marionette, $, _) {
 
       Settings.Controller = {
 
@@ -18,7 +18,7 @@ define(["app",
 
           settingsLayoutView.render();
 
-          Moonlander.rootRegion.currentView.modalRegion.show(settingsLayoutView);
+          Landerds.rootRegion.currentView.modalRegion.show(settingsLayoutView);
 
 
           var loadingView = new LoadingView();
@@ -61,7 +61,7 @@ define(["app",
                     } else {
                       awsModel.set("alertUpdatedAwsKeys", true);
                       
-                      Moonlander.loginModel.set({
+                      Landerds.loginModel.set({
                         accessKeyId: awsModel.get("accessKeyId"),
                         secretAccessKey: awsModel.get("secretAccessKey")
                       });
@@ -78,7 +78,7 @@ define(["app",
 
             },
             error: function(one, two, three) {
-              Moonlander.execute("show:login");
+              Landerds.execute("show:login");
             }
           });
         }
@@ -86,5 +86,5 @@ define(["app",
       }
     });
 
-    return Moonlander.UserApp.Settings.Controller;
+    return Landerds.UserApp.Settings.Controller;
   });

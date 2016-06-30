@@ -1,19 +1,19 @@
 define(["app",
   "assets/js/common/logout/logout_model"
-], function(Moonlander, LogoutModel) {
+], function(Landerds, LogoutModel) {
 
-  Moonlander.logout = function(cb) {
+  Landerds.logout = function(cb) {
     var logoutModel = new LogoutModel();
 
     logoutModel.fetch({
       success: function(data) {
-        Moonlander.intercom.shutdown();
+        Landerds.intercom.shutdown();
         cb(data);
       },
       error: function(one, two, three) {
-        Moonlander.execute("show:login");
+        Landerds.execute("show:login");
       }
     });
   };
-  return Moonlander.logout;
+  return Landerds.logout;
 });

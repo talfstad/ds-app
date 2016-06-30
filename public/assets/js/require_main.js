@@ -84,6 +84,6 @@ requirejs.config({
   }
 });
 
-require(["app"], function(Moonlander){
-  Moonlander.start();
+require(["app"], function(Landerds){
+  Landerds.start();
 });

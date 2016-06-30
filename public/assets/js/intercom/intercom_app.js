@@ -1,6 +1,6 @@
-define(["app"], function(Moonlander) {
+define(["app"], function(Landerds) {
 
-  Moonlander.intercom = {
+  Landerds.intercom = {
 
     isLoaded: false,
 
@@ -12,9 +12,9 @@ define(["app"], function(Moonlander) {
 
         window.Intercom('boot', {
           app_id: 'wgf4en1r',
-          user_id: Moonlander.loginModel.get("user_id"),
+          user_id: Landerds.loginModel.get("user_id"),
           created_at: millis,
-          email: Moonlander.loginModel.get("username"),
+          email: Landerds.loginModel.get("username"),
           widget: {
             activator: '#IntercomDefaultWidget'
           }
@@ -35,5 +35,5 @@ define(["app"], function(Moonlander) {
   };
 
 
-  return Moonlander.intercom;
+  return Landerds.intercom;
 });

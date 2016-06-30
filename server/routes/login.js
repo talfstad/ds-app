@@ -85,7 +85,7 @@ module.exports = function(app, passport) {
           });
         } else {
           var message = "TODO: email confirm email";
-          var subject = "Confirm Moonlander e-mail address.";
+          var subject = "Confirm Lander DS e-mail address.";
           utils.sendEmail(config.adminEmail, config.adminEmailPassword, username, subject, message, function(error) {
             if (error) {
               console.log("Error sending validation email");

@@ -1,8 +1,8 @@
 define(["app",
     "moment"
   ],
-  function(Moonlander, moment) {
-    Moonlander.module("JobsApp", function(JobsApp, Moonlander, Backbone, Marionette, $, _) {
+  function(Landerds, moment) {
+    Landerds.module("JobsApp", function(JobsApp, Landerds, Backbone, Marionette, $, _) {
 
       JobsApp.Controller = {
 
@@ -33,7 +33,7 @@ define(["app",
         startJob: function(jobModel, newJobAddedCallback) {
 
           var addToUpdater = function(model) {
-            Moonlander.updater.add(model || jobModel);
+            Landerds.updater.add(model || jobModel);
           }
 
           //register it
@@ -65,5 +65,5 @@ define(["app",
       }
     });
 
-    return Moonlander.JobsApp.Controller;
+    return Landerds.JobsApp.Controller;
   });

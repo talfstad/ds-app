@@ -1,6 +1,6 @@
 define(["app",
         "assets/js/jobs/active_jobs_collection"],
-function(Moonlander, ActiveJobCollection){
+function(Landerds, ActiveJobCollection){
 var JobsBaseGuiModel = Backbone.Model.extend({
 
     initialize: function(){
@@ -20,7 +20,7 @@ var JobsBaseGuiModel = Backbone.Model.extend({
       var me = this;
       var activeJobs = this.get("activeJobs");
       activeJobs.each(function(job){
-        Moonlander.trigger("job:start", job);
+        Landerds.trigger("job:start", job);
       });
     }
     

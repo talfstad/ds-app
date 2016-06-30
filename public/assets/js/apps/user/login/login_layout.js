@@ -2,8 +2,8 @@ define(["app",
     "tpl!assets/js/apps/user/login/templates/login_layout.tpl",
   ],
 
-  function(Moonlander, loginLayoutTpl) {
-    Moonlander.module("UserApp.Login", function(Login, Moonlander, Backbone, Marionette, $, _) {
+  function(Landerds, loginLayoutTpl) {
+    Landerds.module("UserApp.Login", function(Login, Landerds, Backbone, Marionette, $, _) {
 
       Login.Layout = Marionette.LayoutView.extend({
         id: "main",
@@ -15,5 +15,5 @@ define(["app",
         }
       });
     });
-    return Moonlander.UserApp.Login.Layout;
+    return Landerds.UserApp.Login.Layout;
   });

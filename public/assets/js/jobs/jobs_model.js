@@ -1,6 +1,6 @@
 define(["app"
   ],
-  function(Moonlander) {
+  function(Landerds) {
     var JobsModel = Backbone.Model.extend({
 
       url: "/api/jobs",

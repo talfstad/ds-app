@@ -1,5 +1,5 @@
 define(["app"],
-  function(Moonlander) {
+  function(Landerds) {
 
   	var PaginatedButtonViewModel = Backbone.Model.extend({
       defaults: {

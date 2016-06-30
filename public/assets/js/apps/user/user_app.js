@@ -2,9 +2,9 @@ define(["app", "assets/js/apps/user/login/login_controller",
   "assets/js/common/login/common_login",
   "assets/js/apps/user/login/models/login_model",
   "assets/js/apps/user/settings/settings_controller"], 
-function(Moonlander, LoginController, CommonLogin, LoginModel, SettingsController){
+function(Landerds, LoginController, CommonLogin, LoginModel, SettingsController){
 
-  Moonlander.module("UserApp", function(UserApp, Moonlander, Backbone, Marionette, $, _){
+  Landerds.module("UserApp", function(UserApp, Landerds, Backbone, Marionette, $, _){
     UserApp.Router = Marionette.AppRouter.extend({
       appRoutes: {
         "login/reset": "showResetPassword",
@@ -17,7 +17,7 @@ function(Moonlander, LoginController, CommonLogin, LoginModel, SettingsControlle
     var showIfNotLoggedIn = function(action, arg){
       CommonLogin.CheckAndReturnModel(function(login){
         if(login.get("logged_in")){
-          Moonlander.trigger("start:moonlander");
+          Landerds.trigger("start:landerds");
         } else{
           //not logged in
           action(arg);
@@ -27,17 +27,17 @@ function(Moonlander, LoginController, CommonLogin, LoginModel, SettingsControlle
 
     var userAppAPI = {
       showLogin: function(d){
-        Moonlander.navigate("login");
+        Landerds.navigate("login");
         showIfNotLoggedIn(LoginController.showLogin);
       },
 
       showResetPassword: function(){
-        Moonlander.navigate("login/reset");
+        Landerds.navigate("login/reset");
         showIfNotLoggedIn(LoginController.showResetPassword);
       },
 
       showResetPasswordStep2: function(code){
-        Moonlander.navigate("login/reset/new");
+        Landerds.navigate("login/reset/new");
         showIfNotLoggedIn(LoginController.showResetPasswordStep2, code);
       },
 
@@ -46,39 +46,39 @@ function(Moonlander, LoginController, CommonLogin, LoginModel, SettingsControlle
       },
 
       logout: function(e){
-        Moonlander.navigate("logout");
+        Landerds.navigate("logout");
         LoginController.logout();
       }
     };
 
-    Moonlander.commands.setHandler("show:login", function(){
+    Landerds.commands.setHandler("show:login", function(){
       userAppAPI.showLogin();
     });
     
-    Moonlander.commands.setHandler("show:resetPassword", function(){
+    Landerds.commands.setHandler("show:resetPassword", function(){
       userAppAPI.showResetPassword();
     });
 
-    Moonlander.commands.setHandler("user:logout", function(){
+    Landerds.commands.setHandler("user:logout", function(){
       userAppAPI.logout();
     });
 
-    Moonlander.on("user:logout", function(){
+    Landerds.on("user:logout", function(){
       userAppAPI.logout();
     });
 
-    Moonlander.on("user:showSettings", function(){
+    Landerds.on("user:showSettings", function(){
       userAppAPI.showSettings();
     });
 
     
-    Moonlander.addInitializer(function(){
-      Moonlander.loginModel = new LoginModel();
+    Landerds.addInitializer(function(){
+      Landerds.loginModel = new LoginModel();
       new UserApp.Router({
         controller: userAppAPI
       });
     });
   });
 
-  return Moonlander.UserApp;
+  return Landerds.UserApp;
 });

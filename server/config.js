@@ -13,8 +13,8 @@ module.exports = {
     multipleStatements: true,
     connectionLimit: 10
   },
-  cookieSecret: 'moonlandersecretkeytobechangedlatermaybe123!#',
-  sessionSecret: 'moonlandersecretkeytobechangedlatermaybe123!#',
+  cookieSecret: 'landerdssecretkeytobechangedlatermaybe123!#',
+  sessionSecret: 'landerdssecretkeytobechangedlatermaybe123!#',
   cookieMaxAge: (1000 * 60 * 60 * 24 * 365),
   adminEmail: 'trevor@buildcave.com',
   adminEmailPassword: 'Wewillrockyou1986!',

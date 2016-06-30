@@ -2,9 +2,9 @@ define(["app",
     "tpl!assets/js/apps/user/settings/templates/aws_settings_list.tpl",
     "bootstrap.datatables"
   ],
-  function(Moonlander, SettingsListTpl) {
+  function(Landerds, SettingsListTpl) {
 
-    Moonlander.module("UserApp.Settings", function(Settings, Moonlander, Backbone, Marionette, $, _) {
+    Landerds.module("UserApp.Settings", function(Settings, Landerds, Backbone, Marionette, $, _) {
       Settings.View = Marionette.ItemView.extend({
 
         template: SettingsListTpl,
@@ -23,5 +23,5 @@ define(["app",
 
       });
     });
-    return Moonlander.UserApp.Settings.View;
+    return Landerds.UserApp.Settings.View;
   });

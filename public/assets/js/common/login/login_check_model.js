@@ -1,4 +1,4 @@
-define(["app"], function(Moonlander){
+define(["app"], function(Landerds){
   var LoginCheckModel = Backbone.Model.extend({
     urlRoot: "/api/login",
 

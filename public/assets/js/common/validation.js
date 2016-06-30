@@ -1,7 +1,7 @@
-define(["app", "backbone.validation"], function(Moonlander){
-  Moonlander.validation = {};
+define(["app", "backbone.validation"], function(Landerds){
+  Landerds.validation = {};
 
-  Moonlander.validation.bindView = function(viewToBind){
+  Landerds.validation.bindView = function(viewToBind){
 
     _.extend(Backbone.Validation.callbacks, {
       valid: function (view, attr, selector) {
@@ -22,6 +22,6 @@ define(["app", "backbone.validation"], function(Moonlander){
 
     Backbone.Validation.bind(viewToBind);
   };
-  return Moonlander.validation;
+  return Landerds.validation;
 });
 

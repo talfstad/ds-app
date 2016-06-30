@@ -4,8 +4,8 @@
 define(["app",
     "assets/js/common/filtered_paginated/paginated_model"
   ],
-  function(Moonlander, PaginatedModel) {
-    Moonlander.module("Entities", function(Entities, Moonlander, Backbone, Marionette, $, _) {
+  function(Landerds, PaginatedModel) {
+    Landerds.module("Entities", function(Entities, Landerds, Backbone, Marionette, $, _) {
       Entities.FilteredPaginatedCollection = function(options) {
         var original = options.collection;
 
@@ -389,5 +389,5 @@ define(["app",
       };
     });
 
-    return Moonlander.Entities.FilteredPaginatedCollection;
+    return Landerds.Entities.FilteredPaginatedCollection;
   });

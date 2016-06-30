@@ -1,4 +1,4 @@
-define(["app"], function(Moonlander){
+define(["app"], function(Landerds){
   var ResetPassword = {};
 
   ResetPassword.ResetPasswordModel = Backbone.Model.extend({

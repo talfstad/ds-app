@@ -2,8 +2,8 @@ define(["app",
     "assets/js/jobs/jobs_controller",
     "assets/js/common/login/common_login"
   ],
-  function(Moonlander, JobsController, CommonLogin) {
-    Moonlander.module("JobsApp", function(JobsApp, Moonlander, Backbone, Marionette, $, _) {
+  function(Landerds, JobsController, CommonLogin) {
+    Landerds.module("JobsApp", function(JobsApp, Landerds, Backbone, Marionette, $, _) {
 
       var jobsAppAPI = {
         startJob: function(jobModel, newJobAddedSuccessCallback) {
@@ -18,7 +18,7 @@ define(["app",
         }
       };
 
-      Moonlander.on("job:start", function(jobModelOrAttr) {
+      Landerds.on("job:start", function(jobModelOrAttr) {
         if (jobModelOrAttr.onSuccess) {
           //its attr which means it has a jobModel attached to it
           jobsAppAPI.startJob(jobModelOrAttr.jobModel, jobModelOrAttr.onSuccess);
@@ -27,10 +27,10 @@ define(["app",
           jobsAppAPI.startJob(jobModelOrAttr);
         }
       });
-      Moonlander.on("job:startNext", function(jobCollection) {
+      Landerds.on("job:startNext", function(jobCollection) {
         jobsAppAPI.startNextJob(jobCollection);
       });
     });
 
-    return Moonlander.JobsApp;
+    return Landerds.JobsApp;
   });
