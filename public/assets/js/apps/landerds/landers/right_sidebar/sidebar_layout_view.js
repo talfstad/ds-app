@@ -1,6 +1,9 @@
 define(["app",
     "tpl!assets/js/apps/landerds/landers/right_sidebar/templates/sidebar_landers.tpl",
-    "bootstrap"
+    "bootstrap",
+    "highcharts",
+    "highcharts-more",
+    "solid-gauge"
   ],
   function(Landerds, sidebarLanders) {
 
@@ -48,6 +51,18 @@ define(["app",
 
         },
 
+        getPageSpeedLink: function() {
+
+          // <aws_root_bucket>.s3-website-us-west-2.amazonaws.com/<user>/landers/<s3_folder_name>
+          var rootBucket = Landerds.loginModel.get("aws_root_bucket");
+          var username = Landerds.loginModel.get("username");
+          var s3FolderName = this.model.get("s3_folder_name");
+          var filename = $(".preview-link-endpoints-select option:selected").text().trim();
+          var link = "http://" + rootBucket + ".s3-website-us-west-2.amazonaws.com/" + username + "/landers/" + s3FolderName + "/" + filename;
+          var pageSpeedLink = "https://developers.google.com/speed/pagespeed/insights/?url=" + link;
+          return pageSpeedLink;
+        },
+
         //show modified alert if 
         showAlerts: function() {
 
@@ -93,8 +108,8 @@ define(["app",
             this.$el.find(".open-preview-link").addClass("disabled");
           }
 
-          this.$el.find(".tool-tip").tooltip();
-          
+
+
 
         },
 
@@ -106,6 +121,141 @@ define(["app",
             me.closeSidebar();
             $(".collapse").collapse('hide');
           });
+
+          var gaugeOptions = {
+            credits: false,
+            chart: {
+              type: 'solidgauge',
+              backgroundColor: 'transparent',
+              marginTop: 0,
+              marginLeft: 0,
+              marginRight: 0,
+              marginBottom: 20
+            },
+
+            title: null,
+
+            pane: {
+              center: ['50%', '100%'],
+              size: '140%',
+              startAngle: -90,
+              endAngle: 90,
+              background: {
+                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                innerRadius: '60%',
+                outerRadius: '100%',
+                shape: 'arc'
+              }
+            },
+
+            tooltip: {
+              enabled: false
+            },
+
+            // the value axis
+            yAxis: {
+              min: 0,
+              max: 100,
+              stops: [
+                [0.0, '#ac311d'], // red
+                [0.5, '#f8c969'], // yellow
+                [1.0, '#3f9532'] // green
+              ],
+              lineWidth: 0,
+              tickmarkPlacement: 'on',
+              minorTickInterval: null,
+              tickPixelInterval: 400,
+              tickWidth: 0,
+              title: {
+                text: null,
+                y: -25
+              },
+              labels: {
+                enabled: false,
+                x: -20,
+                y: 26
+              }
+            },
+
+            plotOptions: {
+              solidgauge: {
+                dataLabels: {
+                  y: 25,
+                  borderWidth: 0,
+                  useHTML: true
+                }
+              }
+            }
+          };
+
+          // The speed gauge
+          $('#original-lander-pagespeed').highcharts(Highcharts.merge(gaugeOptions, {
+            credits: {
+              enabled: false
+            },
+
+            series: [{
+              data: [33],
+              dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:25px"><a href="'+ encodeURI(me.getPageSpeedLink()) +'" target="_blank">{y}</span></a><br/>' +
+                  '<span style="font-size:10px;color:rgb(102,102,102)">Original</span></div>'
+              }
+            }]
+
+          }));
+
+          // The RPM gauge
+          $('#optimized-lander-pagespeed').highcharts(Highcharts.merge(gaugeOptions, {
+           
+            credits: {
+              enabled: false
+            },
+
+            series: [{
+              data: [90],
+              dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:25px;"><a href="#"">{y}</a></span><br/>' +
+                  '<span style="font-size:10px;color:rgb(102,102,102)">Optimized</span></div>'
+              }
+              
+            }]
+
+          }));
+
+          // Bring life to the dials
+          // setTimeout(function() {
+          //   // Speed
+          //   var chart = $('#container-speed').highcharts(),
+          //     point,
+          //     newVal,
+          //     inc;
+
+          //   if (chart) {
+          //     point = chart.series[0].points[0];
+          //     inc = Math.round((Math.random() - 0.5) * 100);
+          //     newVal = point.y + inc;
+
+          //     if (newVal < 0 || newVal > 200) {
+          //       newVal = point.y - inc;
+          //     }
+
+          //     point.update(newVal);
+          //   }
+
+          //   // RPM
+          //   chart = $('#container-rpm').highcharts();
+          //   if (chart) {
+          //     point = chart.series[0].points[0];
+          //     inc = Math.random() - 0.5;
+          //     newVal = point.y + inc;
+
+          //     if (newVal < 0 || newVal > 5) {
+          //       newVal = point.y - inc;
+          //     }
+
+          //     point.update(newVal);
+          //   }
+          // }, 2000);
         },
 
         openSidebar: function(model) {

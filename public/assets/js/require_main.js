@@ -27,9 +27,21 @@ requirejs.config({
     jstz: "vendor/bower_installed/jstz/jstz",
     "moment-timezone": "vendor/bower_installed/moment-timezone/builds/moment-timezone-with-data-2010-2020",
     "select2": "vendor/bower_installed/select2/dist/js/select2.full",
-    "fancybox": "vendor/bower_installed/fancybox/source/jquery.fancybox"
+    "fancybox": "vendor/bower_installed/fancybox/source/jquery.fancybox",
+    highcharts: "vendor/bower_installed/highcharts/highcharts",
+    "highcharts-more": "vendor/bower_installed/highcharts/highcharts-more",
+    "solid-gauge": "vendor/bower_installed/highcharts/modules/solid-gauge"
   },
   shim: {
+    highcharts: {
+      deps: ['jquery']
+    },
+    "highcharts-more": {
+      deps: ['highcharts']
+    },
+    "solid-gauge": {
+      deps: ['highcharts-more']
+    },
     "select2": {
       deps: ['jquery']
     },

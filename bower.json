@@ -28,7 +28,8 @@
     "bootstrap-fileinput": "4.2.8",
     "jstz": "1af1e80448",
     "select2": "4.0.1",
-    "fancybox": "~2.1.5"
+    "fancybox": "~2.1.5",
+    "highcharts": "^4.2.5"
   },
   "devDependencies": {
     "almond": "^0.3.2"

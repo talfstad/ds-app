@@ -128,7 +128,7 @@ define(["app",
             var landersColumnWidth = me.$el.find(".table-lander-name").width();
             var newLanderLinkMargin = landersColumnWidth - 70;
             if (newLanderLinkMargin > 0) {
-              me.$el.find(".deployed-landers-header").css("margin-left", newLanderLinkMargin);
+              me.$el.find(".deployed-domain-links-header").css("margin-left", newLanderLinkMargin);
               me.$el.find(".deployed-landers-header").show();
             } else {
               me.$el.find(".deployed-landers-header").hide();

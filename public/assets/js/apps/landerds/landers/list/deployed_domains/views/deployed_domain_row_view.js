@@ -30,7 +30,7 @@ define(["app",
         getCurrentLink: function() {
           //return the combination of selects
           var endpointVal = this.$el.find(".lander-links-select").val();
-          return "http://" + endpointVal;
+          return "http://" + this.model.get("domain") + "/" + this.model.get("deployment_folder_name") + "/" + endpointVal;
         },
 
         openLanderLink: function() {

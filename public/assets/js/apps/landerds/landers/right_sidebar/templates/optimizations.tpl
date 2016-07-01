@@ -20,29 +20,6 @@
 </table> -->
 
 
-<h5 class="title-divider mt20 mb0"><span style="">Page Speed Scores</span>
-                <i title="Lander must be deployed to show optimized page speed" style="font-size: 18px !important; float: right;" class="fa fa-warning tool-tip text-warning fs12 pl5 pr5"></i>
-              </h5>
-<table class="optimizations-table table">
-  <tr>
-    <td>
-      <a href="#">
-      <i style="font-size: 18px !important; position: relative; top: 2px" class="fa fa-file-code-o text-default fs12 pr5"></i></a>
-    <span style="cursor: pointer">index.html</span></td>
-    <td align="right" style="width: 30px;">
-        <span class="badge bg-default">32/100</span>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <a href="#">
-      <i style="font-size: 18px !important; position: relative; top: 2px" class="fa fa-file-code-o text-default fs12 pr5"></i></a>
-    <span style="cursor: pointer">safe.html</span></td>
-    <td align="right" style="width: 30px;">
-        <span class="badge bg-default">32/100</span>
-    </td>
-  </tr>
-</table>
 <h5 class="title-divider mt20 mb10"><span style="">Deployment Folder Name</span>
               <a style="float: right" href="#">
                 <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>

@@ -15,7 +15,7 @@
         
         <% _.each(urlEndpointsJSON, function(endpoint) { %>
         
-        <option><%= domain %>/<%= deployment_folder_name %>/<%= endpoint.filename %></option>
+        <option><%= endpoint.filename %></option>
 
         <% }); %>
       
@@ -30,6 +30,14 @@
             <a style="margin-left: 15px;" class="copy-clipboard" href="#">
               <span class="fa fa-clipboard"></span>
             </a>
+
+            <span style="margin-left: 50px;">
+              <span style="margin-right: 5px">2.0 sec</span>
+              <a class="refresh" href="#">
+                <span class="fa fa-refresh" style="padding-right: 1px; padding-left: 2px"></span>
+              </a>
+            </span>
+
           </div>
 
       <% } %>
@@ -38,6 +46,7 @@
 
         <% if(deploy_status === "deployed") { %>
         
+          
         <% if(hasActiveCampaigns) { %>
 
           <a class="campaign-tab-link" href="#">
@@ -54,6 +63,8 @@
           </a>
 
           <% } %>
+
+         
 
         <% } else { %>
         
