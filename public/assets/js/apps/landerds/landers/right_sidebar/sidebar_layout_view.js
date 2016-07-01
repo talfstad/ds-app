@@ -157,9 +157,11 @@ define(["app",
               min: 0,
               max: 100,
               stops: [
-                [0.0, '#ac311d'], // red
-                [0.5, '#f8c969'], // yellow
-                [1.0, '#3f9532'] // green
+                [0.0, '#bd422e'], // red
+                [0.69, '#ac311d'], // red
+                [0.7, '#f8c969'], // yellow
+                [0.89, '#f8c969'], // yellow
+                [0.9, '#3f9532'] // green
               ],
               lineWidth: 0,
               tickmarkPlacement: 'on',
@@ -195,7 +197,7 @@ define(["app",
             },
 
             series: [{
-              data: [33],
+              data: [13],
               dataLabels: {
                 format: '<div style="text-align:center"><span style="font-size:25px"><a href="'+ encodeURI(me.getPageSpeedLink()) +'" target="_blank">{y}</span></a><br/>' +
                   '<span style="font-size:10px;color:rgb(102,102,102)">Original</span></div>'
@@ -212,7 +214,7 @@ define(["app",
             },
 
             series: [{
-              data: [90],
+              data: [80],
               dataLabels: {
                 format: '<div style="text-align:center"><span style="font-size:25px;"><a href="#"">{y}</a></span><br/>' +
                   '<span style="font-size:10px;color:rgb(102,102,102)">Optimized</span></div>'
@@ -221,41 +223,6 @@ define(["app",
             }]
 
           }));
-
-          // Bring life to the dials
-          // setTimeout(function() {
-          //   // Speed
-          //   var chart = $('#container-speed').highcharts(),
-          //     point,
-          //     newVal,
-          //     inc;
-
-          //   if (chart) {
-          //     point = chart.series[0].points[0];
-          //     inc = Math.round((Math.random() - 0.5) * 100);
-          //     newVal = point.y + inc;
-
-          //     if (newVal < 0 || newVal > 200) {
-          //       newVal = point.y - inc;
-          //     }
-
-          //     point.update(newVal);
-          //   }
-
-          //   // RPM
-          //   chart = $('#container-rpm').highcharts();
-          //   if (chart) {
-          //     point = chart.series[0].points[0];
-          //     inc = Math.random() - 0.5;
-          //     newVal = point.y + inc;
-
-          //     if (newVal < 0 || newVal > 5) {
-          //       newVal = point.y - inc;
-          //     }
-
-          //     point.update(newVal);
-          //   }
-          // }, 2000);
         },
 
         openSidebar: function(model) {

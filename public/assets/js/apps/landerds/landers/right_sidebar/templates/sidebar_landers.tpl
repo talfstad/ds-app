@@ -38,12 +38,6 @@
         <div id="optimized-lander-pagespeed" style="width: 125px; height: 100px; float: left"></div>
       </div>
 
-
-    </div>
-
-    
-    <div class="admin-form panel-body pn pb25" style="border-top: none; font-size: 13px">
-      
       <h5 class="title-divider mt20 mb0">
               Active Javascript Snippets 
               
@@ -52,10 +46,16 @@
               </a>
 
             </h5>
-      <div id="jssnippets-tree-container" class="snippets-container fancytree-radio" style="margin-bottom: 80px;">
+      <div id="jssnippets-tree-container" class="snippets-container fancytree-radio" style="margin-bottom: 20px;">
         <div id="jssnippets-tree" class="fancytree-radio ui-fancytree-source">
         </div>
       </div>
+    </div>
+
+    
+    <div class="admin-form panel-body pn pb25" style="border-top: none; font-size: 13px">
+      
+      
       <div class="name-and-optimizations-region">
       </div>
       <h5 class="title-divider mt20 mb0">
