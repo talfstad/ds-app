@@ -14,7 +14,7 @@ module.exports = function(db) {
         } else {
           //join wp_users and users on the user_id to get the auth token with the id
           //if row is auto created when wp_users row created then we dont need a join
-          connection.query("SELECT user_id as id,approved,last_login,aws_root_bucket,aws_access_key_id,aws_secret_access_key,auth_token FROM user_settings WHERE user_id = ? AND auth_token = ?;", [id, auth_token], function(err, userDocs) {
+          connection.query("SELECT a.user_id as id,a.approved,a.last_login,a.aws_root_bucket,a.aws_access_key_id,a.aws_secret_access_key,a.auth_token,b.user_email as user FROM user_settings a JOIN wp_users b ON (a.user_id = b.id) WHERE a.user_id = ? AND a.auth_token = ?;", [id, auth_token], function(err, userDocs) {
             if (err) {
               console.log(err);
               cb("Error looking up user id", null);
@@ -72,14 +72,14 @@ module.exports = function(db) {
       });
     },
 
-    findByUsername: function(username, password, cb) {
+    findByUsernamePaswordApproved: function(username, password, cb) {
 
       db.getConnection(function(err, connection) {
         if (err) {
           cb(err, null);
 
         } else {
-          connection.query("SELECT ID as id, user_pass, user_email, user_nicename FROM wp_users WHERE user_email = ?;", [username], function(err, userDocs) {
+          connection.query("SELECT a.ID as id, a.user_pass, a.user_email FROM wp_users a JOIN user_settings b ON (a.ID=b.user_id) WHERE a.user_email = ? AND b.approved = ?;", [username, 1], function(err, userDocs) {
             if (err) {
               cb({ code: "ErrorFindingUserDb" }, null);
             } else {
