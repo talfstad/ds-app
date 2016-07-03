@@ -9,7 +9,7 @@ module.exports = function(db) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("UPDATE users SET aws_access_key_id = ?, aws_secret_access_key = ? WHERE id = ?", [accessKeyId, secretAccessKey, user.id],
+          connection.query("UPDATE user_settings SET aws_access_key_id = ?, aws_secret_access_key = ? WHERE user_id = ?", [accessKeyId, secretAccessKey, user.id],
             function(err, docs) {
               if (err) {
                 console.log(err);
@@ -33,7 +33,7 @@ module.exports = function(db) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("UPDATE users SET aws_access_key_id = ?, aws_secret_access_key = ?, aws_root_bucket = ? WHERE id = ?", [accessKeyId, secretAccessKey, bucketName, user.id],
+          connection.query("UPDATE user_settings SET aws_access_key_id = ?, aws_secret_access_key = ?, aws_root_bucket = ? WHERE user_id = ?", [accessKeyId, secretAccessKey, bucketName, user.id],
             function(err, docs) {
               if (err) {
                 console.log(err);
@@ -56,7 +56,7 @@ module.exports = function(db) {
         if (err) {
           callback(err);
         } else {
-          connection.query("SELECT aws_access_key_id, aws_secret_access_key, aws_root_bucket FROM users WHERE id=?;", [user_id], function(err, docs) {
+          connection.query("SELECT aws_access_key_id, aws_secret_access_key, aws_root_bucket FROM user_settings WHERE user_id = ?;", [user_id], function(err, docs) {
 
             if (docs[0]) {
               callback(false, docs[0]);
@@ -79,7 +79,7 @@ module.exports = function(db) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("SELECT aws_access_key_id, aws_secret_access_key FROM users WHERE id=?;", [user_id], function(err, docs) {
+          connection.query("SELECT aws_access_key_id, aws_secret_access_key FROM user_settings WHERE user_id = ?;", [user_id], function(err, docs) {
 
             if (docs[0]) {
               callback(false, docs[0]);

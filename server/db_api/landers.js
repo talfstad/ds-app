@@ -127,13 +127,12 @@ module.exports = function(db) {
 
       var user_id = user.id;
       var lander_name = duplicateLanderAttributes.name;
-      var optimized = duplicateLanderAttributes.optimized;
 
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("CALL save_new_duplicate_lander(?, ?, ?, ?, ?, ?)", [lander_name, user_id, optimized],
+          connection.query("CALL save_new_duplicate_lander(?, ?)", [lander_name, user_id],
             function(err, docs) {
               if (err) {
                 console.log(err);

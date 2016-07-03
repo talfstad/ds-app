@@ -42,7 +42,7 @@
                   <span style="width: 20px">#</span>
                   <span style="margin-left: 15px">Deployed Domains</span>
                   <span class="deployed-landers-header deployed-domain-links-header">Domain Links</span>
-                  <span class="deployed-landers-header " style="margin-left: 315px">Current Load Time</span>
+                  <span class="deployed-landers-header " style="margin-left: 315px">Load Time</span>
                 </div>
                 <div style="float: right;" class="deploy-to-new-domain-region clearfix">
                   
