@@ -130,7 +130,7 @@ module.exports = function(db) {
             if (!err) {
               var access_key_id = null;
               var secret_access_key = null;
-              var uid = null;
+              var aws_root_bucket = null;
               if (docs[0]) {
 
                 if (docs[0].aws_access_key_id) {

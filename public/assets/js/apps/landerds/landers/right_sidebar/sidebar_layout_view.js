@@ -24,12 +24,11 @@ define(["app",
         className: "nano affix",
 
         events: {
-          // "click button.lander-edit": "showEditLander",
+          "click button.lander-edit": "showEditLander",
           "click .delete-lander-button": "showDeleteLanderModal",
           "click .duplicate-lander-button": "showDuplicateLanderModal",
           "click .add-snippet-button": "showJsSnippetsModal",
-          "click .open-preview-link": "openPreviewLink",
-          // "click .snippet-help-button": "showEmptyViewJsSnippetsModal"
+          "click .open-preview-link": "openPreviewLink"
         },
 
         modelEvents: {

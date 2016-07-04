@@ -46,7 +46,7 @@ module.exports = function(app, passport) {
                 });
               } else {
                 //successful return
-                res.json({});
+                res.json({"aws_root_bucket": newRootBucket});
               }
             });
           }

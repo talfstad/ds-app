@@ -63,7 +63,8 @@ define(["app",
                       
                       Landerds.loginModel.set({
                         accessKeyId: awsModel.get("accessKeyId"),
-                        secretAccessKey: awsModel.get("secretAccessKey")
+                        secretAccessKey: awsModel.get("secretAccessKey"),
+                        aws_root_bucket: serverResponse.aws_root_bucket
                       });
 
                     }

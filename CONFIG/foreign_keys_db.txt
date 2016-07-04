@@ -1,0 +1,46 @@
+active_snippets:
+	- FK_active_snippets_url_endpoint_id_endpoints_id
+	- FK_active_snippets_user_id_wp_users_ID
+
+campaigns:
+	- FK_campaigns_user_id_wp_users_ID
+
+campaigns_with_domains:
+	- FK_campaigns_with_domains_campaign_id_campaigns_id
+	- FK_campaigns_with_domains_user_id_wp_users_ID
+	- FK_campaigns_with_domains_domain_id_domains_id
+
+deployed_landers:
+	- FK_deployed_landers_lander_id_landers_id
+	- FK_deployed_landers_user_id_wp_users_ID
+
+domains:
+	- FK_domains_user_id_wp_users_ID
+
+jobs:
+	- FK_jobs_user_id_wp_users_ID
+
+landers:
+	- FK_landers_user_id_wp_users_ID
+
+landers_with_campaigns:
+	- FK_landers_with_campaigns_campaign_id_campaigns_id
+	- FK_landers_with_campaigns_lander_id_landers_id
+	- FK_landers_with_campaigns_user_id_wp_users_ID
+
+snippets:
+	- FK_snippets_user_id_wp_users_ID
+
+url_endpoints:
+	- FK_url_endpoints_lander_id_landers_id
+	- FK_url_endpoints_user_id_wp_users_ID
+
+user_settings:
+	- FK_user_settings_user_id_wp_users_ID
+
+
+
+TDOO
+- update aws creds and rip doesnt preview correct (root bucket not there)
+- rip modal needs to rip when enter is pressed
+- drag and drop lander works to add lander 
