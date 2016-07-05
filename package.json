@@ -27,6 +27,8 @@
     "hbs": "*",
     "html-minifier": "*",
     "imagemin": "*",
+    "imagemin-mozjpeg": "^6.0.0",
+    "imagemin-pngquant": "^5.0.0",
     "method-override": "*",
     "mkdirp": "*",
     "moment": "*",

@@ -30,7 +30,7 @@ rimraf('./built', function(err) {
         var rsync = new Rsync()
           .source('.')
           .destination('built')
-          .exclude(['built', 'built.zip', '.ebignore', '.elasticbeanstalk', 'CONFIG', '.jsbeautifyrc', '.gitignore', '.git', '.gitattributes', 'build_scripts'])
+          .exclude(['built', 'built.zip', '.ebignore', 'server/staging', '.elasticbeanstalk', 'CONFIG', '.jsbeautifyrc', '.gitignore', '.git', '.gitattributes', 'build_scripts'])
           .flags('a') //archive mode
           .execute(function(err, stdout, stderr) {
 

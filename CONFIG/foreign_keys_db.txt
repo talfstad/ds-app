@@ -75,6 +75,10 @@ new requirements:
 
 
 
+---- optimizations comes to db_api level for landers
+
+
+
 
 
 

@@ -6,7 +6,6 @@ module.exports = function(db) {
   var AWS = require('aws-sdk');
   var uuid = require('uuid');
   var mkdirp = require('mkdirp');
-  var rimraf = require('rimraf');
   var config = require('../../config');
 
   //create client
