@@ -35,7 +35,7 @@ app.use(bodyParser.urlencoded({
 })); // parse application/x-www-form-urlencoded
 app.use(methodOverride()); // must come after bodyParser
 
-app.use(multer({dest: './uploads'}).any());
+app.use(multer({dest: './staging'}).any());
 
 app.set('view engine', 'html');
 app.set('views', __dirname + '/');

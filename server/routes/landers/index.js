@@ -8,10 +8,11 @@ module.exports = function(app, passport) {
 
   var ripLander = require("./rip_lander")(app, passport);
   var copyLander = require("./copy_lander")(app, passport);
+  var addLander = require("./add_lander")(app, passport);
 
   app.get('/api/landers', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
-    
+
     db.landers.getAll(user, function(err, rows) {
       if (err) {
         res.json({ error: err });
@@ -27,12 +28,13 @@ module.exports = function(app, passport) {
     var landerData = req.body;
     var source = landerData.source;
 
-    if (source == "duplicate") {
-      db.landers.addNewDuplicateLander(user, duplicateLanderData, function(duplicateLanderWithIdAttributes) {
+    if (source == "add") {
+      landerData.files = req.files;
 
-        res.json(duplicateLanderWithIdAttributes);
-
+      addLander.new(user, landerData, function(err, returnData) {
+        res.json(returnData);
       });
+
     } else if (source == "rip") {
 
       ripLander.new(user, landerData, function(err, returnData) {

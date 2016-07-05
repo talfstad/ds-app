@@ -22,6 +22,7 @@
     "deferred": "*",
     "express": "*",
     "express-session": "*",
+    "extract-zip": "^1.5.0",
     "find": "*",
     "hbs": "*",
     "html-minifier": "*",

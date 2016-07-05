@@ -11,35 +11,25 @@ define(["app",
         showAddNewLanderModal: function() {
 
           //make new lander model for it
-          var jobModel = new JobModel({
-            action: "addNewLander"
+          var landerModel = new LanderModel({
+            source: 'add'
           });
 
           var addNewLanderLayout = new AddNewLanderLayoutView({
-            model: jobModel
+            model: landerModel
           });
 
           addNewLanderLayout.on("fileUploadComplete", function(data) {
-            var jobAttributes = data.response;
-            //// server returns job id, lander id
-            //2. create new jobmodel with jobid and action and lander id
-            var jobModel = new JobModel(jobAttributes);
-            //3. create a new lander model
-            var landerModel = new LanderModel({
-              id: jobAttributes.lander_id,
-              name: jobAttributes.landerName,
-              created_on: jobAttributes.created_on,
-              deploy_status: "initializing"
-            });
-            //4. add jobmodel to lander model
-            var activeJobs = landerModel.get("activeJobs");
-            activeJobs.add(jobModel);
-            Landerds.trigger("job:start", jobModel);
+            
+            //need to populate the landerModel with s3_folder_name/created_on
+            // landerModel.set({
+            //   s3_folder_name: data.s3_folder_name,
+            //   created_on: data.created_on
+            // });
 
-            //5. trigger add lander model on the landers collection
             Landerds.trigger("landers:list:addLander", landerModel);
-
             addNewLanderLayout.onClose();
+
           });
 
 

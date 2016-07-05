@@ -2,6 +2,8 @@ module.exports = function(db) {
 
   return {
 
+    common: require("./common")(db),
+
     //save optimzations and modified
     updateAllLanderData: function(user, attr, callback) {
 
@@ -32,7 +34,6 @@ module.exports = function(db) {
                   if (err) {
                     callback(err);
                   } else {
-                    console.log("dep: " + JSON.stringify(deployment_folder_name_docs));
                     var currentDeploymentFolder = deployment_folder_name_docs[0].deployment_folder_name;
                     connection.query("UPDATE landers SET old_deployment_folder_name = ? WHERE user_id = ? AND id = ?", [currentDeploymentFolder, user_id, lander_id],
                       function(err, docs) {
@@ -509,7 +510,7 @@ module.exports = function(db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT id,name,optimized,modified,s3_folder_name,deploy_root,deployment_folder_name,old_deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
+            connection.query("SELECT id,name,modified,s3_folder_name,deploy_root,deployment_folder_name,old_deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
               if (err) {
                 callback(err);
               } else {
@@ -547,7 +548,7 @@ module.exports = function(db) {
               }
             }
 
-            var queryString = "SELECT id,name,optimized,modified,s3_folder_name,deploy_root,deployment_folder_name,old_deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ? " + queryIds;
+            var queryString = "SELECT id,name,modified,s3_folder_name,deploy_root,deployment_folder_name,old_deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ? " + queryIds;
 
             connection.query(queryString, [user_id], function(err, dblanders) {
               if (err) {

@@ -41,9 +41,57 @@ user_settings:
 
 
 TDOO
-- drag and drop lander works to add lander 
-	- setting the lander file manually based on what the input is to C:\fakepath\<landerzip> and then validating that
-	- does that work .. ?
 
 
-don't want addnewLander to be a job!
+- createDirectory
+- push original
+
+- optimize whats in staging (certain optimizations need to optimize each endpoint)
+- createDirectory for optimized
+- push optimized
+- pagespeed test each endpoint
+- save endpoints, pagespeed (in url_endpoints) & lander to db
+- return response success
+
+
+rip:
+rips to staging
+
+add new lander:
+upload to staging
+
+common:
+createDirectory_original
+createDirectory_optimized
+optimize each endpoint
+pushes it to the directory
+pagescore test each endpoint
+save to db
+
+
+new requirements:
+1. push both optimized and regular
+2. keep track of pagescores in db
+
+
+
+
+
+
+
+edit:
+
+save endpoint/js/css ->
+
+updated code goes to server, pull down lander from s3, replace the file in staging, optimize full lander, push to directory, pagespeed test each endpoint
+
+
+
+
+
+
+if only 1 folder on unzip and that's all there is (excluding . files), then move the contents of it to the root
+
+
+
+

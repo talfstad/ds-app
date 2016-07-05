@@ -55,12 +55,13 @@ define(["app",
 
 
           //weird fileupload bug for drag and drop. set the path manually
-          newLanderData.landerFile = newLanderData.landerFile = 'C:\\fakepath\\' + $('.file-caption-name').attr('title');
+          var filename = $('.file-caption-name').attr('title');
+          newLanderData.landerFile = filename;
 
           //just a very small amount of validation, all really done on server
-          if (newLanderData.landerName != "" && newLanderData.landerFile != "") {
+          if (newLanderData.landerName != "" && filename !== undefined) {
 
-            this.model.set("landerName", newLanderData.landerName);
+            this.model.set("name", newLanderData.landerName);
 
             //trigger upload. server adds the lander to db, registers active job, and starts job
             $("#new-lander-file").fileinput("upload");
@@ -104,7 +105,7 @@ define(["app",
             layoutTemplates: {
               actionUpload: '' // get rid of initial upload button action in preview
             },
-            uploadUrl: "/api/jobs",
+            uploadUrl: "/api/landers",
             maxFileCount: 1
           });
 
