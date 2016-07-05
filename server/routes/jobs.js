@@ -23,9 +23,16 @@ module.exports = function(app, passport) {
     };
     var registerError = function() {};
 
+
+
+    console.log("TREVO: " + JSON.stringify(req.body));
+    console.log("TRE3VO: " + JSON.stringify(req.files));
+
+
     //special logic for add lander
     if (jobModelAttributes.action === "addNewLander") {
       jobModelAttributes.landerFile = req.files['landerFile'];
+
 
       //need to save the lander first since its new to get an id before triggering register job
       db.landers.saveNewLander(user, jobModelAttributes.landerName, function(err, landerAttributes) {

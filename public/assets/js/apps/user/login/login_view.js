@@ -4,9 +4,6 @@ define(["app",
     "assets/js/common/notification",
     "canvasbg",
     "bootstrap"
-    // "theme.utility",
-    // "theme.demo",
-    // "theme.main"
   ],
   function(Landerds, LoginViewTpl, Validation, Notification) {
     Landerds.module("UserApp.Login", function(Login, Landerds, Backbone, Marionette, $, _) {

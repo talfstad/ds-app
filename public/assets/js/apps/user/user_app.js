@@ -7,8 +7,6 @@ function(Landerds, LoginController, CommonLogin, LoginModel, SettingsController)
   Landerds.module("UserApp", function(UserApp, Landerds, Backbone, Marionette, $, _){
     UserApp.Router = Marionette.AppRouter.extend({
       appRoutes: {
-        "login/reset": "showResetPassword",
-        "login/reset/:code": "showResetPasswordStep2",
         "login": "showLogin",
         "logout": "logout"
       }
@@ -31,16 +29,6 @@ function(Landerds, LoginController, CommonLogin, LoginModel, SettingsController)
         showIfNotLoggedIn(LoginController.showLogin);
       },
 
-      showResetPassword: function(){
-        Landerds.navigate("login/reset");
-        showIfNotLoggedIn(LoginController.showResetPassword);
-      },
-
-      showResetPasswordStep2: function(code){
-        Landerds.navigate("login/reset/new");
-        showIfNotLoggedIn(LoginController.showResetPasswordStep2, code);
-      },
-
       showSettings: function(){
         SettingsController.showSettingsModal();
       },
@@ -55,10 +43,7 @@ function(Landerds, LoginController, CommonLogin, LoginModel, SettingsController)
       userAppAPI.showLogin();
     });
     
-    Landerds.commands.setHandler("show:resetPassword", function(){
-      userAppAPI.showResetPassword();
-    });
-
+    
     Landerds.commands.setHandler("user:logout", function(){
       userAppAPI.logout();
     });

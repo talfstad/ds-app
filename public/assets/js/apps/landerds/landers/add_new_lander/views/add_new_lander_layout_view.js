@@ -53,6 +53,10 @@ define(["app",
             me.trigger("fileUploadComplete", data);
           });
 
+
+          //weird fileupload bug for drag and drop. set the path manually
+          newLanderData.landerFile = newLanderData.landerFile = 'C:\\fakepath\\' + $('.file-caption-name').attr('title');
+
           //just a very small amount of validation, all really done on server
           if (newLanderData.landerName != "" && newLanderData.landerFile != "") {
 

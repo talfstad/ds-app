@@ -41,6 +41,9 @@ user_settings:
 
 
 TDOO
-- update aws creds and rip doesnt preview correct (root bucket not there)
-- rip modal needs to rip when enter is pressed
 - drag and drop lander works to add lander 
+	- setting the lander file manually based on what the input is to C:\fakepath\<landerzip> and then validating that
+	- does that work .. ?
+
+
+don't want addnewLander to be a job!

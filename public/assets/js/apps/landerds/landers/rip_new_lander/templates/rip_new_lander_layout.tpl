@@ -48,7 +48,7 @@
     </div>
     <div class="modal-footer">
       <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Close</button>
-      <button type="button" class="rip-new-lander-confirm btn btn-primary btn-clipboard">Rip New Lander</button>
+      <button type="submit" class="rip-new-lander-confirm btn btn-primary btn-clipboard">Rip New Lander</button>
     </div>
   </div>
 </div>
