@@ -23,7 +23,8 @@ module.exports = function(db) {
     },
 
     deleteStagingArea: function(stagingPath, callback) {
-      rimraf(stagingPath, function() {
+      console.log('deleting staging area: ' + stagingPath)
+      rimraf(stagingPath + "*", function() {
         callback(false);
       });
     }

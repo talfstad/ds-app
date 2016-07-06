@@ -22,10 +22,12 @@ define(["app",
           addNewLanderLayout.on("fileUploadComplete", function(data) {
             
             //need to populate the landerModel with s3_folder_name/created_on
-            // landerModel.set({
-            //   s3_folder_name: data.s3_folder_name,
-            //   created_on: data.created_on
-            // });
+            landerModel.set({
+              id: data.response.id,
+              s3_folder_name: data.response.s3_folder_name,
+              deployment_folder_name: data.response.s3_folder_name,
+              created_on: data.response.created_on
+            });
 
             Landerds.trigger("landers:list:addLander", landerModel);
             addNewLanderLayout.onClose();

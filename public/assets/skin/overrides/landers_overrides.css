@@ -475,3 +475,7 @@ tr.warning input[type=select] {
 .mt60 {
     margin-top: 60px !important;
 }
+
+.file-caption {
+    padding-bottom: 29px;
+}

@@ -156,8 +156,8 @@ module.exports = function(db) {
     //lossless image compression
     find.file(/\.jpg$|\.png$/, staging_path, function(images) {
 
-      console.log("images: " + JSON.stringify(images));
-      console.log("staging_path: " + staging_path + "/images");
+      // console.log("images: " + JSON.stringify(images));
+      // console.log("staging_path: " + staging_path + "/images");
 
       imagemin(images, optimized_path, {
         plugins: [
@@ -165,9 +165,6 @@ module.exports = function(db) {
           imageminPngquant({ quality: '65-80' })
         ]
       }).then(function(compressedImages) {
-        console.log(compressedImages);
-        callback(false);
-
         //overwrite the original images with the optimized images
         var asyncIndex = 0;
         for (var i = 0; i < images.length; i++) {
@@ -181,7 +178,6 @@ module.exports = function(db) {
             //find the compressed image that matches the image we're on
             if (originalImageName == compressedImageName) {
               compressedImage = compressedImages[j];
-              console.log("found");
               break;
             }
           }
@@ -189,9 +185,7 @@ module.exports = function(db) {
           //copy it to the destImagePath
           fs.writeFile(destImagePath, compressedImage.data, function(err) {
             if (++asyncIndex == images.length) {
-              console.log("here1111");
               rimraf(optimized_path, function() {
-                console.log("done123123123")
                 callback(false);
               });
             }
