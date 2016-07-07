@@ -8,9 +8,30 @@ module.exports = function(db) {
   var imageminMozjpeg = require('imagemin-mozjpeg');
   var imageminPngquant = require('imagemin-pngquant');
   var rimraf = require('rimraf');
-
+  var purifycss = require('purifycss');
   var find = require('find');
   var fs = require('fs');
+  var critical = require('critical');
+
+  //ABOVE THE FOLD CSS OPTIMIZATION:
+  //1. use critical to pull out the critical above the fold css and inline it minified
+
+  //once the critical CSS is written into the html files we can now optimize the other css
+
+
+  //2. use purify css to create 1 file css per folder path for css
+
+  //3. lazy load all of these
+
+
+  //HTML OPTIMIZATION
+
+  //IMAGE OPTIMIZATION
+
+  //JS OPTIMIZATION
+
+  //GZIP OPTIMIZATION
+
 
   module.fullyOptimize = function(staging_path, callback) {
 
@@ -43,8 +64,16 @@ module.exports = function(db) {
         });
       }
     });
-
   };
+
+  //inlines the async purified css or includes it async depending on file size 
+  module.inlinePurifiedCss = function(callback) {
+
+
+    callback(false);
+
+  }
+
 
   module.optimizeJs = function(staging_path, callback) {
 
@@ -82,37 +111,183 @@ module.exports = function(db) {
     });
   };
 
-  module.optimizeCss = function(staging_path, callback) {
-    //- get all the js files in the staging path
-    find.file(/\.css$/, staging_path, function(files) {
 
-      //- loop through them all keep an async index count
-      var asyncIndex = 0;
-      for (var i = 0; i < files.length; i++) {
-        //- on loop compress
-        yuiCompressor.compress(files[i], {
-          charset: 'utf8',
-          type: 'js',
-          nomunge: true,
-          'line-break': 80
-        }, function(err, compressedFile, extra) {
-          if (err) {
-            console.log("could not compress file: " + files[i]);
-          } else {
+  //run after css is optimized to remove uneccesssary css write to purified.css
 
-            console.log("compressed " + files[asyncIndex]);
+  //the css that is necessary for all the landers to operate correctly. this will be async loaded
+  module.purifyCss = function(staging_path, callback) {
+    var outputPath = staging_path + '/purified.css';
 
-            //- and overwrite the file
-            fs.writeFile(files[asyncIndex], compressedFile, function(err) {
-              if (++asyncIndex == files.length) {
-                //- callback when done                
-                callback(false);
-              }
-            });
-          }
+    find.file(/\.css$/, staging_path, function(cssFiles) {
+      find.file(/\.html$/, staging_path, function(htmlFiles) {
+
+        purifycss(htmlFiles, cssFiles, function(purifiedAndMinifiedResult) {
+
+          fs.writeFile(outputPath, purifiedAndMinifiedResult, function(err) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(false);
+            }
+          });
         });
-      }
+      });
     });
+
+  };
+
+
+  module.optimizeCss = function(staging_path, callback) {
+
+    var inlineCriticalCss = function(callback) {
+      //loop each html endpoint and generate the critical css
+      find.file(/\.css$/, staging_path, function(cssFiles) {
+
+        for (var i = 0; i < cssFiles.length; i++) {
+          cssFiles[i] = cssFiles[i].replace(staging_path, "");
+        }
+
+        var base = process.cwd() + "/" + staging_path;
+
+        console.log("css: " + JSON.stringify(cssFiles));
+        find.file(/\.html$/, staging_path, function(htmlFiles) {
+
+          for (var i = 0; i < htmlFiles.length; i++) {
+
+            var filename = htmlFiles[i].replace(staging_path, "");
+            console.log("filename: " + filename);
+            console.log("process.cwd(): " + base);
+
+            // use critical to pull out the critical above the fold css and inline it minified
+            critical.generate({
+              // Inline the generated critical-path CSS
+              // - true generates HTML
+              // - false generates CSS
+              inline: true,
+
+              // Your base directory
+              base: 'staging/' + '21c0410a621d4717f20cb72e5cdfe87d/landertoupload',
+
+              // HTML source
+              // html: '<html>...</html>',
+
+              // HTML source file
+              src: 'index.html',
+
+              // Your CSS Files (optional)
+              css: 'css/css.css',
+
+              // Viewport width
+              width: 1300,
+
+              // Viewport height
+              height: 900,
+
+              // Target for final HTML output.
+              // use some css file when the inline option is not set
+              dest: 'index-critical.html',
+
+              // Minify critical-path CSS when inlining
+              minify: true,
+
+              // Extract inlined styles from referenced stylesheets
+              extract: true,
+
+              // Complete Timeout for Operation
+              timeout: 30000,
+
+              // Prefix for asset directory
+              // pathPrefix: '/',
+
+              // ignore css rules
+              // ignore: ['font-face', /some-regexp/],
+
+              // overwrite default options
+              ignoreOptions: {}
+            }, function(err, output) {
+
+              // You now have critical-path CSS
+              // Works with and without dest specified
+              console.log("err: " + err)
+              console.log("output: " + output)
+            });
+
+          }
+
+        });
+      });
+
+    };
+
+    var purifyCss = function(callback) {
+      // use purify css to create 1 file css per folder path for css
+
+    }
+
+    var inlineAsyncCss = function(callback) {
+      // async load all purify css files from each folder
+
+    }
+
+
+    inlineCriticalCss(function(err) {
+
+      console.log("HIHIHI")
+
+
+    });
+
+
+    //TODO get rid of unused CSS
+    // module.purifyCss(staging_path, function(err) {
+    //   if (err) {
+    //     callback({ code: "CouldNotPurifyCss" });
+    //   } else {
+    //     console.log("inlining purified css");
+    //     module.inlinePurifiedCss(function(err) {
+    //       if (err) {
+    //         callback({ code: "CouldNotInlinePurifiedCss" });
+    //       } else {
+
+    //       }
+    //     });
+    //   }
+    // });
+
+
+
+
+    //- get all the js files in the staging path
+    // find.file(/\.css$/, staging_path, function(cssFiles) {
+
+    //   //- loop through them all keep an async index count
+    //   var asyncIndex = 0;
+    //   for (var i = 0; i < cssFiles.length; i++) {
+    //     //- on loop compress
+    //     yuiCompressor.compress(cssFiles[i], {
+    //       charset: 'utf8',
+    //       type: 'js',
+    //       nomunge: true,
+    //       'line-break': 80
+    //     }, function(err, compressedFile, extra) {
+    //       if (err) {
+    //         console.log("could not compress file: " + cssFiles[i]);
+    //       } else {
+
+    //         console.log("compressed " + cssFiles[asyncIndex]);
+
+    //         //- and overwrite the file
+    //         fs.writeFile(cssFiles[asyncIndex], compressedFile, function(err) {
+    //           if (++asyncIndex == cssFiles.length) {
+    //             //- callback when done                
+    //             callback(false);
+    //           }
+    //         });
+    //       }
+    //     });
+    //   }
+    // });
+
   };
 
   module.optimizeHtml = function(staging_path, callback) {

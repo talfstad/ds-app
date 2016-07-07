@@ -72,7 +72,7 @@ module.exports = function(db) {
               callback(err);
             } else {
               //3. optimize the staging directory
-              optimize_lander.fullyOptimize("staging/" + s3_folder_name, function(err) {
+              optimize_lander.fullyOptimize(localStagingPath, function(err, endpointPaths) {
                 if (err) {
                   callback(err);
                 } else {
@@ -94,8 +94,10 @@ module.exports = function(db) {
                           } else {
 
                             //6. pagespeed test endpoints (deployed endpoints, original and optimized)
+                            
 
                             //7. add endpoints to db for this lander
+
 
                             //8. return correct landerData for endpoints
                             //returnData is the actual data to return
