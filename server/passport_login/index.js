@@ -7,7 +7,10 @@ var db;
 exports.initialize = function(app, db_ref) {
   db = db_ref;
   passport = require('passport');
+  
   var Strategy = require('passport-local').Strategy;
+  var expressSession = require('express-session');
+  var RedisStore = require('connect-redis')(expressSession);
 
   // Configure the local strategy for use by Passport.
   //
@@ -19,11 +22,17 @@ exports.initialize = function(app, db_ref) {
     function(username, password, cb) {
       db.users.findByUsernamePaswordApproved(username, password, function(err, user) {
         if (err) {
+        console.log("133" + JSON.stringify(err))
+
           return cb(false);
         }
         if (!user) {
+        console.log("12121")
+
           return cb(null, false);
         }
+        console.log("14444444")
+
         return cb(null, user);
       });
     }));
@@ -48,17 +57,22 @@ exports.initialize = function(app, db_ref) {
   passport.deserializeUser(function(user, cb) {
     db.users.findByIdAndAuth(user.id, user.auth_token, function(err, user) {
       if (err) {
+        console.log("5")
+
         return cb(null, false);
       }
       if (!user) {
+        console.log("14")
+
         return cb(null, false);
       }
 
       cb(null, user);
     });
   });
-
-  app.use(require('express-session')({
+  
+  app.use(expressSession({
+    store: new RedisStore(config.redisConnectionInfo),
     secret: config.cookieSecret,
     resave: false,
     cookie: { _expires: config.cookieMaxAge },
@@ -75,12 +89,15 @@ exports.authenticate = function() {
   return function(req, res, next) {
     passport.authenticate('local', function(err, user) {
       if (!user) {
+        console.log("1")
         res.json({
           logged_in: false
         });
         return;
       }
       if (err) {
+        console.log("2")
+
         res.json({
           logged_in: false
         });
@@ -96,6 +113,8 @@ exports.authenticate = function() {
         } else {
           req.login(user, function(err) {
             if (err) {
+        console.log("3")
+
               res.json({
                 logged_in: false
               });

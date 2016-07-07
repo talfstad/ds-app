@@ -147,7 +147,7 @@ module.exports = function(db) {
           cssFiles[i] = cssFiles[i].replace(staging_path, "");
         }
 
-        var base = process.cwd() + "/" + staging_path;
+        // var base = process.cwd() + "/" + staging_path;
 
         console.log("css: " + JSON.stringify(cssFiles));
         find.file(/\.html$/, staging_path, function(htmlFiles) {
@@ -156,7 +156,7 @@ module.exports = function(db) {
 
             var filename = htmlFiles[i].replace(staging_path, "");
             console.log("filename: " + filename);
-            console.log("process.cwd(): " + base);
+  
 
             // use critical to pull out the critical above the fold css and inline it minified
             critical.generate({

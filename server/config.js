@@ -2,16 +2,20 @@ module.exports = {
   id: 1,
   port: 3000,
   dbConnectionInfo: {
-    host : 'landerds-app.cynwtdt18kyi.us-west-2.rds.amazonaws.com',
+    host: 'landerds-app.cynwtdt18kyi.us-west-2.rds.amazonaws.com',
     user: 'buildcave',
     password: 'Wewillrockyou1986!',
-    
-
     database: 'test',
-    //database: 'prod',
-    
+    //database: 'prod',  
     multipleStatements: true,
     connectionLimit: 10
+  },
+  redisConnectionInfo: {
+    host: '52.39.113.167',
+    port: 6379,
+    db: 0,
+    pass: 'Wewillrockyou1986!',
+    logErrors: true
   },
   cookieSecret: 'landerdssecretkeytobechangedlatermaybe123!#',
   sessionSecret: 'landerdssecretkeytobechangedlatermaybe123!#',
