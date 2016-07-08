@@ -2,7 +2,6 @@ module.exports = function(app, passport) {
 
   var config = require("../../config");
   var Puid = require('puid');
-  var utils = require('../../utils/utils.js')();
   var db = require("../../db_api");
 
   var mkdirp = require("mkdirp");

@@ -11,7 +11,7 @@ module.exports = function(db) {
   var purifycss = require('purifycss');
   var find = require('find');
   var fs = require('fs');
-  var critical = require('critical');
+  // var critical = require('critical');
 
   //ABOVE THE FOLD CSS OPTIMIZATION:
   //1. use critical to pull out the critical above the fold css and inline it minified
@@ -159,58 +159,58 @@ module.exports = function(db) {
   
 
             // use critical to pull out the critical above the fold css and inline it minified
-            critical.generate({
-              // Inline the generated critical-path CSS
-              // - true generates HTML
-              // - false generates CSS
-              inline: true,
+            // critical.generate({
+            //   // Inline the generated critical-path CSS
+            //   // - true generates HTML
+            //   // - false generates CSS
+            //   inline: true,
 
-              // Your base directory
-              base: 'staging/' + '21c0410a621d4717f20cb72e5cdfe87d/landertoupload',
+            //   // Your base directory
+            //   base: 'staging/' + '21c0410a621d4717f20cb72e5cdfe87d/landertoupload',
 
-              // HTML source
-              // html: '<html>...</html>',
+            //   // HTML source
+            //   // html: '<html>...</html>',
 
-              // HTML source file
-              src: 'index.html',
+            //   // HTML source file
+            //   src: 'index.html',
 
-              // Your CSS Files (optional)
-              css: 'css/css.css',
+            //   // Your CSS Files (optional)
+            //   css: 'css/css.css',
 
-              // Viewport width
-              width: 1300,
+            //   // Viewport width
+            //   width: 1300,
 
-              // Viewport height
-              height: 900,
+            //   // Viewport height
+            //   height: 900,
 
-              // Target for final HTML output.
-              // use some css file when the inline option is not set
-              dest: 'index-critical.html',
+            //   // Target for final HTML output.
+            //   // use some css file when the inline option is not set
+            //   dest: 'index-critical.html',
 
-              // Minify critical-path CSS when inlining
-              minify: true,
+            //   // Minify critical-path CSS when inlining
+            //   minify: true,
 
-              // Extract inlined styles from referenced stylesheets
-              extract: true,
+            //   // Extract inlined styles from referenced stylesheets
+            //   extract: true,
 
-              // Complete Timeout for Operation
-              timeout: 30000,
+            //   // Complete Timeout for Operation
+            //   timeout: 30000,
 
-              // Prefix for asset directory
-              // pathPrefix: '/',
+            //   // Prefix for asset directory
+            //   // pathPrefix: '/',
 
-              // ignore css rules
-              // ignore: ['font-face', /some-regexp/],
+            //   // ignore css rules
+            //   // ignore: ['font-face', /some-regexp/],
 
-              // overwrite default options
-              ignoreOptions: {}
-            }, function(err, output) {
+            //   // overwrite default options
+            //   ignoreOptions: {}
+            // }, function(err, output) {
 
-              // You now have critical-path CSS
-              // Works with and without dest specified
-              console.log("err: " + err)
-              console.log("output: " + output)
-            });
+            //   // You now have critical-path CSS
+            //   // Works with and without dest specified
+            //   console.log("err: " + err)
+            //   console.log("output: " + output)
+            // });
 
           }
 

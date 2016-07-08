@@ -4,9 +4,6 @@ module.exports = function(app, passport) {
   var db = require("../db_api");
 
   var config = require("../config");
-  var utils = require('../utils/utils.js')();
-
-
 
   //update aws access keys for user
   app.post('/api/updateAccessKeys', passport.isAuthenticated(), function(req, res) {

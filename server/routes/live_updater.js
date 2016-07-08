@@ -3,7 +3,6 @@ module.exports = function(app, passport) {
 
   var config = require("../config");
   var Puid = require('puid');
-  var utils = require('../utils/utils.js')();
   var db = require("../db_api");
 
   app.post('/api/updater', passport.isAuthenticated(), function(req, res) {

@@ -4,7 +4,6 @@ module.exports = function(app, passport) {
   var puid = new Puid(true);
   var bcrypt = require("bcrypt-nodejs");
   var validator = require('validator');
-  var utils = require('../utils/utils.js')();
   var config = require("../config");
   var db = require("../db_api");
   var _ = require("underscore-node");
@@ -12,12 +11,12 @@ module.exports = function(app, passport) {
 
   app.post("/api/login", passport.authenticate(), function(req, res) {
     //this is only executed if login succeeded
-    
+
     var user = req.user;
     db.users.getUserSettings(user, function(error, access_key_id, secret_access_key, aws_root_bucket) {
       if (error) {
         console.log(error);
-        utils.sendResponse(res, error, "settingsRetrieved");
+        res.json({});
       } else {
         res.json({
           user_id: req.user.id,
@@ -39,7 +38,7 @@ module.exports = function(app, passport) {
       db.users.getUserSettings(user, function(error, access_key_id, secret_access_key, aws_root_bucket) {
         if (error) {
           console.log(error);
-          utils.sendResponse(res, error, "settingsRetrieved");
+          res.json({});
         } else {
           res.json({
             user_id: req.user.id,
@@ -73,7 +72,7 @@ module.exports = function(app, passport) {
     var user = req.user;
     db.users.addAmazonAPIKeys(access_key_id, secret_access_key, user, function(error) {
       booleanName = "updatedAmazonAPIKeys";
-      utils.sendResponse(res, error, booleanName);
+      res.json({});
     });
   });
 

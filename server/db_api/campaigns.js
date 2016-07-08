@@ -1,6 +1,5 @@
 module.exports = function(db) {
 
-  var utils = require('../utils/utils.js')();
   var dbLanders = require('./landers')(db);
 
   return {

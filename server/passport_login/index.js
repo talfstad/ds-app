@@ -22,17 +22,11 @@ exports.initialize = function(app, db_ref) {
     function(username, password, cb) {
       db.users.findByUsernamePaswordApproved(username, password, function(err, user) {
         if (err) {
-        console.log("133" + JSON.stringify(err))
-
           return cb(false);
         }
         if (!user) {
-        console.log("12121")
-
           return cb(null, false);
         }
-        console.log("14444444")
-
         return cb(null, user);
       });
     }));
@@ -57,13 +51,9 @@ exports.initialize = function(app, db_ref) {
   passport.deserializeUser(function(user, cb) {
     db.users.findByIdAndAuth(user.id, user.auth_token, function(err, user) {
       if (err) {
-        console.log("5")
-
         return cb(null, false);
       }
       if (!user) {
-        console.log("14")
-
         return cb(null, false);
       }
 
@@ -89,15 +79,12 @@ exports.authenticate = function() {
   return function(req, res, next) {
     passport.authenticate('local', function(err, user) {
       if (!user) {
-        console.log("1")
         res.json({
           logged_in: false
         });
         return;
       }
       if (err) {
-        console.log("2")
-
         res.json({
           logged_in: false
         });
@@ -113,8 +100,6 @@ exports.authenticate = function() {
         } else {
           req.login(user, function(err) {
             if (err) {
-        console.log("3")
-
               res.json({
                 logged_in: false
               });
@@ -139,4 +124,3 @@ exports.isAuthenticated = function() {
   }
 }
 
-return module;

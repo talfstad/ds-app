@@ -1,6 +1,5 @@
 module.exports = function(db) {
 
-  var utils = require('../utils/utils.js')();
   var uuid = require('uuid');
   var config = require("../config");
   var bcrypt = require("bcrypt-nodejs");
