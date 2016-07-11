@@ -17,7 +17,103 @@ var zipFolder = require('zip-folder');
 var find = require('find');
 var purifycss = require('purifycss');
 var yuicompressor = require('yuicompressor');
-var htmlEndpointOptimizer = require('../server/optimizer');
+var CleanCSS = require('clean-css');
+var path = require('path');
+var purifyCss = require('purify-css');
+var cheerio = require('cheerio');
+var fs = require('fs');
+var critcialCss = require('critical');
+
+//optimize Single HTML endpoint. not ideal for optimizing a whole directories worth
+var optimizeCss = function(options, callback) {
+
+  //relative paths from staging_path
+  var htmlFilePath = options.htmlFilePath;
+  var webBasePath = options.webBasePath || '/';
+
+  //absolute path to staging directory or possibly relative path
+  var stagingPath = options.stagingPath || process.cwd();
+
+  var fullHtmlFilePath = path.join(stagingPath, htmlFilePath);
+  var fullWebBasePath = path.join(stagingPath, webBasePath);
+
+  var content = options.content || htmlFilePath;
+
+  if (!htmlFilePath) {
+    console.log("Cannot optimize unless you have a html path !!");
+    return;
+  }
+
+  //read file in as a string
+  var cssFiles = [];
+  fs.readFile(fullHtmlFilePath, function(err, fileData) {
+    if (err) {
+      console.log("error: " + err);
+    } else {
+
+      var $ = cheerio.load(fileData);
+
+      // get all the href's to minimize from the html file
+      $('link[rel="stylesheet"]').each(function(i, link) {
+        var href = $(this).attr("href");
+        // href = href.replace(/^\//, "");
+        cssFiles.push(href);
+        $(this).remove();
+      });
+
+      //with list of relative or absolute css files use clean css to combine them
+      //and rewrite the urls
+      var data = cssFiles
+        .map(function(filename) {
+          return '@import url(' + filename + ');';
+        })
+        .join('');
+
+      new CleanCSS({
+        root: fullWebBasePath
+      }).minify(data, function(error, minified) {
+        if (error)
+          throw error;
+
+        var styles = minified.styles;
+
+        var purifyOptions = {
+          minify: true
+        };
+
+        purifyCss(content, styles, purifyOptions, function(purifiedAndMinifiedResult) {
+
+          var outputCssFile = path.join(fullWebBasePath, "style.css");
+
+          fs.writeFile(outputCssFile, purifiedAndMinifiedResult, function(err) {
+            if (err) {
+              console.log("err: " + err);
+            } else {
+
+              //fix up the html endpoint file with our new CSS
+              $('<link rel="stylesheet" type="text/css" href="style.css">').appendTo('head');
+
+              //now extract out the above the fold css!
+              critcialCss.generate({
+                extract: true,
+                base: stagingPath,
+                html: $.html(),
+                css: [outputCssFile],
+                dest: fullHtmlFilePath,
+                minify: true,
+                inline: true,
+                ignore: ['@font-face', /url\(/]
+              });
+
+              callback(false);
+            }
+          });
+        });
+      });
+    }
+  });
+}
+
 
 //remove old built directory first
 rimraf('./built', function(err) {
@@ -52,21 +148,20 @@ rimraf('./built', function(err) {
             requirejs.optimize(config, function(buildResponse) {
 
               var htmlOptimizeOptions = {
+                stagingPath: process.cwd(),
                 htmlFilePath: 'built/server/index.html',
                 webBasePath: 'built/public',
-                outputFilePath: 'built/public/style.css',
-                content: []
+                content: [] // set below
               }
 
               //find all the content
               find.file(/\.js$/, htmlOptimizeOptions.webBasePath + "/assets/js/apps", function(jsFiles) {
-                console.log("js files: " + jsFiles.length);
                 find.file(/\.tpl$/, htmlOptimizeOptions.webBasePath, function(tplFiles) {
                   tplFiles.push('built/server/index.html');
                   tplFiles.push('built/public/assets/js/require_main.js');
                   htmlOptimizeOptions.content = tplFiles.concat(jsFiles);
 
-                  htmlEndpointOptimizer.optimizeHtmlFile(htmlOptimizeOptions, function() {
+                  optimizeCss(htmlOptimizeOptions, function() {
                     //zip the archive for deployment
                     zipFolder('built', 'built.zip', function(err) {
                       if (err) {
@@ -76,99 +171,8 @@ rimraf('./built', function(err) {
                       }
                     });
                   });
-
                 });
               });
-
-
-              // var cssFiles = ['https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700',
-              //   'built/public/vendor/jquery/jquery_ui/jquery-ui.min.css',
-              //   'built/public/vendor/bower_installed/datatables/media/css/dataTables.bootstrap.min.css',
-              //   "built/public/assets/skin/default_skin/css/theme.min.css",
-              //   "built/public/assets/admin-tools/admin-forms/css/admin-forms.css",
-              //   "built/public/vendor/plugins/fancytree/skin-win8/ui.fancytree.min.css",
-              //   "built/public/vendor/bower_installed/select2/dist/css/select2.css",
-              //   "built/public/vendor/bower_installed/codemirror/lib/codemirror.css",
-              //   "built/public/vendor/bower_installed/bootstrap-fileinput/css/fileinput.min.css",
-              //   "built/public/vendor/bower_installed/fancybox/source/jquery.fancybox.css",
-              //   "built/public/assets/skin/overrides/login_overrides.css",
-              //   "built/public/assets/skin/overrides/landers_overrides.css",
-              //   "built/public/assets/skin/overrides/domains_overrides.css",
-              //   "built/public/assets/skin/overrides/campaigns_overrides.css",
-              //   "built/public/assets/skin/overrides/active_snippets_overrides.css",
-              //   "built/public/assets/skin/overrides/overrides.css"
-              // ]
-
-              // content = ['built/public/assets/js/require_main.js', 'built/server/index.html'];
-
-
-              // //read all css files from endpoint into a string
-
-              // //compress them all
-
-              // //write it to a file
-
-              // //purify that file
-
-              // //critical css that purified file
-
-              // //inline the critical stuff and async load the rest
-
-
-
-              // //1. purify css into 1 minified output file
-              // console.log("here!")
-
-              // yuicompressor.compress("built/public/assets/skin/overrides/*.css", {
-              //   //Compressor Options: 
-              //   charset: 'utf8',
-              //   type: 'css',
-              //   outfile: 'built/public/assets/skin/style.min.css',
-              //   'line-break': 80
-              // }, function(err, data, extra) {
-              //   if (err) {
-              //     console.log("error: " + err);
-              //   } else {
-              //     console.log("data: " + data);
-              //   }
-
-              //   //err   If compressor encounters an error, it's stderr will be here 
-              //   //data  The compressed string, you write it out where you want it 
-              //   //extra The stderr (warnings are printed here in case you want to echo them 
-
-
-
-
-              //   // var purifyOptions = {
-              //   //   output: 'built/public/assets/skin/style.css',
-              //   //   minify: true,
-              //   //   silent: true
-              //   // };
-              //   // purifycss(content, cssFiles, purifyOptions);
-
-
-              // });
-
-
-
-
-              //zip the archive for deployment
-              // zipFolder('built', 'built.zip', function(err) {
-              //   if (err) {
-              //     console.log("err: " + err);
-              //   } else {
-              //     console.log("build finished.")
-              //   }
-              // });
-
-
-
-
-
-              //2. inline the critical css in the index.html file
-
-              //3. update the index.html to async load the css file (rest of it)
-
             });
           });
       }
