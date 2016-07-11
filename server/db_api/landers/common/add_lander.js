@@ -17,7 +17,7 @@ module.exports = function(db) {
 
       //1. createDirectory in s3 for original
       //2. push original to s3
-      var pushLanderToS3 = function(directory, awsData, callback) {
+      var pushLanderToS3 = function(directory, awsData, gzipped, callback) {
         var username = user.user;
         var fullDirectory = username + directory;
         var baseBucketName = awsData.aws_root_bucket;
@@ -26,13 +26,24 @@ module.exports = function(db) {
           accessKeyId: awsData.aws_access_key_id,
           secretAccessKey: awsData.aws_secret_access_key
         }
-        dbAws.s3.copyDirFromStagingToS3(localStagingPath, credentials, username, baseBucketName, fullDirectory, function(err) {
-          if (err) {
-            callback(err);
-          } else {
-            callback(false);
-          }
-        });
+        if (gzipped) {
+          dbAws.s3.copyGzippedDirFromStagingToS3(localStagingPath, credentials, username, baseBucketName, fullDirectory, function(err) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(false);
+            }
+          });
+        } else {
+          dbAws.s3.copyDirFromStagingToS3(localStagingPath, credentials, username, baseBucketName, fullDirectory, function(err) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(false);
+            }
+          });
+        }
+
       };
 
       var saveLanderToDb = function(callback) {
@@ -67,7 +78,7 @@ module.exports = function(db) {
           callback(err);
         } else {
           var directory = "/landers/" + s3_folder_name + "/original/";
-          pushLanderToS3(directory, awsData, function(err) {
+          pushLanderToS3(directory, awsData, false, function(err) {
             if (err) {
               callback(err);
             } else {
@@ -78,8 +89,7 @@ module.exports = function(db) {
                 } else {
                   //4. push optimized to s3
                   var directory = "/landers/" + s3_folder_name + "/optimized/";
-
-                  pushLanderToS3(directory, awsData, function(err) {
+                  pushLanderToS3(directory, awsData, true, function(err) {
                     if (err) {
                       callback(err);
                     } else {
@@ -87,29 +97,29 @@ module.exports = function(db) {
                       //4. remove local staging
                       // dbCommon.deleteStagingArea("staging/" + s3_folder_name, function() {
 
-                        //5. save lander into DB, save endpoints into DB (create stored proc for this?)
-                        // saveLanderToDb(function(err) {
-                        //   if (err) {
-                        //     callback(err);
-                        //   } else {
+                      //5. save lander into DB, save endpoints into DB (create stored proc for this?)
+                      // saveLanderToDb(function(err) {
+                      //   if (err) {
+                      //     callback(err);
+                      //   } else {
 
-                        //     //6. pagespeed test endpoints (deployed endpoints, original and optimized)
-                            
-
-                        //     //7. add endpoints to db for this lander
+                      //     //6. pagespeed test endpoints (deployed endpoints, original and optimized)
 
 
-                        //     //8. return correct landerData for endpoints
-                        //     //returnData is the actual data to return
-                        //     var returnData = {
-                        //     	id: landerData.id,
-                        //     	created_on: landerData.created_on,
-                        //     	s3_folder_name: s3_folder_name
-                        //     }
-                            callback(false);
-                        //   }
+                      //     //7. add endpoints to db for this lander
 
-                        // });
+
+                      //     //8. return correct landerData for endpoints
+                      //     //returnData is the actual data to return
+                      //     var returnData = {
+                      //      id: landerData.id,
+                      //      created_on: landerData.created_on,
+                      //      s3_folder_name: s3_folder_name
+                      //     }
+                      callback(false);
+                      //   }
+
+                      // });
 
                       // });
 

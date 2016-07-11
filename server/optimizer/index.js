@@ -17,6 +17,7 @@ module.exports = function() {
   var rimraf = require('rimraf');
   var find = require('find');
   var fs = require('fs');
+  var gzipme = require('gzipme');
 
 
   //optimizer has an optimize function that takes an HTML file path, optimized file output path,
@@ -27,18 +28,19 @@ module.exports = function() {
       module.optimizeCss(htmlFiles, function(err) {
         console.log("done with css");
 
-        // module.optimizeJs(htmlFiles, function(err) {
-          console.log("done with js");
-          module.optimizeHtml(htmlFiles, function(err) {
-            console.log("done with html");
-            module.optimizeImages(stagingPath, function(err) {
-              console.log("done with images");
-
+        module.optimizeJs(stagingPath, function(err) {
+        console.log("done with js");
+        module.optimizeHtml(htmlFiles, function(err) {
+          console.log("done with html");
+          module.optimizeImages(stagingPath, function(err) {
+            console.log("done with images");
+            module.gzipStagingFiles(stagingPath, function(err) {
+              console.log("done gzipping");
               callback(false);
-
             });
           });
-        // });
+        });
+        });
       });
     });
   };
@@ -121,9 +123,9 @@ module.exports = function() {
                     minify: true,
                     inline: true,
                     ignore: ['@font-face', /url\(/]
+                  }, function(err, output) {
+                    callback(false);
                   });
-
-                  callback(false);
                 }
               });
             });
@@ -138,9 +140,7 @@ module.exports = function() {
   //with class "js-snippet" and combine them and minify them and insert them into 
   //bottom of lander.
   //localize remote scripts
-  module.optimizeJs = function(options, callback) {
-
-    var stagingPath = options.stagingPath;
+  module.optimizeJs = function(stagingPath, callback) {
 
     //- get all the js files in the staging path
     find.file(/\.js$/, stagingPath, function(files) {
@@ -176,73 +176,64 @@ module.exports = function() {
 
 
   module.optimizeHtml = function(htmlFiles, callback) {
-    var stagingPath = options.stagingPath || process.cwd();
-    
+    console.log("html file: " + JSON.stringify(htmlFiles));
     var asyncIndex = 0;
-    for(var i=0 ; i<htmlFiles.length ; i++){
+    for (var i = 0; i < htmlFiles.length; i++) {
       var htmlFile = htmlFiles[i];
 
+
+      var readHtmlFile = function(htmlFile, callback) {
         fs.readFile(htmlFile, 'utf8', function(err, file) {
           if (err) {
             console.log(err);
             callback(err);
           } else {
-
-            var minifiedFile = htmlMinifier(file, {
-              removeAttributeQuotes: true,
-              collapseWhitespace: true,
-              collapseInlineTagWhitespace: true,
-              conservativeCollapse: true,
-              removeComments: true,
-              caseSensitive: true,
-              minifyCSS: true,
-              minifyJS: true,
-              removeEmptyAttributes: true
-            });
-            fs.writeFile(htmlFiles[asyncIndex], minifiedFile, function(err) {
-              if (++asyncIndex == htmlFiles.length) {
-                //- callback when done                
-                callback(false);
-              }
-            });
+            callback(file);
           }
         });
-      
+      };
+
+      readHtmlFile(htmlFile, function(file) {
+        var minifiedFile = htmlMinifier(file, {
+          removeAttributeQuotes: true,
+          collapseWhitespace: true,
+          collapseInlineTagWhitespace: true,
+          conservativeCollapse: true,
+          removeComments: true,
+          caseSensitive: true,
+          minifyCSS: true,
+          minifyJS: true,
+          removeEmptyAttributes: true
+        });
+        fs.writeFile(htmlFiles[asyncIndex], minifiedFile, function(err) {
+          if (++asyncIndex == htmlFiles.length) {
+            //- callback when done                
+            callback(false);
+          }
+        });
+      });
     }
   };
 
   //NEEDS LIBPNG
   module.optimizeImages = function(stagingPath, callback) {
-    // var stagingPath = options.stagingPath || process.cwd();
 
     //lossless image compression
     find.file(/\.jpg$|\.png$/, stagingPath, function(images) {
 
-      imagemin(images, stagingPath, {
+      imagemin(images, {
         plugins: [
           imageminMozjpeg({ targa: false }),
           imageminPngquant({ quality: '65-80' })
         ]
       }).then(function(compressedImages) {
+
         //overwrite the original images with the optimized images
         var asyncIndex = 0;
         for (var i = 0; i < images.length; i++) {
 
           var destImagePath = images[i];
-          var originalImageName = destImagePath.split('/').pop();
-
-          console.log("dest image path: " + destImagePath);
-
-          var compressedImage = null;
-          for (var j = 0; j < compressedImages.length; j++) {
-
-            var compressedImageName = compressedImages[j].path.split('/').pop();
-            //find the compressed image that matches the image we're on
-            if (originalImageName == compressedImageName) {
-              compressedImage = compressedImages[j];
-              break;
-            }
-          }
+          var compressedImage = compressedImages[i];
 
           //copy it to the destImagePath
           fs.writeFile(destImagePath, compressedImage.data, function(err) {
@@ -256,6 +247,17 @@ module.exports = function() {
         callback(err);
       });
     });
+  };
+
+  module.gzipStagingFiles = function(stagingPath, callback) {
+
+    find.file(stagingPath, function(files) {
+      for (var i = 0; i < files.length; i++) {
+        gzipme(files[i], true);
+      }
+      callback(false);
+    });
+
   };
 
   return module;

@@ -468,6 +468,51 @@ module.exports = function(db) {
       }
     },
 
+    copyGzippedDirFromStagingToS3: function(stagingPath, credentials, username, bucketName, directory, callback) {
+      var fullDir;
+      if (directory) {
+        fullDir = directory;
+      } else {
+        fullDir = username;
+      }
+
+      var s3_client = s3.createClient({
+        maxAsyncS3: 20, // this is the default
+        s3RetryCount: 0, // this is the default
+        s3RetryDelay: 1000, // this is the default
+        multipartUploadThreshold: 20971520, // this is the default (20 MB)
+        multipartUploadSize: 15728640, // this is the default (15 MB)
+        s3Options: {
+          accessKeyId: credentials.accessKeyId,
+          secretAccessKey: credentials.secretAccessKey,
+          region: config.awsRegion,
+        }
+      });
+
+      var params = {
+        localDir: stagingPath,
+        deleteRemoved: false,
+
+        s3Params: {
+          Bucket: bucketName,
+          Prefix: fullDir,
+          ACL: 'public-read',
+          CacheControl: 'max-age=604800',
+          Expires: new Date || 'Wed Dec 31 1969 16:00:00 GMT-0800 (PST)' || 123456789,
+          ContentEncoding: "gzip"
+        }
+      };
+
+      var uploader = s3_client.uploadDir(params);
+      uploader.on("error", function(err) {
+        callback(err);
+      });
+      uploader.on("end", function() {
+        callback();
+      });
+
+    },
+
     copyDirFromStagingToS3: function(stagingPath, credentials, username, bucketName, directory, callback) {
       var fullDir;
       if (directory) {

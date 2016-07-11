@@ -27,6 +27,7 @@
     "express-session": "1.13.0",
     "extract-zip": "*",
     "find": "*",
+    "gzipme": "0.0.9",
     "hbs": "*",
     "html-minifier": "*",
     "imagemin": "*",
