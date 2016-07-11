@@ -27,7 +27,7 @@ module.exports = function() {
       module.optimizeCss(htmlFiles, function(err) {
         console.log("done with css");
 
-        module.optimizeJs(htmlFiles, function(err) {
+        // module.optimizeJs(htmlFiles, function(err) {
           console.log("done with js");
           module.optimizeHtml(htmlFiles, function(err) {
             console.log("done with html");
@@ -38,7 +38,7 @@ module.exports = function() {
 
             });
           });
-        });
+        // });
       });
     });
   };
@@ -140,7 +140,7 @@ module.exports = function() {
   //localize remote scripts
   module.optimizeJs = function(options, callback) {
 
-    var stagingPath = options.stagingPath || process.cwd();
+    var stagingPath = options.stagingPath;
 
     //- get all the js files in the staging path
     find.file(/\.js$/, stagingPath, function(files) {
@@ -175,15 +175,14 @@ module.exports = function() {
   };
 
 
-  module.optimizeHtml = function(options, callback) {
+  module.optimizeHtml = function(htmlFiles, callback) {
     var stagingPath = options.stagingPath || process.cwd();
+    
+    var asyncIndex = 0;
+    for(var i=0 ; i<htmlFiles.length ; i++){
+      var htmlFile = htmlFiles[i];
 
-    find.file(/\.html$/, stagingPath, function(files) {
-
-      var asyncIndex = 0;
-      for (var i = 0; i < files.length; i++) {
-
-        fs.readFile(files[i], 'utf8', function(err, file) {
+        fs.readFile(htmlFile, 'utf8', function(err, file) {
           if (err) {
             console.log(err);
             callback(err);
@@ -200,16 +199,16 @@ module.exports = function() {
               minifyJS: true,
               removeEmptyAttributes: true
             });
-            fs.writeFile(files[asyncIndex], minifiedFile, function(err) {
-              if (++asyncIndex == files.length) {
+            fs.writeFile(htmlFiles[asyncIndex], minifiedFile, function(err) {
+              if (++asyncIndex == htmlFiles.length) {
                 //- callback when done                
                 callback(false);
               }
             });
           }
         });
-      }
-    });
+      
+    }
   };
 
   //NEEDS LIBPNG

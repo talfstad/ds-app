@@ -1,6 +1,6 @@
 module.exports = function(db) {
 
-  var optimize_lander = require("./optimize_lander")(db);
+  var htmlFileOptimizer = require("../../../optimizer")();
   var dbAws = require('../../aws')(db);
   var dbCommon = require('../../common')(db);
 
@@ -72,7 +72,7 @@ module.exports = function(db) {
               callback(err);
             } else {
               //3. optimize the staging directory
-              optimize_lander.fullyOptimize(localStagingPath, function(err, endpointPaths) {
+              htmlFileOptimizer.fullyOptimize(localStagingPath, function(err, endpointPaths) {
                 if (err) {
                   callback(err);
                 } else {
@@ -85,33 +85,33 @@ module.exports = function(db) {
                     } else {
 
                       //4. remove local staging
-                      dbCommon.deleteStagingArea("staging/" + s3_folder_name, function() {
+                      // dbCommon.deleteStagingArea("staging/" + s3_folder_name, function() {
 
                         //5. save lander into DB, save endpoints into DB (create stored proc for this?)
-                        saveLanderToDb(function(err) {
-                          if (err) {
-                            callback(err);
-                          } else {
+                        // saveLanderToDb(function(err) {
+                        //   if (err) {
+                        //     callback(err);
+                        //   } else {
 
-                            //6. pagespeed test endpoints (deployed endpoints, original and optimized)
+                        //     //6. pagespeed test endpoints (deployed endpoints, original and optimized)
                             
 
-                            //7. add endpoints to db for this lander
+                        //     //7. add endpoints to db for this lander
 
 
-                            //8. return correct landerData for endpoints
-                            //returnData is the actual data to return
-                            var returnData = {
-                            	id: landerData.id,
-                            	created_on: landerData.created_on,
-                            	s3_folder_name: s3_folder_name
-                            }
-                            callback(false, returnData);
-                          }
+                        //     //8. return correct landerData for endpoints
+                        //     //returnData is the actual data to return
+                        //     var returnData = {
+                        //     	id: landerData.id,
+                        //     	created_on: landerData.created_on,
+                        //     	s3_folder_name: s3_folder_name
+                        //     }
+                            callback(false);
+                        //   }
 
-                        });
+                        // });
 
-                      });
+                      // });
 
                     }
                   });
