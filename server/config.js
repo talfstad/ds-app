@@ -11,8 +11,8 @@ module.exports = {
     connectionLimit: 10
   },
   redisConnectionInfo: {
-    host: '52.39.113.167',
-    // host: '10.35.0.166', //use for deployment
+    // host: '52.39.113.167',
+    host: '10.35.0.166', //use for deployment
     port: 6379,
     db: 0,
     pass: 'Wewillrockyou1986!',
@@ -21,9 +21,6 @@ module.exports = {
   cookieSecret: 'landerdssecretkeytobechangedlatermaybe123!#',
   sessionSecret: 'landerdssecretkeytobechangedlatermaybe123!#',
   cookieMaxAge: (1000 * 60 * 60 * 24 * 365),
-  adminEmail: 'trevor@buildcave.com',
-  adminEmailPassword: 'Wewillrockyou1986!',
-  resetCodeLifespanMinutes: 240,
   awsRegion: "us-west-2",
   workers: {
     checkOthersFinishedRate: 1000 * 30, // 30 seconds

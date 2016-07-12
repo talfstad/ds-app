@@ -59,7 +59,8 @@
     "website-scraper": "*",
     "wordpress-hash-node": "*",
     "xoauth2": "*",
-    "yuicompressor": "*"
+    "yuicompressor": "*",
+    "forEachAsync": "*"
   },
   "devDependencies": {
     "exec": "^0.2.1",
