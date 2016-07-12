@@ -196,7 +196,7 @@ define(["app",
             },
 
             series: [{
-              data: [13],
+              data: [37],
               dataLabels: {
                 format: '<div style="text-align:center"><span style="font-size:25px"><a href="'+ encodeURI(me.getPageSpeedLink()) +'" target="_blank">{y}</span></a><br/>' +
                   '<span style="font-size:10px;color:rgb(102,102,102)">Original</span></div>'
@@ -213,7 +213,7 @@ define(["app",
             },
 
             series: [{
-              data: [80],
+              data: [78],
               dataLabels: {
                 format: '<div style="text-align:center"><span style="font-size:25px;"><a href="#"">{y}</a></span><br/>' +
                   '<span style="font-size:10px;color:rgb(102,102,102)">Optimized</span></div>'
