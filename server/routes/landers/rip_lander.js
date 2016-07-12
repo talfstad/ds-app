@@ -99,6 +99,9 @@ module.exports = function(app, passport) {
           selector: 'video',
           attr: 'src'
         }, {
+          selector: 'source',
+          attr: 'src'
+        }, {
           selector: 'param[name="movie"]',
           attr: 'value'
         }, {

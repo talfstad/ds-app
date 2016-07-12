@@ -31,7 +31,11 @@ module.exports = function(app, passport) {
       landerData.files = req.files;
 
       addLander.new(user, landerData, function(err, returnData) {
-        res.json(returnData);
+        if (err) {
+          res.json({ err: err });
+        } else {
+          res.json(returnData);
+        }
       });
 
     } else if (source == "rip") {

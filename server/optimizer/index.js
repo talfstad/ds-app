@@ -29,17 +29,17 @@ module.exports = function() {
         console.log("done with css");
 
         module.optimizeJs(stagingPath, function(err) {
-        console.log("done with js");
-        module.optimizeHtml(htmlFiles, function(err) {
-          console.log("done with html");
-          module.optimizeImages(stagingPath, function(err) {
-            console.log("done with images");
-            module.gzipStagingFiles(stagingPath, function(err) {
-              console.log("done gzipping");
-              callback(false);
+          console.log("done with js");
+          module.optimizeHtml(htmlFiles, function(err) {
+            console.log("done with html");
+            module.optimizeImages(stagingPath, function(err) {
+              console.log("done with images");
+              module.gzipStagingFiles(stagingPath, function(err) {
+                console.log("done gzipping");
+                callback(false, htmlFiles);
+              });
             });
           });
-        });
         });
       });
     });
@@ -237,12 +237,15 @@ module.exports = function() {
 
           //copy it to the destImagePath
           fs.writeFile(destImagePath, compressedImage.data, function(err) {
-            if (++asyncIndex == images.length) {
-              callback(false);
+            if (err) {
+              callback(err);
+            } else {
+              if (++asyncIndex == images.length) {
+                callback(false);
+              }
             }
           });
         }
-
       }, function(err) {
         callback(err);
       });
@@ -250,7 +253,6 @@ module.exports = function() {
   };
 
   module.gzipStagingFiles = function(stagingPath, callback) {
-
     find.file(stagingPath, function(files) {
       for (var i = 0; i < files.length; i++) {
         gzipme(files[i], true);

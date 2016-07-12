@@ -111,7 +111,7 @@ module.exports = function(db) {
               callback("Cannot update Amazon access key ID and secret_access_key for user: " + user);
             } else {
               //TODO: validate credentials by creating archive bucket with name user.uid
-              callback(err);
+              callback(false);
             }
             connection.release();
           });

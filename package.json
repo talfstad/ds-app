@@ -43,6 +43,7 @@
     "nodemailer": "*",
     "passport": "*",
     "passport-local": "*",
+    "psi": "^2.0.4",
     "puid": "*",
     "purify-css": "^1.1.9",
     "redis": "^2.6.2",
