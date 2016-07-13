@@ -60,18 +60,12 @@
     "wordpress-hash-node": "*",
     "xoauth2": "*",
     "yuicompressor": "*",
-    "forEachAsync": "*"
+    "forEachAsync": "*",
+    "node-cmd": "^1.1.1"
   },
   "devDependencies": {
     "exec": "^0.2.1",
-    "find": "*",
-    "mkdirp": "^0.5.1",
-    "node-cmd": "^1.1.1",
-    "purifycss": "^1.1.9",
-    "requirejs": "^2.2.0",
-    "rimraf": "^2.5.2",
     "rsync": "^0.4.0",
-    "yuicompressor": "*",
     "zip-dir": "^1.0.2",
     "zip-folder": "^1.0.0"
   }

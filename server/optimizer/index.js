@@ -7,7 +7,7 @@ module.exports = function() {
   var purifyCss = require('purify-css');
   var cheerio = require('cheerio');
   var fs = require('fs');
-  var critcialCss = require('critical');
+  var criticalCss = require('critical');
   var htmlMinifier = require('html-minifier').minify;
   var yuiCompressor = require('yuicompressor');
   var imagemin = require('imagemin');
@@ -28,21 +28,35 @@ module.exports = function() {
         if (err) {
           console.log("err: " + err);
         } else {
-
           console.log("done with css");
-
           module.optimizeJs(stagingPath, function(err) {
-            console.log("done with js");
-            module.optimizeHtml(htmlFiles, function(err) {
-              console.log("done with html");
-              module.optimizeImages(stagingPath, function(err) {
-                console.log("done with images");
-                module.gzipStagingFiles(stagingPath, function(err) {
-                  console.log("done gzipping");
-                  callback(false, htmlFiles);
-                });
+            if (err) {
+              callback(err);
+            } else {
+              console.log("done with js");
+              module.optimizeHtml(htmlFiles, function(err) {
+                if (err) {
+                  callback(err);
+                } else {
+                  console.log("done with html");
+                  module.optimizeImages(stagingPath, function(err) {
+                    if (err) {
+                      callback(err);
+                    } else {
+                      console.log("done with images");
+                      module.gzipStagingFiles(stagingPath, function(err) {
+                        if (err) {
+                          callback(err);
+                        } else {
+                          console.log("done gzipping");
+                          callback(false, htmlFiles);
+                        }
+                      });
+                    }
+                  });
+                }
               });
-            });
+            }
           });
         }
       });
@@ -67,8 +81,6 @@ module.exports = function() {
       var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
       var fileName = path.basename(fullHtmlFilePath);
 
-      console.log("filename: " + fileName);
-
       //read file in as a string
       var cssFiles = [];
       fs.readFile(fullHtmlFilePath, function(err, fileData) {
@@ -85,6 +97,9 @@ module.exports = function() {
             cssFiles.push(href);
             $(this).remove();
           });
+
+          //fix up the html endpoint file with our new CSS
+          $('<link rel="stylesheet" type="text/css" href="' + fileName + '.css">').appendTo('head');
 
           //with list of relative or absolute css files use clean css to combine them
           //and rewrite the urls
@@ -112,16 +127,10 @@ module.exports = function() {
 
               fs.writeFile(outputCssFile, purifiedAndMinifiedResult, function(err) {
                 if (err) {
-                  console.log("err: " + err);
+                  callback(err);
                 } else {
-                  console.log("htmlfile: " + fullHtmlFilePath);
-                  console.log("cssfile: " + outputCssFile);
-
-                  //fix up the html endpoint file with our new CSS
-                  $('<link rel="stylesheet" type="text/css" href="' + fileName + '.css">').appendTo('head');
-
                   //now extract out the above the fold css!
-                  critcialCss.generate({
+                  criticalCss.generate({
                     extract: true,
                     base: fullHtmlFileDirPath,
                     html: $.html(),
@@ -167,11 +176,8 @@ module.exports = function() {
           'line-break': 80
         }, function(err, compressedFile, extra) {
           if (err) {
-            console.log("could not compress file: " + files[i]);
+            callback(err);
           } else {
-
-            console.log("compressed " + files[asyncIndex]);
-
             //- and overwrite the file
             fs.writeFile(files[asyncIndex], compressedFile, function(err) {
               if (++asyncIndex == files.length) {
@@ -187,7 +193,6 @@ module.exports = function() {
 
 
   module.optimizeHtml = function(htmlFiles, callback) {
-    console.log("html file: " + JSON.stringify(htmlFiles));
     var asyncIndex = 0;
     for (var i = 0; i < htmlFiles.length; i++) {
       var htmlFile = htmlFiles[i];
@@ -196,7 +201,6 @@ module.exports = function() {
       var readHtmlFile = function(htmlFile, callback) {
         fs.readFile(htmlFile, 'utf8', function(err, file) {
           if (err) {
-            console.log(err);
             callback(err);
           } else {
             callback(file);
@@ -270,8 +274,12 @@ module.exports = function() {
         for (var i = 0; i < gzippedFiles.length; i++) {
           var newName = gzippedFiles[i].replace(/.gz$/, '');
           fs.rename(gzippedFiles[i], newName, function(err) {
-            if (++asyncIndex == gzippedFiles.length) {
-              callback(false);
+            if (err) {
+              callback(err);
+            } else {
+              if (++asyncIndex == gzippedFiles.length) {
+                callback(false);
+              }
             }
           });
         }

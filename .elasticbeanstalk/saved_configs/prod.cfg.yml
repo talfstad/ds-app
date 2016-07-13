@@ -5,6 +5,7 @@ EnvironmentConfigurationMetadata:
 SolutionStack: 64bit Amazon Linux 2016.03 v2.1.0 running Docker 1.9.1
 OptionSettings:
   aws:elasticbeanstalk:command:
+    Timeout: '1200'
     BatchSize: '30'
     BatchSizeType: Percentage
     IgnoreHealthCheck: true
@@ -35,7 +36,7 @@ OptionSettings:
     SecurityGroups: sg-383bf45e
     RootVolumeSize: '10'
     IamInstanceProfile: aws-elasticbeanstalk-ec2-role
-    InstanceType: t2.small
+    InstanceType: t1.micro
     EC2KeyName: BuildcaveKeyPair
   aws:autoscaling:asg:
     MinSize: '1'

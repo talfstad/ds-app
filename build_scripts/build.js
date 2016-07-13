@@ -15,7 +15,6 @@ var requirejs = require('requirejs');
 var rimraf = require('rimraf');
 var zipFolder = require('zip-dir');
 var find = require('find');
-var purifycss = require('purifycss');
 var yuicompressor = require('yuicompressor');
 var CleanCSS = require('clean-css');
 var path = require('path');

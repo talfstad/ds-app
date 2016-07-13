@@ -5,6 +5,7 @@ EnvironmentConfigurationMetadata:
 SolutionStack: 64bit Amazon Linux 2016.03 v2.1.0 running Docker 1.9.1
 OptionSettings:
   aws:elasticbeanstalk:command:
+    Timeout: '1200'
     BatchSize: '30'
     BatchSizeType: Percentage
     IgnoreHealthCheck: true
