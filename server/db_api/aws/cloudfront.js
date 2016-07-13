@@ -1,11 +1,10 @@
-module.exports = function(db) {
+module.exports = function(app, db) {
 
   var module = {};
 
   var AWS = require('aws-sdk');
   var uuid = require('uuid');
   var moment = require('moment');
-  var config = require('../../config');
 
   return {
 
@@ -66,7 +65,7 @@ module.exports = function(db) {
               } else {
                 getInvalidation();
               }
-            }, config.cloudfront.invalidationPollDuration);
+            }, app.config.cloudfront.invalidationPollDuration);
           }
         });
       }

@@ -4,8 +4,7 @@ module.exports = function(app, passport) {
   var puid = new Puid(true);
   var bcrypt = require("bcrypt-nodejs");
   var validator = require('validator');
-  var config = require("../config");
-  var db = require("../db_api");
+  var db = require("../db_api")(app);
   var _ = require("underscore-node");
   var fs = require("fs");
 

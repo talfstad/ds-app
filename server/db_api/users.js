@@ -1,7 +1,6 @@
 module.exports = function(db) {
 
   var uuid = require('uuid');
-  var config = require("../config");
   var bcrypt = require("bcrypt-nodejs");
   var WPhasher = require('wordpress-hash-node');
 

@@ -2,8 +2,6 @@ module.exports = function(app, db) {
 
   var module = {};
 
-  var config = require("../config");
-
   module.deleteCampaign = function(user, attr) {
     
     var myJobId = attr.id;

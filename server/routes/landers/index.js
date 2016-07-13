@@ -1,9 +1,8 @@
 module.exports = function(app, passport) {
   var module = {};
 
-  var config = require("../../config");
   var Puid = require('puid');
-  var db = require("../../db_api");
+  var db = require("../../db_api")(app);
 
   var ripLander = require("./rip_lander")(app, passport);
   var copyLander = require("./copy_lander")(app, passport);

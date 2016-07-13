@@ -2,8 +2,6 @@ module.exports = function(app, db) {
 
   var module = {};
 
-  var config = require("../config");
-
   module.deleteDomain = function(user, attr) {
 
 

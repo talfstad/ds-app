@@ -2,7 +2,6 @@ module.exports = function(app, db) {
 
   var module = {};
 
-  var config = require("../../config");
   var optimizations = require("./optimizations")(app, db);
   var waitForOtherJobsToFinish = require("../common/wait_for_other_jobs_to_finish")(app, db);
 

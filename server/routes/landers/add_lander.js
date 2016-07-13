@@ -1,7 +1,6 @@
 module.exports = function(app, passport) {
 
-  var config = require("../../config");
-  var db = require("../../db_api");
+  var db = require("../../db_api")(app);
   var unzip = require("extract-zip");
   var fs = require("fs");
   var module = {

@@ -1,7 +1,7 @@
 module.exports = function(app, passport) {
   var module = {};
 
-  var db = require("../db_api");
+  var db = require("../db_api")(app);
 
 
   ////ACTIVE CAMPS BELONGING TO A LANDER!

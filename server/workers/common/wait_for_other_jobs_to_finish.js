@@ -2,8 +2,6 @@ module.exports = function(app, db) {
 
   var module = {};
 
-  var config = require("../../config");
-
   //must call statNextJobCallback when success/fail happens
   //this triggers the next job to fire
   //not concurrent
@@ -71,7 +69,7 @@ module.exports = function(app, db) {
 
     interval = setInterval(function() {
       checkOthersFinished();
-    }, config.workers.checkOthersFinishedRate);
+    }, app.config.workers.checkOthersFinishedRate);
 
 
   }

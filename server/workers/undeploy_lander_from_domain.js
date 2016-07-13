@@ -2,7 +2,6 @@ module.exports = function(app, db) {
 
   var module = {};
 
-  var config = require("../config");
   var waitForOtherJobsToFinish = require("./common/wait_for_other_jobs_to_finish")(app, db);
 
   //must call statNextJobCallback when success/fail happens

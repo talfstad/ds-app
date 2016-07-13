@@ -13,7 +13,14 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var methodOverride = require('method-override');
 var config = require("./config");
-var db = require("./db_api");
+//config
+var env = 'dev';
+if (process.argv[2] == 'prod') {
+   env = process.argv[2];
+}
+app.config = config[env];
+
+var db = require("./db_api")(app);
 
 //gzip
 var compress = require('compression');
@@ -26,7 +33,10 @@ app.use(bodyParser.json({
   limit: '20mb'
 }));
 
-app.use(cookieParser(config.cookieSecret)); // populates req.signedCookies
+
+
+
+app.use(cookieParser(app.config.cookieSecret)); // populates req.signedCookies
 //app.use(session({ secret: config.sessionSecret, resave: true, saveUninitialized: true }));
 
 app.use(bodyParser.urlencoded({
@@ -48,8 +58,8 @@ require("./routes")(app, login);
 http.globalAgent.maxSockets = 100
 
 //server
-http.createServer(app).listen(config.port, function() {
-  console.log('Express server listening on port ' + config.port);
+http.createServer(app).listen(app.config.port, function() {
+  console.log('Express server listening on port ' + app.config.port);
 });
 
 module.exports = app;

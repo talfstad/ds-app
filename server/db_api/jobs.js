@@ -1,6 +1,4 @@
-module.exports = function(db) {
-
-  var config = require('../config');
+module.exports = function(app, db) {
 
   return {
 
@@ -137,7 +135,7 @@ module.exports = function(db) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("CALL register_job(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [modelAttributes.deploy_status, config.id, modelAttributes.action, modelAttributes.alternate_action, true, modelAttributes.lander_id, modelAttributes.domain_id, modelAttributes.campaign_id, user_id, modelAttributes.master_job_id],
+          connection.query("CALL register_job(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [modelAttributes.deploy_status, app.config.id, modelAttributes.action, modelAttributes.alternate_action, true, modelAttributes.lander_id, modelAttributes.domain_id, modelAttributes.campaign_id, user_id, modelAttributes.master_job_id],
             function(err, docs) {
               if (err) {
                 console.log(err);

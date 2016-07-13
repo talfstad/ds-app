@@ -1,5 +1,3 @@
-var config = require("../config");
-
 var passport;
 var uuid = require('uuid');
 var db;
@@ -62,10 +60,10 @@ exports.initialize = function(app, db_ref) {
   });
   
   app.use(expressSession({
-    store: new RedisStore(config.redisConnectionInfo),
-    secret: config.cookieSecret,
+    store: new RedisStore(app.config.redisConnectionInfo),
+    secret: app.config.cookieSecret,
     resave: false,
-    cookie: { _expires: config.cookieMaxAge },
+    cookie: { _expires: app.config.cookieMaxAge },
     saveUninitialized: false
   }));
 

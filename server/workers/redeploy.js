@@ -2,7 +2,6 @@ module.exports = function(app, db) {
 
   var module = {};
 
-  var config = require("../config");
   var optimizations = require("./deploy_lander_to_domain/optimizations")(app, db);
 
 
@@ -134,7 +133,7 @@ module.exports = function(app, db) {
                       callback(false, job.staging_path);
                     }
                   });
-                }, config.workers.redeployCheckIfMasterReadyRate);
+                }, app.config.workers.redeployCheckIfMasterReadyRate);
               }
             };
 
@@ -161,7 +160,7 @@ module.exports = function(app, db) {
                       callback(false);
                     }
                   });
-                }, config.workers.redeployCheckIfMasterReadyRate);
+                }, app.config.workers.redeployCheckIfMasterReadyRate);
               }
             };
 
