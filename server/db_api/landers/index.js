@@ -1,8 +1,8 @@
-module.exports = function(db) {
+module.exports = function(app, db) {
 
   return {
 
-    common: require("./common")(db),
+    common: require("./common")(app, db),
 
     //save optimzations and modified
     updateAllLanderData: function(user, attr, callback) {

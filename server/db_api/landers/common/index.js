@@ -1,8 +1,8 @@
-module.exports = function(db) {
+module.exports = function(app, db) {
 
     var module = {};
 
-    module.add_lander = require('./add_lander')(db);
+    module.add_lander = require('./add_lander')(app, db);
     
     return module;
 

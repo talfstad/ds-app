@@ -1,7 +1,7 @@
-module.exports = function(db) {
+module.exports = function(app, db) {
 
   var htmlFileOptimizer = require("../../../optimizer")();
-  var dbAws = require('../../aws')(db);
+  var dbAws = require('../../aws')(app, db);
   var dbCommon = require('../../common')(db);
 
   var psi = require('psi');
