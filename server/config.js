@@ -11,8 +11,8 @@ module.exports = {
     connectionLimit: 10
   },
   redisConnectionInfo: {
-    // host: '52.39.113.167',
-    host: '10.35.0.166', //use for deployment
+   // host: '52.39.113.167',
+     host: '10.35.0.166', //use for deployment
     port: 6379,
     db: 0,
     pass: 'Wewillrockyou1986!',

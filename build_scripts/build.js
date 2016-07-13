@@ -103,9 +103,13 @@ var optimizeCss = function(options, callback) {
                 minify: true,
                 inline: true,
                 ignore: ['@font-face', /url\(/]
+              }, function(err, output) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false);
+                }
               });
-
-              callback(false);
             }
           });
         });
@@ -163,7 +167,7 @@ rimraf('./built', function(err) {
 
                   optimizeCss(htmlOptimizeOptions, function() {
                     //zip the archive for deployment
-                    zipFolder('built', {saveTo: 'built.zip'}, function(err) {
+                    zipFolder('built', { saveTo: 'built.zip' }, function(err) {
                       if (err) {
                         console.log("err: " + err);
                       } else {

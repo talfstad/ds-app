@@ -43,7 +43,7 @@ module.exports = function() {
                     if (err) {
                       callback(err);
                     } else {
-                      console.log("done with images");
+                      console.log("done with images USE TRIMAGE!");
                       module.gzipStagingFiles(stagingPath, function(err) {
                         if (err) {
                           callback(err);
