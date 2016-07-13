@@ -27,7 +27,6 @@
     "express-session": "1.13.0",
     "extract-zip": "*",
     "find": "*",
-    "gzipme": "0.0.9",
     "hbs": "*",
     "html-minifier": "*",
     "imagemin": "*",
@@ -54,6 +53,7 @@
     "underscore-node": "*",
     "util": "*",
     "uuid": "*",
+    "cheerio": "*",
     "validator": "*",
     "walk": "*",
     "website-scraper": "*",
@@ -64,13 +64,15 @@
   },
   "devDependencies": {
     "exec": "^0.2.1",
-    "mkdirp": "^0.5.1",
     "find": "*",
+    "mkdirp": "^0.5.1",
     "node-cmd": "^1.1.1",
+    "purifycss": "^1.1.9",
     "requirejs": "^2.2.0",
-    "yuicompressor": "*",
     "rimraf": "^2.5.2",
     "rsync": "^0.4.0",
+    "yuicompressor": "*",
+    "zip-dir": "^1.0.2",
     "zip-folder": "^1.0.0"
   }
 }

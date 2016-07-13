@@ -13,7 +13,7 @@ var mkdirp = require('mkdirp');
 var Rsync = require('rsync');
 var requirejs = require('requirejs');
 var rimraf = require('rimraf');
-var zipFolder = require('zip-folder');
+var zipFolder = require('zip-dir');
 var find = require('find');
 var purifycss = require('purifycss');
 var yuicompressor = require('yuicompressor');
@@ -65,6 +65,7 @@ var optimizeCss = function(options, callback) {
       //and rewrite the urls
       var data = cssFiles
         .map(function(filename) {
+          console.log("filename: " + filename);
           return '@import url(' + filename + ');';
         })
         .join('');
@@ -130,7 +131,7 @@ rimraf('./built', function(err) {
         var rsync = new Rsync()
           .source('.')
           .destination('built')
-          .exclude(['built', 'built.zip', '.ebignore', 'server/staging', '.elasticbeanstalk', 'CONFIG', '.jsbeautifyrc', '.gitignore', '.git', '.gitattributes', 'build_scripts'])
+          .exclude(['built', 'built.zip', 'node_modules', '.ebignore', 'server/staging', '.elasticbeanstalk', 'CONFIG', '.jsbeautifyrc', '.gitignore', '.git', '.gitattributes', 'build_scripts'])
           .flags('a') //archive mode
           .execute(function(err, stdout, stderr) {
 
@@ -163,7 +164,7 @@ rimraf('./built', function(err) {
 
                   optimizeCss(htmlOptimizeOptions, function() {
                     //zip the archive for deployment
-                    zipFolder('built', 'built.zip', function(err) {
+                    zipFolder('built', {saveTo: 'built.zip'}, function(err) {
                       if (err) {
                         console.log("err: " + err);
                       } else {

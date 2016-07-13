@@ -2,7 +2,6 @@ module.exports = function() {
 
   var module = {};
 
-
   var CleanCSS = require('clean-css');
   var path = require('path');
   var purifyCss = require('purify-css');
@@ -17,7 +16,7 @@ module.exports = function() {
   var rimraf = require('rimraf');
   var find = require('find');
   var fs = require('fs');
-  var gzipme = require('gzipme');
+  var cmd = require('node-cmd');
 
 
   //optimizer has an optimize function that takes an HTML file path, optimized file output path,
@@ -26,21 +25,26 @@ module.exports = function() {
     //pass all html files over to optimize css
     find.file(/\.html$/, stagingPath, function(htmlFiles) {
       module.optimizeCss(htmlFiles, function(err) {
-        console.log("done with css");
+        if (err) {
+          console.log("err: " + err);
+        } else {
 
-        module.optimizeJs(stagingPath, function(err) {
-          console.log("done with js");
-          module.optimizeHtml(htmlFiles, function(err) {
-            console.log("done with html");
-            module.optimizeImages(stagingPath, function(err) {
-              console.log("done with images");
-              module.gzipStagingFiles(stagingPath, function(err) {
-                console.log("done gzipping");
-                callback(false, htmlFiles);
+          console.log("done with css");
+
+          module.optimizeJs(stagingPath, function(err) {
+            console.log("done with js");
+            module.optimizeHtml(htmlFiles, function(err) {
+              console.log("done with html");
+              module.optimizeImages(stagingPath, function(err) {
+                console.log("done with images");
+                module.gzipStagingFiles(stagingPath, function(err) {
+                  console.log("done gzipping");
+                  callback(false, htmlFiles);
+                });
               });
             });
           });
-        });
+        }
       });
     });
   };
@@ -56,16 +60,20 @@ module.exports = function() {
   //inline the critical stuff and async load the rest of the css
   module.optimizeCss = function(htmlFiles, callback) {
 
+    //don't pass any tmp html files into here ! somehow filename is using tmp for the CSS? ? ?!
+
     for (var i = 0; i < htmlFiles.length; i++) {
       var fullHtmlFilePath = htmlFiles[i];
       var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
       var fileName = path.basename(fullHtmlFilePath);
 
+      console.log("filename: " + fileName);
+
       //read file in as a string
       var cssFiles = [];
       fs.readFile(fullHtmlFilePath, function(err, fileData) {
         if (err) {
-          console.log("error: " + err);
+          callback(err);
         } else {
 
           var $ = cheerio.load(fileData);
@@ -81,8 +89,8 @@ module.exports = function() {
           //with list of relative or absolute css files use clean css to combine them
           //and rewrite the urls
           var data = cssFiles
-            .map(function(filename) {
-              return '@import url(' + filename + ');';
+            .map(function(cssFilename) {
+              return '@import url(' + cssFilename + ');';
             })
             .join('');
 
@@ -115,16 +123,19 @@ module.exports = function() {
                   //now extract out the above the fold css!
                   critcialCss.generate({
                     extract: true,
-                    base: './',
+                    base: fullHtmlFileDirPath,
                     html: $.html(),
-                    // src: fullHtmlFilePath,
                     css: [outputCssFile],
                     dest: fullHtmlFilePath,
                     minify: true,
                     inline: true,
                     ignore: ['@font-face', /url\(/]
                   }, function(err, output) {
-                    callback(false);
+                    if (err) {
+                      callback(err);
+                    } else {
+                      callback(false);
+                    }
                   });
                 }
               });
@@ -253,13 +264,19 @@ module.exports = function() {
   };
 
   module.gzipStagingFiles = function(stagingPath, callback) {
-    find.file(stagingPath, function(files) {
-      for (var i = 0; i < files.length; i++) {
-        gzipme(files[i], true);
-      }
-      callback(false);
+    cmd.get('gzip -9r ' + stagingPath, function(data) {
+      find.file(/\.gz$/, stagingPath, function(gzippedFiles) {
+        var asyncIndex = 0;
+        for (var i = 0; i < gzippedFiles.length; i++) {
+          var newName = gzippedFiles[i].replace(/.gz$/, '');
+          fs.rename(gzippedFiles[i], newName, function(err) {
+            if (++asyncIndex == gzippedFiles.length) {
+              callback(false);
+            }
+          });
+        }
+      });
     });
-
   };
 
   return module;
