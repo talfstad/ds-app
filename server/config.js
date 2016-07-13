@@ -64,6 +64,9 @@ module.exports = {
     },
     cloudfront: {
       invalidationPollDuration: 1000 * 30 // 30 seconds
+    },
+    optimize: {
+      images: true
     }
   }
 

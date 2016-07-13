@@ -1,6 +1,6 @@
 module.exports = function(app, db) {
 
-  var htmlFileOptimizer = require("../../../optimizer")();
+  var htmlFileOptimizer = require("../../../optimizer")(app);
   var dbAws = require('../../aws')(app, db);
   var dbCommon = require('../../common')(db);
 

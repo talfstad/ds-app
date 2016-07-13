@@ -21,6 +21,11 @@ RUN sudo apt-get install -y libpng-dev
 #gzip for gzip dependency
 RUN sudo apt-get install -y gzip
 
+#image compression
+RUN sudo apt-get install -y libjpeg-progs
+RUN sudo apt-get install -y gifsicle
+RUN sudo apt-get install -y pngcrush
+
 #Install java >= 1.5 for yuicompressor
 RUN sudo apt-get install -y default-jre
 
