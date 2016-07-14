@@ -76,7 +76,7 @@ module.exports = function(app, db) {
 
       var getPagespeedScore = function(url, callback) {
         //6. pagespeed test endpoints (deployed endpoints, original and optimized)
-        psi(url, { strategy: 'desktop' }).then(data => {
+        psi(url, { strategy: 'mobile' }).then(data => {
           callback(false, data.ruleGroups.SPEED.score);
         });
       };
@@ -99,6 +99,7 @@ module.exports = function(app, db) {
               } else {
                 //TODO: validate credentials by creating archive bucket with name user.uid
                 endpoint.id = docs[0][0]["LAST_INSERT_ID()"];
+                console.log('OK');
                 callback(false, endpoint);
               }
               connection.release();

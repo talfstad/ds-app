@@ -5,14 +5,15 @@ EnvironmentConfigurationMetadata:
 SolutionStack: 64bit Amazon Linux 2016.03 v2.1.0 running Docker 1.9.1
 OptionSettings:
   aws:elasticbeanstalk:command:
-    Timeout: '1200'
+    Timeout: '3600'
     BatchSize: '30'
     BatchSizeType: Percentage
     IgnoreHealthCheck: true
     DeploymentPolicy: Rolling
   aws:elb:policies:
     ConnectionDrainingEnabled: true
-    ConnectionDrainingTimeout: '20'
+    ConnectionDrainingTimeout: '3600'
+    ConnectionSettingIdleTimeout: '3600'
   aws:elb:loadbalancer:
     ManagedSecurityGroup: sg-d83bf4be
     SecurityGroups: sg-d83bf4be
@@ -36,7 +37,7 @@ OptionSettings:
     SecurityGroups: sg-383bf45e
     RootVolumeSize: '10'
     IamInstanceProfile: aws-elasticbeanstalk-ec2-role
-    InstanceType: t1.micro
+    InstanceType: m1.small
     EC2KeyName: BuildcaveKeyPair
   aws:autoscaling:asg:
     MinSize: '1'
@@ -49,4 +50,4 @@ EnvironmentTier:
   Name: WebServer
 AWSConfigurationTemplateVersion: 1.1.0.0
 Tags:
-  env: test
+  env: prod

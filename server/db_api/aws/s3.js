@@ -503,6 +503,9 @@ module.exports = function(app, db) {
             }
           });
         }
+        if(noGzipListKeys.length <= 0){
+          callback(false);
+        }
       };
 
       var params = {

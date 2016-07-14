@@ -42,6 +42,7 @@ module.exports = function(app, passport) {
                   db.landers.common.add_lander.addOptimizePushSave(user, copyStagingPath, stagingDir, landerData, function(err, data) {
                     if (err) {
                       console.log('err: ' + err);
+                      callback(err);
                     } else {
                       callback(false, data);
                     }
