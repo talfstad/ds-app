@@ -63,7 +63,6 @@ module.exports = function(app) {
   };
 
 
-  //optimize Single HTML endpoint. not ideal for optimizing a whole directories worth
   //read all css files from endpoint into a string
   //concat them all into 1 string for yuicompressor
   //compress them all
@@ -74,11 +73,9 @@ module.exports = function(app) {
   module.optimizeCss = function(htmlFiles, callback) {
 
     //don't pass any tmp html files into here ! somehow filename is using tmp for the CSS? ? ?!
-
+    var asyncIndex = 0;
     for (var i = 0; i < htmlFiles.length; i++) {
       var fullHtmlFilePath = htmlFiles[i];
-      var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
-      var fileName = path.basename(fullHtmlFilePath);
 
       //read file in as a string
       var cssFiles = [];
@@ -86,17 +83,20 @@ module.exports = function(app) {
         if (err) {
           callback(err);
         } else {
+          //set to the async
+          fullHtmlFilePath = htmlFiles[asyncIndex];
+          var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
+          var fileName = path.basename(fullHtmlFilePath);
 
           var $ = cheerio.load(fileData);
 
           // get all the href's to minimize from the html file
           $('link[rel="stylesheet"]').each(function(i, link) {
             var href = $(this).attr("href");
-            // href = href.replace(/^\//, "");
             cssFiles.push(href);
             $(this).remove();
           });
-
+          console.log("FILENAME: " +fileName)
           //fix up the html endpoint file with our new CSS
           $('<link rel="stylesheet" type="text/css" href="' + fileName + '.css">').appendTo('head');
 
@@ -111,43 +111,43 @@ module.exports = function(app) {
           new CleanCSS({
             root: fullHtmlFileDirPath
           }).minify(data, function(error, minified) {
-            if (error)
-              throw error;
+            if (error) {
+              callback(err);
+            } else {
+              var styles = minified.styles;
 
-            var styles = minified.styles;
+              var purifyOptions = {
+                minify: true
+              };
 
-            var purifyOptions = {
-              minify: true
-            };
-
-            purifyCss($.html(), styles, purifyOptions, function(purifiedAndMinifiedResult) {
-
-              var outputCssFile = fullHtmlFilePath + ".css";
-
-              fs.writeFile(outputCssFile, purifiedAndMinifiedResult, function(err) {
-                if (err) {
-                  callback(err);
-                } else {
-                  //now extract out the above the fold css!
-                  criticalCss.generate({
-                    extract: true,
-                    base: fullHtmlFileDirPath,
-                    html: $.html(),
-                    css: [outputCssFile],
-                    dest: fullHtmlFilePath,
-                    minify: true,
-                    inline: true,
-                    ignore: ['@font-face', /url\(/]
-                  }, function(err, output) {
-                    if (err) {
-                      callback(err);
-                    } else {
-                      callback(false);
-                    }
-                  });
-                }
+              purifyCss($.html(), styles, purifyOptions, function(purifiedAndMinifiedResult) {
+                var outputCssFile = fullHtmlFilePath + ".css";
+                console.log("output file css: " + process.cwd() + '/' + outputCssFile);
+                fs.writeFile(outputCssFile, purifiedAndMinifiedResult, function(err) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    criticalCss.generate({
+                      base: fullHtmlFileDirPath,
+                      html: $.html(),
+                      css: [outputCssFile],
+                      dest: fullHtmlFilePath,
+                      minify: true,
+                      inline: true,
+                      ignore: ['@font-face', /url\(/]
+                    }, function(err, output) {
+                      if (err) {
+                        callback(err);
+                      } else {
+                        if (++asyncIndex == htmlFiles.length) {
+                          callback(false);
+                        }
+                      }
+                    });
+                  }
+                });
               });
-            });
+            }
           });
         }
       });
@@ -242,7 +242,7 @@ module.exports = function(app) {
           for (var i = 0; i < jpgImages.length; i++) {
             var image = jpgImages[i];
             //jpegtran -copy none -optimize -outfile pic4.jpg pic4.jpg
-            cmd.get('jpegtran -copy none -optimize -outfile ' + image + ' ' + image, function() {
+            cmd.get('nice jpegtran -copy none -optimize -outfile ' + image + ' ' + image, function() {
               if (++asyncIndex == jpgImages.length) {
                 callback(false);
               }
@@ -260,7 +260,7 @@ module.exports = function(app) {
           for (var i = 0; i < gifImages.length; i++) {
             var image = gifImages[i];
             //gifsicle Door_03_Artists.gif -o Door_03_Artists.gif.opt
-            cmd.get('gifsicle ' + image + ' -o ' + image, function() {
+            cmd.get('nice gifsicle ' + image + ' -o ' + image, function() {
               if (++asyncIndex == gifImages.length) {
                 callback(false);
               }
@@ -277,7 +277,7 @@ module.exports = function(app) {
           var asyncIndex = 0;
           for (var i = 0; i < pngImages.length; i++) {
             var image = pngImages[i];
-            cmd.get('pngcrush ' + image + ' ' + image + ' &> /dev/null', function() {
+            cmd.get('nice pngcrush ' + image + ' ' + image + ' &> /dev/null', function() {
               if (++asyncIndex == pngImages.length) {
                 callback(false);
               }
@@ -315,13 +315,13 @@ module.exports = function(app) {
         });
       } else {
         //uncompress the gz version of the file
-        cmd.get('gzip --uncompress ' + file, function(data) {
+        cmd.get('nice gzip --uncompress ' + file, function(data) {
           callback(false);
         });
       }
     };
 
-    cmd.get('gzip -9r ' + stagingPath, function(data) {
+    cmd.get('nice gzip -9r ' + stagingPath, function(data) {
       find.file(/\.gz$/, stagingPath, function(gzippedFiles) {
         var asyncIndex = 0;
         for (var i = 0; i < gzippedFiles.length; i++) {
