@@ -32,7 +32,8 @@ module.exports = {
     },
     optimize: {
       images: false
-    }
+    },
+    noGzipArr: ['mp4']
   },
 
   prod: {
@@ -67,9 +68,7 @@ module.exports = {
     },
     optimize: {
       images: true
-    }
+    },
+    noGzipArr: ['mp4']
   }
-
-
-
 };

@@ -9,7 +9,7 @@ module.exports = function(app, db) {
 
   return {
 
-    deleteDir: function(credentials, bucketName, dirPath, callback){
+    deleteDir: function(credentials, bucketName, dirPath, callback) {
       AWS.config.update({
         region: 'us-west-2',
         maxRetries: 0
@@ -129,21 +129,14 @@ module.exports = function(app, db) {
       };
 
       aws_s3_client.deleteBucket(params, function(err, data) {
-
         if (err) {
-
           console.log(err, err.stack); // an error occurred
           callback(err)
-
         } else {
-
           // console.log("successfully deleted bucket" + bucketName); // successful response
           callback(false, data);
-
         }
-
       });
-
     },
 
     checkIfBucketExists: function(credentials, bucketName, callback) {
@@ -453,12 +446,22 @@ module.exports = function(app, db) {
     },
 
     copyGzippedDirFromStagingToS3: function(stagingPath, credentials, username, bucketName, directory, callback) {
+      var noGzipListKeys = [];
+
       var fullDir;
       if (directory) {
         fullDir = directory;
       } else {
         fullDir = username;
       }
+
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+      AWS.config.update(credentials);
+
+      var aws_s3_client = new AWS.S3();
 
       var s3_client = s3.createClient({
         maxAsyncS3: 20, // this is the default
@@ -472,6 +475,35 @@ module.exports = function(app, db) {
           region: app.config.awsRegion,
         }
       });
+
+      var updateContentEncodingForNoGzipKeys = function(callback) {
+        var asyncIndex = 0;
+        for (var i = 0; i < noGzipListKeys.length; i++) {
+          var key = noGzipListKeys[i];
+          var copySource = encodeURI(bucketName + "/" + key);
+
+          var params = {
+            Bucket: bucketName,
+            CopySource: copySource,
+            Key: key,
+            MetadataDirective: 'REPLACE',
+            ACL: "public-read",
+            CacheControl: 'max-age=604800',
+            Expires: new Date || 'Wed Dec 31 1969 16:00:00 GMT-0800 (PST)' || 123456789,
+          };
+
+          aws_s3_client.copyObject(params, function(err, data) {
+            if (err) {
+              console.log("ERROR COPYOBJ: " + err);
+              callback(err);
+            } else {
+              if (++asyncIndex == noGzipListKeys.length) {
+                callback(false);
+              }
+            }
+          });
+        }
+      };
 
       var params = {
         localDir: stagingPath,
@@ -491,8 +523,18 @@ module.exports = function(app, db) {
       uploader.on("error", function(err) {
         callback(err);
       });
+
+      uploader.on('fileUploadEnd', function(localFilePath, s3Key) {
+        //get the key push it on an arr of things to change the content encoding on after
+        var ext = localFilePath.split('.').pop();
+        if (app.config.noGzipArr.indexOf(ext) > -1) {
+          noGzipListKeys.push(s3Key);
+        }
+      });
       uploader.on("end", function() {
-        callback();
+        updateContentEncodingForNoGzipKeys(function() {
+          callback();
+        });
       });
 
     },

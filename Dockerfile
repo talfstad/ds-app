@@ -15,16 +15,13 @@ RUN sudo apt-get install -y nodejs
 #phantomJS libfont dependency
 RUN sudo apt-get install -y libfontconfig
 
-#image optimization
-RUN sudo apt-get install -y libpng-dev
-
 #gzip for gzip dependency
 RUN sudo apt-get install -y gzip
 
 #image compression
-RUN sudo apt-get install -y libjpeg-progs
-RUN sudo apt-get install -y gifsicle
-RUN sudo apt-get install -y pngcrush
+RUN sudo apt-get install -y libjpeg-progs #jpegtran
+RUN sudo apt-get install -y gifsicle #gifsicle
+RUN sudo apt-get install -y pngcrush #pngcrush
 
 #Install java >= 1.5 for yuicompressor
 RUN sudo apt-get install -y default-jre
