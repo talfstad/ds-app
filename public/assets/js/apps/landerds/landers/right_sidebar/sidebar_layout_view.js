@@ -43,21 +43,25 @@ define(["app",
           var username = Landerds.loginModel.get("username");
           var s3FolderName = this.model.get("s3_folder_name");
           var filename = $(".preview-link-endpoints-select option:selected").text().trim();
-          var link = "http://" + rootBucket + ".s3-website-us-west-2.amazonaws.com/" + username + "/landers/" + s3FolderName + "/" + filename;
+          var link = "http://" + rootBucket + ".s3-website-us-west-2.amazonaws.com/" + username + "/landers/" + s3FolderName + "/optimized/" + filename;
 
           window.open(link, '_blank');
           return false;
 
         },
 
-        getPageSpeedLink: function() {
+        getPageSpeedLink: function(optimized) {
+          var folder = 'original';
+          if (optimized) {
+            folder = 'optimized';
+          }
 
           // <aws_root_bucket>.s3-website-us-west-2.amazonaws.com/<user>/landers/<s3_folder_name>
           var rootBucket = Landerds.loginModel.get("aws_root_bucket");
           var username = Landerds.loginModel.get("username");
           var s3FolderName = this.model.get("s3_folder_name");
           var filename = $(".preview-link-endpoints-select option:selected").text().trim();
-          var link = "http://" + rootBucket + ".s3-website-us-west-2.amazonaws.com/" + username + "/landers/" + s3FolderName + "/" + filename;
+          var link = "http://" + rootBucket + ".s3-website-us-west-2.amazonaws.com/" + username + "/landers/" + s3FolderName + "/" + folder + "/" + filename;
           var pageSpeedLink = "https://developers.google.com/speed/pagespeed/insights/?url=" + link;
           return pageSpeedLink;
         },
@@ -198,7 +202,7 @@ define(["app",
             series: [{
               data: [66],
               dataLabels: {
-                format: '<div style="text-align:center"><span style="font-size:25px"><a href="'+ encodeURI(me.getPageSpeedLink()) +'" target="_blank">{y}</span></a><br/>' +
+                format: '<div style="text-align:center"><span style="font-size:25px"><a href="' + encodeURI(me.getPageSpeedLink()) + '" target="_blank">{y}</span></a><br/>' +
                   '<span style="font-size:10px;color:rgb(102,102,102)">Original</span></div>'
               }
             }]
@@ -207,7 +211,7 @@ define(["app",
 
           // The RPM gauge
           $('#optimized-lander-pagespeed').highcharts(Highcharts.merge(gaugeOptions, {
-           
+
             credits: {
               enabled: false
             },
@@ -215,10 +219,10 @@ define(["app",
             series: [{
               data: [90],
               dataLabels: {
-                format: '<div style="text-align:center"><span style="font-size:25px;"><a href="#"">{y}</a></span><br/>' +
-                  '<span style="font-size:10px;color:rgb(102,102,102)">Optimized</span></div>'
+                format: '<div style="text-align:center"><span style="font-size:25px"><a href="' + encodeURI(me.getPageSpeedLink(true)) + '" target="_blank">{y}</span></a><br/>' +
+                  '<span style="font-size:10px;color:rgb(102,102,102)">Original</span></div>'
               }
-              
+
             }]
 
           }));

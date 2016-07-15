@@ -67,7 +67,7 @@
       Original Lander
     </td>
     <td align="right" style="width: 30px;">
-        <a href="#"><span class="fa fa-download"></span></a>
+        <a href="/api/landers/download?version=original&id=<%= id %>"><span class="fa fa-download"></span></a>
     </td>
   </tr>
   <tr>
@@ -75,7 +75,7 @@
       Optimized Lander
     </td>
     <td align="right" style="width: 30px;">
-        <a href="#"><span class="fa fa-download"></span></a>
+        <a href="/api/landers/download?version=optimized&id=<%= id %>"><span class="fa fa-download"></span></a>
     </td>
   </tr>
 </table>

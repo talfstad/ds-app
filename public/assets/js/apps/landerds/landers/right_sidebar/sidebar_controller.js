@@ -17,17 +17,6 @@ define(["app",
 
         landerModel: null,
 
-        //needed to make animations correct sets width etc. for initial opening
-        loadLandersSideMenu: function() {
-          this.landerModel = new SidebarModel();
-
-          this.sidebarView = new SidebarLayoutView({
-            model: this.landerModel
-          });
-
-          Landerds.rootRegion.currentView.rightSidebarRegion.show(this.sidebarView);
-        },
-
         //save even if not modified because it might not be deployed
         //in which case we would want to save it anyway
         updateToModifiedAndSave: function() {

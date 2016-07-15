@@ -187,6 +187,7 @@ define(["app",
       },
 
       defaults: {
+        id: null,
         name: "",
         created_on: "",
         urlEndpointsJSON: [],

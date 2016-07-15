@@ -88,9 +88,6 @@ define(["app",
         removeCampaignFromLander: function(campaignModel) {
           ListController.removeCampaignFromLander(campaignModel);
         },
-        loadLandersSideMenu: function(d) {
-          SidemenuController.loadLandersSideMenu();
-        },
         updateToModifiedAndSave: function() {
           SidemenuController.updateToModifiedAndSave();
         },
@@ -120,7 +117,6 @@ define(["app",
 
       Landerds.on("landers:list", function() {
         landersAppAPI.showLanders();
-        landersAppAPI.loadLandersSideMenu();
       });
 
       Landerds.on("landers:opensidebar", function(model) {
