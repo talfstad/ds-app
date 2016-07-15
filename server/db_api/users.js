@@ -140,7 +140,7 @@ module.exports = function(db) {
                 if (docs[0].aws_root_bucket) {
                   aws_root_bucket = docs[0].aws_root_bucket;
                 }
-                callback(null, access_key_id, secret_access_key, aws_root_bucket)
+                callback(false, access_key_id, secret_access_key, aws_root_bucket)
               } else {
                 callback("Unable to get user settings for user: " + user, null);
               }

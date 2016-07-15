@@ -6,7 +6,8 @@ module.exports = function(app, db) {
   var AWS = require('aws-sdk');
   var uuid = require('uuid');
   var mkdirp = require('mkdirp');
-
+  var path = require('path');
+  
   return {
 
     deleteDir: function(credentials, bucketName, dirPath, callback) {
@@ -589,7 +590,7 @@ module.exports = function(app, db) {
     copyDirFromS3ToStaging: function(stagingPath, credentials, username, bucketName, directory, callback) {
       var fullDir;
       if (directory) {
-        fullDir = username + directory;
+        fullDir = path.join(username, directory);
       } else {
         fullDir = username;
       }

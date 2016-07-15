@@ -1,5 +1,4 @@
 module.exports = function(app, passport) {
-  var module = {};
 
   var Puid = require('puid');
   var db = require("../../db_api")(app);
@@ -7,6 +6,7 @@ module.exports = function(app, passport) {
   var ripLander = require("./rip_lander")(app, passport);
   var copyLander = require("./copy_lander")(app, passport);
   var addLander = require("./add_lander")(app, passport);
+  var downloadLander = require("./download_lander")(app, passport);
 
   app.get('/api/landers', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
@@ -92,7 +92,27 @@ module.exports = function(app, passport) {
 
   });
 
+  app.get('/api/landers/download', passport.isAuthenticated(), function(req, res) {
+    var user = req.user;
 
-  return module;
-
+    //get which one to download?
+    //?version=optimized&id=s3_folder_name
+    var version = req.query.version;
+    var lander_id = req.query.id;
+    if (version == 'optimized' || version == 'original') {
+      if (lander_id) {
+        downloadLander[version](user, lander_id, function(err, fileName, callback) {
+          if (err) {
+            res.json({error: err})
+          } else {
+            res.download(fileName, callback);
+          }
+        });
+      } else {
+        res.json({ error: 'No valid id in request' });
+      }
+    } else {
+      res.json({ error: 'No valid Version to get' });
+    }
+  });
 }

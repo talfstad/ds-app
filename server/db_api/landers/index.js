@@ -553,6 +553,7 @@ module.exports = function(app, db) {
             connection.query(queryString, [user_id], function(err, dblanders) {
               if (err) {
                 console.log(err);
+                callback(err);
               } else {
                 var idx = 0;
                 for (var i = 0; i < dblanders.length; i++) {
