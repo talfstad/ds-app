@@ -416,7 +416,7 @@ module.exports = function(app, db) {
           if (err) {
             console.log(err);
           } else {
-            connection.query("SELECT id,filename,lander_id from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.id],
+            connection.query("SELECT id,filename,lander_id,original_pagespeed,optimized_pagespeed from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.id],
               function(err, dbUrlEndpoints) {
                 if (err) {
                   callback(err);

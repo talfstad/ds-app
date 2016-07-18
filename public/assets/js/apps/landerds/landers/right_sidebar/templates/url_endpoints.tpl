@@ -1,7 +1,7 @@
 <div class="select-with-button" style="width: 163px">
   <select class="preview-link-endpoints-select select2-single form-control">
     <% _.each(urlEndpointsJSON, function(endpoint){ %>
-      <option value="">
+      <option value="<%= endpoint.id %>">
         <%= endpoint.filename %>
       </option>
       <% }) %>

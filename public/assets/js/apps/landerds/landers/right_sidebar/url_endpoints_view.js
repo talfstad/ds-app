@@ -14,8 +14,7 @@ define(["app",
           "click .open-preview-link": "openPreviewLink"
         },
 
-        modelEvents: {
-        },
+        modelEvents: {},
 
         openPreviewLink: function(e) {
           e.preventDefault();
@@ -25,13 +24,13 @@ define(["app",
           var username = Landerds.loginModel.get("username");
           var s3FolderName = this.model.get("s3_folder_name");
           var filename = $(".preview-link-endpoints-select option:selected").text().trim();
-          var link = "http://" + rootBucket + ".s3-website-us-west-2.amazonaws.com/" + username + "/landers/" + s3FolderName + "/optimized/" + filename;
+          var link = "http://" + rootBucket + ".s3-website-us-west-2.amazonaws.com/" + username + "/landers/" + s3FolderName + "/original/" + filename;
 
           window.open(link, '_blank');
           return false;
         },
 
-    
+
         onBeforeRender: function() {
           urlEndpoints = this.model.get("urlEndpoints");
           var urlEndpointsJSON;
@@ -40,7 +39,26 @@ define(["app",
           } else {
             urlEndpointsJSON = [];
           }
+          // var urlEndpointsJSON = [{
+          //   "id": 280,
+          //   "filename": "zzindex.html",
+          //   "lander_id": 2,
+          //   "activeSnippets": []
+          // },{
+          //   "id": 280,
+          //   "filename": "index.html",
+          //   "lander_id": 2,
+          //   "activeSnippets": []
+          // },
+          // {
+          //   "id": 280,
+          //   "filename": "3index.html",
+          //   "lander_id": 2,
+          //   "activeSnippets": []
+          // }];
+
           this.model.set("urlEndpointsJSON", urlEndpointsJSON);
+          this.model.set("currentPreviewEndpointId", urlEndpointsJSON[0].id);
         },
 
         onRender: function() {
@@ -49,6 +67,8 @@ define(["app",
           //disable open preview link if no endpoints
           if (this.model.get("urlEndpointsJSON").length <= 0) {
             this.$el.find(".open-preview-link").addClass("disabled");
+          } else {
+
           }
         }
       });

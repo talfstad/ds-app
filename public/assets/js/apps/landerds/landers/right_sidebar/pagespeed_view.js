@@ -11,6 +11,11 @@ define(["app",
       RightSidebar.PagespeedView = Marionette.ItemView.extend({
         template: PagespeedTpl,
 
+        modelEvents: {
+          "change:currentPrevewEndpointId": "render"
+        },
+
+
         getPageSpeedLink: function(optimized) {
           var folder = 'original';
           if (optimized) {
@@ -27,8 +32,15 @@ define(["app",
           return pageSpeedLink;
         },
 
-        onDomRefresh: function() {
+        showPagespeedGraphs: function() {
           var me = this;
+
+          var currentEndpoint = this.model.get("urlEndpoints").get(this.model.get("currentPreviewEndpointId"));
+
+          var originalPagespeed = currentEndpoint.get("original_pagespeed");
+          var optimizedPagespeed = currentEndpoint.get("optimized_pagespeed");
+
+
           var gaugeOptions = {
             credits: false,
             chart: {
@@ -98,38 +110,41 @@ define(["app",
           };
 
           // The speed gauge
-          $('#original-lander-pagespeed').highcharts(Highcharts.merge(gaugeOptions, {
+          this.$el.find('#original-lander-pagespeed').highcharts(Highcharts.merge(gaugeOptions, {
             credits: {
               enabled: false
             },
 
             series: [{
-              data: [66],
+              data: [originalPagespeed],
               dataLabels: {
                 format: '<div style="text-align:center"><span style="font-size:25px"><a href="' + encodeURI(me.getPageSpeedLink()) + '" target="_blank">{y}</span></a><br/>' +
                   '<span style="font-size:10px;color:rgb(102,102,102)">Original</span></div>'
               }
             }]
-
           }));
 
           // The RPM gauge
-          $('#optimized-lander-pagespeed').highcharts(Highcharts.merge(gaugeOptions, {
+          this.$el.find('#optimized-lander-pagespeed').highcharts(Highcharts.merge(gaugeOptions, {
 
             credits: {
               enabled: false
             },
-
             series: [{
-              data: [90],
+              data: [optimizedPagespeed],
               dataLabels: {
                 format: '<div style="text-align:center"><span style="font-size:25px"><a href="' + encodeURI(me.getPageSpeedLink(true)) + '" target="_blank">{y}</span></a><br/>' +
                   '<span style="font-size:10px;color:rgb(102,102,102)">Original</span></div>'
               }
 
             }]
-
           }));
+        },
+
+        onRender: function() {
+          if (this.model.get("currentPreviewEndpointId")) {
+            this.showPagespeedGraphs();
+          }
         }
       });
 
