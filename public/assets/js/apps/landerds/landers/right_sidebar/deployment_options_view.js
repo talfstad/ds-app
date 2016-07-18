@@ -1,18 +1,18 @@
 define(["app",
-    "tpl!assets/js/apps/landerds/landers/right_sidebar/templates/optimizations.tpl",
+    "tpl!assets/js/apps/landerds/landers/right_sidebar/templates/deployment_options.tpl",
     "select2",
     "syphon"
   ],
-  function(Landerds, NameOptimizationsTpl) {
+  function(Landerds, DeploymentOptionsTpl) {
 
     Landerds.module("LandersApp.RightSidebar", function(RightSidebar, Landerds, Backbone, Marionette, $, _) {
-      RightSidebar.NameOptimizationsView = Marionette.ItemView.extend({
+      RightSidebar.DeploymentOptionsView = Marionette.ItemView.extend({
 
         initialize: function() {
 
         },
 
-        template: NameOptimizationsTpl,
+        template: DeploymentOptionsTpl,
 
         events: {
           "change #optimized": "landerIsModified",
@@ -64,5 +64,5 @@ define(["app",
 
       });
     });
-    return Landerds.LandersApp.RightSidebar.NameOptimizationsView;
+    return Landerds.LandersApp.RightSidebar.DeploymentOptionsView;
   });

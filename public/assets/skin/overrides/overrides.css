@@ -472,3 +472,8 @@ body.sb-l-o #topbar.affix,
 .active_campaigns_region {
     font-size: 14px;
 }
+
+
+.menu-buttons-region {
+    background-color: #fff;
+}

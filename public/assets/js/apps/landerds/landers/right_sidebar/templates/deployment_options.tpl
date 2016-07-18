@@ -1,25 +1,3 @@
-<!--<h5 class="title-divider mt20 mb0"><span style="">Page Speed Optimizations</span>
-              <a style="float: right" href="#">
-                <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
-              </a>
-            </h5>
- <table class="optimizations-table table">
-  <tr>
-    <td>Fully Optimize Lander</td>
-    <td>
-      <label class="pull-right switch switch-success switch-round block mn">
-        <% if(optimized) { %>
-          <input type="checkbox" checked name="optimized" id="optimized" value="angular">
-          <% } else { %>
-            <input type="checkbox" name="optimized" id="optimized" value="angular">
-            <% } %>
-              <label for="optimized" data-on="YES" data-off="NO"></label>
-      </label>
-    </td>
-  </tr>
-</table> -->
-
-
 <h5 class="title-divider mt20 mb10"><span style="">Deployment Folder Name</span>
               <a style="float: right" href="#">
                 <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>

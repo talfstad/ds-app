@@ -1,13 +1,15 @@
 define(["app",
     "assets/js/apps/landerds/landers/right_sidebar/sidebar_layout_view",
-    "assets/js/apps/landerds/landers/right_sidebar/optimizations_view",
+    "assets/js/apps/landerds/landers/right_sidebar/deployment_options_view",
+    "assets/js/apps/landerds/landers/right_sidebar/url_endpoints_view",
+    "assets/js/apps/landerds/landers/right_sidebar/pagespeed_view",
     "assets/js/apps/landerds/landers/dao/sidebar_model",
     "assets/js/apps/landerds/landers/right_sidebar/js_snippets/views/active_snippets_list_view",
     "assets/js/apps/landerds/landers/right_sidebar/menu_buttons_view",
     "assets/js/apps/landerds/landers/right_sidebar/lander_modified_view",
     "assets/js/common/notification",
   ],
-  function(Landerds, SidebarLayoutView, OptimizationsView, SidebarModel, ActiveJsSnippetsListView,
+  function(Landerds, SidebarLayoutView, DeploymentOptionsView, UrlEndpointsView, PagespeedView, SidebarModel, ActiveJsSnippetsListView,
     SidebarMenuButtonsView, LanderModifiedView, Notification) {
     Landerds.module("LandersApp.RightSidebar", function(RightSidebar, Landerds, Backbone, Marionette, $, _) {
 
@@ -49,14 +51,22 @@ define(["app",
             model: model
           });
 
-          var optimizationView = new OptimizationsView({
+          var deploymentOptionsView = new DeploymentOptionsView({
+            model: model
+          });
+
+          var urlEndpointsView = new UrlEndpointsView({
+            model: model
+          })
+
+          var pagespeedView = new PagespeedView({
             model: model
           });
 
           //when optimizations modified save them and set correct deploy status
           //when changing deploy status must start with the deployed locations status
           //it will propogate up to the lander model
-          optimizationView.on("modified", function(isModified) {
+          deploymentOptionsView.on("modified", function(isModified) {
             if (isModified) {
               model.set("modified", true);
             } else {
@@ -107,11 +117,15 @@ define(["app",
           this.showAndReFilterActiveSnippetsView(model);
           //menu buttons
           Landerds.rootRegion.currentView.rightSidebarRegion.currentView.menuButtonsRegion.show(sidebarMenuButtonsView);
-          //optimization region view
-          Landerds.rootRegion.currentView.rightSidebarRegion.currentView.nameAndOptimizationsRegion.show(optimizationView);
           //lander modified area
           Landerds.rootRegion.currentView.rightSidebarRegion.currentView.landerModifiedRegion.show(landerModifiedView);
-          //open
+          //url endpoints view
+          Landerds.rootRegion.currentView.rightSidebarRegion.currentView.urlEndpointsRegion.show(urlEndpointsView);
+          //pagespeed endpoints view
+          Landerds.rootRegion.currentView.rightSidebarRegion.currentView.pagespeedRegion.show(pagespeedView);
+          //deployment options region view
+          Landerds.rootRegion.currentView.rightSidebarRegion.currentView.deploymentOptionsRegion.show(deploymentOptionsView);
+          
           setTimeout(this.sidebarView.openSidebar, 20);
         },
 
