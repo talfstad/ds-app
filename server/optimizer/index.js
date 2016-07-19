@@ -34,28 +34,28 @@ module.exports = function(app) {
               callback(err);
             } else {
               console.log("done with js");
-              // module.optimizeHtml(htmlFiles, function(err) {
-              //   if (err) {
-              //     callback(err);
-              //   } else {
-              //     console.log("done with html");
-              //     module.optimizeImages(stagingPath, function(err) {
-              //       if (err) {
-              //         callback(err);
-              //       } else {
-              //         console.log("done with images");
-              //         // module.gzipStagingFiles(stagingPath, function(err) {
-              //         //   if (err) {
-              //         //     callback(err);
-              //         //   } else {
-              //         //     console.log("done gzipping");
-              //         //     callback(false, htmlFiles);
-              //         //   }
-              //         // });
-              //       }
-              //     });
-              //   }
-              // });
+              module.optimizeHtml(htmlFiles, function(err) {
+                if (err) {
+                  callback(err);
+                } else {
+                  console.log("done with html");
+                  module.optimizeImages(stagingPath, function(err) {
+                    if (err) {
+                      callback(err);
+                    } else {
+                      console.log("done with images");
+                      module.gzipStagingFiles(stagingPath, function(err) {
+                        if (err) {
+                          callback(err);
+                        } else {
+                          console.log("done gzipping");
+                          callback(false, htmlFiles);
+                        }
+                      });
+                    }
+                  });
+                }
+              });
             }
           });
         }
@@ -82,7 +82,8 @@ module.exports = function(app) {
       };
 
       purifyCss(html, styles, purifyOptions, function(purifiedAndMinifiedResult) {
-        var outputCssFile = fileName + ".css";
+        var outputCssFile = path.join(fullHtmlFileDirPath, fileName + ".css");
+
         fs.writeFile(fullHtmlFilePath, html, function(err) {
           if (err) {
             callback(err);
@@ -93,8 +94,8 @@ module.exports = function(app) {
               } else {
                 //args htmlFilePath, cssOutputFile
                 //runs in its own thread so it will clean up its stupid ass tmp files
-                cmd.get("node ./optimizer/critical_css_thread " + fullHtmlFileDirPath + " " + outputCssFile + " " + fileName, function(output) {
-                  console.log("node output: " + output);
+                cmd.get("node ./optimizer/critical_css_thread " + fullHtmlFilePath + " " + outputCssFile + " " + fileName, function(output) {
+                  // console.log("node output: " + output);
                   callback(false);
                 });
               }
