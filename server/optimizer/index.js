@@ -20,12 +20,14 @@ module.exports = function(app) {
 
   //optimizer has an optimize function that takes an HTML file path, optimized file output path,
   module.fullyOptimize = function(stagingPath, callback) {
+    console.log("fully optimized called");
 
     //pass all html files over to optimize css
     find.file(/\.html$/, stagingPath, function(htmlFiles) {
       module.optimizeCss(htmlFiles, function(err) {
         if (err) {
           console.log("err: " + err);
+          callback(err);
         } else {
           console.log("done with css");
           module.optimizeJs(stagingPath, function(err) {
@@ -96,8 +98,9 @@ module.exports = function(app) {
             cssFiles.push(href);
             $(this).remove();
           });
-          console.log("FILENAME: " +fileName)
-          //fix up the html endpoint file with our new CSS
+
+          console.log("filename for css: " + fileName);
+            //fix up the html endpoint file with our new CSS
           $('<link rel="stylesheet" type="text/css" href="' + fileName + '.css">').appendTo('head');
 
           //with list of relative or absolute css files use clean css to combine them
@@ -122,7 +125,6 @@ module.exports = function(app) {
 
               purifyCss($.html(), styles, purifyOptions, function(purifiedAndMinifiedResult) {
                 var outputCssFile = fullHtmlFilePath + ".css";
-                console.log("output file css: " + process.cwd() + '/' + outputCssFile);
                 fs.writeFile(outputCssFile, purifiedAndMinifiedResult, function(err) {
                   if (err) {
                     callback(err);
@@ -137,6 +139,7 @@ module.exports = function(app) {
                       ignore: ['@font-face', /url\(/]
                     }, function(err, output) {
                       if (err) {
+                        console.log("err critical css: " + err);
                         callback(err);
                       } else {
                         if (++asyncIndex == htmlFiles.length) {
@@ -192,23 +195,20 @@ module.exports = function(app) {
 
 
   module.optimizeHtml = function(htmlFiles, callback) {
-    var asyncIndex = 0;
-    for (var i = 0; i < htmlFiles.length; i++) {
-      var htmlFile = htmlFiles[i];
 
+    var readHtmlFile = function(htmlFile, callback) {
+      fs.readFile(htmlFile, 'utf8', function(err, file) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(file);
+        }
+      });
+    };
 
-      var readHtmlFile = function(htmlFile, callback) {
-        fs.readFile(htmlFile, 'utf8', function(err, file) {
-          if (err) {
-            callback(err);
-          } else {
-            callback(file);
-          }
-        });
-      };
-
-      readHtmlFile(htmlFile, function(file) {
-        var minifiedFile = htmlMinifier(file, {
+    var minifyHtmlFile = function(filePath, fileData, callback) {
+      try {
+        var minifiedFile = htmlMinifier(fileData, {
           removeAttributeQuotes: true,
           collapseWhitespace: true,
           collapseInlineTagWhitespace: true,
@@ -219,9 +219,23 @@ module.exports = function(app) {
           minifyJS: true,
           removeEmptyAttributes: true
         });
-        fs.writeFile(htmlFiles[asyncIndex], minifiedFile, function(err) {
+
+        fs.writeFile(filePath, minifiedFile, function(err) {
+          callback(false);
+        });
+      } catch (err) {
+        // console.log("err minify html, probably parse error ...");
+        callback(false);//callback false because we just want to keep chugging html files
+      }
+    };
+
+    var asyncIndex = 0;
+    for (var i = 0; i < htmlFiles.length; i++) {
+
+      readHtmlFile(htmlFiles[i], function(file) {
+        minifyHtmlFile(htmlFiles[asyncIndex], file, function(err) {
+          //ignore error, just dont do anything
           if (++asyncIndex == htmlFiles.length) {
-            //- callback when done                
             callback(false);
           }
         });
@@ -277,17 +291,18 @@ module.exports = function(app) {
           var asyncIndex = 0;
           for (var i = 0; i < pngImages.length; i++) {
             var image = pngImages[i];
-            cmd.get('nice pngcrush ' + image + ' ' + image + ' &> /dev/null', function() {
+            cmd.get('nice pngcrush -rem alla -nofilecheck -reduce -m 7 -ow ' + image + ' &> /dev/null', function() {
               if (++asyncIndex == pngImages.length) {
                 callback(false);
               }
             });
           }
           if (pngImages.length <= 0) {
+            console.log("image optimization got executed");
             callback(false);
           }
         });
-      }
+      };
 
       optimizePng(function() {
         optimizeJpg(function() {

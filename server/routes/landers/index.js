@@ -41,15 +41,9 @@ module.exports = function(app, passport) {
 
       ripLander.new(user, landerData, function(err, returnData) {
         if (err) {
-          res.json({ error: err });
+          res.json({ err: err });
         } else {
-          res.json({
-            id: landerData.id,
-            created_on: landerData.created_on,
-            urlEndpointsJSON: landerData.urlEndpoints,
-            s3_folder_name: landerData.s3_folder_name,
-            deployment_folder_name: landerData.deployment_folder_name
-          });
+          res.json(returnData);
         }
       });
 

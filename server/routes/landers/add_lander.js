@@ -13,7 +13,6 @@ module.exports = function(app, passport) {
       //get filename
       var stagingDir = lander_file.filename;
       var stagingPath = "staging/" + lander_file.filename;
-      var copyStagingPath = stagingPath;
       var sourcePathZip = stagingPath + ".zip";
 
       //rename it to .zip
@@ -35,11 +34,11 @@ module.exports = function(app, passport) {
                 } else {
                   if (files.length == 1) {
                     //set stagingDir to include this file
-                    copyStagingPath += "/" + files[0];
+                    stagingPath += "/" + files[0];
                   }
 
                   //rip and add lander both call this to finish the add lander process           
-                  db.landers.common.add_lander.addOptimizePushSave(user, copyStagingPath, stagingDir, landerData, function(err, data) {
+                  db.landers.common.add_lander.addOptimizePushSave(user, stagingPath, stagingDir, landerData, function(err, data) {
                     if (err) {
                       console.log('err: ' + err);
                       callback(err);

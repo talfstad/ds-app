@@ -11,10 +11,16 @@ define(["app",
         className: "btn-group ",
 
         events: {
-          "click .open-preview-link": "openPreviewLink"
+          "click .open-preview-link": "openPreviewLink",
+          "change .preview-link-endpoints-select": "updateCurrentEndpoint"
         },
 
-        modelEvents: {},
+        updateCurrentEndpoint: function() {
+          var currentEndpointId = $('.preview-link-endpoints-select').val();
+          if (currentEndpointId) {
+            this.model.set("currentPreviewEndpointId", parseInt(currentEndpointId));
+          }
+        },
 
         openPreviewLink: function(e) {
           e.preventDefault();
@@ -39,23 +45,6 @@ define(["app",
           } else {
             urlEndpointsJSON = [];
           }
-          // var urlEndpointsJSON = [{
-          //   "id": 280,
-          //   "filename": "zzindex.html",
-          //   "lander_id": 2,
-          //   "activeSnippets": []
-          // },{
-          //   "id": 280,
-          //   "filename": "index.html",
-          //   "lander_id": 2,
-          //   "activeSnippets": []
-          // },
-          // {
-          //   "id": 280,
-          //   "filename": "3index.html",
-          //   "lander_id": 2,
-          //   "activeSnippets": []
-          // }];
 
           this.model.set("urlEndpointsJSON", urlEndpointsJSON);
           this.model.set("currentPreviewEndpointId", urlEndpointsJSON[0].id);

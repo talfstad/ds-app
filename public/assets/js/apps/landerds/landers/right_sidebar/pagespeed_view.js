@@ -12,7 +12,7 @@ define(["app",
         template: PagespeedTpl,
 
         modelEvents: {
-          "change:currentPrevewEndpointId": "render"
+          "change:currentPreviewEndpointId": "render"
         },
 
 
@@ -134,7 +134,7 @@ define(["app",
               data: [optimizedPagespeed],
               dataLabels: {
                 format: '<div style="text-align:center"><span style="font-size:25px"><a href="' + encodeURI(me.getPageSpeedLink(true)) + '" target="_blank">{y}</span></a><br/>' +
-                  '<span style="font-size:10px;color:rgb(102,102,102)">Original</span></div>'
+                  '<span style="font-size:10px;color:rgb(102,102,102)">Optimized</span></div>'
               }
 
             }]

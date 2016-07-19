@@ -20,6 +20,10 @@ define(["app",
           });
 
           addNewLanderLayout.on("fileUploadComplete", function(data) {
+
+            //add the new url endpoints
+            var endpointsArr = data.response.url_endpoints_arr;
+            landerModel.get("urlEndpoints").add(endpointsArr);
             
             //need to populate the landerModel with s3_folder_name/created_on
             landerModel.set({

@@ -199,9 +199,11 @@ define(["app",
         //gui update attributes
         deploy_status: 'not_deployed',
         totalNumJsSnippets: 0,
+        deployment_folder_name: "",
         modified: false,
         deployed_domains_count: 0,
-        active_campaigns_count: 0
+        active_campaigns_count: 0,
+        currentPreviewEndpointId: 0
 
       }
 

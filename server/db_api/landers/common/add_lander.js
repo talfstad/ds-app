@@ -10,7 +10,6 @@ module.exports = function(app, db) {
 
     addOptimizePushSave: function(user, localStagingPath, s3_folder_name, landerData, callback) {
 
-
       //4. createDirectory in s3 for optimized
       //5. push optimized
       //6. pagespeed test endpoints (deployed endpoints, original and optimized)
@@ -84,8 +83,8 @@ module.exports = function(app, db) {
       var addEndpointsToLander = function(originalPagespeed, optimizedPagespeed, filePath, callback) {
         var endpoint = {
           filename: filePath,
-          originalPagespeed: originalPagespeed,
-          optimizedPagespeed: optimizedPagespeed
+          original_pagespeed: originalPagespeed,
+          optimized_pagespeed: optimizedPagespeed
         };
         var user_id = user.id;
 
@@ -99,7 +98,6 @@ module.exports = function(app, db) {
               } else {
                 //TODO: validate credentials by creating archive bucket with name user.uid
                 endpoint.id = docs[0][0]["LAST_INSERT_ID()"];
-                console.log('OK');
                 callback(false, endpoint);
               }
               connection.release();

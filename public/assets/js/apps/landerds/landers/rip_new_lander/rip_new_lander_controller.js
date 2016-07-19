@@ -24,13 +24,18 @@ define(["app",
             landerModel.save({}, {
               success: function(savedLanderModel) {
 
-                //set endpoints
-                var endpoints = landerModel.get("urlEndpoints");
-                endpoints.add(savedLanderModel.get("urlEndpointsJSON"));
+                //add the new url endpoints
+                var endpointsArr = savedLanderModel.get("url_endpoints_arr");
+                landerModel.get("urlEndpoints").add(endpointsArr);
 
-                landerModel.set("alertLoading", false);
+                landerModel.set({
+                  deployment_folder_name: savedLanderModel.get("s3_folder_name"),
+                  alertLoading: false
+                });
+
                 ripNewLanderLayout.closeModal();
                 Landerds.trigger("landers:list:addLander", landerModel);
+                
               },
               error: function() {
 

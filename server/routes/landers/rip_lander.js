@@ -20,51 +20,12 @@ module.exports = function(app, passport) {
         if (err) {
           callback(err);
         } else {
-
-          landerData.urlEndpoints.push(urlEndpoint);
-          landerData.s3_folder_name = stagingDir;
-          landerData.deployment_folder_name = stagingDir;
-
-          db.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
+          //rip and add lander both call this to finish the add lander process           
+          db.landers.common.add_lander.addOptimizePushSave(user, stagingPath, stagingDir, landerData, function(err, data) {
             if (err) {
               callback(err);
             } else {
-
-              var username = user.user;
-              var baseBucketName = awsData.aws_root_bucket;
-              var directory = "/landers/" + stagingDir + "/";
-              var fullDirectory = username + directory;
-
-              var credentials = {
-                accessKeyId: awsData.aws_access_key_id,
-                secretAccessKey: awsData.aws_secret_access_key
-              }
-
-              db.aws.s3.createDirectory(username, baseBucketName, directory, credentials, function(err) {
-                if (err) {
-                  callback(err);
-                } else {
-
-                  //3. copy the lander into the folder
-                  db.aws.s3.copyDirFromStagingToS3(stagingPath, credentials, username, baseBucketName, fullDirectory, function(err) {
-                    if (err) {
-                      callback(err);
-                    } else {
-
-                      //4. remove the staging
-                      // db.common.deleteStagingArea(stagingPath, function(err) {
-                        db.landers.saveNewLander(user, landerData, function(err, returnData) {
-                          if (err) {
-                            callback(err);
-                          } else {
-                            callback(false, landerData);
-                          }
-                        });
-                      // });
-                    }
-                  });
-                }
-              });
+              callback(false, data);
             }
           });
         }
@@ -77,7 +38,7 @@ module.exports = function(app, passport) {
 
       //create a staging area
       var stagingDir = uuid.v4();
-      var stagingPath = "./staging/" + stagingDir;
+      var stagingPath = "staging/" + stagingDir;
 
       //scrape lander into staging area
       var options = {
