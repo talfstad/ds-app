@@ -7,7 +7,6 @@ module.exports = function(app) {
   var purifyCss = require('purify-css');
   var cheerio = require('cheerio');
   var fs = require('fs');
-  var criticalCss = require('critical');
   var htmlMinifier = require('html-minifier').minify;
   var yuiCompressor = require('yuicompressor');
   var imagemin = require('imagemin');
@@ -20,7 +19,7 @@ module.exports = function(app) {
 
   //optimizer has an optimize function that takes an HTML file path, optimized file output path,
   module.fullyOptimize = function(stagingPath, callback) {
-    console.log("fully optimized called");
+    console.log("fully optimized called: " + stagingPath);
 
     //pass all html files over to optimize css
     find.file(/\.html$/, stagingPath, function(htmlFiles) {
@@ -35,28 +34,28 @@ module.exports = function(app) {
               callback(err);
             } else {
               console.log("done with js");
-              module.optimizeHtml(htmlFiles, function(err) {
-                if (err) {
-                  callback(err);
-                } else {
-                  console.log("done with html");
-                  module.optimizeImages(stagingPath, function(err) {
-                    if (err) {
-                      callback(err);
-                    } else {
-                      console.log("done with images");
-                      module.gzipStagingFiles(stagingPath, function(err) {
-                        if (err) {
-                          callback(err);
-                        } else {
-                          console.log("done gzipping");
-                          callback(false, htmlFiles);
-                        }
-                      });
-                    }
-                  });
-                }
-              });
+              // module.optimizeHtml(htmlFiles, function(err) {
+              //   if (err) {
+              //     callback(err);
+              //   } else {
+              //     console.log("done with html");
+              //     module.optimizeImages(stagingPath, function(err) {
+              //       if (err) {
+              //         callback(err);
+              //       } else {
+              //         console.log("done with images");
+              //         // module.gzipStagingFiles(stagingPath, function(err) {
+              //         //   if (err) {
+              //         //     callback(err);
+              //         //   } else {
+              //         //     console.log("done gzipping");
+              //         //     callback(false, htmlFiles);
+              //         //   }
+              //         // });
+              //       }
+              //     });
+              //   }
+              // });
             }
           });
         }
@@ -74,81 +73,107 @@ module.exports = function(app) {
   //inline the critical stuff and async load the rest of the css
   module.optimizeCss = function(htmlFiles, callback) {
 
-    //don't pass any tmp html files into here ! somehow filename is using tmp for the CSS? ? ?!
-    var asyncIndex = 0;
-    for (var i = 0; i < htmlFiles.length; i++) {
-      var fullHtmlFilePath = htmlFiles[i];
+    var purifyAndCriticalCssFile = function(fullHtmlFilePath, html, styles, callback) {
+      var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
+      var fileName = path.basename(fullHtmlFilePath);
 
-      //read file in as a string
-      var cssFiles = [];
-      fs.readFile(fullHtmlFilePath, function(err, fileData) {
+      var purifyOptions = {
+        minify: true
+      };
+
+      purifyCss(html, styles, purifyOptions, function(purifiedAndMinifiedResult) {
+        var outputCssFile = fileName + ".css";
+        fs.writeFile(fullHtmlFilePath, html, function(err) {
+          if (err) {
+            callback(err);
+          } else {
+            fs.writeFile(outputCssFile, purifiedAndMinifiedResult, function(err) {
+              if (err) {
+                callback(err);
+              } else {
+                //args htmlFilePath, cssOutputFile
+                //runs in its own thread so it will clean up its stupid ass tmp files
+                cmd.get("node ./optimizer/critical_css_thread " + fullHtmlFileDirPath + " " + outputCssFile + " " + fileName, function(output) {
+                  console.log("node output: " + output);
+                  callback(false);
+                });
+              }
+            });
+          }
+        });
+      });
+    }
+
+    var optimizeCssFile = function(fullHtmlFilePath, fileData, callback) {
+      //set to the async
+      var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
+      var fileName = path.basename(fullHtmlFilePath);
+
+      var $ = cheerio.load(fileData);
+
+      // get all the href's to minimize from the html file
+      $('link[rel="stylesheet"]').each(function(i, link) {
+        var href = $(this).attr("href");
+        cssFiles.push(href);
+        $(this).remove();
+      });
+
+      //fix up the html endpoint file with our new CSS
+      $('<link rel="stylesheet" type="text/css" href="' + fileName + '.css">').appendTo('head');
+
+      //with list of relative or absolute css files use clean css to combine them
+      //and rewrite the urls
+      var data = cssFiles
+        .map(function(cssFilename) {
+          return '@import url(' + cssFilename + ');';
+        })
+        .join('');
+
+      new CleanCSS({
+        root: fullHtmlFileDirPath
+      }).minify(data, function(error, minified) {
+        if (error) {
+          callback(err);
+        } else {
+          var styles = minified.styles;
+          callback(false, $.html(), styles);
+        }
+      });
+    }
+
+    var readFile = function(filePath, callback) {
+      fs.readFile(filePath, function(err, fileData) {
         if (err) {
           callback(err);
         } else {
-          //set to the async
-          fullHtmlFilePath = htmlFiles[asyncIndex];
-          var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
-          var fileName = path.basename(fullHtmlFilePath);
+          callback(false, filePath, fileData);
+        }
+      });
+    };
 
-          var $ = cheerio.load(fileData);
+    //don't pass any tmp html files into here ! somehow filename is using tmp for the CSS? ? ?!
+    var asyncIndex = 0;
+    for (var i = 0; i < htmlFiles.length; i++) {
 
-          // get all the href's to minimize from the html file
-          $('link[rel="stylesheet"]').each(function(i, link) {
-            var href = $(this).attr("href");
-            cssFiles.push(href);
-            $(this).remove();
-          });
-
-          console.log("filename for css: " + fileName);
-            //fix up the html endpoint file with our new CSS
-          $('<link rel="stylesheet" type="text/css" href="' + fileName + '.css">').appendTo('head');
-
-          //with list of relative or absolute css files use clean css to combine them
-          //and rewrite the urls
-          var data = cssFiles
-            .map(function(cssFilename) {
-              return '@import url(' + cssFilename + ');';
-            })
-            .join('');
-
-          new CleanCSS({
-            root: fullHtmlFileDirPath
-          }).minify(data, function(error, minified) {
-            if (error) {
+      //read file in as a string
+      var cssFiles = [];
+      readFile(htmlFiles[i], function(err, filePath, fileData) {
+        if (err) {
+          callback(err);
+        } else {
+          optimizeCssFile(filePath, fileData, function(err, html, styles) {
+            if (err) {
               callback(err);
             } else {
-              var styles = minified.styles;
-
-              var purifyOptions = {
-                minify: true
-              };
-
-              purifyCss($.html(), styles, purifyOptions, function(purifiedAndMinifiedResult) {
-                var outputCssFile = fullHtmlFilePath + ".css";
-                fs.writeFile(outputCssFile, purifiedAndMinifiedResult, function(err) {
-                  if (err) {
-                    callback(err);
-                  } else {
-                    criticalCss.generate({
-                      base: fullHtmlFileDirPath,
-                      html: $.html(),
-                      css: [outputCssFile],
-                      dest: fullHtmlFilePath,
-                      minify: true,
-                      inline: true,
-                      ignore: ['@font-face', /url\(/]
-                    }, function(err, output) {
-                      if (err) {
-                        console.log("err critical css: " + err);
-                        callback(err);
-                      } else {
-                        if (++asyncIndex == htmlFiles.length) {
-                          callback(false);
-                        }
-                      }
-                    });
+              purifyAndCriticalCssFile(filePath, html, styles, function(err) {
+                if (err) {
+                  callback(err);
+                } else {
+                  if (++asyncIndex == htmlFiles.length) {
+                    callback(false);
                   }
-                });
+                }
+
               });
             }
           });
@@ -156,6 +181,98 @@ module.exports = function(app) {
       });
     }
   }
+
+  //read all css files from endpoint into a string
+  //concat them all into 1 string for yuicompressor
+  //compress them all
+  //write it to a file
+  //purify that file
+  //critical css that purified file
+  //inline the critical stuff and async load the rest of the css
+  // module.optimizeCss = function(htmlFiles, callback) {
+
+  //   //don't pass any tmp html files into here ! somehow filename is using tmp for the CSS? ? ?!
+  //   var asyncIndex = 0;
+  //   for (var i = 0; i < htmlFiles.length; i++) {
+  //     var fullHtmlFilePath = htmlFiles[i];
+
+  //     //read file in as a string
+  //     var cssFiles = [];
+  //     fs.readFile(fullHtmlFilePath, function(err, fileData) {
+  //       if (err) {
+  //         callback(err);
+  //       } else {
+  //         //set to the async
+  //         fullHtmlFilePath = htmlFiles[asyncIndex];
+  //         var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
+  //         var fileName = path.basename(fullHtmlFilePath);
+
+  //         var $ = cheerio.load(fileData);
+
+  //         // get all the href's to minimize from the html file
+  //         $('link[rel="stylesheet"]').each(function(i, link) {
+  //           var href = $(this).attr("href");
+  //           cssFiles.push(href);
+  //           $(this).remove();
+  //         });
+
+  //         console.log("filename for css: " + fileName);
+  //           //fix up the html endpoint file with our new CSS
+  //         $('<link rel="stylesheet" type="text/css" href="' + fileName + '.css">').appendTo('head');
+
+  //         //with list of relative or absolute css files use clean css to combine them
+  //         //and rewrite the urls
+  //         var data = cssFiles
+  //           .map(function(cssFilename) {
+  //             return '@import url(' + cssFilename + ');';
+  //           })
+  //           .join('');
+
+  //         new CleanCSS({
+  //           root: fullHtmlFileDirPath
+  //         }).minify(data, function(error, minified) {
+  //           if (error) {
+  //             callback(err);
+  //           } else {
+  //             var styles = minified.styles;
+
+  //             var purifyOptions = {
+  //               minify: true
+  //             };
+
+  //             purifyCss($.html(), styles, purifyOptions, function(purifiedAndMinifiedResult) {
+  //               var outputCssFile = fullHtmlFilePath + ".css";
+  //               fs.writeFile(outputCssFile, purifiedAndMinifiedResult, function(err) {
+  //                 if (err) {
+  //                   callback(err);
+  //                 } else {
+  //                   criticalCss.generate({
+  //                     base: fullHtmlFileDirPath,
+  //                     html: $.html(),
+  //                     css: [outputCssFile],
+  //                     dest: fullHtmlFilePath,
+  //                     minify: true,
+  //                     inline: true,
+  //                     ignore: ['@font-face', /url\(/]
+  //                   }, function(err, output) {
+  //                     if (err) {
+  //                       console.log("err critical css: " + err);
+  //                       callback(err);
+  //                     } else {
+  //                       if (++asyncIndex == htmlFiles.length) {
+  //                         callback(false);
+  //                       }
+  //                     }
+  //                   });
+  //                 }
+  //               });
+  //             });
+  //           }
+  //         });
+  //       }
+  //     });
+  //   }
+  // }
 
 
   //read in each html file, extract all script tags that aren't
@@ -225,7 +342,7 @@ module.exports = function(app) {
         });
       } catch (err) {
         // console.log("err minify html, probably parse error ...");
-        callback(false);//callback false because we just want to keep chugging html files
+        callback(false); //callback false because we just want to keep chugging html files
       }
     };
 
