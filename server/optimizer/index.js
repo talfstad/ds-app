@@ -183,98 +183,6 @@ module.exports = function(app) {
     }
   }
 
-  //read all css files from endpoint into a string
-  //concat them all into 1 string for yuicompressor
-  //compress them all
-  //write it to a file
-  //purify that file
-  //critical css that purified file
-  //inline the critical stuff and async load the rest of the css
-  // module.optimizeCss = function(htmlFiles, callback) {
-
-  //   //don't pass any tmp html files into here ! somehow filename is using tmp for the CSS? ? ?!
-  //   var asyncIndex = 0;
-  //   for (var i = 0; i < htmlFiles.length; i++) {
-  //     var fullHtmlFilePath = htmlFiles[i];
-
-  //     //read file in as a string
-  //     var cssFiles = [];
-  //     fs.readFile(fullHtmlFilePath, function(err, fileData) {
-  //       if (err) {
-  //         callback(err);
-  //       } else {
-  //         //set to the async
-  //         fullHtmlFilePath = htmlFiles[asyncIndex];
-  //         var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
-  //         var fileName = path.basename(fullHtmlFilePath);
-
-  //         var $ = cheerio.load(fileData);
-
-  //         // get all the href's to minimize from the html file
-  //         $('link[rel="stylesheet"]').each(function(i, link) {
-  //           var href = $(this).attr("href");
-  //           cssFiles.push(href);
-  //           $(this).remove();
-  //         });
-
-  //         console.log("filename for css: " + fileName);
-  //           //fix up the html endpoint file with our new CSS
-  //         $('<link rel="stylesheet" type="text/css" href="' + fileName + '.css">').appendTo('head');
-
-  //         //with list of relative or absolute css files use clean css to combine them
-  //         //and rewrite the urls
-  //         var data = cssFiles
-  //           .map(function(cssFilename) {
-  //             return '@import url(' + cssFilename + ');';
-  //           })
-  //           .join('');
-
-  //         new CleanCSS({
-  //           root: fullHtmlFileDirPath
-  //         }).minify(data, function(error, minified) {
-  //           if (error) {
-  //             callback(err);
-  //           } else {
-  //             var styles = minified.styles;
-
-  //             var purifyOptions = {
-  //               minify: true
-  //             };
-
-  //             purifyCss($.html(), styles, purifyOptions, function(purifiedAndMinifiedResult) {
-  //               var outputCssFile = fullHtmlFilePath + ".css";
-  //               fs.writeFile(outputCssFile, purifiedAndMinifiedResult, function(err) {
-  //                 if (err) {
-  //                   callback(err);
-  //                 } else {
-  //                   criticalCss.generate({
-  //                     base: fullHtmlFileDirPath,
-  //                     html: $.html(),
-  //                     css: [outputCssFile],
-  //                     dest: fullHtmlFilePath,
-  //                     minify: true,
-  //                     inline: true,
-  //                     ignore: ['@font-face', /url\(/]
-  //                   }, function(err, output) {
-  //                     if (err) {
-  //                       console.log("err critical css: " + err);
-  //                       callback(err);
-  //                     } else {
-  //                       if (++asyncIndex == htmlFiles.length) {
-  //                         callback(false);
-  //                       }
-  //                     }
-  //                   });
-  //                 }
-  //               });
-  //             });
-  //           }
-  //         });
-  //       }
-  //     });
-  //   }
-  // }
-
 
   //read in each html file, extract all script tags that aren't
   //with class "js-snippet" and combine them and minify them and insert them into 
@@ -313,13 +221,17 @@ module.exports = function(app) {
 
 
   module.optimizeHtml = function(htmlFiles, callback) {
+    if (htmlFiles.length <= 0) {
+      callback(false);
+      return;
+    }
 
     var readHtmlFile = function(htmlFile, callback) {
-      fs.readFile(htmlFile, 'utf8', function(err, file) {
+      fs.readFile(htmlFile, 'utf8', function(err, fileData) {
         if (err) {
           callback(err);
         } else {
-          callback(file);
+          callback(false, htmlFile, fileData);
         }
       });
     };
@@ -350,13 +262,19 @@ module.exports = function(app) {
     var asyncIndex = 0;
     for (var i = 0; i < htmlFiles.length; i++) {
 
-      readHtmlFile(htmlFiles[i], function(file) {
-        minifyHtmlFile(htmlFiles[asyncIndex], file, function(err) {
-          //ignore error, just dont do anything
-          if (++asyncIndex == htmlFiles.length) {
-            callback(false);
-          }
-        });
+      readHtmlFile(htmlFiles[i], function(err, filePath, fileData) {
+        if (err) {
+          callback(err);
+        } else {
+          console.log("minifying html for: " + filePath);
+          minifyHtmlFile(filePath, fileData, function(err) {
+            //ignore error, just dont do anything
+            if (++asyncIndex == htmlFiles.length) {
+              callback(false);
+            }
+          });
+        }
+
       });
     }
   };
