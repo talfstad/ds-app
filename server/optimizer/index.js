@@ -292,6 +292,12 @@ module.exports = function(app) {
           if (++asyncIndex == scriptSrcArr.length) {
 
             for (var j = 0; j < scriptSrcArr.length; j++) {
+
+              //make sure src file has a semi colon ending it
+              if (!(/;$/).test(srcFilesObj[j])) {
+                srcFilesObj[j] += ";";
+              }
+
               finalJsString += srcFilesObj[j];
             }
 
@@ -345,7 +351,7 @@ module.exports = function(app) {
         }
       });
     }
-    if(htmlFiles.length <= 0){
+    if (htmlFiles.length <= 0) {
       callback(false);
     }
   };
@@ -524,40 +530,40 @@ module.exports = function(app) {
 
 
 
-  //read in each html file, extract all script tags that aren't
-  //with class "js-snippet" and combine them and minify them and insert them into 
-  //bottom of lander.
-  //localize remote scripts
-  // module.optimizeJs = function(stagingPath, callback) {
+//read in each html file, extract all script tags that aren't
+//with class "js-snippet" and combine them and minify them and insert them into 
+//bottom of lander.
+//localize remote scripts
+// module.optimizeJs = function(stagingPath, callback) {
 
-  //   //- get all the js files in the staging path
-  //   find.file(/\.js$/, stagingPath, function(files) {
+//   //- get all the js files in the staging path
+//   find.file(/\.js$/, stagingPath, function(files) {
 
-  //     //- loop through them all keep an async index count
-  //     var asyncIndex = 0;
-  //     for (var i = 0; i < files.length; i++) {
-  //       //- on loop compress
-  //       yuiCompressor.compress(files[i], {
-  //         charset: 'utf8',
-  //         type: 'js',
-  //         nomunge: true,
-  //         'line-break': 80
-  //       }, function(err, compressedFile, extra) {
-  //         if (err) {
-  //           callback(err);
-  //         } else {
-  //           //- and overwrite the file
-  //           fs.writeFile(files[asyncIndex], compressedFile, function(err) {
-  //             if (++asyncIndex == files.length) {
-  //               //- callback when done                
-  //               callback(false);
-  //             }
-  //           });
-  //         }
-  //       });
-  //     }
-  //     if (files.length <= 0) {
-  //       callback(false);
-  //     }
-  //   });
-  // };
+//     //- loop through them all keep an async index count
+//     var asyncIndex = 0;
+//     for (var i = 0; i < files.length; i++) {
+//       //- on loop compress
+//       yuiCompressor.compress(files[i], {
+//         charset: 'utf8',
+//         type: 'js',
+//         nomunge: true,
+//         'line-break': 80
+//       }, function(err, compressedFile, extra) {
+//         if (err) {
+//           callback(err);
+//         } else {
+//           //- and overwrite the file
+//           fs.writeFile(files[asyncIndex], compressedFile, function(err) {
+//             if (++asyncIndex == files.length) {
+//               //- callback when done                
+//               callback(false);
+//             }
+//           });
+//         }
+//       });
+//     }
+//     if (files.length <= 0) {
+//       callback(false);
+//     }
+//   });
+// };
