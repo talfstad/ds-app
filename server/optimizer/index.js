@@ -9,13 +9,10 @@ module.exports = function(app) {
   var fs = require('fs');
   var htmlMinifier = require('html-minifier').minify;
   var yuiCompressor = require('yuicompressor');
-  var imagemin = require('imagemin');
-  var imageminMozjpeg = require('imagemin-mozjpeg');
-  var imageminPngquant = require('imagemin-pngquant');
   var find = require('find');
   var fs = require('fs');
   var cmd = require('node-cmd');
-
+  var request = require('request');
 
   //optimizer has an optimize function that takes an HTML file path, optimized file output path,
   module.fullyOptimize = function(stagingPath, callback) {
@@ -29,7 +26,7 @@ module.exports = function(app) {
           callback(err);
         } else {
           console.log("done with css");
-          module.optimizeJs(stagingPath, function(err) {
+          module.optimizeJs(stagingPath, htmlFiles, function(err) {
             if (err) {
               callback(err);
             } else {
@@ -152,7 +149,6 @@ module.exports = function(app) {
       });
     };
 
-    //don't pass any tmp html files into here ! somehow filename is using tmp for the CSS? ? ?!
     var asyncIndex = 0;
     for (var i = 0; i < htmlFiles.length; i++) {
 
@@ -184,39 +180,174 @@ module.exports = function(app) {
   }
 
 
-  //read in each html file, extract all script tags that aren't
-  //with class "js-snippet" and combine them and minify them and insert them into 
-  //bottom of lander.
-  //localize remote scripts
-  module.optimizeJs = function(stagingPath, callback) {
+  module.optimizeJs = function(stagingPath, htmlFiles, callback) {
 
-    //- get all the js files in the staging path
-    find.file(/\.js$/, stagingPath, function(files) {
+    var readExternalFile = function(href, callback) {
+      request(href, function(err, response, body) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(false, body);
+        }
+      });
+    };
 
-      //- loop through them all keep an async index count
-      var asyncIndex = 0;
-      for (var i = 0; i < files.length; i++) {
-        //- on loop compress
-        yuiCompressor.compress(files[i], {
-          charset: 'utf8',
-          type: 'js',
-          nomunge: true,
-          'line-break': 80
-        }, function(err, compressedFile, extra) {
+    var readLocalFile = function(filePath, callback) {
+
+      fs.readFile(filePath, function(err, fileData) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(false, fileData, filePath);
+        }
+      });
+    };
+
+    var readSrcFile = function(filePath, callback) {
+      var isExternal = function(href) {
+        return /(^\/\/)|(:\/\/)/.test(href);
+      };
+
+      if (isExternal(filePath)) {
+        readExternalFile(filePath, function(err, fileData) {
           if (err) {
             callback(err);
           } else {
-            //- and overwrite the file
-            fs.writeFile(files[asyncIndex], compressedFile, function(err) {
-              if (++asyncIndex == files.length) {
-                //- callback when done                
-                callback(false);
+            callback(false, fileData, filePath);
+          }
+        });
+      } else {
+        var filePath = path.join(stagingPath, filePath);
+        readLocalFile(filePath, function(err, fileData) {
+          if (err) {
+            callback(err);
+          } else {
+            var relativePath = filePath.replace(stagingPath, "");
+            relativePath = relativePath.replace(/^\//, "");
+            callback(false, fileData, relativePath);
+          }
+        });
+      }
+    };
+
+    var compressAndWriteFile = function(jsFilePath, callback) {
+      //call yuicompressor on the file
+      yuiCompressor.compress(jsFilePath, {
+        charset: 'utf8',
+        type: 'js',
+        nomunge: true,
+        'line-break': 80
+      }, function(err, compressedFile, extra) {
+        if (err) {
+          callback(err);
+        } else {
+          //- and overwrite the file
+          fs.writeFile(jsFilePath, compressedFile, function(err) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(false);
+            }
+          });
+        }
+      });
+    };
+
+    var concatJsIntoFileAndUpdateHtml = function(htmlFilePath, fileData, callback) {
+      //load it in cheerio, get all script tags that dont have the class "ds-no-modify"
+      var $ = cheerio.load(fileData);
+      var srcFilesObj = {};
+
+      var outputJsFilePath = htmlFilePath + ".js";
+
+      //get all javascript source itself from the file and concat it together into a var
+      var scriptTags = $('script:not(.ds-no-modify)');
+
+      var scriptSrcArr = [];
+      $('script:not(.ds-no-modify)').each(function(i, link) {
+        var src = $(this).attr("src");
+        if (src) {
+          var srcToAdd = src.replace(/^\//, ""); //remove leading slash if there is one
+          scriptSrcArr.push(srcToAdd);
+        } else {
+          scriptSrcArr.push("placeholder"); //placeholder to iterate through later (because we're re-ordering async requests)
+          srcFilesObj[i] = $(this).text();
+        }
+        $(this).remove();
+      });
+
+      var minifiedSrc = outputJsFilePath.replace(stagingPath, "");
+      minifiedSrc = minifiedSrc.replace(/^\//, "");
+
+      var newScriptTag = $("<script async type='text/javascript' src='" + minifiedSrc + "'></script>")
+      newScriptTag.appendTo("body");
+
+      var asyncIndex = 0;
+      var finalJsString = "";
+      for (var i = 0; i < scriptSrcArr.length; i++) {
+        readSrcFile(scriptSrcArr[i], function(err, fileData, filePath) {
+
+          srcFilesObj[scriptSrcArr.indexOf(filePath)] = fileData;
+
+          if (++asyncIndex == scriptSrcArr.length) {
+
+            for (var j = 0; j < scriptSrcArr.length; j++) {
+              finalJsString += srcFilesObj[j];
+            }
+
+            fs.writeFile(outputJsFilePath, finalJsString, function(err) {
+              if (err) {
+                callback(err);
+              } else {
+                //append the optimized script tag to the body
+                fs.writeFile(htmlFilePath, $.html(), function(err) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    callback(false, outputJsFilePath);
+                  }
+                });
               }
             });
           }
         });
       }
-    });
+      if (scriptSrcArr.length <= 0) {
+        callback(false, outputJsFilePath);
+      }
+    };
+
+    var asyncIndex = 0;
+    for (var i = 0; i < htmlFiles.length; i++) {
+      //read file in as a string
+      readLocalFile(htmlFiles[i], function(err, fileData, filePath) {
+        if (err) {
+          callback(err);
+        } else {
+          concatJsIntoFileAndUpdateHtml(filePath, fileData, function(err, jsFilePath) {
+            if (err) {
+              callback(err);
+            } else {
+              if (jsFilePath) {
+                compressAndWriteFile(jsFilePath, function(err) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    if (++asyncIndex == htmlFiles.length) {
+                      callback(false);
+                    }
+                  }
+                });
+              }
+
+            }
+          });
+        }
+      });
+    }
+    if(htmlFiles.length <= 0){
+      callback(false);
+    }
   };
 
 
@@ -327,7 +458,7 @@ module.exports = function(app) {
           var asyncIndex = 0;
           for (var i = 0; i < pngImages.length; i++) {
             var image = pngImages[i];
-            cmd.get('nice pngcrush -rem alla -nofilecheck -reduce -m 7 -ow ' + image + ' &> /dev/null', function() {
+            cmd.get('nice pngcrush -rem alla -reduce -m 1 -m 4 -m 7 -ow ' + image + ' &> /dev/null', function() {
               if (++asyncIndex == pngImages.length) {
                 callback(false);
               }
@@ -389,3 +520,44 @@ module.exports = function(app) {
   return module;
 
 };
+
+
+
+
+  //read in each html file, extract all script tags that aren't
+  //with class "js-snippet" and combine them and minify them and insert them into 
+  //bottom of lander.
+  //localize remote scripts
+  // module.optimizeJs = function(stagingPath, callback) {
+
+  //   //- get all the js files in the staging path
+  //   find.file(/\.js$/, stagingPath, function(files) {
+
+  //     //- loop through them all keep an async index count
+  //     var asyncIndex = 0;
+  //     for (var i = 0; i < files.length; i++) {
+  //       //- on loop compress
+  //       yuiCompressor.compress(files[i], {
+  //         charset: 'utf8',
+  //         type: 'js',
+  //         nomunge: true,
+  //         'line-break': 80
+  //       }, function(err, compressedFile, extra) {
+  //         if (err) {
+  //           callback(err);
+  //         } else {
+  //           //- and overwrite the file
+  //           fs.writeFile(files[asyncIndex], compressedFile, function(err) {
+  //             if (++asyncIndex == files.length) {
+  //               //- callback when done                
+  //               callback(false);
+  //             }
+  //           });
+  //         }
+  //       });
+  //     }
+  //     if (files.length <= 0) {
+  //       callback(false);
+  //     }
+  //   });
+  // };

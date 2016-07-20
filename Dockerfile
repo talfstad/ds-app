@@ -32,12 +32,12 @@ ADD package.json /tmp/package.json
 RUN cd /tmp && npm install
 RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
 
-WORKDIR /opt/app
-
 # Bundle app source
 ADD . /opt/app
+
+WORKDIR /opt/app/server
 
 #start the app
 EXPOSE 3000
 
-CMD [ "node", "./server/server.js", "prod"]
+CMD [ "node", "./server.js", "prod"]
