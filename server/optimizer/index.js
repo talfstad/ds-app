@@ -418,71 +418,85 @@ module.exports = function(app) {
 
   //NEEDS LIBPNG
   module.optimizeImages = function(stagingPath, callback) {
+
+    var optimizeJpg = function(callback) {
+      find.file(/\.jpg$|\.jpeg$/, stagingPath, function(jpgImages) {
+        var asyncIndex = 0;
+        for (var i = 0; i < jpgImages.length; i++) {
+          var image = jpgImages[i];
+          //jpegtran -copy none -optimize -outfile pic4.jpg pic4.jpg
+          cmd.get('nice jpegtran -copy none -optimize -outfile ' + image + ' ' + image, function() {
+            if (++asyncIndex == jpgImages.length) {
+              callback(false);
+            }
+          });
+        }
+        if (jpgImages.length <= 0) {
+          callback(false);
+        }
+      });
+    }
+
+    var optimizeGif = function(callback) {
+      find.file(/\.gif$/, stagingPath, function(gifImages) {
+        var asyncIndex = 0;
+        for (var i = 0; i < gifImages.length; i++) {
+          var image = gifImages[i];
+          //gifsicle Door_03_Artists.gif -o Door_03_Artists.gif.opt
+          cmd.get('nice gifsicle ' + image + ' -o ' + image, function() {
+            if (++asyncIndex == gifImages.length) {
+              callback(false);
+            }
+          });
+        }
+        if (gifImages.length <= 0) {
+          callback(false);
+        }
+      });
+    }
+
+    var optimizePng = function(callback) {
+      find.file(/\.png$/, stagingPath, function(pngImages) {
+        var asyncIndex = 0;
+        for (var i = 0; i < pngImages.length; i++) {
+          var image = pngImages[i];
+          cmd.get('nice pngcrush -rem alla -reduce -m 1 -m 4 -m 7 -ow ' + image + ' &> /dev/null', function() {
+            if (++asyncIndex == pngImages.length) {
+              callback(false);
+            }
+          });
+        }
+        if (pngImages.length <= 0) {
+          console.log("image optimization got executed");
+          callback(false);
+        }
+      });
+    };
+
+
     if (!app.config.optimize.images) {
       console.log("ALERT: not optimizing images");
       callback(false);
     } else {
+      optimizePng(function(err) {
+        if (err) {
+          callback(err);
+        } else {
+          optimizeJpg(function(err) {
+            if (err) {
+              callback(err);
+            } else {
+              optimizeGif(function(err) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false);
+                }
+              });
+            }
 
-      var optimizeJpg = function(callback) {
-        find.file(/\.jpg$|\.jpeg$/, stagingPath, function(jpgImages) {
-          var asyncIndex = 0;
-          for (var i = 0; i < jpgImages.length; i++) {
-            var image = jpgImages[i];
-            //jpegtran -copy none -optimize -outfile pic4.jpg pic4.jpg
-            cmd.get('nice jpegtran -copy none -optimize -outfile ' + image + ' ' + image, function() {
-              if (++asyncIndex == jpgImages.length) {
-                callback(false);
-              }
-            });
-          }
-          if (jpgImages.length <= 0) {
-            callback(false);
-          }
-        });
-      }
-
-      var optimizeGif = function(callback) {
-        find.file(/\.gif$/, stagingPath, function(gifImages) {
-          var asyncIndex = 0;
-          for (var i = 0; i < gifImages.length; i++) {
-            var image = gifImages[i];
-            //gifsicle Door_03_Artists.gif -o Door_03_Artists.gif.opt
-            cmd.get('nice gifsicle ' + image + ' -o ' + image, function() {
-              if (++asyncIndex == gifImages.length) {
-                callback(false);
-              }
-            });
-          }
-          if (gifImages.length <= 0) {
-            callback(false);
-          }
-        });
-      }
-
-      var optimizePng = function(callback) {
-        find.file(/\.png$/, stagingPath, function(pngImages) {
-          var asyncIndex = 0;
-          for (var i = 0; i < pngImages.length; i++) {
-            var image = pngImages[i];
-            cmd.get('nice pngcrush -rem alla -reduce -m 1 -m 4 -m 7 -ow ' + image + ' &> /dev/null', function() {
-              if (++asyncIndex == pngImages.length) {
-                callback(false);
-              }
-            });
-          }
-          if (pngImages.length <= 0) {
-            console.log("image optimization got executed");
-            callback(false);
-          }
-        });
-      };
-
-      optimizePng(function() {
-        optimizeJpg(function() {
-          optimizeGif(function() {
-            callback(false);
           });
-        });
+        }
       });
     }
   };
@@ -490,7 +504,7 @@ module.exports = function(app) {
   module.gzipStagingFiles = function(stagingPath, callback) {
 
     var renameFile = function(file, callback) {
-      var newName = file.replace(/.gz$/, '');
+      var newName = file.replace(/\.gz$/, '');
       var ext = newName.split('.').pop();
 
       if (app.config.noGzipArr.indexOf(ext) <= -1) { //new name ext = excluded extensions don't rename!
@@ -503,7 +517,8 @@ module.exports = function(app) {
         });
       } else {
         //uncompress the gz version of the file
-        cmd.get('nice gzip --uncompress ' + file, function(data) {
+        console.log("uncompressing: " + file);
+        cmd.get('nice gzip -d ' + file, function(data) {
           callback(false);
         });
       }
@@ -522,9 +537,7 @@ module.exports = function(app) {
       });
     });
   };
-
   return module;
-
 };
 
 

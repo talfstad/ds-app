@@ -46,7 +46,7 @@ module.exports = {
       database: 'test',
       //database: 'prod',  
       multipleStatements: true,
-      connectionLimit: 10
+      connectionLimit: 20
     },
     redisConnectionInfo: {
       host: '10.35.0.166', //use for deployment

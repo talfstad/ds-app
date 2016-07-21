@@ -3,18 +3,72 @@ module.exports = function(app, db) {
   var htmlFileOptimizer = require("../../../optimizer")(app);
   var dbAws = require('../../aws')(app, db);
   var dbCommon = require('../../common')(db);
-
+  var find = require('find');
+  var fs = require('fs');
+  var path = require('path');
   var psi = require('psi');
 
   return {
 
     addOptimizePushSave: function(user, localStagingPath, s3_folder_name, landerData, callback) {
 
+      //make sure all images are decoded from the uri 
+      var decodeImagesAndOverwrite = function(callback) {
+
+        var writeDecodedImage = function(imageDir, imageName, decodedImageName, callback) {
+          if (imageName != decodedImageName) {
+            console.log("rewriting IMGE!: " + imageName + " TO: " + decodedImageName);
+
+            var oldPath = path.join(imageDir, imageName);
+            console.log("old path: " + oldPath);
+
+            var newPath = path.join(imageDir, decodedImageName);
+            console.log("new path: " + newPath);
+
+            fs.rename(oldPath, newPath, function(err) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false);
+              }
+            });
+          } else {
+            callback(false);
+          }
+        };
+
+        find.file(/\.jpg$|\.jpeg$|\.gif$|\.png$/, localStagingPath, function(allImages) {
+
+          var asyncIndex = 0;
+          for (var i = 0; i < allImages.length; i++) {
+
+            var imageFilePath = allImages[i];
+
+            var imageName = path.basename(imageFilePath);
+            var imageDir = path.dirname(imageFilePath);
+            var decodedImageName = decodeURI(imageName);
+
+            writeDecodedImage(imageDir, imageName, decodedImageName, function(err) {
+              if (err) {
+                callback(err);
+              } else {
+                if (++asyncIndex == allImages.length) {
+                  callback(false);
+                }
+              }
+            });
+          }
+          if (allImages.length <= 0) {
+            callback(false);
+          }
+        });
+      };
+
       //4. createDirectory in s3 for optimized
       //5. push optimized
       //6. pagespeed test endpoints (deployed endpoints, original and optimized)
       //7. save lander into DB, save endpoints into DB (create stored proc for this?)
-      var remoteStagingPath = "/landers/" + s3_folder_name + "/"
+      var remoteStagingPath = "/landers/" + s3_folder_name + "/";
 
       //1. createDirectory in s3 for original
       //2. push original to s3
@@ -32,6 +86,7 @@ module.exports = function(app, db) {
             if (err) {
               callback(err);
             } else {
+              console.log("copyObj gzip done <this is done!> T")
               callback(false);
             }
           });
@@ -136,60 +191,66 @@ module.exports = function(app, db) {
             });
           };
 
-
-          var directory = "/landers/" + s3_folder_name + "/original/";
-          pushLanderToS3(directory, awsData, false, function(err) {
+          //before push lander make sure images are decoded
+          decodeImagesAndOverwrite(function(err) {
             if (err) {
               callback(err);
             } else {
-              //3. optimize the staging directory
-              htmlFileOptimizer.fullyOptimize(localStagingPath, function(err, endpointPaths) {
+              var directory = "/landers/" + s3_folder_name + "/original/";
+              pushLanderToS3(directory, awsData, false, function(err) {
                 if (err) {
                   callback(err);
                 } else {
-                  //4. push optimized to s3
-                  var directory = "/landers/" + s3_folder_name + "/optimized/";
-                  pushLanderToS3(directory, awsData, true, function(err) {
+                  //3. optimize the staging directory
+                  htmlFileOptimizer.fullyOptimize(localStagingPath, function(err, endpointPaths) {
                     if (err) {
                       callback(err);
                     } else {
+                      //4. push optimized to s3
+                      var directory = "/landers/" + s3_folder_name + "/optimized/";
+                      pushLanderToS3(directory, awsData, true, function(err) {
+                        if (err) {
+                          callback(err);
+                        } else {
 
-                      //4. remove local staging
-                      dbCommon.deleteStagingArea("staging/" + s3_folder_name, function() {
+                          //4. remove local staging
+                          dbCommon.deleteStagingArea("staging/" + s3_folder_name, function() {
 
-                        //5. save lander into DB, save endpoints into DB (create stored proc for this?)
-                        saveLanderToDb(function(err) {
-                          if (err) {
-                            callback(err);
-                          } else {
+                            //5. save lander into DB, save endpoints into DB (create stored proc for this?)
+                            saveLanderToDb(function(err) {
+                              if (err) {
+                                callback(err);
+                              } else {
 
-                            var asyncIndex = 0;
-                            for (var i = 0; i < endpointPaths.length; i++) {
-                              //strip off the staging part of the path so its web root
-                              var filePath = endpointPaths[i].replace(localStagingPath +"/", "");
+                                var asyncIndex = 0;
+                                for (var i = 0; i < endpointPaths.length; i++) {
+                                  //strip off the staging part of the path so its web root
+                                  var filePath = endpointPaths[i].replace(localStagingPath + "/", "");
 
-                              var urlEndpoints = [];
-                              addUrlEndpoint(filePath, function(err, endpoint) {
-                                if (err) {
-                                  callback(err);
-                                } else {
-                                  urlEndpoints.push(endpoint);
-                                  if (++asyncIndex == endpointPaths.length) {
-                                    //done adding endpoints
-                                    var returnData = {
-                                      id: landerData.id,
-                                      created_on: landerData.created_on,
-                                      s3_folder_name: s3_folder_name,
-                                      url_endpoints_arr: urlEndpoints
-                                    };
+                                  var urlEndpoints = [];
+                                  addUrlEndpoint(filePath, function(err, endpoint) {
+                                    if (err) {
+                                      callback(err);
+                                    } else {
+                                      urlEndpoints.push(endpoint);
+                                      if (++asyncIndex == endpointPaths.length) {
+                                        //done adding endpoints
+                                        var returnData = {
+                                          id: landerData.id,
+                                          created_on: landerData.created_on,
+                                          s3_folder_name: s3_folder_name,
+                                          url_endpoints_arr: urlEndpoints
+                                        };
 
-                                    callback(false, returnData);
-                                  }
+                                        callback(false, returnData);
+                                      }
+                                    }
+                                  });
                                 }
-                              });
-                            }
-                          }
-                        });
+                              }
+                            });
+                          });
+                        }
                       });
                     }
                   });
@@ -199,8 +260,6 @@ module.exports = function(app, db) {
           });
         }
       });
-
-
     }
   }
 }
