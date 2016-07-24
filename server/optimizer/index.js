@@ -467,7 +467,6 @@ module.exports = function(app) {
           });
         }
         if (pngImages.length <= 0) {
-          console.log("image optimization got executed");
           callback(false);
         }
       });

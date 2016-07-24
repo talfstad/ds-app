@@ -17,13 +17,9 @@ module.exports = function(app, db) {
 
         var writeDecodedImage = function(imageDir, imageName, decodedImageName, callback) {
           if (imageName != decodedImageName) {
-            console.log("rewriting IMGE!: " + imageName + " TO: " + decodedImageName);
 
             var oldPath = path.join(imageDir, imageName);
-            console.log("old path: " + oldPath);
-
             var newPath = path.join(imageDir, decodedImageName);
-            console.log("new path: " + newPath);
 
             fs.rename(oldPath, newPath, function(err) {
               if (err) {
@@ -86,7 +82,6 @@ module.exports = function(app, db) {
             if (err) {
               callback(err);
             } else {
-              console.log("copyObj gzip done <this is done!> T")
               callback(false);
             }
           });

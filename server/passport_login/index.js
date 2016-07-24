@@ -18,7 +18,7 @@ exports.initialize = function(app, db_ref) {
   // will be set at `req.user` in route handlers after authentication.
   passport.use(new Strategy(
     function(username, password, cb) {
-      db.users.findByUsernamePaswordApproved(username, password, function(err, user) {
+      db.users.findByUsernamePasword(username, password, function(err, user) {
         if (err) {
           return cb(false);
         }

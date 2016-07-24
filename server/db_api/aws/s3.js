@@ -561,7 +561,6 @@ module.exports = function(app, db) {
 
       var uploader = s3_client.uploadDir(params);
       uploader.on("error", function(err) {
-        console.log("TTT ERROR!!! " + err);
         callback(err);
       });
 
@@ -569,14 +568,9 @@ module.exports = function(app, db) {
         //get the key push it on an arr of things to change the content encoding on after
         var ext = localFilePath.split('.').pop();
 
-        console.log("in upload end, endpoints to have" + JSON.stringify(app.config.noGzipArr));
-        console.log("local file path: " + ext);
-        console.log("extension: " + localFilePath);
-
         if (app.config.noGzipArr.indexOf(ext) > -1) {
           updateContentEncodingForNoGzipKey(s3Key, function() {
             //nothing for callback needed
-            console.log("updated " + s3Key + " successfully");
           });
         }
       });

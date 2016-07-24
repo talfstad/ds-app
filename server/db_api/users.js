@@ -98,6 +98,36 @@ module.exports = function(db) {
       });
     },
 
+    findByUsernamePasword: function(username, password, cb) {
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          cb(err, null);
+
+        } else {
+          connection.query("SELECT a.ID as id, a.user_pass, a.user_email FROM wp_users a JOIN user_settings b ON (a.ID=b.user_id) WHERE a.user_email = ?;", [username], function(err, userDocs) {
+            if (err) {
+              cb({ code: "ErrorFindingUserDb" }, null);
+            } else {
+              if (!userDocs[0]) {
+                cb("Invalid user or password", null);
+              } else {
+                var user_row = userDocs[0];
+                if (WPhasher.CheckPassword(password, user_row.user_pass)) {
+                  cb(null, user_row);
+                } else {
+                  cb({ code: "InvalidPassword" }, null);
+                }
+              }
+            }
+            connection.release();
+          });
+        }
+      });
+    },
+
+
+
     addAmazonAPIKeys: function(access_key_id, secret_access_key, user, callback) {
       var user_id = user.id;
       db.getConnection(function(err, connection) {
