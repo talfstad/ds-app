@@ -184,7 +184,7 @@ module.exports = function(app) {
 
     var readExternalFile = function(href, callback) {
       request(href, function(err, response, body) {
-        if (err) {
+        if (err && response.statusCode != 200) {
           callback(err);
         } else {
           callback(false, body);
@@ -193,12 +193,17 @@ module.exports = function(app) {
     };
 
     var readLocalFile = function(filePath, callback) {
-
-      fs.readFile(filePath, function(err, fileData) {
-        if (err) {
-          callback(err);
+      fs.exists(filePath, function(exists) {
+        if (exists) {
+          fs.readFile(filePath, function(err, fileData) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(false, fileData, filePath);
+            }
+          });
         } else {
-          callback(false, fileData, filePath);
+          callback(false);
         }
       });
     };
@@ -403,7 +408,7 @@ module.exports = function(app) {
         if (err) {
           callback(err);
         } else {
-          console.log("minifying html for: " + filePath);
+          // console.log("minifying html for: " + filePath);
           minifyHtmlFile(filePath, fileData, function(err) {
             //ignore error, just dont do anything
             if (++asyncIndex == htmlFiles.length) {

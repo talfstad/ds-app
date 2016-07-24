@@ -29,9 +29,9 @@ module.exports = function(app, passport) {
 
               var username = user.user;
               var baseBucketName = awsData.aws_root_bucket;
-              
-              var fromDirectory = "/landers/" + landerData.from_s3_folder_name + "/";
-              var directory = username + "/landers/" + landerData.s3_folder_name + "/";
+
+              var fromDirectory = "/landers/" + landerData.from_s3_folder_name + "/original";
+              var directory = username + "/landers/" + landerData.s3_folder_name + "/original";
 
               var credentials = {
                 accessKeyId: awsData.aws_access_key_id,
@@ -44,29 +44,12 @@ module.exports = function(app, passport) {
                   callback(err);
                 } else {
 
-                  db.aws.s3.createDirectory(username, baseBucketName, directory, credentials, function(err) {
+                  db.landers.common.add_lander.addOptimizePushSave(user, stagingPath, stagingDir, landerData, function(err, data) {
                     if (err) {
+                      console.log('err: ' + err);
                       callback(err);
                     } else {
-                      //3. copy the lander into the folder
-                      db.aws.s3.copyDirFromStagingToS3(stagingPath, credentials, username, baseBucketName, directory, function(err) {
-                        if (err) {
-                          callback(err);
-                        } else {
-
-                          //4. remove the staging
-                          db.common.deleteStagingArea(stagingPath, function(err) {
-                            db.landers.saveNewLander(user, landerData, function(err, returnData) {
-                              if (err) {
-                                callback(err);
-                              } else {
-
-                                callback(false, landerData);
-                              }
-                            });
-                          });
-                        }
-                      });
+                      callback(false, data);
                     }
                   });
 

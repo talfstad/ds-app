@@ -23,7 +23,10 @@ module.exports = function(app, passport) {
           //rip and add lander both call this to finish the add lander process           
           db.landers.common.add_lander.addOptimizePushSave(user, stagingPath, stagingDir, landerData, function(err, data) {
             if (err) {
-              callback(err);
+              db.log.rip.error(err, user, stagingDir, landerData, function(err) {
+                //callback to user that we logged the error and are going to help figure it out
+                callback({code: "ErrorRippingLander"});
+              });
             } else {
               callback(false, data);
             }
