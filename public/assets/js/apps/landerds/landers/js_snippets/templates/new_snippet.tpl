@@ -11,8 +11,8 @@
       <i class="fa fa-info pr10"></i>To create a new snippet just enter a name and description. Once you've saved it, you can start editing the code.
     </div> -->
     <div class="create-snippet-alert js-snippet-alert alert alert-warning">
-    <%= snippetAlertMsg %>
-  </div>
+      <%= snippetAlertMsg %>
+    </div>
     <div class="js-snippet-description">
       <div class="clearfix" style="margin-left: 45px;">
         <div style="margin-top: 25px">
@@ -42,17 +42,19 @@
               <label style="margin-top: 15px" for="name" class="col-lg-12 control-label">Loading Location:</label>
               <div class="col-lg-12">
                 <div class="bs-component">
-                  <div>
-                  <input type="radio" name="load_before_dom" id="load-before-dom" class="load-before-dom form-control" value=""><span>Before Dom Load</span>
-                  </div>
-                  <div>
-                  <input type="radio" name="load_before_dom" id="load-before-dom" class="load-before-dom form-control" value=""><span>After Dom Load</span>
-                  </div>
+                  <label class="radio-inline mr10">
+                    <input type="radio" name="beforeDomLoad" id="before" value="true">Before DOM Load
+                  </label>
+                </div>
+                <div class="bs-component">
+                  <label class="radio-inline mt10 mr10">
+                    <input type="radio" name="beforeDomLoad" id="after" value="false">After DOM Load
+                  </label>
                 </div>
               </div>
             </div>
           </form>
-          <div class="btn-group ml10">
+          <div class="btn-group ml10 mt25">
             <button type="button" style="width: 85px" class="mt10 save-new-snippet-button btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Save</button>
             <button type="button" style="width: 85px" class="mt10 cancel-new-snippet-button btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Cancel</button>
           </div>

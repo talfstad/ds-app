@@ -11,8 +11,14 @@ define(["app",
         emptyView: emptyView,
         childView: listItemView,
         tagName: "ul",
-        className: "url-endpoints-list"
-              
+        className: "url-endpoints-list",
+
+
+        childViewOptions: function(model) {
+          model.set("currentPreviewEndpointId", this.collection.currentPreviewEndpointId);
+        }
+
+
       });
     });
 

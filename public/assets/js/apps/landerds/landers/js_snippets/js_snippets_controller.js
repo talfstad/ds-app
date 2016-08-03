@@ -261,10 +261,13 @@ define(["app",
                 var snippetModel = attr.model;
                 var name = attr.name;
                 var description = attr.description;
+                
+                var isLoadBeforeDom = true;
 
                 snippetModel.set({
                   "name": name,
                   "description": description,
+                  "load_before_dom": isLoadBeforeDom,
                   "action": "saveEditInfo"
                 });
 

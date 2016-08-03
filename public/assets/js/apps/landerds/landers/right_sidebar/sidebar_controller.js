@@ -114,7 +114,6 @@ define(["app",
           });
 
           //active snippets region view
-          this.showAndReFilterActiveSnippetsView(model);
           //menu buttons
           Landerds.rootRegion.currentView.rightSidebarRegion.currentView.menuButtonsRegion.show(sidebarMenuButtonsView);
           //lander modified area
@@ -125,7 +124,10 @@ define(["app",
           Landerds.rootRegion.currentView.rightSidebarRegion.currentView.pagespeedRegion.show(pagespeedView);
           //deployment options region view
           Landerds.rootRegion.currentView.rightSidebarRegion.currentView.deploymentOptionsRegion.show(deploymentOptionsView);
-          
+
+          this.showAndReFilterActiveSnippetsView(model);
+
+
           setTimeout(this.sidebarView.openSidebar, 20);
         },
 
@@ -133,9 +135,18 @@ define(["app",
           var me = this;
           //create the view here
           //only give it urlEndpoints with active snippets
+
+
+
           var urlEndpointsCollection = model.get("urlEndpoints");
+          //childview options for urlEndpointsCollection
+
+          var activeSnippetCollection = urlEndpointsCollection.filterWithActiveSnippets();
+          
+          activeSnippetCollection.currentPreviewEndpointId = model.get("currentPreviewEndpointId");
+
           var activeSnippetsView = new ActiveJsSnippetsListView({
-            collection: urlEndpointsCollection.filterWithActiveSnippets()
+            collection: activeSnippetCollection
           });
 
           activeSnippetsView.on("childview:childview:editJsSnippetsModal", function(childView, childChildView, snippet_id, showDescription) {
@@ -174,6 +185,20 @@ define(["app",
             Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", model);
 
           });
+
+
+          //handles changes, use css its way faster
+          this.landerModel.on("change:currentPreviewEndpointId", function(one, previewId, three) {
+
+            //when currentPreviewEndpointId changes, render the urlEndpointsColection
+            // me.showAndReFilterActiveSnippetsView(me.landerModel); // SLOW
+            
+            activeSnippetsView.collection.currentPreviewEndpointId = previewId;
+            activeSnippetsView.render();
+
+
+          });
+
 
           Landerds.rootRegion.currentView.rightSidebarRegion.currentView.snippetsRegion.show(activeSnippetsView)
 

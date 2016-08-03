@@ -1,0 +1,42 @@
+JS mobile Cloaker
+
+Back Button Redirect
+
+Entry Pop
+
+Exit Pop
+
+Geo-location Call Out: Call out a user’s location to get their attention
+
+Date Call Out: Create a sense of urgency by notifying users that the offer may not be around tomorrow
+
+Pop-Under Domination: Convert the same user twice
+
+Audio Blast: Use “alert” sounds or hire a voice actor to help pre-sell your offer (original author recommends 2-3 seconds for “alerts” and 15-30 seconds for voice actors)
+
+Mobile Vibrate: Make the users’ phones vibrate (1 second recommendation)
+
+Pop Up Alert: Good old JavaScript alert
+
+Dynamic Call-Outs: The more you can call out about your visitor, the better
+
+Random Count Down: example- “There are only 17 ebooks left!”; make it count down so it looks like real time
+
+
+
+
+set up the db trigger for new users to get all these snippets:
+
+THIS by tomorrow:
+1. js mobile cloaker
+2. back button redirect
+3. entry pop alert (js)
+4. exit pop alert (js)
+5. geo location call out
+//6. audio blast
+7. mobile vibrate phone
+8. count down
+
+count down, and geo location attach to classes "ds-geo-location" and "ds-count-down" which need to be added to the lander
+
+

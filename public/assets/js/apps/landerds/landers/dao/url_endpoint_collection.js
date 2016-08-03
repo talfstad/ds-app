@@ -9,15 +9,32 @@ define(["app",
 
       filterWithActiveSnippets: function() {
 
-      	var items = new UrlEndPointCollection();
+        var items = new UrlEndPointCollection();
 
-      	this.each(function(urlEndpoint){
-      		if(urlEndpoint.get("activeSnippets").length > 0) {
-      			items.add(urlEndpoint);
-      		}
-      	});
+        this.each(function(urlEndpoint) {
+          if (urlEndpoint.get("activeSnippets").length > 0) {
+            items.add(urlEndpoint);
+          }
+        });
 
-      	return items;
+        return items;
+      },
+
+      filterForCurrentPreviewId: function(id) {
+
+        var itemsWithActiveSnippts = this.filterWithActiveSnippets();
+
+        var items = new UrlEndPointCollection();
+
+        itemsWithActiveSnippts.each(function(urlEndpoint) {
+          if (urlEndpoint.id == id) {
+            items.add(urlEndpoint);
+          }
+        });
+
+        return items;
+
+
       }
 
     });
