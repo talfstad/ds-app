@@ -141,9 +141,9 @@ define(["app",
           var urlEndpointsCollection = model.get("urlEndpoints");
           //childview options for urlEndpointsCollection
 
-          var activeSnippetCollection = urlEndpointsCollection.filterWithActiveSnippets();
-          
-          activeSnippetCollection.currentPreviewEndpointId = model.get("currentPreviewEndpointId");
+          var activeSnippetCollection = urlEndpointsCollection.filterForCurrentPreviewId(model.get("currentPreviewEndpointId"));
+
+          // activeSnippetCollection.currentPreviewEndpointId = model.get("currentPreviewEndpointId");
 
           var activeSnippetsView = new ActiveJsSnippetsListView({
             collection: activeSnippetCollection
@@ -187,20 +187,8 @@ define(["app",
           });
 
 
-          //handles changes, use css its way faster
-          this.landerModel.on("change:currentPreviewEndpointId", function(one, previewId, three) {
-
-            //when currentPreviewEndpointId changes, render the urlEndpointsColection
-            // me.showAndReFilterActiveSnippetsView(me.landerModel); // SLOW
-            
-            activeSnippetsView.collection.currentPreviewEndpointId = previewId;
-            activeSnippetsView.render();
-
-
-          });
-
-
-          Landerds.rootRegion.currentView.rightSidebarRegion.currentView.snippetsRegion.show(activeSnippetsView)
+          
+          Landerds.rootRegion.currentView.rightSidebarRegion.currentView.snippetsRegion.show(activeSnippetsView);
 
         },
 

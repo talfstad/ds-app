@@ -327,6 +327,11 @@ define(["app",
                     model: landerView.model
                   });
 
+                  //handles changes, use css its way faster
+                  landerView.model.on("change:currentPreviewEndpointId", function(one, previewId, three) {
+                    Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerView.model);
+                  });
+
                   var activeCampaignsCollection = landerView.model.get("activeCampaigns");
                   //set landername to be used by campaign models dialog
                   activeCampaignsCollection.landerName = landerView.model.get("name");
@@ -359,7 +364,7 @@ define(["app",
                   var landerViewDeploymentFolderName = landerView.model.get("deployment_folder_name");
                   deployedDomainsCollection.deployment_folder_name = landerViewDeploymentFolderName
 
-                  
+
                   //if this lander is initializing set the collection level variable to be picked up
                   //by collections childviewoptions
                   if (landerView.model.get("deploy_status") == "initializing") {

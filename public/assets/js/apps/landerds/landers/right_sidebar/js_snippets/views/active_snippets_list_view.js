@@ -12,10 +12,9 @@ define(["app",
         childView: listItemView,
         tagName: "ul",
         className: "url-endpoints-list",
-
-
+        
         childViewOptions: function(model) {
-          model.set("currentPreviewEndpointId", this.collection.currentPreviewEndpointId);
+          // model.set("currentPreviewEndpointId", this.collection.currentPreviewEndpointId);
         }
 
 

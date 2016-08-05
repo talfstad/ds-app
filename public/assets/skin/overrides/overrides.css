@@ -477,3 +477,10 @@ body.sb-l-o #topbar.affix,
 .menu-buttons-region {
     background-color: #fff;
 }
+
+#pages-list {
+    position: relative;
+    top: 3px;
+    font-size: 16px;
+}
+

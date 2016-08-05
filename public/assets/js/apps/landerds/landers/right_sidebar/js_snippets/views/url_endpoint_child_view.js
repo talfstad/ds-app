@@ -17,20 +17,8 @@ define(["app",
         template: UrlEndpointActiveSnippetListTpl,
         childView: ActiveSnippetView,
         childViewContainer: "ul",
-        className: "fancytree-page expanded hidden",
+        className: "fancytree-page expanded",
 
-        onRender: function() {
-          this.shouldShow();
-        },
-
-        shouldShow: function() {
-          if(this.model.get("id") == this.model.get("currentPreviewEndpointId")) {
-            //should show
-            this.$el.removeClass("hidden");
-          } else {
-            this.$el.addClass("hidden");
-          }
-        },
 
         //method doesn't have state, model wont be correct here
         showEditSnippet: function(snippet_id) {
