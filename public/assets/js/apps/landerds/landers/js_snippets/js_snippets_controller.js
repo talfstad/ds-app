@@ -71,6 +71,7 @@ define(["app",
 
               //create a new snippet view and show it!
               var newSnippetModel = new SnippetModel();
+              
               var createNewSnippetView = new CreateNewSnippetView({
                 model: newSnippetModel
               });
@@ -156,7 +157,7 @@ define(["app",
               newSnippetDetailView.on("addSnippetToUrlEndpoint", function(attr) {
                 var snippetModel = attr.model;
                 var urlEndpointId = attr.urlEndpointId;
-
+                var landerId = me.jsSnippetsLayoutView.model.get("id");
                 //1. show that we are addingToPage, set addingToPage=true causes render
                 snippetModel.set("addingToPage", true);
 
@@ -166,7 +167,8 @@ define(["app",
                   "snippet_id": snippetModel.get("snippet_id"),
                   "id": snippetModel.get("id"),
                   "action": "addSnippetToUrlEndpoint",
-                  "urlEndpointId": urlEndpointId
+                  "urlEndpointId": urlEndpointId,
+                  "lander_id": landerId
                 });
 
                 newActiveSnippetModel.save({}, {
@@ -179,7 +181,9 @@ define(["app",
                     var endpointsActiveSnippetCollection = endpointToAddTo.get("activeSnippets");
 
                     endpointsActiveSnippetCollection.add(newActiveSnippetModel);
-                    Landerds.trigger("landers:updateToModifiedAndSave");
+                    
+                    Landerds.trigger("landers:updateToModified");
+                    
                     Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerModel);
                     //set addingToPage to 'finished' to show the finished message and remove
                     snippetModel.set("addingToPage", "finished");
@@ -262,12 +266,12 @@ define(["app",
                 var name = attr.name;
                 var description = attr.description;
                 
-                var isLoadBeforeDom = true;
+                var loadBeforeDom = attr.loadBeforeDom;
 
                 snippetModel.set({
                   "name": name,
                   "description": description,
-                  "load_before_dom": isLoadBeforeDom,
+                  "load_before_dom": loadBeforeDom,
                   "action": "saveEditInfo"
                 });
 

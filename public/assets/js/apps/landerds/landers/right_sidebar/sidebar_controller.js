@@ -21,7 +21,9 @@ define(["app",
 
         //save even if not modified because it might not be deployed
         //in which case we would want to save it anyway
-        updateToModifiedAndSave: function() {
+        updateToModified: function() {
+
+          this.landerModel.set("modified", true);
 
           var deployedLanderCollection = this.landerModel.get("deployedDomains");
 
@@ -30,14 +32,10 @@ define(["app",
             this.landerModel.set("modified", true);
           }
           //2. save it no matter what
-          this.landerModel.save({}, {
-            success: function() {
-              deployedLanderCollection.each(function(location) {
-                location.set("deploy_status", "modified");
-
-              });
-            }
+          deployedLanderCollection.each(function(location) {
+            location.set("deploy_status", "modified");
           });
+
         },
 
         //whenever sidebar is open it has the real lander model as its model not a stupid sidebar model
@@ -179,7 +177,7 @@ define(["app",
               snippetToDestroy.destroy();
             }
 
-            me.updateToModifiedAndSave();
+            me.updateToModified();
 
             //3. if no more active snippets on this, destroy it
             Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", model);
@@ -187,7 +185,7 @@ define(["app",
           });
 
 
-          
+
           Landerds.rootRegion.currentView.rightSidebarRegion.currentView.snippetsRegion.show(activeSnippetsView);
 
         },

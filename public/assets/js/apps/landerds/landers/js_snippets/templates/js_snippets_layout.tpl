@@ -9,10 +9,7 @@
         <ul class="nav nav-list nav-list-topbar mb0 pull-left">
           <li role="presentation" class="active">
             <a href="#aws" aria-controls="aws" role="tab" data-toggle="tab"><span class="fa fa-file-code-o pr5"></span> JS Snippets</a>
-          </li>
-          <!-- <li role="presentation">
-            <a href="#account" aria-controls="account" role="tab" data-toggle="tab"><span class="fa fa-folder-open pr5"></span> Snippet Resources</a>
-          </li> -->
+          </li> 
         </ul>
       </div>
     </header>

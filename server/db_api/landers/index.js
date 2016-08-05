@@ -80,14 +80,11 @@ module.exports = function(app, db) {
       var lander_id = attr.id;
       var modified = attr.modified;
 
-      //values for query
-      var attrArr = [modified, user_id, lander_id];
-
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("UPDATE landers SET modified = ? WHERE user_id = ? AND id = ?", attrArr,
+          connection.query("UPDATE landers SET modified = ? WHERE user_id = ? AND id = ?", [modified, user_id, lander_id],
             function(err, docs) {
               if (err) {
                 callback(err);
@@ -552,7 +549,7 @@ module.exports = function(app, db) {
 
             connection.query(queryString, [user_id], function(err, dblanders) {
               if (err) {
-                console.log(err);
+                console.log("1: " + err);
                 callback(err);
               } else {
                 var idx = 0;

@@ -25,7 +25,7 @@ define(["app",
 
         //save even if not modified because it might not be deployed
         //in which case we would want to save it anyway
-        updateToModifiedAndSave: function() {
+        updateToModified: function() {
 
           var deployedLanderCollection = this.domainModel.get("deployedLanders");
 
@@ -64,7 +64,7 @@ define(["app",
           //it will propogate up to the lander model
           nameserversView.on("modified", function() {
 
-            me.updateToModifiedAndSave();
+            me.updateToModified();
 
 
           });

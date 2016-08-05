@@ -69,7 +69,7 @@
        <% if(total_modified > 0) { %>
 
       <div>
-        <span class="badge-warning badge"><%= total_modified %></span> <%= modifiedLanderText %> Modified
+        <span class="badge-warning badge"><%= total_modified %></span> <%= modifiedLanderText %> Outdated
       </div>
 
        <% } %>

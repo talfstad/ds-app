@@ -66,13 +66,13 @@
                 <%= description %>
               </p>
               <div style="float: left; width: 50%">
-                <button type="button" class="mt10 change-snippet-info-button btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Change Name/Description</button>
+                <button type="button" class="mt10 change-snippet-info-button btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Edit Snippet Settings</button>
               </div>
             </div>
           </div>
         </div>
         <% } else { %>
-          <div class="snippet-info-content" style="width: 90%">
+          <div class="admin-form snippet-info-content" style="width: 90%">
             <h3>Edit Snippet Information:</h3>
             <form class="form-vertical" role="form">
               <div class="form-group">
@@ -91,6 +91,15 @@
                     <textarea style="resize: none" name="description" class="form-control" id="textArea2" rows="4"><%= description %></textarea>
                   </div>
                 </div>
+              </div>
+              <div class="form-group">
+                <label class="mt15 ml10 option option-primary">
+                  <% if(load_before_dom) { %>
+                    <input type="checkbox" name="loadBeforeDom" checked="">
+                  <% } else { %>
+                    <input type="checkbox" name="loadBeforeDom">
+                  <% } %>
+                  <span class="checkbox"></span>Load Before DOM</label>
               </div>
             </form>
             <div class="btn-group ml10">

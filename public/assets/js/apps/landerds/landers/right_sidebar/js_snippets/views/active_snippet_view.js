@@ -17,7 +17,8 @@ define(["app",
         events: {
           "click .edit-snippet": "showEditSnippet",
           "click .delete-active-snippet": "deleteActiveSnippet",
-          "click .fancytree-title": "showDescriptionSnippet"
+          "click .fancytree-title": "showDescriptionSnippet",
+          "click .fancytree-icon": "showDescriptionSnippet"
         },
 
         showEditSnippet: function() {

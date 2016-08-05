@@ -17,7 +17,7 @@ module.exports = function(app, passport) {
     var params = req.body;
 
     db.js_snippets.saveNewSnippet(user, params, function(returnObj) {
-      res.json(returnObj);      
+      res.json(returnObj);
     });
 
   });
@@ -29,8 +29,13 @@ module.exports = function(app, passport) {
 
     //if set adds snippet to the urlEndpoint
     if (action === "saveEditInfo") {
-      db.js_snippets.saveEditInfo(user, params, function(returnObj) {
-        res.json(returnObj);
+      db.js_snippets.saveEditInfo(user, params, function(err, returnObj) {
+        if (err) {
+          res.json(err);
+        } else {
+          //empty object because we updated successfully
+          res.json({});
+        }
       });
     } else if (action === "saveCode") {
       db.js_snippets.saveCode(user, params, function(returnObj) {
@@ -41,7 +46,7 @@ module.exports = function(app, passport) {
 
   app.delete('/api/js_snippets/:snippet_id', passport.isAuthenticated(), function(req, res) {
 
-    res.json({})
+    res.json({});
 
   });
 
@@ -53,12 +58,16 @@ module.exports = function(app, passport) {
 
     //if set adds snippet to the urlEndpoint
     if (action === "addSnippetToUrlEndpoint") {
-      db.js_snippets.addSnippetToUrlEndpoint(user, params, function(returnObj) {
-        res.json(returnObj);
+      
+      db.js_snippets.addSnippetToUrlEndpoint(user, params, function(err, returnObj) {
+        if (err) {
+          res.json(err);
+        } else {
+          res.json(returnObj);
+        }
       });
     }
   });
-
 
 
   app.delete('/api/active_snippets/:active_snippet_id', passport.isAuthenticated(), function(req, res) {

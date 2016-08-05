@@ -88,8 +88,8 @@ define(["app",
         removeCampaignFromLander: function(campaignModel) {
           ListController.removeCampaignFromLander(campaignModel);
         },
-        updateToModifiedAndSave: function() {
-          SidemenuController.updateToModifiedAndSave();
+        updateToModified: function() {
+          SidemenuController.updateToModified();
         },
         deleteLander: function(model) {
           ListController.deleteLander(model);
@@ -127,8 +127,8 @@ define(["app",
         landersAppAPI.closeSidebar();
       });
 
-      Landerds.on("landers:updateToModifiedAndSave", function() {
-        landersAppAPI.updateToModifiedAndSave();
+      Landerds.on("landers:updateToModified", function() {
+        landersAppAPI.updateToModified();
       });
 
       Landerds.on("landers:showEdit", function(model) {

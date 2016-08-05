@@ -18,7 +18,7 @@
             <span class="open_sidemenu_r label">
         
           <div class="text-warning">
-           <span>Modified</span>
+           <span>Outdated</span>
            </div>
             </span>
           </div>

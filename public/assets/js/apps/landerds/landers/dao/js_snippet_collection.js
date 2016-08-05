@@ -11,31 +11,22 @@ define(["app",
       },
     });
 
-    var jsSnippetCollectionInstance = null;
 
     var API = {
       getJsSnippetCollection: function() {
         var me = this;
         var defer = $.Deferred();
 
-        if (!this.jsSnippetCollectionInstance) {
+        this.jsSnippetCollectionInstance = new JsSnippetCollection();
 
-          this.jsSnippetCollectionInstance = new JsSnippetCollection();
-
-          this.jsSnippetCollectionInstance.fetch({
-            success: function(landers) {
-              defer.resolve(landers);
-            },
-            error: function(one, two, three){
-              Landerds.execute("show:login");
-            }
-          });
-        } else {
-          //async hack to still return defer
-          setTimeout(function() {
-            defer.resolve(me.jsSnippetCollectionInstance);
-          }, 200);
-        }
+        this.jsSnippetCollectionInstance.fetch({
+          success: function(landers) {
+            defer.resolve(landers);
+          },
+          error: function(one, two, three) {
+            Landerds.execute("show:login");
+          }
+        });
 
         var promise = defer.promise();
         return promise;

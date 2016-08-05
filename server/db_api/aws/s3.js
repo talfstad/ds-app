@@ -10,6 +10,57 @@ module.exports = function(app, db) {
 
   return {
 
+    getObject: function(credentials, bucketName, key, callback) {
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+      AWS.config.update(credentials);
+
+      var aws_s3_client = new AWS.S3();
+
+      var params = {
+        Bucket: bucketName,
+        Key: key
+      };
+
+      aws_s3_client.getObject(params, function(err, data) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(false, data);
+        }
+      });
+    },
+
+    putObject: function(credentials, bucketName, key, body, callback) {
+      AWS.config.update({
+        region: 'us-west-2',
+        maxRetries: 0
+      });
+      AWS.config.update(credentials);
+
+      var aws_s3_client = new AWS.S3();
+
+      var params = {
+        Bucket: bucketName,
+        Key: key,
+        ACL: "public-read",
+        CacheControl: 'max-age=604800',
+        ContentType: 'text/html',
+        Expires: new Date || 'Wed Dec 31 1969 16:00:00 GMT-0800 (PST)' || 123456789,
+        Body: body
+      };
+
+      aws_s3_client.putObject(params, function(err, data) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(false, data);
+        }
+      });
+    },
+
     deleteDir: function(credentials, bucketName, dirPath, callback) {
       AWS.config.update({
         region: 'us-west-2',

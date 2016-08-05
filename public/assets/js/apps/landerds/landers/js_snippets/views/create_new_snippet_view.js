@@ -20,9 +20,8 @@ define(["app",
         saveNewSnippet: function() {
           var newSnippetData = Backbone.Syphon.serialize(this);
           
-          var isLoadBeforeDom = true;
+          var isLoadBeforeDom = newSnippetData.loadBeforeDom;
           
-
           if (newSnippetData.name != "") {
             this.model.set({
               name: newSnippetData.name,
