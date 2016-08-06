@@ -71,7 +71,7 @@ define(["app",
 
               //create a new snippet view and show it!
               var newSnippetModel = new SnippetModel();
-              
+
               var createNewSnippetView = new CreateNewSnippetView({
                 model: newSnippetModel
               });
@@ -184,9 +184,9 @@ define(["app",
                     var endpointsActiveSnippetCollection = endpointToAddTo.get("activeSnippets");
 
                     endpointsActiveSnippetCollection.add(newActiveSnippetModel);
-                    
+
                     Landerds.trigger("landers:updateToModified");
-                    
+
                     Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerModel);
                     //set addingToPage to 'finished' to show the finished message and remove
                     snippetModel.set("addingToPage", "finished");
@@ -219,7 +219,6 @@ define(["app",
                     //set all landers in the response object (affectedLanderIds) to modified because they
                     //are modified in the db
                     Landerds.trigger("landers:updateAffectedLanderIdsToModified", affectedLanderIds);
-
                   },
                   error: function() {
 
@@ -233,32 +232,27 @@ define(["app",
                 //starting delete snippet
                 snippetModel.set("deletingSnippet", true);
 
-                //trigger delete of snippet from all landers! on success run callback
-                Landerds.trigger("landers:removeSnippetFromAllLanders", {
-                  snippet: snippetModel,
-                  onSuccess: function() {
+                snippetModel.destroy({
+                  success: function(deletedModel, affectedLanders) {
+                    // Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerModel);
+                    
+                    //  . remove active snippets from landers
+                    Landerds.trigger("landers:updateAffectedLanderIdsRemoveActiveSnippets", affectedLanders);
 
-                    //now actually remove the SNIPPET itself
-                    snippetModel.destroy({
-                      success: function() {
-                        Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerModel);
-                        jsSnippetTotalsView.trigger("updateSnippetTotals");
+                    jsSnippetTotalsView.trigger("updateSnippetTotals");
 
-                        //once removed, show the first model if we have one, or the default view
-                        var firstModel = filteredSnippetCollection.models[0];
-                        if (!firstModel) {
-                          me.showEmptySnippetsDetailView();
-                        } else {
-                          //set alert delete to finished on this model so
-                          //when we show the new model it shows delete successful message
-                          firstModel.set("deletingSnippet", "finished");
+                    //once removed, show the first model if we have one, or the default view
+                    var firstModel = filteredSnippetCollection.models[0];
+                    if (!firstModel) {
+                      me.showEmptySnippetsDetailView();
+                    } else {
+                      //set alert delete to finished on this model so
+                      //when we show the new model it shows delete successful message
+                      firstModel.set("deletingSnippet", "finished");
 
-                          leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
-                        }
-                      }
-                    });
+                      leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
+                    }
                   }
-
                 });
 
               });
@@ -268,7 +262,7 @@ define(["app",
                 var snippetModel = attr.model;
                 var name = attr.name;
                 var description = attr.description;
-                
+
                 var loadBeforeDom = attr.loadBeforeDom;
 
                 snippetModel.set({
@@ -325,7 +319,7 @@ define(["app",
 
           var emptySnippetsDetailView = new EmptySnippetsDetailView();
           this.jsSnippetsLayoutView.snippetDetailRegion.show(emptySnippetsDetailView);
-          
+
 
         },
 

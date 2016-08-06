@@ -17,8 +17,8 @@ module.exports = function(app, passport) {
     var params = req.body;
 
     db.js_snippets.saveNewSnippet(user, params, function(err, returnObj) {
-      if(err){
-        res.json({error: {code: "ErrorSavingNewSnippet"}});
+      if (err) {
+        res.json({ error: { code: "ErrorSavingNewSnippet" } });
       } else {
         res.json(returnObj);
       }
@@ -43,8 +43,8 @@ module.exports = function(app, passport) {
       });
     } else if (action === "saveCode") {
       db.js_snippets.saveCode(user, params, function(err, returnObj) {
-        if(err){ 
-          res.json({error: {code: "UnableToSaveCode"}});
+        if (err) {
+          res.json({ error: { code: "UnableToSaveCode" } });
         } else {
           res.json(returnObj);
         }
@@ -53,9 +53,16 @@ module.exports = function(app, passport) {
   });
 
   app.delete('/api/js_snippets/:snippet_id', passport.isAuthenticated(), function(req, res) {
-
-    res.json({});
-
+    var user = req.user;
+    var snippet_id = req.params.snippet_id;
+    //delete snippet
+    db.js_snippets.deleteSnippet(user, snippet_id, function(err, returnObj) {
+      if (err) {
+        res.json({ error: { code: "UnableToDeleteSnippet" } });
+      } else {
+        res.json(returnObj);
+      }
+    });
   });
 
 
@@ -66,7 +73,7 @@ module.exports = function(app, passport) {
 
     //if set adds snippet to the urlEndpoint
     if (action === "addSnippetToUrlEndpoint") {
-      
+
       db.js_snippets.addSnippetToUrlEndpoint(user, params, function(err, returnObj) {
         if (err) {
           res.json(err);

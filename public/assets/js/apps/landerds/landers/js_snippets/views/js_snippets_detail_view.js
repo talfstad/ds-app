@@ -200,7 +200,7 @@ define(["app",
           } else if (deletingSnippet == "prompt") {
             showAlert = true;
             me.setAlertType("alert-danger");
-            msg = "<span style='padding-left: 20px'>Are you sure you want to delete this snippet?</span>" + "<div class='btn-group' style='position: relative; margin-top: -11px; float: right'><button type='button' class='confirm-delete-snippet-button pl10 pt5 pb5 btn btn-default btn-gradient dark'>" + "<span class='fa fa-check pr5'></span>Confirm</button><button type='button' class='cancel-delete-snippet-button pl10 pt5 pb5 btn btn-default btn-gradient dark'>" + "<span class='fa fa-close pr5'></span>Cancel</button></div>";
+            msg = "<span style='padding-left: 20px'>Are you sure you want to permanently delete this snippet?</span>" + "<div class='btn-group' style='position: relative; margin-top: -11px; float: right'><button type='button' class='confirm-delete-snippet-button pl10 pt5 pb5 btn btn-default btn-gradient dark'>" + "<span class='fa fa-check pr5'></span>Confirm</button><button type='button' class='cancel-delete-snippet-button pl10 pt5 pb5 btn btn-default btn-gradient dark'>" + "<span class='fa fa-close pr5'></span>Cancel</button></div>";
 
           } else if (deletingSnippet == true) {
             showAlert = true;

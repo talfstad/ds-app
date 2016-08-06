@@ -16,20 +16,20 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
+        } else {
+          connection.query("call add_new_snippet(?, ?, ?, ?)", [user_id, name, description, load_before_dom], function(err, docs) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(false, {
+                id: docs[0][0]["LAST_INSERT_ID()"],
+                snippet_id: docs[0][0]["LAST_INSERT_ID()"]
+              });
+            }
+            connection.release();
+          });
         }
-        connection.query("call add_new_snippet(?, ?, ?, ?)", [user_id, name, description, load_before_dom], function(err, docs) {
-          if (err) {
-            console.log(err);
-            callback(err);
-          } else {
-            callback({
-              id: docs[0][0]["LAST_INSERT_ID()"],
-              snippet_id: docs[0][0]["LAST_INSERT_ID()"]
-            });
-          }
-          connection.release();
-        });
       });
 
     },
@@ -103,7 +103,7 @@ module.exports = function(app, db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT a.filename, a.lander_id FROM url_endpoints a, active_snippets b WHERE a.id = b.url_endpoint_id AND a.user_id = ? AND b.snippet_id = ?", [user_id, snippet_id],
+            connection.query("SELECT a.filename, a.id as url_endpoint_id, b.id as active_snippet_id, a.lander_id FROM url_endpoints a, active_snippets b WHERE a.id = b.url_endpoint_id AND a.user_id = ? AND b.snippet_id = ?", [user_id, snippet_id],
               function(err, docs) {
                 if (err) {
                   callback(err);
@@ -173,7 +173,7 @@ module.exports = function(app, db) {
             //create lander_ids array to return to client
             if (landerIdsArr.indexOf(endpoints[i].lander_id) <= -1) {
               //not in array so add it
-              landerIdsArr.push(endpoints[i].lander_id);
+              landerIdsArr.push(endpoints[i]);
             }
 
             getEndpointFromS3(endpoint, function(err, fileData, credentials, key, rootBucket, lander_id) {
@@ -225,6 +225,43 @@ module.exports = function(app, db) {
       //  . write endpoint to s3
     },
 
+    deleteSnippet: function(user, snippet_id, callback) {
+      var user_id = user.id;
+
+      var customBeforePush = function($, callback) {
+        //  . for delete dont do anything but function is required
+        return;
+      };
+
+      module.removeSnippetFromAllEndpointsRunCustomAndPush(user, snippet_id, customBeforePush, function(err, affectedLanderIds) {
+        if (err) {
+          callback(err);
+        } else {
+          app.log("affectedLanderIds for delete: " + JSON.stringify(affectedLanderIds), "debug");
+
+          db.getConnection(function(err, connection) {
+            if (err) {
+              console.log(err);
+            } else {
+              app.log("deleting from snippets where id is = " + snippet_id, "debug");
+
+              connection.query("DELETE FROM snippets WHERE id = ? AND user_id = ?", [snippet_id, user_id],
+                function(err, docs) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    callback(false, affectedLanderIds);
+                  }
+                  //release connection
+                  connection.release();
+                });
+            }
+          });
+        }
+      });
+
+    },
+
     //edit code requires updating all snippets code on all landers its on  
     saveCode: function(user, params, callback) {
       var user_id = user.id;
@@ -257,7 +294,7 @@ module.exports = function(app, db) {
           callback(err);
         } else {
           app.log("affectedLanderIds" + JSON.stringify(affectedLanderIds), "debug");
-          
+
           db.getConnection(function(err, connection) {
             if (err) {
               console.log(err);
@@ -275,8 +312,6 @@ module.exports = function(app, db) {
                 });
             }
           });
-
-
         }
       });
 

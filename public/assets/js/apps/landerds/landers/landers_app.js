@@ -58,6 +58,9 @@ define(["app",
         updateAffectedLanderIdsToModified: function(affectedLanderIds) {
           ListController.updateAffectedLanderIdsToModified(affectedLanderIds);
         },
+        updateAffectedLanderIdsRemoveActiveSnippets: function(affectedLanderIds) {
+          ListController.updateAffectedLanderIdsRemoveActiveSnippets(affectedLanderIds);
+        },
         showDuplicateLanderModal: function(landerModelToDuplicateAttr) {
           DuplicateLanderController.showDuplicateLander(landerModelToDuplicateAttr);
         },
@@ -136,6 +139,10 @@ define(["app",
 
       Landerds.on("landers:updateAffectedLanderIdsToModified", function(affectedLanderIds) {
         landersAppAPI.updateAffectedLanderIdsToModified(affectedLanderIds);
+      });
+
+      Landerds.on("landers:updateAffectedLanderIdsRemoveActiveSnippets", function(affectedLanderIds) {
+        landersAppAPI.updateAffectedLanderIdsRemoveActiveSnippets(affectedLanderIds);
       });
 
       Landerds.on("landers:showEdit", function(model) {

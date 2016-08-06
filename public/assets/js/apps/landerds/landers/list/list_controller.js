@@ -26,10 +26,39 @@ define(["app",
 
         filteredLanderCollection: null,
 
-        updateAffectedLanderIdsToModified: function(affectedLanderIds) {
+        updateAffectedLanderIdsRemoveActiveSnippets: function(affectedUrlEndpoints) {
           var me = this;
 
-          $.each(affectedLanderIds, function(idx, landerId) {
+          $.each(affectedUrlEndpoints, function(idx, endpoint) {
+
+            var landerId = endpoint.lander_id;
+            var urlEndpointId = endpoint.url_endpoint_id;
+            var activeSnippetId = endpoint.active_snippet_id;
+
+            var landerToUpdate = me.filteredLanderCollection.original.get(landerId);
+            var urlEndpoints = landerToUpdate.get("urlEndpoints");
+            var endpointToUpdate = urlEndpoints.get(urlEndpointId);
+            var activeSnippets = endpointToUpdate.get("activeSnippets");
+            var activeSnippetToRemove = activeSnippets.get(activeSnippetId);
+            //get the url endpoint thats modified 
+            if (activeSnippetToRemove) {
+              activeSnippets.remove(activeSnippetToRemove);
+              //update the sidemenu views
+              Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerToUpdate);
+              
+              landerToUpdate.set("modified", true);
+            }
+
+          });
+
+
+        },
+
+        updateAffectedLanderIdsToModified: function(affectedEndpoints) {
+          var me = this;
+
+          $.each(affectedEndpoints, function(idx, endpoint) {
+            var landerId = endpoint.lander_id;
 
             var landerToUpdate = me.filteredLanderCollection.original.get(landerId);
 
@@ -323,8 +352,24 @@ define(["app",
               model: me.filteredLanderCollection.state.gui
             });
 
-            me.filteredLanderCollection.original.on("change:modified", function(one, two, three) {
-              // alert("changed modified");
+            me.filteredLanderCollection.original.on("change:modified", function(landerModel) {
+
+              Landerds.trigger("landers:updateTopbarTotals");
+
+              var deployedDomainsCollection = landerModel.get("deployedDomains");
+
+              if (this.get("modified")) {
+                //set all deployed domains to modified as well. modified is
+                //as a whole lander, never individual deployed domains are modified
+                deployedDomainsCollection.each(function(deployedDomain) {
+                  deployedDomain.set("modified", true);
+                });
+              } else {
+                deployedDomainsCollection.each(function(deployedDomain) {
+                  deployedDomain.set("modified", false);
+                });
+              }
+
             });
 
             me.filteredLanderCollection.on("reset", function(collection) {
@@ -447,19 +492,19 @@ define(["app",
                   });
 
                   landerView.model.on("change:modified", function() {
-                    Landerds.trigger("landers:updateTopbarTotals");
+                    // Landerds.trigger("landers:updateTopbarTotals");
 
-                    if (this.get("modified")) {
-                      //set all deployed domains to modified as well. modified is
-                      //as a whole lander, never individual deployed domains are modified
-                      deployedDomainsCollection.each(function(deployedDomain) {
-                        deployedDomain.set("modified", true);
-                      });
-                    } else {
-                      deployedDomainsCollection.each(function(deployedDomain) {
-                        deployedDomain.set("modified", false);
-                      });
-                    }
+                    // if (this.get("modified")) {
+                    //   //set all deployed domains to modified as well. modified is
+                    //   //as a whole lander, never individual deployed domains are modified
+                    //   deployedDomainsCollection.each(function(deployedDomain) {
+                    //     deployedDomain.set("modified", true);
+                    //   });
+                    // } else {
+                    //   deployedDomainsCollection.each(function(deployedDomain) {
+                    //     deployedDomain.set("modified", false);
+                    //   });
+                    // }
                   });
 
 
