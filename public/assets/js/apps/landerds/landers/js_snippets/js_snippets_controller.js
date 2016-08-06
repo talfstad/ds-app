@@ -171,11 +171,17 @@ define(["app",
                   "lander_id": landerId
                 });
 
+
+                landerModel.set("saving", true);
+
                 newActiveSnippetModel.save({}, {
                   success: function(activeSnippetModel, two, three) {
-
+                    
                     //!important: set no_optimize_on_save to FALSE when adding snippet
-                    landerModel.set("no_optimize_on_save", false);
+                    landerModel.set({
+                      no_optimize_on_save: false,
+                      saving: false
+                    });
 
                     // add it to the colleciton
                     var urlEndpointCollection = landerModel.get("urlEndpoints");

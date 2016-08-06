@@ -45,9 +45,10 @@ define(["app",
           } else {
             urlEndpointsJSON = [];
           }
-
-          this.model.set("urlEndpointsJSON", urlEndpointsJSON);
-          this.model.set("currentPreviewEndpointId", urlEndpointsJSON[0].id);
+          if (urlEndpointsJSON.length > 0) {
+            this.model.set("urlEndpointsJSON", urlEndpointsJSON);
+            this.model.set("currentPreviewEndpointId", urlEndpointsJSON[0].id);
+          }
         },
 
         onRender: function() {
