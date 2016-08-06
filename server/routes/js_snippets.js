@@ -42,8 +42,12 @@ module.exports = function(app, passport) {
         }
       });
     } else if (action === "saveCode") {
-      db.js_snippets.saveCode(user, params, function(returnObj) {
-        res.json(returnObj);
+      db.js_snippets.saveCode(user, params, function(err, returnObj) {
+        if(err){ 
+          res.json({error: {code: "UnableToSaveCode"}});
+        } else {
+          res.json(returnObj);
+        }
       });
     }
   });

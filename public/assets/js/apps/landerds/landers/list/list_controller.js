@@ -26,6 +26,21 @@ define(["app",
 
         filteredLanderCollection: null,
 
+        updateAffectedLanderIdsToModified: function(affectedLanderIds) {
+          var me = this;
+
+          $.each(affectedLanderIds, function(idx, landerId) {
+
+            var landerToUpdate = me.filteredLanderCollection.original.get(landerId);
+
+            if (landerToUpdate) {
+              landerToUpdate.set("modified", true);
+            }
+
+          });
+
+        },
+
         deployCampaignLandersToDomain: function(attr) {
 
           var activeCampaignModel = attr.active_campaign_model;
@@ -306,6 +321,10 @@ define(["app",
             //this is the pagination pages totals and lander count totals view
             var topbarView = new TopbarView({
               model: me.filteredLanderCollection.state.gui
+            });
+
+            me.filteredLanderCollection.original.on("change:modified", function(one, two, three) {
+              // alert("changed modified");
             });
 
             me.filteredLanderCollection.on("reset", function(collection) {

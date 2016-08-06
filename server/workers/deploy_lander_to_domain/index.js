@@ -2,7 +2,7 @@ module.exports = function(app, db) {
 
   var module = {};
 
-  var optimizations = require("./optimizations")(app, db);
+  // var optimizations = require("./optimizations")(app, db);
   var waitForOtherJobsToFinish = require("../common/wait_for_other_jobs_to_finish")(app, db);
 
   //must call statNextJobCallback when success/fail happens
@@ -118,13 +118,13 @@ module.exports = function(app, db) {
                         if (err) {
                           callback({ code: "CouldNotUpdateDeployStatusOptimizing" }, [myJobId]);
                         } else {
-                          optimizations.fullyOptimize(staging_path, function(err) {
-                            if (err) {
-                              callback({ code: "CouldNotOptimizeJs" }, [myJobId]);
-                            } else {
+                          // optimizations.fullyOptimize(staging_path, function(err) {
+                            // if (err) {
+                              // callback({ code: "CouldNotOptimizeJs" }, [myJobId]);
+                            // } else {
                               pushToS3AndInvalidate();
-                            }
-                          });
+                            // }
+                          // });
                         }
                       });
                     }

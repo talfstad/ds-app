@@ -8,7 +8,6 @@ module.exports = function(app) {
   var cheerio = require('cheerio');
   var fs = require('fs');
   var htmlMinifier = require('html-minifier').minify;
-  var yuiCompressor = require('yuicompressor');
   var find = require('find');
   var fs = require('fs');
   var cmd = require('node-cmd');
@@ -62,7 +61,6 @@ module.exports = function(app) {
 
 
   //read all css files from endpoint into a string
-  //concat them all into 1 string for yuicompressor
   //compress them all
   //write it to a file
   //purify that file
@@ -237,25 +235,27 @@ module.exports = function(app) {
 
     var compressAndWriteFile = function(jsFilePath, callback) {
       //call yuicompressor on the file
-      yuiCompressor.compress(jsFilePath, {
-        charset: 'utf8',
-        type: 'js',
-        nomunge: true,
-        'line-break': 80
-      }, function(err, compressedFile, extra) {
-        if (err) {
-          callback(err);
-        } else {
-          //- and overwrite the file
-          fs.writeFile(jsFilePath, compressedFile, function(err) {
-            if (err) {
-              callback(err);
-            } else {
-              callback(false);
-            }
-          });
-        }
-      });
+      // yuiCompressor.compress(jsFilePath, {
+      //   charset: 'utf8',
+      //   type: 'js',
+      //   nomunge: true,
+      //   'line-break': 80
+      // }, function(err, compressedFile, extra) {
+      //   if (err) {
+      //     callback(err);
+      //   } else {
+      //     //- and overwrite the file
+      //     fs.writeFile(jsFilePath, compressedFile, function(err) {
+      //       if (err) {
+      //         callback(err);
+      //       } else {
+      //         callback(false);
+      //       }
+      //     });
+      //   }
+      // });
+
+      callback(false);
     };
 
     var concatJsIntoFileAndUpdateHtml = function(htmlFilePath, fileData, callback) {
@@ -544,43 +544,3 @@ module.exports = function(app) {
   return module;
 };
 
-
-
-
-//read in each html file, extract all script tags that aren't
-//with class "js-snippet" and combine them and minify them and insert them into 
-//bottom of lander.
-//localize remote scripts
-// module.optimizeJs = function(stagingPath, callback) {
-
-//   //- get all the js files in the staging path
-//   find.file(/\.js$/, stagingPath, function(files) {
-
-//     //- loop through them all keep an async index count
-//     var asyncIndex = 0;
-//     for (var i = 0; i < files.length; i++) {
-//       //- on loop compress
-//       yuiCompressor.compress(files[i], {
-//         charset: 'utf8',
-//         type: 'js',
-//         nomunge: true,
-//         'line-break': 80
-//       }, function(err, compressedFile, extra) {
-//         if (err) {
-//           callback(err);
-//         } else {
-//           //- and overwrite the file
-//           fs.writeFile(files[asyncIndex], compressedFile, function(err) {
-//             if (++asyncIndex == files.length) {
-//               //- callback when done                
-//               callback(false);
-//             }
-//           });
-//         }
-//       });
-//     }
-//     if (files.length <= 0) {
-//       callback(false);
-//     }
-//   });
-// };

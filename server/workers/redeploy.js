@@ -2,7 +2,7 @@ module.exports = function(app, db) {
 
   var module = {};
 
-  var optimizations = require("./deploy_lander_to_domain/optimizations")(app, db);
+  // var optimizations = require("./deploy_lander_to_domain/optimizations")(app, db);
 
 
   //must call statNextJobCallback when success/fail happens

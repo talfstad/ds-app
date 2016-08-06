@@ -21,21 +21,21 @@ define(["app",
 
         //save even if not modified because it might not be deployed
         //in which case we would want to save it anyway
-        updateToModified: function() {
-
-          this.landerModel.set("modified", true);
-
-          var deployedLanderCollection = this.landerModel.get("deployedDomains");
-
-          //1. set modified if it is deployed
-          if (deployedLanderCollection.length > 0) {
+        updateToModified: function(affectedLanderIds) {
+          
             this.landerModel.set("modified", true);
-          }
-          //2. save it no matter what
-          deployedLanderCollection.each(function(location) {
-            location.set("deploy_status", "modified");
-          });
 
+            var deployedLanderCollection = this.landerModel.get("deployedDomains");
+
+            //1. set modified if it is deployed
+            if (deployedLanderCollection.length > 0) {
+              this.landerModel.set("modified", true);
+            }
+            //2. save it no matter what
+            deployedLanderCollection.each(function(location) {
+              location.set("deploy_status", "modified");
+            });
+          
         },
 
         //whenever sidebar is open it has the real lander model as its model not a stupid sidebar model

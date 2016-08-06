@@ -95,29 +95,190 @@ module.exports = function(app, db) {
 
     },
 
-    saveCode: function(user, params, successCallback) {
+    removeSnippetFromAllEndpointsRunCustomAndPush: function(user, snippet_id, run_custom_sync, callback) {
       var user_id = user.id;
-      var code = params.code;
-      var snippet_id = params.snippet_id;
+      //  . get endpoints with snippets joined with landers to get lander_id so we can get s3_folder_name later
+      var getEndpointsWithSnippets = function(callback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          } else {
+            connection.query("SELECT a.filename, a.lander_id FROM url_endpoints a, active_snippets b WHERE a.id = b.url_endpoint_id AND a.user_id = ? AND b.snippet_id = ?", [user_id, snippet_id],
+              function(err, docs) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false, docs);
+                }
+                //release connection
+                connection.release();
+              });
+          }
+        });
+      };
 
-      db.getConnection(function(err, connection) {
-        if (err) {
-          console.log(err);
-        } else {
-          connection.query("UPDATE snippets SET code = ? WHERE id = ? AND user_id = ?", [code, snippet_id, user_id],
-            function(err, docs) {
+      var getEndpointFromS3 = function(endpoint, callback) {
+        var filename = endpoint.filename;
+        var lander_id = { lander_id: endpoint.lander_id };
+
+        //  . put together the correct key and get aws stuff to get endpoint
+        dbLanders.getAll(user, function(err, landers) {
+          if (err) {
+            callback(err);
+          } else {
+            var lander = landers[0];
+            var s3_folder_name = lander.s3_folder_name;
+
+            dbAws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
               if (err) {
-                console.log(err);
-                errorCallback("\nError updating snippet code.");
+                callback(err);
               } else {
-                successCallback(docs);
+                var credentials = {
+                  accessKeyId: awsData.aws_access_key_id,
+                  secretAccessKey: awsData.aws_secret_access_key
+                }
+
+                var rootBucket = awsData.aws_root_bucket;
+                var key = user.user + "/landers/" + s3_folder_name + "/original/" + filename;
+
+                dbAws.s3.getObject(credentials, rootBucket, key, function(err, data) {
+                  if (err) {
+                    callback(err);
+                  } else {
+
+                    var fileData = data.Body.toString();
+                    callback(false, fileData, credentials, key, rootBucket, lander_id);
+
+                  }
+                });
+
               }
-              //release connection
-              connection.release();
             });
+          }
+        }, [lander_id]);
+      };
+
+      getEndpointsWithSnippets(function(err, endpoints) {
+        if (err) {
+          callback(err);
+        } else {
+          //  . get the endpoint snippet from s3
+          var landerIdsArr = [];
+          var asyncIndex = 0;
+          for (var i = 0; i < endpoints.length; i++) {
+            var endpoint = endpoints[i];
+
+            app.log("endpoint: " + JSON.stringify(endpoint), "debug");
+
+            //create lander_ids array to return to client
+            if (landerIdsArr.indexOf(endpoints[i].lander_id) <= -1) {
+              //not in array so add it
+              landerIdsArr.push(endpoints[i].lander_id);
+            }
+
+            getEndpointFromS3(endpoint, function(err, fileData, credentials, key, rootBucket, lander_id) {
+              if (err) {
+                callback(err);
+              } else {
+                //write the snippet into the file using cheerio
+                var $ = cheerio.load(fileData);
+
+                snippetAlreadyOnPage = $('#snippet-' + snippet_id);
+
+                if (snippetAlreadyOnPage.length > 0) {
+                  snippetAlreadyOnPage.remove();
+                }
+
+                // run custom synronous code here
+                run_custom_sync($);
+
+                //write the file $.html() to s3
+                dbAws.s3.putObject(credentials, rootBucket, key, $.html(), function(err, data) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    var landerId = lander_id.lander_id;
+
+                    //update lander to modified and return that
+                    dbLanders.updateLanderModifiedData(user, { id: landerId, modified: true }, function(err, id) {
+                      if (err) {
+                        callback(err);
+                      } else {
+                        if (++asyncIndex == endpoints.length) {
+                          callback(false, landerIdsArr);
+                        }
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          }
+          if (endpoints.length <= 0) {
+            callback(false, landerIdsArr);
+          }
         }
       });
 
+      //  . remove the snippet
+      //  . run custom
+      //  . write endpoint to s3
+    },
+
+    //edit code requires updating all snippets code on all landers its on  
+    saveCode: function(user, params, callback) {
+      var user_id = user.id;
+      var code = params.code;
+      var snippet_id = params.snippet_id;
+      var load_before_dom = params.load_before_dom;
+
+      var customBeforePush = function($, callback) {
+        //  . add new code to endpoint
+        app.log("running custom code before push edit snippet", "debug");
+
+        var scriptTag;
+        if (load_before_dom) {
+          scriptTag = $("<script id='snippet-" + snippet_id + "' class='ds-no-modify'></script>");
+          scriptTag.append(code);
+          $('head').append(scriptTag);
+
+        } else {
+          scriptTag = $("<script id='snippet-" + snippet_id + "'></script>");
+          scriptTag.append(code);
+
+          $('body').append(scriptTag);
+        }
+
+        return;
+      };
+
+      module.removeSnippetFromAllEndpointsRunCustomAndPush(user, snippet_id, customBeforePush, function(err, affectedLanderIds) {
+        if (err) {
+          callback(err);
+        } else {
+          app.log("affectedLanderIds" + JSON.stringify(affectedLanderIds), "debug");
+          
+          db.getConnection(function(err, connection) {
+            if (err) {
+              console.log(err);
+            } else {
+              connection.query("UPDATE snippets SET code = ? WHERE id = ? AND user_id = ?", [code, snippet_id, user_id],
+                function(err, docs) {
+                  if (err) {
+                    console.log(err);
+                    callback("\nError updating snippet code.");
+                  } else {
+                    callback(false, affectedLanderIds);
+                  }
+                  //release connection
+                  connection.release();
+                });
+            }
+          });
+
+
+        }
+      });
 
     },
 
@@ -279,8 +440,8 @@ module.exports = function(app, db) {
 
                       //write the snippet into the file using cheerio
                       var $ = cheerio.load(fileData);
-                      console.log("snippet id : TTT3333 " +  snippet_id);
-                      
+                      console.log("snippet id : TTT3333 " + snippet_id);
+
                       snippetAlreadyOnPage = $('#snippet-' + snippet_id);
 
                       if (snippetAlreadyOnPage.length > 0) {

@@ -1,4 +1,4 @@
-define(["app", 
+define(["app",
     "assets/js/apps/landerds/landers/list/list_controller",
     "assets/js/common/login/common_login",
     "assets/js/apps/landerds/landers/right_sidebar/sidebar_controller",
@@ -54,6 +54,9 @@ define(["app",
         },
         updateTopbarTotals: function() {
           ListController.updateTopbarTotals();
+        },
+        updateAffectedLanderIdsToModified: function(affectedLanderIds) {
+          ListController.updateAffectedLanderIdsToModified(affectedLanderIds);
         },
         showDuplicateLanderModal: function(landerModelToDuplicateAttr) {
           DuplicateLanderController.showDuplicateLander(landerModelToDuplicateAttr);
@@ -129,6 +132,10 @@ define(["app",
 
       Landerds.on("landers:updateToModified", function() {
         landersAppAPI.updateToModified();
+      });
+
+      Landerds.on("landers:updateAffectedLanderIdsToModified", function(affectedLanderIds) {
+        landersAppAPI.updateAffectedLanderIdsToModified(affectedLanderIds);
       });
 
       Landerds.on("landers:showEdit", function(model) {

@@ -212,13 +212,13 @@ define(["app",
                 snippetModel.set("savingCode", true);
 
                 snippetModel.save({}, {
-                  success: function(savedModel, two, three) {
+                  success: function(savedModel, affectedLanderIds, three) {
                     savedModel.set("originalSnippetCode", savedModel.get("code"));
                     savedModel.set("savingCode", "finished");
 
-
-                    //TODO: saved snippet now need to redeploy all landers that have it!
-
+                    //set all landers in the response object (affectedLanderIds) to modified because they
+                    //are modified in the db
+                    Landerds.trigger("landers:updateAffectedLanderIdsToModified", affectedLanderIds);
 
                   },
                   error: function() {

@@ -2,8 +2,8 @@ FROM ubuntu:14.04
 MAINTAINER Trevor Alfstad "trevor@buildcave.com"
 
 # Update packages
-RUN apt-get update -y
-RUN apt-get upgrade -y
+RUN sudo apt-get update -y
+RUN sudo apt-get upgrade -y
 
 # Install some packages we need
 RUN apt-get install -y curl
@@ -17,6 +17,9 @@ RUN sudo apt-get install -y libfontconfig
 
 #gzip for gzip dependency
 RUN sudo apt-get install -y gzip
+
+#git is a dependency for the npm install. not sure which package uses it but its @annoying
+RUN sudo apt-get install -y git
 
 #image compression
 RUN sudo apt-get install -y libjpeg-progs #jpegtran
