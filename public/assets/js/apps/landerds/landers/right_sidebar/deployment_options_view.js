@@ -52,11 +52,14 @@ define(["app",
           if (this.model.get("deployment_folder_name") == this.model.get("originalValueDeploymentFolderName") &&
             this.model.get("originalValueDeployRoot") == this.model.get("deploy_root")) {
 
-            //check active snippets havent changed
-              
             this.trigger("modified", false);
 
           } else {
+
+            //if not currently modified then set no_optimize_on_save = true
+            if (!this.model.get("modified")) {
+              this.model.set("no_optimize_on_save", true);
+            }
 
             this.trigger("modified", true);
           }

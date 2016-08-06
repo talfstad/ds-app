@@ -98,29 +98,35 @@ module.exports = function(app, db) {
       };
 
       var saveLanderToDb = function(callback) {
-        var user_id = user.id;
-        var modelAttributes = {};
+        if (landerData.id) {
+          //update lander, but optimization only updates urlEndpoints
+          callback(false, true);
+        } else {
+          var user_id = user.id;
+          var modelAttributes = {};
 
-        //param order: working_node_id, action, alternate_action, processing, lander_id, domain_id, campaign_id, user_id
-        db.getConnection(function(err, connection) {
-          if (err) {
-            callback(err);
-          } else {
-            connection.query("CALL save_new_lander(?, ?, ?, ?)", [landerData.name, '', s3_folder_name, user_id],
-              function(err, docs) {
-                if (err) {
-                  callback(err);
-                } else {
+          //param order: working_node_id, action, alternate_action, processing, lander_id, domain_id, campaign_id, user_id
+          db.getConnection(function(err, connection) {
+            if (err) {
+              callback(err);
+            } else {
+              connection.query("CALL save_new_lander(?, ?, ?, ?)", [landerData.name, '', s3_folder_name, user_id],
+                function(err, docs) {
+                  if (err) {
+                    callback(err);
+                  } else {
 
-                  landerData.created_on = docs[1][0]["created_on"];
-                  landerData.id = docs[0][0]["LAST_INSERT_ID()"];
+                    landerData.created_on = docs[1][0]["created_on"];
+                    landerData.id = docs[0][0]["LAST_INSERT_ID()"];
 
-                  callback(false);
-                }
-                connection.release();
-              });
-          }
-        });
+                    callback(false, false);
+                  }
+                  connection.release();
+                });
+            }
+          });
+        }
+
       };
 
       var getPagespeedScore = function(url, callback) {
@@ -130,7 +136,8 @@ module.exports = function(app, db) {
         });
       };
 
-      var addEndpointsToLander = function(originalPagespeed, optimizedPagespeed, filePath, callback) {
+      var addUpdateEndpointsToLander = function(originalPagespeed, optimizedPagespeed, filePath, isUpdate, callback) {
+     
         var endpoint = {
           filename: filePath,
           original_pagespeed: originalPagespeed,
@@ -142,12 +149,22 @@ module.exports = function(app, db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("CALL add_url_endpoint(?, ?, ?, ?, ?);", [user_id, landerData.id, originalPagespeed, optimizedPagespeed, filePath], function(err, docs) {
+            var query = "CALL add_url_endpoint(?, ?, ?, ?, ?);";
+            var queryArr = [user_id, landerData.id, originalPagespeed, optimizedPagespeed, filePath];
+            if (isUpdate) {
+              query = "UPDATE url_endpoints SET original_pagespeed = ?, optimized_pagespeed = ? WHERE lander_id = ?";
+              queryArr = [originalPagespeed, optimizedPagespeed, landerData.id];
+            }
+
+            connection.query(query, queryArr, function(err, docs) {
               if (err) {
                 callback(err);
               } else {
                 //TODO: validate credentials by creating archive bucket with name user.uid
-                endpoint.id = docs[0][0]["LAST_INSERT_ID()"];
+                if (!isUpdate) {
+                  endpoint.id = docs[0][0]["LAST_INSERT_ID()"];
+                }
+
                 callback(false, endpoint);
               }
               connection.release();
@@ -162,9 +179,12 @@ module.exports = function(app, db) {
           callback(err);
         } else {
 
-          var addUrlEndpoint = function(filePath, callback) {
+          //add or update url endpoint data
+          var runPageSpeedScores = function(filePath, callback) {
+
             var originalUrl = 'http://' + awsData.aws_root_bucket + '.s3-website-us-west-2.amazonaws.com/' + user.user + '/landers/' + s3_folder_name + '/original/' + filePath;
             var optimizedUrl = 'http://' + awsData.aws_root_bucket + '.s3-website-us-west-2.amazonaws.com/' + user.user + '/landers/' + s3_folder_name + '/optimized/' + filePath;
+
             getPagespeedScore(originalUrl, function(err, originalPagespeed) {
               if (err) {
                 callback(err);
@@ -173,13 +193,7 @@ module.exports = function(app, db) {
                   if (err) {
                     callback(err)
                   } else {
-                    addEndpointsToLander(originalPagespeed, optimizedPagespeed, filePath, function(err, endpoint) {
-                      if (err) {
-                        callback(err);
-                      } else {
-                        callback(false, endpoint);
-                      }
-                    });
+                    callback(false, originalPagespeed, optimizedPagespeed);
                   }
                 });
               }
@@ -211,37 +225,48 @@ module.exports = function(app, db) {
                           //4. remove local staging
                           dbCommon.deleteStagingArea("staging/" + s3_folder_name, function() {
 
-                            //5. save lander into DB, save endpoints into DB (create stored proc for this?)
-                            saveLanderToDb(function(err) {
+                            //5. save/update lander into DB, save endpoints into DB (create stored proc for this?)
+                            saveLanderToDb(function(err, isUpdate) {
                               if (err) {
                                 callback(err);
                               } else {
-
+                                
+                                //save
                                 var asyncIndex = 0;
                                 for (var i = 0; i < endpointPaths.length; i++) {
                                   //strip off the staging part of the path so its web root
                                   var filePath = endpointPaths[i].replace(localStagingPath + "/", "");
 
                                   var urlEndpoints = [];
-                                  addUrlEndpoint(filePath, function(err, endpoint) {
+                                  //save/update the urlEndpoints in db
+                                  runPageSpeedScores(filePath, function(err, originalPagespeed, optimizedPagespeed) {
                                     if (err) {
                                       callback(err);
                                     } else {
-                                      urlEndpoints.push(endpoint);
-                                      if (++asyncIndex == endpointPaths.length) {
-                                        //done adding endpoints
-                                        var returnData = {
-                                          id: landerData.id,
-                                          created_on: landerData.created_on,
-                                          s3_folder_name: s3_folder_name,
-                                          url_endpoints_arr: urlEndpoints
-                                        };
+                                      addUpdateEndpointsToLander(originalPagespeed, optimizedPagespeed, filePath, isUpdate, function(err, endpoint) {
+                                        if (err) {
+                                          callback(err);
+                                        } else {
+                                          urlEndpoints.push(endpoint);
 
-                                        callback(false, returnData);
-                                      }
+                                          if (++asyncIndex == endpointPaths.length) {
+                                            //done adding endpoints
+                                            var returnData = {
+                                              id: landerData.id,
+                                              created_on: landerData.created_on,
+                                              s3_folder_name: s3_folder_name,
+                                              url_endpoints_arr: urlEndpoints
+                                            };
+
+                                            callback(false, returnData);
+                                          }
+
+                                        }
+                                      });
                                     }
                                   });
                                 }
+
                               }
                             });
                           });

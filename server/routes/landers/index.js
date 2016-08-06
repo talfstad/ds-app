@@ -70,6 +70,7 @@ module.exports = function(app, passport) {
   app.put('/api/landers/:id', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
     var modelAttributes = req.body;
+    var no_optimize_on_save = modelAttributes.no_optimize_on_save;
 
     db.landers.updateAllLanderData(user, modelAttributes, function(err, returnModelAttributes) {
       if (err) {
@@ -78,9 +79,58 @@ module.exports = function(app, passport) {
         } else {
           res.json({ code: "CouldNotUpdateLander" });
         }
-
       } else {
-        res.json(returnModelAttributes);
+
+        if (no_optimize_on_save) {
+
+          res.json(returnModelAttributes);
+
+        } else {
+          //optimize lander and return new numbers for pagespeed!!
+
+          //create staging dir
+          db.common.createStagingArea(function(err, stagingPath, stagingDir) {
+
+            db.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
+              if (err) {
+                res.json({ error: { err } });
+              } else {
+
+                var username = user.user;
+                var baseBucketName = awsData.aws_root_bucket;
+
+                var directory = "landers/" + modelAttributes.s3_folder_name + "/original";
+
+                var credentials = {
+                  accessKeyId: awsData.aws_access_key_id,
+                  secretAccessKey: awsData.aws_secret_access_key
+                }
+
+                //copy the data down from the old s3, then push it to the new
+                db.aws.s3.copyDirFromS3ToStaging(stagingPath, credentials, username, baseBucketName, directory, function(err) {
+                  if (err) {
+                    res.json({ error: { err } });
+                  } else {
+
+                    db.landers.common.add_lander.addOptimizePushSave(user, stagingPath, modelAttributes.s3_folder_name, modelAttributes, function(err, data) {
+                      if (err) {
+                        res.json({ error: { err } });
+                      } else {
+
+                        console.log("done optimziign TT: " + JSON.stringify(data));
+
+                        res.json(data);
+
+                      }
+                    });
+
+                  }
+                });
+              }
+            });
+
+          });
+        }
       }
     });
 
@@ -97,7 +147,7 @@ module.exports = function(app, passport) {
       if (lander_id) {
         downloadLander[version](user, lander_id, function(err, fileName, callback) {
           if (err) {
-            res.json({error: err})
+            res.json({ error: err })
           } else {
             res.download(fileName, callback);
           }

@@ -174,6 +174,9 @@ define(["app",
                 newActiveSnippetModel.save({}, {
                   success: function(activeSnippetModel, two, three) {
 
+                    //!important: set no_optimize_on_save to FALSE when adding snippet
+                    landerModel.set("no_optimize_on_save", false);
+
                     // add it to the colleciton
                     var urlEndpointCollection = landerModel.get("urlEndpoints");
                     var endpointToAddTo = urlEndpointCollection.get(urlEndpointId);

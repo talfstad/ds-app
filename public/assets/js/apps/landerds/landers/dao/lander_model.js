@@ -191,11 +191,12 @@ define(["app",
         name: "",
         created_on: "",
         urlEndpointsJSON: [],
-        optimized: true,
+        // optimized: true,
         deploy_root: false,
         urlEndpoints: [],
         deployedDomains: [],
         activeCampaigns: [],
+        no_optimize_on_save: false,
         //gui update attributes
         deploy_status: 'not_deployed',
         totalNumJsSnippets: 0,
@@ -203,8 +204,8 @@ define(["app",
         modified: false,
         deployed_domains_count: 0,
         active_campaigns_count: 0,
-        currentPreviewEndpointId: 0
-
+        currentPreviewEndpointId: 0,
+        saving: false
       }
 
     });

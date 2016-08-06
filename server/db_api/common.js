@@ -10,7 +10,7 @@ module.exports = function(db) {
       var error;
       var staging_dir = uuid.v4();
 
-      var staging_path = "./staging/" + staging_dir;
+      var staging_path = "staging/" + staging_dir;
 
       mkdirp(staging_path, function(err) {
         if (err) {

@@ -11,11 +11,27 @@ define(["app",
         className: "js-snippet-alert alert alert-warning lander-modified-alert",
 
         modelEvents: {
-          'change:modified': 'display'
+          'change:modified': 'render',
+          'change:saving': 'render'
         },
 
         display: function() {
-          if (this.model.get("modified")) {
+          var modified = this.model.get("modified");
+          var saving = this.model.get("saving");
+
+          if (modified) {
+            this.$el.removeClass("alert-primary").addClass("alert-warning");
+          } else {
+            this.$el.removeClass("alert-warning");
+          }
+
+          if (saving) {
+            this.$el.removeClass("alert-warning").addClass("alert-primary");
+          } else {
+            this.$el.removeClass("alert-primary");
+          }
+
+          if (modified || saving) {
             this.$el.fadeIn();
           } else {
             this.$el.hide();

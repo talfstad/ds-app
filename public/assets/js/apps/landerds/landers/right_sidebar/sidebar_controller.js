@@ -82,11 +82,48 @@ define(["app",
           sidebarMenuButtonsView.on("save", function() {
             //save optimized, deployment_folder_name, deploy_root
             model.save({}, {
-              success: function(data) {
-                if (data.error) {
+              success: function(dataModel) {
+
+                model.set("saving", false);
+                var error = dataModel.get("error");
+
+                if (error) {
                   //show fail message
-                  Notification("Error Saving Lander", data.error.code, "danger", "stack_top_right");
+                  Notification("Error Saving Lander", error.code, "danger", "stack_top_right");
+
+                  //error so its still modified
+                  model.set("modified", true);
+
+                  model.unset("error");
+                  
                 } else {
+
+                  //update the endpoints pagespeed scores !
+                  if (!dataModel.get("no_optimize_on_save")) {
+                    var urlEndpointCollection = model.get("urlEndpoints");
+                    //update the urlEndpoints pagespeed scores
+                    var urlEndpointsArr = dataModel.get("url_endpoints_arr");
+                    $.each(urlEndpointsArr, function(idx, item) {
+
+                      //get url endpoint
+                      urlEndpointCollection.each(function(endpoint) {
+                        if (endpoint.get("filename") == item.filename) {
+                          //update this endpoint's pagespeed score
+                          endpoint.set({
+                            original_pagespeed: item.original_pagespeed,
+                            optimized_pagespeed: item.optimized_pagespeed
+                          });
+                        }
+                      });
+
+                    });
+
+                    //re-render the pagespeed view
+                    if (!pagespeedView.isDestroyed) {
+                      pagespeedView.render();
+                    }
+                  }
+
 
                   //update the deployment folder name for the deployed domains children links
                   model.get("deployedDomains").deployment_folder_name = model.get("deployment_folder_name");

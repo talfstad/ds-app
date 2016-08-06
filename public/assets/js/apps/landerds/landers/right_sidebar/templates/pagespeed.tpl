@@ -1,4 +1,4 @@
-<% if(currentPreviewEndpointId){ %>
+<% if(currentPreviewEndpointId) { %>
 <h5 class="title-divider mt10 mb0">
               Google PageSpeed
             </h5>
@@ -8,7 +8,7 @@
 </div>
 <% }  else { %>
 
-<div style="width: 250px; height: 100px; margin: 0 auto">
+<div style="width: 250px; height: 100px; margin: 25px 30px 0">
 <p>No Current Endpoint Selected</p>
 </div>
 

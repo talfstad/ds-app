@@ -1,8 +1,9 @@
 module.exports = function(app, db) {
 
-  return {
+  var common = require("./common")(app, db);
+  var dbAws = require("../aws")(app, db);
 
-    common: require("./common")(app, db),
+  return {
 
     //save optimzations and modified
     updateAllLanderData: function(user, attr, callback) {
@@ -17,7 +18,88 @@ module.exports = function(app, db) {
       if (deployment_folder_name) {
         if (!deployment_folder_name.match(/^[a-z0-9\-]+$/i)) {
           callback({ code: "InvalidDeploymentFolderInput" });
+          return;
         }
+
+        //validate deployment folder name isn't taken by another guy
+
+
+        var checkIfDeploymentFolderExists = function(callback) {
+
+          var getAllUserIdsOnThisBucket = function(baseBucketName, callback) {
+            db.getConnection(function(err, connection) {
+              if (err) {
+                callback(err);
+              } else {
+                connection.query("SELECT user_id FROM user_settings WHERE aws_root_bucket = ?", [baseBucketName],
+                  function(err, user_ids) {
+                    if (err) {
+                      callback(err);
+                    } else {
+                      callback(false, user_ids);
+                    }
+                    connection.release();
+                  });
+              }
+            })
+          };
+
+          var doesDeploymentFolderExistForUser = function(user_id, deployment_folder_name, callback) {
+            db.getConnection(function(err, connection) {
+              if (err) {
+                callback(err);
+              } else {
+                connection.query("SELECT user_id FROM landers WHERE deployment_folder_name = ? AND user_id = ?", [deployment_folder_name, user_id],
+                  function(err, docs) {
+                    if (err) {
+                      callback(err);
+                    } else {
+                      if (docs.length <= 0) {
+                        callback(false, false);
+                      } else {
+                        callback(false, true);
+                      }
+                    }
+                    connection.release();
+                  });
+              }
+            })
+          };
+
+          //1. get all user ids that have the same root bucket
+          dbAws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
+            if (err) {
+              callback(err);
+            } else {
+              var baseBucketName = awsData.aws_root_bucket;
+
+              getAllUserIdsOnThisBucket(baseBucketName, function(err, user_ids) {
+                var asyncIndex = 0;
+                for (var i = 0; i < user_ids.length ; i++) {
+                  var tmpUserId = user_ids[i].user_id;
+
+                  doesDeploymentFolderExistForUser(tmpUserId, deployment_folder_name, function(err, exists) {
+                    if (err) {
+                      callback(err);
+                    } else {
+                      if (exists) {
+                        callback({error: { code: "DeploymentFolderExists" }});
+                        return;
+                      }
+
+                      if (++asyncIndex == user_ids.length) {
+                        callback(false);
+                      }
+                    }
+                  })
+                }
+                if (user_ids.length <= 0) {
+                  callback(false);
+                }
+              });
+            }
+          });
+        };
       }
 
       var updateOldDeploymentFolderName = function(callback) {
@@ -42,6 +124,7 @@ module.exports = function(app, db) {
                         } else {
                           callback(false);
                         }
+                        connection.release();
                       });
                   }
                 });
@@ -51,27 +134,35 @@ module.exports = function(app, db) {
       };
 
       //values for query
-      var attrArr = [modified, deploy_root, deployment_folder_name, user_id, lander_id];
-
-      db.getConnection(function(err, connection) {
+      checkIfDeploymentFolderExists(function(err) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
           updateOldDeploymentFolderName(function() {
-            connection.query("UPDATE landers SET modified = ?, deploy_root = ?, deployment_folder_name = ? WHERE user_id = ? AND id = ?", attrArr,
-              function(err, docs) {
-                if (err) {
-                  callback(err);
-                } else {
-                  callback(false, {
-                    id: attr.id
+
+            var attrArr = [modified, deploy_root, deployment_folder_name, user_id, lander_id];
+
+            db.getConnection(function(err, connection) {
+              if (err) {
+                console.log(err);
+              } else {
+                connection.query("UPDATE landers SET modified = ?, deploy_root = ?, deployment_folder_name = ? WHERE user_id = ? AND id = ?", attrArr,
+                  function(err, docs) {
+                    if (err) {
+                      callback(err);
+                    } else {
+                      callback(false, {
+                        id: attr.id
+                      });
+                    }
+                    connection.release();
                   });
-                }
-                connection.release();
-              });
+              }
+            });
           });
         }
       });
+
     },
 
     updateLanderModifiedData: function(user, attr, callback) {

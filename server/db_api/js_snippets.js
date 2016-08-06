@@ -185,22 +185,24 @@ module.exports = function(app, db) {
       }
 
       var addSnippetToEndpoint = function(snippet_id, urlEndpointId, user_id, callback) {
+        console.log("SNIPPET ID : " + snippet_id);
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
             callback(err);
+          } else {
+            connection.query("call add_snippet_to_url_endpoint(?, ?, ?)", [snippet_id, urlEndpointId, user_id], function(err, docs) {
+              if (err) {
+                console.log(err);
+                callback(err);
+              } else {
+                callback(false, {
+                  id: docs[0][0]["LAST_INSERT_ID()"]
+                });
+              }
+              connection.release();
+            });
           }
-          connection.query("call add_snippet_to_url_endpoint(?, ?, ?)", [snippet_id, urlEndpointId, user_id], function(err, docs) {
-            if (err) {
-              console.log(err);
-              callback(err);
-            } else {
-              callback(false, {
-                id: docs[0][0]["LAST_INSERT_ID()"]
-              });
-            }
-            connection.release();
-          });
         });
       }
 
@@ -231,8 +233,6 @@ module.exports = function(app, db) {
                   var rootBucket = awsData.aws_root_bucket;
                   var key = user.user + "/landers/" + s3_folder_name + "/original/" + filename;
 
-                  console.log("KEY: " + key);
-
                   dbAws.s3.getObject(credentials, rootBucket, key, function(err, data) {
                     if (err) {
                       callback(err);
@@ -241,6 +241,12 @@ module.exports = function(app, db) {
 
                       //write the snippet into the file using cheerio
                       var $ = cheerio.load(fileData);
+
+                      snippetAlreadyOnPage = $('#snippet-' + snippet_id);
+
+                      if (snippetAlreadyOnPage.length <= 0) {
+                        snippetAlreadyOnPage.remove();
+                      }
 
                       //get what we want to write in order
                       getSnippetCode(snippet_id, function(err, data) {
@@ -277,7 +283,7 @@ module.exports = function(app, db) {
                                   console.log(err);
                                   callback(err);
                                 } else {
-                                  addSnippetToEndpoint(landerId, urlEndpointId, user_id, function(err, returnObj) {
+                                  addSnippetToEndpoint(snippet_id, urlEndpointId, user_id, function(err, returnObj) {
                                     if (err) {
                                       callback(err);
                                     } else {
@@ -290,6 +296,7 @@ module.exports = function(app, db) {
                           });
                         }
                       });
+
                     }
                   });
                 }
