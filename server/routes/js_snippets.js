@@ -72,6 +72,7 @@ module.exports = function(app, passport) {
 
   app.delete('/api/active_snippets/:active_snippet_id', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
+
     var active_snippet_id = req.params.active_snippet_id
 
     db.js_snippets.removeActiveSnippet(user, active_snippet_id, function(returnObj) {

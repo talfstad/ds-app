@@ -1,9 +1,10 @@
 module.exports = function(app, db) {
 
-  var common = require("./common")(app, db);
   var dbAws = require("../aws")(app, db);
 
   return {
+
+    common: require("./common")(app, db), //needs to be like this to access in other classes
 
     //save optimzations and modified
     updateAllLanderData: function(user, attr, callback) {
@@ -24,7 +25,12 @@ module.exports = function(app, db) {
         //validate deployment folder name isn't taken by another guy
 
 
-        var checkIfDeploymentFolderExists = function(callback) {
+        var checkIfDeploymentFolderExists = function(currentDeploymentFolder, callback) {
+
+          if (deployment_folder_name == currentDeploymentFolder) {
+            callback(false);
+            return;
+          }
 
           var getAllUserIdsOnThisBucket = function(baseBucketName, callback) {
             db.getConnection(function(err, connection) {
@@ -75,7 +81,7 @@ module.exports = function(app, db) {
 
               getAllUserIdsOnThisBucket(baseBucketName, function(err, user_ids) {
                 var asyncIndex = 0;
-                for (var i = 0; i < user_ids.length ; i++) {
+                for (var i = 0; i < user_ids.length; i++) {
                   var tmpUserId = user_ids[i].user_id;
 
                   doesDeploymentFolderExistForUser(tmpUserId, deployment_folder_name, function(err, exists) {
@@ -83,7 +89,7 @@ module.exports = function(app, db) {
                       callback(err);
                     } else {
                       if (exists) {
-                        callback({error: { code: "DeploymentFolderExists" }});
+                        callback({ error: { code: "DeploymentFolderExists" } });
                         return;
                       }
 
@@ -117,15 +123,21 @@ module.exports = function(app, db) {
                     callback(err);
                   } else {
                     var currentDeploymentFolder = deployment_folder_name_docs[0].deployment_folder_name;
-                    connection.query("UPDATE landers SET old_deployment_folder_name = ? WHERE user_id = ? AND id = ?", [currentDeploymentFolder, user_id, lander_id],
-                      function(err, docs) {
-                        if (err) {
-                          callback(err);
-                        } else {
-                          callback(false);
-                        }
-                        connection.release();
-                      });
+                    checkIfDeploymentFolderExists(currentDeploymentFolder, function(err) {
+                      if (err) {
+                        callback(err);
+                      } else {
+                        connection.query("UPDATE landers SET old_deployment_folder_name = ? WHERE user_id = ? AND id = ?", [currentDeploymentFolder, user_id, lander_id],
+                          function(err, docs) {
+                            if (err) {
+                              callback(err);
+                            } else {
+                              callback(false);
+                            }
+                            connection.release();
+                          });
+                      }
+                    });
                   }
                 });
             }
@@ -134,34 +146,34 @@ module.exports = function(app, db) {
       };
 
       //values for query
-      checkIfDeploymentFolderExists(function(err) {
+
+      updateOldDeploymentFolderName(function(err) {
         if (err) {
           callback(err);
         } else {
-          updateOldDeploymentFolderName(function() {
+          var attrArr = [modified, deploy_root, deployment_folder_name, user_id, lander_id];
 
-            var attrArr = [modified, deploy_root, deployment_folder_name, user_id, lander_id];
-
-            db.getConnection(function(err, connection) {
-              if (err) {
-                console.log(err);
-              } else {
-                connection.query("UPDATE landers SET modified = ?, deploy_root = ?, deployment_folder_name = ? WHERE user_id = ? AND id = ?", attrArr,
-                  function(err, docs) {
-                    if (err) {
-                      callback(err);
-                    } else {
-                      callback(false, {
-                        id: attr.id
-                      });
-                    }
-                    connection.release();
-                  });
-              }
-            });
+          db.getConnection(function(err, connection) {
+            if (err) {
+              console.log(err);
+            } else {
+              connection.query("UPDATE landers SET modified = ?, deploy_root = ?, deployment_folder_name = ? WHERE user_id = ? AND id = ?", attrArr,
+                function(err, docs) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    callback(false, {
+                      id: attr.id
+                    });
+                  }
+                  connection.release();
+                });
+            }
           });
         }
+
       });
+
 
     },
 

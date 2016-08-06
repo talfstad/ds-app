@@ -95,7 +95,7 @@ define(["app",
                   model.set("modified", true);
 
                   model.unset("error");
-                  
+
                 } else {
 
                   //update the endpoints pagespeed scores !
@@ -194,30 +194,39 @@ define(["app",
 
           activeSnippetsView.on("childview:childview:deleteActiveJsSnippet", function(childView, childChildView, active_snippet_id) {
 
-            //1. get the correct urlEndpoint model
-            var snippetToDestroy = null;
-            var endpointThisIsOn = null;
+            if (!model.get("saving")) {
+              //1. get the correct urlEndpoint model
+              var snippetToDestroy = null;
+              var endpointThisIsOn = null;
 
-            urlEndpointsCollection.filterWithActiveSnippets().each(function(endpoint) {
-              var activeSnippetsCollection = endpoint.get("activeSnippets");
-              activeSnippetsCollection.each(function(snippet) {
-                if (active_snippet_id == snippet.get("id")) {
-                  //this is the correct endpoint and active snippet to remove
-                  //2. remove the active snippet from it
-                  endpointThisIsOn = endpoint;
-                  snippetToDestroy = snippet;
-                }
+              urlEndpointsCollection.filterWithActiveSnippets().each(function(endpoint) {
+                var activeSnippetsCollection = endpoint.get("activeSnippets");
+                activeSnippetsCollection.each(function(snippet) {
+                  if (active_snippet_id == snippet.get("id")) {
+                    //this is the correct endpoint and active snippet to remove
+                    //2. remove the active snippet from it
+                    endpointThisIsOn = endpoint;
+                    snippetToDestroy = snippet;
+                  }
+                });
               });
-            });
 
-            if (snippetToDestroy) {
-              snippetToDestroy.destroy();
+              me.landerModel.set("saving", true);
+
+              if (snippetToDestroy) {
+                snippetToDestroy.destroy({
+                  success: function(model, response) {
+                    me.landerModel.set("saving", false);
+                  }
+                });
+              }
+
+              me.updateToModified();
+
+              //3. if no more active snippets on this, destroy it
+              Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", model);
+
             }
-
-            me.updateToModified();
-
-            //3. if no more active snippets on this, destroy it
-            Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", model);
 
           });
 

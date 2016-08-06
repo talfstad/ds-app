@@ -4,8 +4,7 @@ module.exports = function(app, db) {
   var dbLanders = require('./landers')(app, db);
   var cheerio = require('cheerio');
 
-
-  return {
+  var module = {
 
     saveNewSnippet: function(user, attr, successCallback) {
       var user_id = user.id;
@@ -66,29 +65,7 @@ module.exports = function(app, db) {
 
     },
 
-    removeActiveSnippet: function(user, active_snippet_id, successCallback) {
-      var user_id = user.id;
 
-      db.getConnection(function(err, connection) {
-        if (err) {
-          console.log(err);
-        } else {
-          connection.query("DELETE FROM active_snippets WHERE id = ? AND user_id = ?", [active_snippet_id, user_id],
-            function(err, docs) {
-              if (err) {
-                console.log(err);
-                errorCallback("\nError remove active snippet id: " + active_snippet_id + " for user: " + user_id + ".");
-              } else {
-                successCallback({});
-              }
-              //release connection
-              connection.release();
-            });
-        }
-      });
-
-
-    },
 
     saveEditInfo: function(user, params, callback) {
       var description = params.description;
@@ -143,10 +120,70 @@ module.exports = function(app, db) {
 
     },
 
+
+    removeActiveSnippet: function(user, active_snippet_id, callback) {
+      var user_id = user.id;
+
+      //join urlendpoints with active snippets
+      var getParams = function(callback) {
+
+        db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          } else {
+            connection.query("SELECT a.url_endpoint_id as urlEndpointId, a.snippet_id, b.lander_id FROM active_snippets a, url_endpoints b WHERE a.id = ? AND a.user_id = ? AND a.url_endpoint_id = b.id", [active_snippet_id, user_id],
+              function(err, docs) {
+                if (err) {
+                  callback(err);
+                } else {
+                  console.log("GOT DOCS: " + JSON.stringify(docs));
+                  var params = docs[0];
+                  params.action = "delete";
+                  callback(false, params);
+                }
+                //release connection
+                connection.release();
+              });
+          }
+        });
+
+      };
+
+      getParams(function(err, params) {
+        module.addSnippetToUrlEndpoint(user, params, function(err) {
+          console.log("params; " + JSON.stringify(params));
+
+          db.getConnection(function(err, connection) {
+            if (err) {
+              console.log(err);
+            } else {
+              connection.query("DELETE FROM active_snippets WHERE id = ? AND user_id = ?", [active_snippet_id, user_id],
+                function(err, docs) {
+                  if (err) {
+                    console.log(err);
+                    callback(err);
+                  } else {
+                    console.log("DELETED! ! success id: " + active_snippet_id);
+                    callback(false, {});
+                  }
+                  //release connection
+                  connection.release();
+                });
+            }
+          });
+
+        });
+      });
+
+    },
+
+
+
     //add this snippet to active snippets
     addSnippetToUrlEndpoint: function(user, params, callback) {
       var snippet_id = params.snippet_id;
       var urlEndpointId = params.urlEndpointId;
+      var action = params.action || false;
       var user_id = user.id;
       var lander_id = {
         lander_id: params.lander_id
@@ -241,10 +278,11 @@ module.exports = function(app, db) {
 
                       //write the snippet into the file using cheerio
                       var $ = cheerio.load(fileData);
-
+                      console.log("snippet id : TTT3333 " +  snippet_id);
+                      
                       snippetAlreadyOnPage = $('#snippet-' + snippet_id);
 
-                      if (snippetAlreadyOnPage.length <= 0) {
+                      if (snippetAlreadyOnPage.length > 0) {
                         snippetAlreadyOnPage.remove();
                       }
 
@@ -253,23 +291,28 @@ module.exports = function(app, db) {
                         if (err) {
                           callback(err);
                         } else {
-                          var code = data.code;
-                          var load_before_dom = data.load_before_dom;
+                          if (action != "delete") {
+                            console.log("TTTT GOT HEREEE TO DO ITT");
+                            var code = data.code;
+                            var load_before_dom = data.load_before_dom;
 
-                          var scriptTag;
-                          if (load_before_dom) {
-                            scriptTag = $("<script id='snippet-" + snippet_id + "' class='ds-no-modify'></script>");
-                            scriptTag.append(code);
+                            var scriptTag;
+                            if (load_before_dom) {
+                              scriptTag = $("<script id='snippet-" + snippet_id + "' class='ds-no-modify'></script>");
+                              scriptTag.append(code);
 
-                            $('head').append(scriptTag);
+                              $('head').append(scriptTag);
+                            console.log("TTTT GOT HEREEE TO DO HEAD ITT");
 
-                          } else {
-                            scriptTag = $("<script id=''></script>");
-                            scriptTag.append(code);
+                            } else {
+                            console.log("TTTT GOT HEREEE TO BODY DO ITT");
 
-                            $('body').append(scriptTag);
+                              scriptTag = $("<script id='snippet-" + snippet_id + "'></script>");
+                              scriptTag.append(code);
+
+                              $('body').append(scriptTag);
+                            }
                           }
-
 
                           //write the file $.html() to s3
                           dbAws.s3.putObject(credentials, rootBucket, key, $.html(), function(err, data) {
@@ -277,26 +320,31 @@ module.exports = function(app, db) {
                               callback(err);
                             } else {
                               var landerId = lander_id.lander_id;
+
                               //update lander to modified and return that
                               dbLanders.updateLanderModifiedData(user, { id: landerId, modified: true }, function(err, id) {
                                 if (err) {
                                   console.log(err);
                                   callback(err);
                                 } else {
-                                  addSnippetToEndpoint(snippet_id, urlEndpointId, user_id, function(err, returnObj) {
-                                    if (err) {
-                                      callback(err);
-                                    } else {
-                                      callback(false, returnObj);
-                                    }
-                                  });
+                                  if (action == "delete") {
+                                    //if delete dont save lander data or add endpoint
+                                    callback(false);
+                                  } else {
+                                    addSnippetToEndpoint(snippet_id, urlEndpointId, user_id, function(err, returnObj) {
+                                      if (err) {
+                                        callback(err);
+                                      } else {
+                                        callback(false, returnObj);
+                                      }
+                                    });
+                                  }
                                 }
                               });
                             }
                           });
                         }
                       });
-
                     }
                   });
                 }
@@ -308,5 +356,6 @@ module.exports = function(app, db) {
 
     }
 
-  }
+  };
+  return module;
 }
