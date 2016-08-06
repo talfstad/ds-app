@@ -20,6 +20,9 @@ if (process.argv[2] == 'prod') {
 }
 app.config = config[env];
 
+var logger = require("./utils/debug_log")(app);
+app.log = logger;
+
 var db = require("./db_api")(app);
 
 //gzip
@@ -32,9 +35,6 @@ login.initialize(app, db);
 app.use(bodyParser.json({
   limit: '20mb'
 }));
-
-
-
 
 app.use(cookieParser(app.config.cookieSecret)); // populates req.signedCookies
 //app.use(session({ secret: config.sessionSecret, resave: true, saveUninitialized: true }));

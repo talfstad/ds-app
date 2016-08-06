@@ -6,7 +6,7 @@ module.exports = function(app, db) {
 
   var module = {
 
-    saveNewSnippet: function(user, attr, successCallback) {
+    saveNewSnippet: function(user, attr, callback) {
       var user_id = user.id;
 
       var code = "";
@@ -21,8 +21,9 @@ module.exports = function(app, db) {
         connection.query("call add_new_snippet(?, ?, ?, ?)", [user_id, name, description, load_before_dom], function(err, docs) {
           if (err) {
             console.log(err);
+            callback(err);
           } else {
-            successCallback({
+            callback({
               id: docs[0][0]["LAST_INSERT_ID()"],
               snippet_id: docs[0][0]["LAST_INSERT_ID()"]
             });
@@ -292,7 +293,6 @@ module.exports = function(app, db) {
                           callback(err);
                         } else {
                           if (action != "delete") {
-                            console.log("TTTT GOT HEREEE TO DO ITT");
                             var code = data.code;
                             var load_before_dom = data.load_before_dom;
 
@@ -300,13 +300,9 @@ module.exports = function(app, db) {
                             if (load_before_dom) {
                               scriptTag = $("<script id='snippet-" + snippet_id + "' class='ds-no-modify'></script>");
                               scriptTag.append(code);
-
                               $('head').append(scriptTag);
-                            console.log("TTTT GOT HEREEE TO DO HEAD ITT");
 
                             } else {
-                            console.log("TTTT GOT HEREEE TO BODY DO ITT");
-
                               scriptTag = $("<script id='snippet-" + snippet_id + "'></script>");
                               scriptTag.append(code);
 

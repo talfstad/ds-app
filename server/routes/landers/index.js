@@ -126,8 +126,6 @@ module.exports = function(app, passport) {
                         res.json({ error: { err } });
                       } else {
 
-                        console.log("done optimziign TT: " + JSON.stringify(data));
-
                         res.json(data);
 
                       }

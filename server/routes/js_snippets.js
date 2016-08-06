@@ -16,8 +16,12 @@ module.exports = function(app, passport) {
     var user = req.user;
     var params = req.body;
 
-    db.js_snippets.saveNewSnippet(user, params, function(returnObj) {
-      res.json(returnObj);
+    db.js_snippets.saveNewSnippet(user, params, function(err, returnObj) {
+      if(err){
+        res.json({error: {code: "ErrorSavingNewSnippet"}});
+      } else {
+        res.json(returnObj);
+      }
     });
 
   });

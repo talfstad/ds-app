@@ -52,10 +52,6 @@ module.exports = function(app, db) {
         Body: body
       };
 
-
-      console.log("PARAMS: " + JSON.stringify(params));
-      
-
       aws_s3_client.putObject(params, function(err, data) {
         if (err) {
           callback(err);
