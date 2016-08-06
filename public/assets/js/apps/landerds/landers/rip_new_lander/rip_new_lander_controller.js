@@ -23,19 +23,32 @@ define(["app",
 
             landerModel.save({}, {
               success: function(savedLanderModel) {
+                var error = savedLanderModel.get("error");
+                if (error) {
 
-                //add the new url endpoints
-                var endpointsArr = savedLanderModel.get("url_endpoints_arr");
-                landerModel.get("urlEndpoints").add(endpointsArr);
+                  landerModel.set({
+                    alertInvalidInputs: true,
+                    alertLoading: false
+                  });
 
-                landerModel.set({
-                  deployment_folder_name: savedLanderModel.get("s3_folder_name"),
-                  alertLoading: false
-                });
+                  savedLanderModel.unset("error");
+                } else {
+                  //add the new url endpoints
+                  var endpointsArr = savedLanderModel.get("url_endpoints_arr");
+                  landerModel.get("urlEndpoints").add(endpointsArr);
 
-                ripNewLanderLayout.closeModal();
-                Landerds.trigger("landers:list:addLander", landerModel);
-                
+                  landerModel.set({
+                    deployment_folder_name: savedLanderModel.get("s3_folder_name"),
+                    alertLoading: false
+                  });
+
+                  ripNewLanderLayout.closeModal();
+                  Landerds.trigger("landers:list:addLander", landerModel);
+
+                }
+
+
+
               },
               error: function() {
 

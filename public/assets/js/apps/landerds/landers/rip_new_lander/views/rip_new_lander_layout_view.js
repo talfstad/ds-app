@@ -28,7 +28,26 @@ define(["app",
         },
 
         modelEvents: {
-          "change:alertLoading": "alertLoading"
+          "change:alertLoading": "alertLoading",
+          "change:alertInvalidInputs": "alertInvalidInputs"
+        },
+
+        alertInvalidInputs: function() {
+          var alert = this.$el.find(".new-lander-info-alert");
+          var adminForm = this.$el.find(".admin-form");
+          var currentHtml = alert.html();
+
+          if (this.model.get("alertInvalidInputs")) {
+            adminForm.addClass("has-error");
+
+            alert.addClass("alert-danger");
+            alert.removeClass("alert-default");
+            alert.html("You must add both a new lander name &amp; a valid lander URL to rip a new lander");
+          } else {
+            adminForm.removeClass("has-error");
+            alert.removeClass("alert-danger").addClass("alert-default");
+            alert.html(currentHtml);
+          }
         },
 
         alertLoading: function() {
@@ -53,27 +72,12 @@ define(["app",
             //1. set the new values into the job model
             this.model.set("name", newLanderData.landerName);
             this.model.set("lander_url", newLanderData.landerUrl);
+            this.model.set("alertInvalidInputs", false);
 
             me.trigger("ripLanderConfirmed");
 
           } else {
-            var alert = this.$el.find(".new-lander-info-alert");
-            var adminForm = this.$el.find(".admin-form");
-            var currentHtml = alert.html();
-
-            adminForm.addClass("has-error");
-
-            alert.addClass("alert-danger");
-            alert.removeClass("alert-default");
-            alert.html("You must add both a new lander name &amp; lander URL to rip a new lander");
-
-
-            setTimeout(function() {
-              adminForm.removeClass("has-error");
-              alert.removeClass("alert-danger").addClass("alert-default");
-              alert.html(currentHtml);
-            }, 10000);
-
+            this.model.set("alertInvalidInputs", true);
           }
         },
 
@@ -99,7 +103,7 @@ define(["app",
           this.$el.modal('hide');
         },
 
-        closeModal: function(){
+        closeModal: function() {
           this.$el.modal('hide');
         },
 

@@ -43,13 +43,13 @@
 
       <% } %>
 
-      <% if(total_initializing > 0) { %>
+      <!-- <% if(total_initializing > 0) { %>
       
       <div>
         <span class="badge-alert badge"><%= total_initializing %></span> <%= initializingLanderText %> Initializing
       </div>
 
-      <% } %>
+      <% } %> -->
     
       <!-- <% if(total_not_deployed > 0) { %>
       

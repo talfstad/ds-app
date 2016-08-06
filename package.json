@@ -54,6 +54,7 @@
     "underscore-node": "*",
     "util": "*",
     "uuid": "*",
+    "valid-url": "^1.0.9",
     "validator": "*",
     "walk": "*",
     "website-scraper": "*",

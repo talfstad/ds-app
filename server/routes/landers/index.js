@@ -2,6 +2,8 @@ module.exports = function(app, passport) {
 
   var Puid = require('puid');
   var db = require("../../db_api")(app);
+  var validUrl = require("valid-url");
+
 
   var ripLander = require("./rip_lander")(app, passport);
   var copyLander = require("./copy_lander")(app, passport);
@@ -39,14 +41,21 @@ module.exports = function(app, passport) {
 
     } else if (source == "rip") {
 
-      ripLander.new(user, landerData, function(err, returnData) {
-        if (err) {
-          res.json({ err: err });
-        } else {
-          res.json(returnData);
-        }
-      });
+      //validate the name and url
+      var name = landerData.name;
+      var url = landerData.lander_url;
 
+      if (validUrl.isHttpUri(url) || validUrl.isHttpsUri(url)) {
+        ripLander.new(user, landerData, function(err, returnData) {
+          if (err) {
+            res.json({ err: err });
+          } else {
+            res.json(returnData);
+          }
+        });
+      } else {
+        res.json({ error: { code: "InvalidUrl" } });
+      }
 
     } else if (source == "copy") {
 
