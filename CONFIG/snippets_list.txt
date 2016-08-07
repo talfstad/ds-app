@@ -30,11 +30,13 @@ set up the db trigger for new users to get all these snippets:
 THIS by tomorrow:
 1. js mobile cloaker
 2. back button redirect
-7. mobile vibrate phone
+3. mobile vibrate phone
+4. no referrer
+5. entry pop alert (js)
+6. exit pop alert (js)
 
 
-3. entry pop alert (js)
-4. exit pop alert (js)
+
 
 //5. geo location call out
 //6. audio blast

@@ -43,7 +43,7 @@ module.exports = function(app, db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT id, code, name, load_before_dom, for_everyone, description FROM snippets WHERE user_id = ? OR for_everyone = ?", [user_id, true], function(err, dbsnippets) {
+          connection.query("SELECT id, code, name, load_before_dom, for_everyone, description FROM snippets WHERE user_id = ?", [user_id], function(err, dbsnippets) {
             if (err) {
               console.log(err);
             } else {
