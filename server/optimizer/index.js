@@ -251,6 +251,8 @@ module.exports = function(app) {
   module.optimizeJs = function(stagingPath, htmlFiles, callback) {
 
     var readExternalFile = function(href, callback) {
+      //worker can do work no matter what because its just reading
+      //file and isnt used by main loop. only used by another worker function
       request(href, function(err, response, body) {
         if (err && response.statusCode != 200) {
           callback(err);
@@ -260,23 +262,41 @@ module.exports = function(app) {
       });
     };
 
-    var readLocalFile = function(filePath, callback) {
-      fs.exists(filePath, function(exists) {
-        if (exists) {
-          fs.readFile(filePath, function(err, fileData) {
-            if (err) {
-              callback(err);
-            } else {
-              callback(false, fileData, filePath);
-            }
-          });
-        } else {
+    var readLocalFile = function(inFilePathOrObj, callback) {
+      var filePath = inFilePathOrObj;
+      var isObj = false;
+      if (typeof inFilePathOrObj == 'object') {
+        isObj = true;
+        filePath = filePath.filename;
+      }
+
+      //workers only do work if there are no errors on this endpoint
+      if (isObj) {
+        if (inFilePathOrObj.optimizationErrors.length > 0) {
           callback(false);
         }
-      });
+      } else {
+
+        fs.exists(filePath, function(exists) {
+          if (exists) {
+            fs.readFile(filePath, function(err, fileData) {
+              if (err) {
+                callback({ code: "CouldNotReadLocalFile", err: err });
+              } else {
+                callback(false, fileData, inFilePathOrObj);
+              }
+            });
+          } else {
+            callback({ code: "LocalFileDoesNotExist", err: err });
+          }
+        });
+
+      }
     };
 
     var readSrcFile = function(filePath, callback) {
+      //worker can do work no matter what because its just reading
+      //file and isnt used by main loop. only used by another worker function
       var isExternal = function(href) {
         return /(^\/\/)|(:\/\/)/.test(href);
       };
@@ -303,100 +323,106 @@ module.exports = function(app) {
       }
     };
 
-    var compressAndWriteFile = function(jsFilePath, callback) {
-      // call uglify on the file
-      try {
-        var result = UglifyJS.minify(jsFilePath, {});
+    var compressAndWriteFile = function(htmlFileObj, jsFilePath, callback) {
+      //workers only do work if there are no errors on this endpoint
+      if (htmlFileObj.optimizationErrors.length > 0) {
+        callback(false);
+      } else {
+        // call uglify on the file
+        try {
+          var result = UglifyJS.minify(jsFilePath, {});
 
-      } catch (err) {
-        console.log('error trying to compress JS file: ' + jsFilePath);
-        console.log('\n\n\nerror trying to compress JS file: ' + err);
-        callback(err);
-        return;
-      }
-
-      //overwrite the file if success
-      fs.writeFile(jsFilePath, result.code, function(err) {
-        if (err) {
-          callback(err);
-        } else {
-          callback(false);
+        } catch (err) {
+          callback({ code: "CouldNotUglify", err: err });
+          return;
         }
-      });
 
-      callback(false);
-    };
-
-    var concatJsIntoFileAndUpdateHtml = function(htmlFilePath, fileData, callback) {
-      //load it in cheerio, get all script tags that dont have the class "ds-no-modify"
-      var $ = cheerio.load(fileData, { decodeEntities: false });
-      var srcFilesObj = {};
-
-      var outputJsFilePath = htmlFilePath + ".js";
-
-      //get all javascript source itself from the file and concat it together into a var
-      var scriptTags = $('script:not(.ds-no-modify)');
-
-      var scriptSrcArr = [];
-      $('script:not(.ds-no-modify)').each(function(i, link) {
-        var src = $(this).attr("src");
-        if (src) {
-          var srcToAdd = src.replace(/^\//, ""); //remove leading slash if there is one
-          scriptSrcArr.push(srcToAdd);
-        } else {
-          scriptSrcArr.push("placeholder"); //placeholder to iterate through later (because we're re-ordering async requests)
-          srcFilesObj[i] = $(this).text();
-        }
-        $(this).remove();
-      });
-
-      var minifiedSrc = outputJsFilePath.replace(stagingPath, "");
-      minifiedSrc = minifiedSrc.replace(/^\//, "");
-
-      var newScriptTag = $("<script async type='text/javascript' src='" + minifiedSrc + "'></script>")
-      newScriptTag.appendTo("body");
-
-      var asyncIndex = 0;
-      var finalJsString = "";
-      for (var i = 0; i < scriptSrcArr.length; i++) {
-        readSrcFile(scriptSrcArr[i], function(err, fileData, filePath) {
+        //overwrite the file if success
+        fs.writeFile(jsFilePath, result.code, function(err) {
           if (err) {
-            callback(err);
+            callback({ code: "CouldNotWriteUglifiedJsFile", err: err });
           } else {
-            srcFilesObj[scriptSrcArr.indexOf(filePath)] = fileData;
-
-            if (++asyncIndex == scriptSrcArr.length) {
-
-              for (var j = 0; j < scriptSrcArr.length; j++) {
-
-                //make sure src file ends with a new line (signifying done statement)
-                srcFilesObj[j] += "\n";
-
-                finalJsString += srcFilesObj[j];
-              }
-
-              fs.writeFile(outputJsFilePath, finalJsString, function(err) {
-                if (err) {
-                  callback(err);
-                } else {
-                  //append the optimized script tag to the body
-                  fs.writeFile(htmlFilePath, $.html(), function(err) {
-                    if (err) {
-                      callback(err);
-                    } else {
-                      callback(false, outputJsFilePath);
-                    }
-                  });
-                }
-              });
-            }
+            callback(false);
           }
-
-
         });
       }
-      if (scriptSrcArr.length <= 0) {
-        callback(false, outputJsFilePath);
+    };
+
+    var concatJsIntoFileAndUpdateHtml = function(htmlFileObj, fileData, callback) {
+      //workers only do work if there are no errors on this endpoint
+      if (htmlFileObj.optimizationErrors.length > 0) {
+        callback(false);
+      } else {
+        var htmlFilePath = htmlFileObj.filename;
+
+        //load it in cheerio, get all script tags that dont have the class "ds-no-modify"
+        var $ = cheerio.load(fileData, { decodeEntities: false });
+        var srcFilesObj = {};
+
+        var outputJsFilePath = htmlFilePath + ".js";
+
+        //get all javascript source itself from the file and concat it together into a var
+        var scriptTags = $('script:not(.ds-no-modify)');
+
+        var scriptSrcArr = [];
+        $('script:not(.ds-no-modify)').each(function(i, link) {
+          var src = $(this).attr("src");
+          if (src) {
+            var srcToAdd = src.replace(/^\//, ""); //remove leading slash if there is one
+            scriptSrcArr.push(srcToAdd);
+          } else {
+            scriptSrcArr.push("placeholder"); //placeholder to iterate through later (because we're re-ordering async requests)
+            srcFilesObj[i] = $(this).text();
+          }
+          $(this).remove();
+        });
+
+        var minifiedSrc = outputJsFilePath.replace(stagingPath, "");
+        minifiedSrc = minifiedSrc.replace(/^\//, "");
+
+        var newScriptTag = $("<script async type='text/javascript' src='" + minifiedSrc + "'></script>")
+        newScriptTag.appendTo("body");
+
+        var asyncIndex = 0;
+        var finalJsString = "";
+        for (var i = 0; i < scriptSrcArr.length; i++) {
+          readSrcFile(scriptSrcArr[i], function(err, fileData, filePath) {
+            if (err) {
+              callback({ code: "CouldNotReadSrcFile", err: err });
+            } else {
+              srcFilesObj[scriptSrcArr.indexOf(filePath)] = fileData;
+
+              if (++asyncIndex == scriptSrcArr.length) {
+
+                for (var j = 0; j < scriptSrcArr.length; j++) {
+
+                  //make sure src file ends with a new line (signifying done statement)
+                  srcFilesObj[j] += "\n";
+
+                  finalJsString += srcFilesObj[j];
+                }
+
+                fs.writeFile(outputJsFilePath, finalJsString, function(err) {
+                  if (err) {
+                    callback({ code: "CouldNotWriteUnCompressedJsFile", err: err });
+                  } else {
+                    //append the optimized script tag to the body
+                    fs.writeFile(htmlFilePath, $.html(), function(err) {
+                      if (err) {
+                        callback({ code: "CouldNotWriteHtmlFile", err: err });
+                      } else {
+                        callback(false, htmlFileObj, outputJsFilePath);
+                      }
+                    });
+                  }
+                });
+              }
+            }
+          });
+        }
+        if (scriptSrcArr.length <= 0) {
+          callback(false, outputJsFilePath);
+        }
       }
     };
 
@@ -404,40 +430,34 @@ module.exports = function(app) {
 
     var asyncIndex = 0;
     for (var i = 0; i < htmlFiles.length; i++) {
-      var filename = htmlFiles[i].filename;
 
       //read file in as a string
-      readLocalFile(filename, function(err, fileData, filePath) {
+      readLocalFile(htmlFiles[i], function(err, fileData, htmlFileObj) {
         if (err) {
           htmlFiles[asyncIndex].optimizationErrors.push({
             type: "js",
             code: err.code
           });
         }
-        concatJsIntoFileAndUpdateHtml(filePath, fileData, function(err, jsFilePath) {
+        concatJsIntoFileAndUpdateHtml(htmlFileObj, fileData, function(err, htmlFileObj, jsFilePath) {
           if (err) {
             htmlFiles[asyncIndex].optimizationErrors.push({
               type: "js",
               code: err.code
             });
           }
-          if (jsFilePath) {
-            compressAndWriteFile(jsFilePath, function(err) {
-              if (err) {
-                htmlFiles[asyncIndex].optimizationErrors.push({
-                  type: "js",
-                  code: err.code
-                });
-              }
-              if (++asyncIndex == htmlFiles.length) {
-                callback(false);
-              }
-            });
-          }
-
-
+          compressAndWriteFile(htmlFileObj, jsFilePath, function(err) {
+            if (err) {
+              htmlFiles[asyncIndex].optimizationErrors.push({
+                type: "js",
+                code: err.code
+              });
+            }
+            if (++asyncIndex == htmlFiles.length) {
+              callback(false);
+            }
+          });
         });
-
       });
     }
     if (htmlFiles.length <= 0) {
