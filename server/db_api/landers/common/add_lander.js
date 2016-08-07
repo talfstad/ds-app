@@ -211,7 +211,7 @@ module.exports = function(app, db) {
                   callback(err);
                 } else {
                   //3. optimize the staging directory
-                  htmlFileOptimizer.fullyOptimize(localStagingPath, function(err, endpointPaths) {
+                  htmlFileOptimizer.fullyOptimize(localStagingPath, function(err, endpointPaths, optimizationErrors) {
                     if (err) {
                       callback(err);
                     } else {
@@ -255,7 +255,8 @@ module.exports = function(app, db) {
                                               id: landerData.id,
                                               created_on: landerData.created_on,
                                               s3_folder_name: s3_folder_name,
-                                              url_endpoints_arr: urlEndpoints
+                                              url_endpoints_arr: urlEndpoints,
+                                              optimization_errors: optimizationErrors
                                             };
 
                                             callback(false, returnData);

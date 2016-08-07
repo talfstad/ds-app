@@ -6,13 +6,6 @@
   var htmlFile = process.argv[4]
   var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
 
-  console.log("thread base: " + fullHtmlFileDirPath);
-  console.log("thread html file: " + htmlFile);
-  console.log("thread css: " + outputCssFile);
-  console.log("thread outputHtmlFile: " + fullHtmlFilePath);
-
-
-
   criticalCss.generate({
     base: fullHtmlFileDirPath,
     src: htmlFile,
@@ -23,9 +16,6 @@
     ignore: ['@font-face', /url\(/]
   }, function(err, output) {
     if (err) {
-      console.log(err);
-    } else {
-      console.log(err);
-      console.log(output);
+      console.log("%startErr%" + JSON.stringify(err) + "%endErr%");
     }
   });

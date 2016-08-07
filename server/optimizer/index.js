@@ -19,44 +19,50 @@ module.exports = function(app) {
     console.log("fully optimized called: " + stagingPath);
 
     //pass all html files over to optimize css
-    find.file(/\.html$/, stagingPath, function(htmlFiles) {
-      module.optimizeCss(htmlFiles, function(err) {
-        if (err) {
-          console.log("err: " + err);
-          callback(err);
-        } else {
-          app.log("done with css", "debug");
-          module.optimizeJs(stagingPath, htmlFiles, function(err) {
-            if (err) {
-              callback(err);
-            } else {
-              app.log("done with js", "debug");
-              module.optimizeHtml(htmlFiles, function(err) {
-                if (err) {
-                  callback(err);
-                } else {
-                  app.log("done with html", "debug");
-                  module.optimizeImages(stagingPath, function(err) {
-                    if (err) {
-                      callback(err);
-                    } else {
-                      app.log("done with images", "debug");
+    var optimizationErrors = [];
 
-                      module.gzipStagingFiles(stagingPath, function(err) {
-                        if (err) {
-                          callback(err);
-                        } else {
-                          app.log("done gzipping", "debug");
-                          callback(false, htmlFiles);
-                        }
-                      });
-                    }
-                  });
-                }
-              });
-            }
-          });
+    find.file(/\.html$/, stagingPath, function(htmlFilePaths) {
+      //create htmlFiles obj for saving
+      var htmlFiles = [];
+      for (var i = 0; i < htmlFilePaths.length; i++) {
+        var fileObj = {
+          filename: htmlFilePaths[i],
+          optimizationErrors: []
         }
+        htmlFiles.push(fileObj);
+      }
+
+      module.optimizeCss(htmlFiles, function(err) {
+        //push optimization errors
+        optimizationErrors.concat(err);
+
+        app.log("done with css", "debug");
+        module.optimizeJs(stagingPath, htmlFiles, function(err) {
+          //push optimization errors
+          optimizationErrors.concat(err);
+
+          app.log("done with js", "debug");
+          module.optimizeHtml(htmlFiles, function(err) {
+            //push optimization errors
+            optimizationErrors.concat(err);
+
+            app.log("done with html", "debug");
+            module.optimizeImages(stagingPath, function(err) {
+              //push optimization errors
+              optimizationErrors.concat(err);
+
+              app.log("done with images", "debug");
+
+              module.gzipStagingFiles(stagingPath, function(err) {
+                //push optimization errors
+                optimizationErrors.concat(err);
+
+                app.log("done gzipping", "debug");
+                callback(false, htmlFiles, optimizationErrors);
+              });
+            });
+          });
+        });
       });
     });
   };
@@ -70,83 +76,136 @@ module.exports = function(app) {
   //inline the critical stuff and async load the rest of the css
   module.optimizeCss = function(htmlFiles, callback) {
 
-    var purifyAndCriticalCssFile = function(fullHtmlFilePath, html, styles, callback) {
-      var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
-      var fileName = path.basename(fullHtmlFilePath);
+    var purifyAndCriticalCssFile = function(htmlFileObj, html, styles, callback) {
+      //workers only do work if there are no errors on this endpoint
+      if (htmlFileObj.optimizationErrors.length > 0) {
+        callback(false);
+      } else {
+        var fullHtmlFilePath = htmlFileObj.filename;
 
-      var purifyOptions = {
-        minify: true
-      };
+        var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
+        var fileName = path.basename(fullHtmlFilePath);
 
-      purifyCss(html, styles, purifyOptions, function(purifiedAndMinifiedResult) {
-        var outputCssFile = path.join(fullHtmlFileDirPath, fileName + ".css");
+        var purifyOptions = {
+          minify: true
+        };
 
-        fs.writeFile(fullHtmlFilePath, html, function(err) {
-          if (err) {
-            callback(err);
-          } else {
-            fs.writeFile(outputCssFile, purifiedAndMinifiedResult, function(err) {
-              if (err) {
-                callback(err);
-              } else {
-                //args htmlFilePath, cssOutputFile
-                //runs in its own thread so it will clean up its stupid ass tmp files
-                cmd.get("node ./optimizer/critical_css_thread " + fullHtmlFilePath + " " + outputCssFile + " " + fileName, function(output) {
-                  // console.log("node output: " + output);
-                  callback(false);
-                });
+        purifyCss(html, styles, purifyOptions, function(purifiedAndMinifiedResult) {
+          var outputCssFile = path.join(fullHtmlFileDirPath, fileName + ".css");
+
+          //write html file one css file has been successfull or dont write it
+          fs.writeFile(outputCssFile, purifiedAndMinifiedResult, function(err) {
+            if (err) {
+              callback({ code: "CouldNotWritePurifiedMinifiedCssFile", err: err });
+            } else {
+              fs.writeFile(fullHtmlFilePath, html, function(err) {
+                if (err) {
+                  callback({ code: "CouldNotWriteOptimizedEndpointFile", err: err });
+                } else {
+                  //runs in its own thread so it will clean up its stupid ass tmp files
+                  cmd.get("node ./optimizer/critical_css_thread " + fullHtmlFilePath + " " + outputCssFile + " " + fileName, function(output) {
+                    // search output for custom error and get the JSON
+                    var err = JSON.parse(/%startErr%(.*?)%endErr%/.exec(output));
+                    if (err) {
+                      callback({ code: "CouldNotCriticalCss", err: err });
+                    } else {
+                      callback(false);
+                    }
+                  });
+                }
+              });
+            }
+          });
+        });
+      }
+    }
+
+    var optimizeCssFileForEndpoint = function(htmlFileObj, fileData, callback) {
+      //workers only do work if there are no errors on this endpoint
+      if (htmlFileObj.optimizationErrors.length > 0) {
+        callback(false);
+      } else {
+        var fullHtmlFilePath = htmlFileObj.filename;
+
+        //set to the async
+        var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
+        var fileName = path.basename(fullHtmlFilePath);
+
+        var $ = cheerio.load(fileData, { decodeEntities: false });
+
+        // get all the href's to minimize from the html file
+        $('link[rel="stylesheet"]').each(function(i, link) {
+          var href = $(this).attr("href");
+          cssFiles.push(href);
+        });
+
+        $('<link rel="stylesheet" type="text/css" href="' + fileName + '.css">').appendTo('head');
+
+        //with list of relative or absolute css files use clean css to combine them
+        //and rewrite the urls
+        var cleanCssFiles = cssFiles
+          .map(function(cssFilename) {
+            //check extension
+            var isCss = true;
+            if (cssFilename.indexOf('#') > -1) {
+              var sanitizedCssFilename = cssFilename.substring(0, cssFilename.indexOf('#'));
+              if (!/.css$/.test(sanitizedCssFilename)) {
+                isCss = false;
               }
-            });
+            }
+
+            if (isCss) {
+              return '@import url(' + cssFilename + ');';
+
+              //remove the original css file for this
+              var linkToRemove = $('link[rel="stylesheet"][href="' + cssFilename + '"');
+              if (linkToRemove.length) {
+                console.log("GOOD removing: " + cssFilename + " stylesheet from HTML");
+                linkToRemove.remove();
+              }
+              .remove();
+            }
+
+          })
+          .join('');
+
+        try {
+          new CleanCSS({
+            root: fullHtmlFileDirPath
+          }).minify(cleanCssFiles, function(err, minified) {
+            if (err) {
+              callback({ code: "CouldNotCleanCssAndMinify", err: err });
+            } else {
+
+              app.log("cleaned css files: " + JSON.stringify(cleanCssFiles), "debug");
+
+              var styles = minified.styles;
+              callback(false, $.html(), styles);
+            }
+          });
+        } catch (err) {
+          callback({ code: "CouldNotCleanCssAndMinify", err: err });
+        }
+
+      }
+    };
+
+    var readFile = function(htmlFileObj, callback) {
+      //workers only do work if there are no errors on this endpoint
+      if (htmlFileObj.optimizationErrors.length > 0) {
+        callback(false);
+      } else {
+        var filename = htmlFileObj.filename;
+
+        //this is always a local html file
+        fs.readFile(filename, function(err, fileData) {
+          if (err) {
+            callback({ code: "CouldNotReadEndpoint", err: err });
+          } else {
+            callback(false, htmlFileObj, fileData);
           }
         });
-      });
-    }
-
-    var optimizeCssFile = function(fullHtmlFilePath, fileData, callback) {
-      //set to the async
-      var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
-      var fileName = path.basename(fullHtmlFilePath);
-
-      var $ = cheerio.load(fileData, { decodeEntities: false });
-
-      // get all the href's to minimize from the html file
-      $('link[rel="stylesheet"]').each(function(i, link) {
-        var href = $(this).attr("href");
-        cssFiles.push(href);
-        $(this).remove();
-      });
-
-      //fix up the html endpoint file with our new CSS
-      $('<link rel="stylesheet" type="text/css" href="' + fileName + '.css">').appendTo('head');
-
-      //with list of relative or absolute css files use clean css to combine them
-      //and rewrite the urls
-      var data = cssFiles
-        .map(function(cssFilename) {
-          return '@import url(' + cssFilename + ');';
-        })
-        .join('');
-
-      new CleanCSS({
-        root: fullHtmlFileDirPath
-      }).minify(data, function(error, minified) {
-        if (error) {
-          callback(err);
-        } else {
-          var styles = minified.styles;
-          callback(false, $.html(), styles);
-        }
-      });
-    }
-
-    var readFile = function(filePath, callback) {
-      fs.readFile(filePath, function(err, fileData) {
-        if (err) {
-          callback(err);
-        } else {
-          callback(false, filePath, fileData);
-        }
-      });
+      }
     };
 
     var asyncIndex = 0;
@@ -154,28 +213,37 @@ module.exports = function(app) {
 
       //read file in as a string
       var cssFiles = [];
-      readFile(htmlFiles[i], function(err, filePath, fileData) {
+      readFile(htmlFiles[i], function(err, htmlFileObj, fileData) {
         if (err) {
-          callback(err);
-        } else {
-          optimizeCssFile(filePath, fileData, function(err, html, styles) {
-            if (err) {
-              callback(err);
-            } else {
-              purifyAndCriticalCssFile(filePath, html, styles, function(err) {
-                if (err) {
-                  callback(err);
-                } else {
-                  if (++asyncIndex == htmlFiles.length) {
-                    callback(false);
-                  }
-                }
-
-              });
-            }
+          htmlFiles[asyncIndex].optimizationErrors.push({
+            type: "css",
+            code: err.code
           });
         }
+        optimizeCssFileForEndpoint(htmlFileObj, fileData, function(err, html, styles) {
+          if (err) {
+            htmlFiles[asyncIndex].optimizationErrors.push({
+              type: "css",
+              code: err.code
+            });
+          }
+          purifyAndCriticalCssFile(htmlFileObj, html, styles, function(err) {
+            if (err) {
+              htmlFiles[asyncIndex].optimizationErrors.push({
+                type: "css",
+                code: err.code
+              });
+            }
+
+            if (++asyncIndex == htmlFiles.length) {
+              callback(false);
+            }
+          });
+        });
       });
+    }
+    if (htmlFiles.length <= 0) {
+      callback(false);
     }
   }
 
@@ -292,34 +360,39 @@ module.exports = function(app) {
       var finalJsString = "";
       for (var i = 0; i < scriptSrcArr.length; i++) {
         readSrcFile(scriptSrcArr[i], function(err, fileData, filePath) {
+          if (err) {
+            callback(err);
+          } else {
+            srcFilesObj[scriptSrcArr.indexOf(filePath)] = fileData;
 
-          srcFilesObj[scriptSrcArr.indexOf(filePath)] = fileData;
+            if (++asyncIndex == scriptSrcArr.length) {
 
-          if (++asyncIndex == scriptSrcArr.length) {
+              for (var j = 0; j < scriptSrcArr.length; j++) {
 
-            for (var j = 0; j < scriptSrcArr.length; j++) {
+                //make sure src file ends with a new line (signifying done statement)
+                srcFilesObj[j] += "\n";
 
-              //make sure src file ends with a new line (signifying done statement)
-              srcFilesObj[j] += "\n";
-
-              finalJsString += srcFilesObj[j];
-            }
-
-            fs.writeFile(outputJsFilePath, finalJsString, function(err) {
-              if (err) {
-                callback(err);
-              } else {
-                //append the optimized script tag to the body
-                fs.writeFile(htmlFilePath, $.html(), function(err) {
-                  if (err) {
-                    callback(err);
-                  } else {
-                    callback(false, outputJsFilePath);
-                  }
-                });
+                finalJsString += srcFilesObj[j];
               }
-            });
+
+              fs.writeFile(outputJsFilePath, finalJsString, function(err) {
+                if (err) {
+                  callback(err);
+                } else {
+                  //append the optimized script tag to the body
+                  fs.writeFile(htmlFilePath, $.html(), function(err) {
+                    if (err) {
+                      callback(err);
+                    } else {
+                      callback(false, outputJsFilePath);
+                    }
+                  });
+                }
+              });
+            }
           }
+
+
         });
       }
       if (scriptSrcArr.length <= 0) {
@@ -327,32 +400,44 @@ module.exports = function(app) {
       }
     };
 
+
+
     var asyncIndex = 0;
     for (var i = 0; i < htmlFiles.length; i++) {
-      //read file in as a string
-      readLocalFile(htmlFiles[i], function(err, fileData, filePath) {
-        if (err) {
-          callback(err);
-        } else {
-          concatJsIntoFileAndUpdateHtml(filePath, fileData, function(err, jsFilePath) {
-            if (err) {
-              callback(err);
-            } else {
-              if (jsFilePath) {
-                compressAndWriteFile(jsFilePath, function(err) {
-                  if (err) {
-                    callback(err);
-                  } else {
-                    if (++asyncIndex == htmlFiles.length) {
-                      callback(false);
-                    }
-                  }
-                });
-              }
+      var filename = htmlFiles[i].filename;
 
-            }
+      //read file in as a string
+      readLocalFile(filename, function(err, fileData, filePath) {
+        if (err) {
+          htmlFiles[asyncIndex].optimizationErrors.push({
+            type: "js",
+            code: err.code
           });
         }
+        concatJsIntoFileAndUpdateHtml(filePath, fileData, function(err, jsFilePath) {
+          if (err) {
+            htmlFiles[asyncIndex].optimizationErrors.push({
+              type: "js",
+              code: err.code
+            });
+          }
+          if (jsFilePath) {
+            compressAndWriteFile(jsFilePath, function(err) {
+              if (err) {
+                htmlFiles[asyncIndex].optimizationErrors.push({
+                  type: "js",
+                  code: err.code
+                });
+              }
+              if (++asyncIndex == htmlFiles.length) {
+                callback(false);
+              }
+            });
+          }
+
+
+        });
+
       });
     }
     if (htmlFiles.length <= 0) {
