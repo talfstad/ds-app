@@ -32,31 +32,15 @@ module.exports = function(app) {
         htmlFiles.push(fileObj);
       }
 
-      module.optimizeCss(htmlFiles, function(err) {
-        //push optimization errors
-        optimizationErrors.concat(err);
-
+      module.optimizeCss(htmlFiles, function() {
         app.log("done with css", "debug");
-        module.optimizeJs(stagingPath, htmlFiles, function(err) {
-          //push optimization errors
-          optimizationErrors.concat(err);
-
+        module.optimizeJs(stagingPath, htmlFiles, function() {
           app.log("done with js", "debug");
-          module.optimizeHtml(htmlFiles, function(err) {
-            //push optimization errors
-            optimizationErrors.concat(err);
-
+          module.optimizeHtml(htmlFiles, function() {
             app.log("done with html", "debug");
-            module.optimizeImages(stagingPath, function(err) {
-              //push optimization errors
-              optimizationErrors.concat(err);
-
+            module.optimizeImages(stagingPath, function() {
               app.log("done with images", "debug");
-
-              module.gzipStagingFiles(stagingPath, function(err) {
-                //push optimization errors
-                optimizationErrors.concat(err);
-
+              module.gzipStagingFiles(stagingPath, function() {
                 app.log("done gzipping", "debug");
                 callback(false, htmlFiles, optimizationErrors);
               });
@@ -77,19 +61,27 @@ module.exports = function(app) {
   module.optimizeCss = function(htmlFiles, callback) {
 
     var purifyAndCriticalCssFile = function(htmlFileObj, html, styles, callback) {
-      //workers only do work if there are no errors on this endpoint
+      //workers only do work if there are no errors on this endpoint for this type
       if (htmlFileObj.optimizationErrors.length > 0) {
-        callback(false);
-      } else {
-        var fullHtmlFilePath = htmlFileObj.filename;
+        //check if errors are of this type
+        for (var i = 0; i < htmlFileObj.optimizationErrors; i++) {
+          if (htmlFileObj.optimizationErrors[i].type == 'css') {
+            callback(false);
+            return;
+          }
+        }
+      }
 
-        var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
-        var fileName = path.basename(fullHtmlFilePath);
+      var fullHtmlFilePath = htmlFileObj.filename;
 
-        var purifyOptions = {
-          minify: true
-        };
+      var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
+      var fileName = path.basename(fullHtmlFilePath);
 
+      var purifyOptions = {
+        minify: true
+      };
+
+      try {
         purifyCss(html, styles, purifyOptions, function(purifiedAndMinifiedResult) {
           var outputCssFile = path.join(fullHtmlFileDirPath, fileName + ".css");
 
@@ -117,95 +109,116 @@ module.exports = function(app) {
             }
           });
         });
+      } catch (err) {
+        callback({ code: "CouldNotPurifyCss", err: err });
       }
+
+
     }
 
     var optimizeCssFileForEndpoint = function(htmlFileObj, fileData, callback) {
-      //workers only do work if there are no errors on this endpoint
+      //workers only do work if there are no errors on this endpoint for this type
       if (htmlFileObj.optimizationErrors.length > 0) {
-        callback(false);
-      } else {
-        var fullHtmlFilePath = htmlFileObj.filename;
-
-        //set to the async
-        var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
-        var fileName = path.basename(fullHtmlFilePath);
-
-        var $ = cheerio.load(fileData, { decodeEntities: false });
-
-        // get all the href's to minimize from the html file
-        $('link[rel="stylesheet"]').each(function(i, link) {
-          var href = $(this).attr("href");
-          cssFiles.push(href);
-        });
-
-        $('<link rel="stylesheet" type="text/css" href="' + fileName + '.css">').appendTo('head');
-
-        //with list of relative or absolute css files use clean css to combine them
-        //and rewrite the urls
-        var cleanCssFiles = cssFiles
-          .map(function(cssFilename) {
-            //check extension
-            var isCss = true;
-            if (cssFilename.indexOf('#') > -1) {
-              var sanitizedCssFilename = cssFilename.substring(0, cssFilename.indexOf('#'));
-              if (!/.css$/.test(sanitizedCssFilename)) {
-                isCss = false;
-              }
-            }
-
-            if (isCss) {
-              return '@import url(' + cssFilename + ');';
-
-              //remove the original css file for this
-              var linkToRemove = $('link[rel="stylesheet"][href="' + cssFilename + '"');
-              if (linkToRemove.length) {
-                console.log("GOOD removing: " + cssFilename + " stylesheet from HTML");
-                linkToRemove.remove();
-              }
-              .remove();
-            }
-
-          })
-          .join('');
-
-        try {
-          new CleanCSS({
-            root: fullHtmlFileDirPath
-          }).minify(cleanCssFiles, function(err, minified) {
-            if (err) {
-              callback({ code: "CouldNotCleanCssAndMinify", err: err });
-            } else {
-
-              app.log("cleaned css files: " + JSON.stringify(cleanCssFiles), "debug");
-
-              var styles = minified.styles;
-              callback(false, $.html(), styles);
-            }
-          });
-        } catch (err) {
-          callback({ code: "CouldNotCleanCssAndMinify", err: err });
+        //check if errors are of this type
+        for (var i = 0; i < htmlFileObj.optimizationErrors; i++) {
+          if (htmlFileObj.optimizationErrors[i].type == 'css') {
+            callback(false);
+            return;
+          }
         }
-
       }
+
+      var fullHtmlFilePath = htmlFileObj.filename;
+
+      //set to the async
+      var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
+      var fileName = path.basename(fullHtmlFilePath);
+
+      var $ = cheerio.load(fileData, { decodeEntities: false });
+
+      // get all the href's to minimize from the html file
+      $('link[rel="stylesheet"]').each(function(i, link) {
+        var href = $(this).attr("href");
+        cssFiles.push(href);
+      });
+
+      $('<link rel="stylesheet" type="text/css" href="' + fileName + '.css">').appendTo('head');
+
+      //with list of relative or absolute css files use clean css to combine them
+      //and rewrite the urls
+      var cleanCssFiles = cssFiles
+        .map(function(cssFilename) {
+          //check extension
+          var isCss = true;
+          if (cssFilename.indexOf('#') > -1) {
+            var sanitizedCssFilename = cssFilename.substring(0, cssFilename.indexOf('#'));
+            if (!/.css$/.test(sanitizedCssFilename)) {
+              isCss = false;
+            }
+          }
+
+          if (isCss) {
+
+            //remove the original css file for this
+            var linkToRemove = $('link[rel="stylesheet"][href="' + cssFilename + '"]');
+            if (linkToRemove.length) {
+              console.log("GOOD removing: " + cssFilename + " stylesheet from HTML");
+              linkToRemove.remove();
+            } else {
+              console.log("BAD NOT removing: " + cssFilename + " stylesheet from HTML");
+            }
+
+            return '@import url(' + cssFilename + ');';
+
+          }
+
+        })
+        .join('');
+
+      try {
+        new CleanCSS({
+          root: fullHtmlFileDirPath
+        }).minify(cleanCssFiles, function(err, minified) {
+          if (err) {
+            callback({ code: "CouldNotCleanCssAndMinify", err: err });
+          } else {
+
+            app.log("cleaned css files: " + JSON.stringify(cleanCssFiles), "debug");
+
+            var styles = minified.styles;
+            callback(false, $.html(), styles);
+          }
+        });
+      } catch (err) {
+        callback({ code: "CouldNotCleanCssAndMinify", err: err });
+      }
+
+
     };
 
     var readFile = function(htmlFileObj, callback) {
-      //workers only do work if there are no errors on this endpoint
+      //workers only do work if there are no errors on this endpoint for this type
       if (htmlFileObj.optimizationErrors.length > 0) {
-        callback(false);
-      } else {
-        var filename = htmlFileObj.filename;
-
-        //this is always a local html file
-        fs.readFile(filename, function(err, fileData) {
-          if (err) {
-            callback({ code: "CouldNotReadEndpoint", err: err });
-          } else {
-            callback(false, htmlFileObj, fileData);
+        //check if errors are of this type
+        for (var i = 0; i < htmlFileObj.optimizationErrors; i++) {
+          if (htmlFileObj.optimizationErrors[i].type == 'css') {
+            callback(false);
+            return;
           }
-        });
+        }
       }
+
+      var filename = htmlFileObj.filename;
+
+      //this is always a local html file
+      fs.readFile(filename, function(err, fileData) {
+        if (err) {
+          callback({ code: "CouldNotReadEndpoint", err: err });
+        } else {
+          callback(false, htmlFileObj, fileData);
+        }
+      });
+
     };
 
     var asyncIndex = 0;
@@ -273,28 +286,36 @@ module.exports = function(app) {
       //workers only do work if there are no errors on this endpoint
       if (isObj) {
         if (inFilePathOrObj.optimizationErrors.length > 0) {
-          callback(false);
-        }
-      } else {
-
-        fs.exists(filePath, function(exists) {
-          if (exists) {
-            fs.readFile(filePath, function(err, fileData) {
-              if (err) {
-                callback({ code: "CouldNotReadLocalFile", err: err });
-              } else {
-                callback(false, fileData, inFilePathOrObj);
-              }
-            });
-          } else {
-            callback({ code: "LocalFileDoesNotExist", err: err });
+          for (var i = 0; i < inFilePathOrObj.optimizationErrors; i++) {
+            if (inFilePathOrObj.optimizationErrors[i].type == 'js') {
+              callback(false);
+              return;
+            }
           }
-        });
-
+        }
       }
+
+      fs.exists(filePath, function(exists) {
+        if (exists) {
+          fs.readFile(filePath, function(err, fileData) {
+            if (err) {
+              callback({ code: "CouldNotReadLocalFile", err: err });
+            } else {
+              callback(false, fileData, inFilePathOrObj);
+            }
+          });
+        } else {
+          callback({ code: "LocalFileDoesNotExist", err: {} });
+        }
+      });
+
+
     };
 
     var readSrcFile = function(filePath, callback) {
+
+      console.log("reading src file: " + filePath);
+
       //worker can do work no matter what because its just reading
       //file and isnt used by main loop. only used by another worker function
       var isExternal = function(href) {
@@ -324,18 +345,25 @@ module.exports = function(app) {
     };
 
     var compressAndWriteFile = function(htmlFileObj, jsFilePath, callback) {
-      //workers only do work if there are no errors on this endpoint
-      if (htmlFileObj.optimizationErrors.length > 0) {
-        callback(false);
-      } else {
-        // call uglify on the file
-        try {
-          var result = UglifyJS.minify(jsFilePath, {});
 
-        } catch (err) {
-          callback({ code: "CouldNotUglify", err: err });
-          return;
+      console.log("TREVR!!!!! compressAndWriteFile " + JSON.stringify(htmlFileObj));
+
+      //workers only do work if there are no errors on this endpoint for this type
+      if (htmlFileObj.optimizationErrors.length > 0) {
+        //check if errors are of this type
+        for (var i = 0; i < htmlFileObj.optimizationErrors; i++) {
+          if (htmlFileObj.optimizationErrors[i].type == 'js') {
+            callback(false);
+            return;
+          }
         }
+
+      }
+
+      // call uglify on the file
+      try {
+
+        var result = UglifyJS.minify(jsFilePath, {});
 
         //overwrite the file if success
         fs.writeFile(jsFilePath, result.code, function(err) {
@@ -345,54 +373,76 @@ module.exports = function(app) {
             callback(false);
           }
         });
+
+      } catch (err) {
+        console.log("COULDNT UGLIFY : " + htmlFileObj.filename);
+        callback({ code: "CouldNotUglify", err: err });
       }
     };
 
     var concatJsIntoFileAndUpdateHtml = function(htmlFileObj, fileData, callback) {
-      //workers only do work if there are no errors on this endpoint
+      //workers only do work if there are no errors on this endpoint for this type
       if (htmlFileObj.optimizationErrors.length > 0) {
-        callback(false);
-      } else {
-        var htmlFilePath = htmlFileObj.filename;
-
-        //load it in cheerio, get all script tags that dont have the class "ds-no-modify"
-        var $ = cheerio.load(fileData, { decodeEntities: false });
-        var srcFilesObj = {};
-
-        var outputJsFilePath = htmlFilePath + ".js";
-
-        //get all javascript source itself from the file and concat it together into a var
-        var scriptTags = $('script:not(.ds-no-modify)');
-
-        var scriptSrcArr = [];
-        $('script:not(.ds-no-modify)').each(function(i, link) {
-          var src = $(this).attr("src");
-          if (src) {
-            var srcToAdd = src.replace(/^\//, ""); //remove leading slash if there is one
-            scriptSrcArr.push(srcToAdd);
-          } else {
-            scriptSrcArr.push("placeholder"); //placeholder to iterate through later (because we're re-ordering async requests)
-            srcFilesObj[i] = $(this).text();
+        //check if errors are of this type
+        for (var i = 0; i < htmlFileObj.optimizationErrors; i++) {
+          if (htmlFileObj.optimizationErrors[i].type == 'js') {
+            callback(false, htmlFileObj);
+            return false;
           }
-          $(this).remove();
-        });
+        }
+      }
 
-        var minifiedSrc = outputJsFilePath.replace(stagingPath, "");
-        minifiedSrc = minifiedSrc.replace(/^\//, "");
+      var htmlFilePath = htmlFileObj.filename;
 
-        var newScriptTag = $("<script async type='text/javascript' src='" + minifiedSrc + "'></script>")
-        newScriptTag.appendTo("body");
+      //load it in cheerio, get all script tags that dont have the class "ds-no-modify"
+      var $ = cheerio.load(fileData, { decodeEntities: false });
+      var srcFilesObj = {};
 
-        var asyncIndex = 0;
-        var finalJsString = "";
-        for (var i = 0; i < scriptSrcArr.length; i++) {
-          readSrcFile(scriptSrcArr[i], function(err, fileData, filePath) {
-            if (err) {
-              callback({ code: "CouldNotReadSrcFile", err: err });
-            } else {
-              srcFilesObj[scriptSrcArr.indexOf(filePath)] = fileData;
+      var outputJsFilePath = htmlFilePath + ".js";
 
-              if (++asyncIndex == scriptSrcArr.length) {
+      //get all javascript source itself from the file and concat it together into a var
+      var scriptTags = $('script:not(.ds-no-modify)');
+
+      var scriptSrcArr = [];
+      $('script:not(.ds-no-modify)').each(function(i, link) {
+        var src = $(this).attr("src");
+        if (src) {
+          var srcToAdd = src.replace(/^\//, ""); //remove leading slash if there is one
+          scriptSrcArr.push(srcToAdd);
+        } else {
+          scriptSrcArr.push("placeholder"); //placeholder to iterate through later (because we're re-ordering async requests)
+          srcFilesObj[i] = $(this).text();
+        }
+        $(this).remove();
+      });
+
+      var minifiedSrc = outputJsFilePath.replace(stagingPath, "");
+      minifiedSrc = minifiedSrc.replace(/^\//, "");
+
+      var newScriptTag = $("<script async type='text/javascript' src='" + minifiedSrc + "'></script>")
+      newScriptTag.appendTo("body");
+
+      var asyncIndex = 0;
+      var finalJsString = "";
+
+      var errors = [];
+      for (var i = 0; i < scriptSrcArr.length; i++) {
+        readSrcFile(scriptSrcArr[i], function(err, fileData, filePath) {
+          if (err) {
+            // errors.push({ code: "CouldNotReadSrcFile", err: err });
+            //if error ignore because it will be placeholder error
+            asyncIndex++;
+          } else {
+
+            srcFilesObj[scriptSrcArr.indexOf(filePath)] = fileData;
+            if (++asyncIndex == scriptSrcArr.length) {
+
+              //now that for loop is done call your error callback if its still here
+              if (errors.length > 0) {
+                console.log("2WEIRD GETTING HERE")
+
+                callback(errors, htmlFileObj);
+              } else {
 
                 for (var j = 0; j < scriptSrcArr.length; j++) {
 
@@ -404,12 +454,12 @@ module.exports = function(app) {
 
                 fs.writeFile(outputJsFilePath, finalJsString, function(err) {
                   if (err) {
-                    callback({ code: "CouldNotWriteUnCompressedJsFile", err: err });
+                    callback({ code: "CouldNotWriteUnCompressedJsFile", err: err }, htmlFileObj);
                   } else {
                     //append the optimized script tag to the body
                     fs.writeFile(htmlFilePath, $.html(), function(err) {
                       if (err) {
-                        callback({ code: "CouldNotWriteHtmlFile", err: err });
+                        callback({ code: "CouldNotWriteHtmlFile", err: err }, htmlFileObj);
                       } else {
                         callback(false, htmlFileObj, outputJsFilePath);
                       }
@@ -417,16 +467,23 @@ module.exports = function(app) {
                   }
                 });
               }
+
+
             }
-          });
-        }
-        if (scriptSrcArr.length <= 0) {
-          callback(false, outputJsFilePath);
-        }
+
+
+          }
+
+
+
+        });
       }
+
+      if (scriptSrcArr.length <= 0) {
+        callback(false, htmlFileObj, outputJsFilePath);
+      }
+
     };
-
-
 
     var asyncIndex = 0;
     for (var i = 0; i < htmlFiles.length; i++) {
@@ -434,21 +491,29 @@ module.exports = function(app) {
       //read file in as a string
       readLocalFile(htmlFiles[i], function(err, fileData, htmlFileObj) {
         if (err) {
-          htmlFiles[asyncIndex].optimizationErrors.push({
+          htmlFileObj.optimizationErrors.push({
             type: "js",
             code: err.code
           });
         }
         concatJsIntoFileAndUpdateHtml(htmlFileObj, fileData, function(err, htmlFileObj, jsFilePath) {
           if (err) {
-            htmlFiles[asyncIndex].optimizationErrors.push({
-              type: "js",
-              code: err.code
-            });
+            if (err.constructor == Array) {
+              //concat the errors on if there were errors from for loop
+              htmlFileObj.optimizationErrors.concat(err);
+            } else {
+              htmlFileObj.optimizationErrors.push({
+                type: "js",
+                code: err.code
+              });
+            }
           }
+
+          console.log("JS FILE PATH: " + jsFilePath);
+
           compressAndWriteFile(htmlFileObj, jsFilePath, function(err) {
             if (err) {
-              htmlFiles[asyncIndex].optimizationErrors.push({
+              htmlFileObj.optimizationErrors.push({
                 type: "js",
                 code: err.code
               });
@@ -472,17 +537,32 @@ module.exports = function(app) {
       return;
     }
 
-    var readHtmlFile = function(htmlFile, callback) {
-      fs.readFile(htmlFile, 'utf8', function(err, fileData) {
+    var readHtmlFile = function(htmlFileObj, callback) {
+      var filePath = htmlFileObj.filename;
+
+      fs.readFile(filePath, 'utf8', function(err, fileData) {
         if (err) {
-          callback(err);
+          callback({ code: "CouldNotReadHtmlFile", err: err });
         } else {
-          callback(false, htmlFile, fileData);
+          callback(false, htmlFileObj, fileData);
         }
       });
     };
 
-    var minifyHtmlFile = function(filePath, fileData, callback) {
+    var minifyHtmlFile = function(htmlFileObj, fileData, callback) {
+      //workers only do work if there are no errors on this endpoint for this type
+      if (htmlFileObj.optimizationErrors.length > 0) {
+        //check if errors are of this type
+        for (var i = 0; i < htmlFileObj.optimizationErrors; i++) {
+          if (htmlFileObj.optimizationErrors[i].type == 'html') {
+            callback(false);
+            return;
+          }
+        }
+      }
+
+      var filePath = htmlFileObj.filename;
+
       try {
         var minifiedFile = htmlMinifier(fileData, {
           removeAttributeQuotes: true,
@@ -501,25 +581,35 @@ module.exports = function(app) {
         });
       } catch (err) {
         // console.log("err minify html, probably parse error ...");
-        callback(false); //callback false because we just want to keep chugging html files
+        callback({ code: "CouldNotMinifyHtmlFile", err: err });
       }
+
     };
 
     var asyncIndex = 0;
     for (var i = 0; i < htmlFiles.length; i++) {
 
-      readHtmlFile(htmlFiles[i], function(err, filePath, fileData) {
+      readHtmlFile(htmlFiles[i], function(err, htmlFileObj, fileData) {
         if (err) {
-          callback(err);
-        } else {
-          // console.log("minifying html for: " + filePath);
-          minifyHtmlFile(filePath, fileData, function(err) {
-            //ignore error, just dont do anything
-            if (++asyncIndex == htmlFiles.length) {
-              callback(false);
-            }
+          htmlFiles[asyncIndex].optimizationErrors.push({
+            type: "html",
+            code: err.code
           });
         }
+
+        minifyHtmlFile(htmlFileObj, fileData, function(err) {
+          if (err) {
+            htmlFiles[asyncIndex].optimizationErrors.push({
+              type: "html",
+              code: err.code
+            });
+          }
+          //ignore error, just dont do anything
+          if (++asyncIndex == htmlFiles.length) {
+            callback(false);
+          }
+        });
+
 
       });
     }
