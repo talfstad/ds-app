@@ -279,7 +279,7 @@ module.exports = function(app, db) {
           $('head').append(scriptTag);
 
         } else {
-          scriptTag = $("<script id='snippet-" + snippet_id + "'>"+ code +"</script>");
+          scriptTag = $("<script id='snippet-" + snippet_id + "' class='ds-no-modify'>"+ code +"</script>");
 
           $('body').append(scriptTag);
         }
@@ -495,7 +495,7 @@ module.exports = function(app, db) {
                               scriptTag = $("<script id='snippet-" + snippet_id + "' class='ds-no-modify'>" + code + "</script>");
                               $('head').append(scriptTag);
                             } else {
-                              scriptTag = $("<script id='snippet-" + snippet_id + "'>" + code + "</script>");
+                              scriptTag = $("<script id='snippet-" + snippet_id + "' class='ds-no-modify'>" + code + "</script>");
                               $('body').append(scriptTag);
                             }
                           }

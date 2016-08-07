@@ -51,6 +51,7 @@
     "rimraf": "*",
     "s3": "*",
     "string": "*",
+    "uglify-js": "^2.7.0",
     "underscore-node": "*",
     "util": "*",
     "uuid": "*",
@@ -60,7 +61,6 @@
     "website-scraper": "*",
     "wordpress-hash-node": "*",
     "xoauth2": "*",
-    "yuicompressor": "*",
     "zip-dir": "^1.0.2"
   },
   "devDependencies": {

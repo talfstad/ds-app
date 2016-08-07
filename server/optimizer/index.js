@@ -12,6 +12,7 @@ module.exports = function(app) {
   var fs = require('fs');
   var cmd = require('node-cmd');
   var request = require('request');
+  var UglifyJS = require('uglify-js');
 
   //optimizer has an optimize function that takes an HTML file path, optimized file output path,
   module.fullyOptimize = function(stagingPath, callback) {
@@ -24,27 +25,28 @@ module.exports = function(app) {
           console.log("err: " + err);
           callback(err);
         } else {
-          console.log("done with css");
+          app.log("done with css", "debug");
           module.optimizeJs(stagingPath, htmlFiles, function(err) {
             if (err) {
               callback(err);
             } else {
-              console.log("done with js");
+              app.log("done with js", "debug");
               module.optimizeHtml(htmlFiles, function(err) {
                 if (err) {
                   callback(err);
                 } else {
-                  console.log("done with html");
+                  app.log("done with html", "debug");
                   module.optimizeImages(stagingPath, function(err) {
                     if (err) {
                       callback(err);
                     } else {
-                      console.log("done with images");
+                      app.log("done with images", "debug");
+
                       module.gzipStagingFiles(stagingPath, function(err) {
                         if (err) {
                           callback(err);
                         } else {
-                          console.log("done gzipping");
+                          app.log("done gzipping", "debug");
                           callback(false, htmlFiles);
                         }
                       });
@@ -105,7 +107,7 @@ module.exports = function(app) {
       var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
       var fileName = path.basename(fullHtmlFilePath);
 
-      var $ = cheerio.load(fileData, {decodeEntities: false});
+      var $ = cheerio.load(fileData, { decodeEntities: false });
 
       // get all the href's to minimize from the html file
       $('link[rel="stylesheet"]').each(function(i, link) {
@@ -234,33 +236,32 @@ module.exports = function(app) {
     };
 
     var compressAndWriteFile = function(jsFilePath, callback) {
-      //call yuicompressor on the file
-      // yuiCompressor.compress(jsFilePath, {
-      //   charset: 'utf8',
-      //   type: 'js',
-      //   nomunge: true,
-      //   'line-break': 80
-      // }, function(err, compressedFile, extra) {
-      //   if (err) {
-      //     callback(err);
-      //   } else {
-      //     //- and overwrite the file
-      //     fs.writeFile(jsFilePath, compressedFile, function(err) {
-      //       if (err) {
-      //         callback(err);
-      //       } else {
-      //         callback(false);
-      //       }
-      //     });
-      //   }
-      // });
+      // call uglify on the file
+      try {
+        var result = UglifyJS.minify(jsFilePath, {});
+
+      } catch (err) {
+        console.log('error trying to compress JS file: ' + jsFilePath);
+        console.log('\n\n\nerror trying to compress JS file: ' + err);
+        callback(err);
+        return;
+      }
+
+      //overwrite the file if success
+      fs.writeFile(jsFilePath, result.code, function(err) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(false);
+        }
+      });
 
       callback(false);
     };
 
     var concatJsIntoFileAndUpdateHtml = function(htmlFilePath, fileData, callback) {
       //load it in cheerio, get all script tags that dont have the class "ds-no-modify"
-      var $ = cheerio.load(fileData, {decodeEntities: false});
+      var $ = cheerio.load(fileData, { decodeEntities: false });
       var srcFilesObj = {};
 
       var outputJsFilePath = htmlFilePath + ".js";
@@ -298,10 +299,8 @@ module.exports = function(app) {
 
             for (var j = 0; j < scriptSrcArr.length; j++) {
 
-              //make sure src file has a semi colon ending it
-              if (!(/;$/).test(srcFilesObj[j])) {
-                srcFilesObj[j] += ";";
-              }
+              //make sure src file ends with a new line (signifying done statement)
+              srcFilesObj[j] += "\n";
 
               finalJsString += srcFilesObj[j];
             }
@@ -543,4 +542,3 @@ module.exports = function(app) {
   };
   return module;
 };
-
