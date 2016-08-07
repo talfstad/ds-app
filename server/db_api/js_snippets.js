@@ -181,7 +181,7 @@ module.exports = function(app, db) {
                 callback(err);
               } else {
                 //write the snippet into the file using cheerio
-                var $ = cheerio.load(fileData);
+                var $ = cheerio.load(fileData, {decodeEntities: false});
 
                 snippetAlreadyOnPage = $('#snippet-' + snippet_id);
 
@@ -275,13 +275,11 @@ module.exports = function(app, db) {
 
         var scriptTag;
         if (load_before_dom) {
-          scriptTag = $("<script id='snippet-" + snippet_id + "' class='ds-no-modify'></script>");
-          scriptTag.append(code);
+          scriptTag = $("<script id='snippet-" + snippet_id + "' class='ds-no-modify'>"+ code +"</script>");
           $('head').append(scriptTag);
 
         } else {
-          scriptTag = $("<script id='snippet-" + snippet_id + "'></script>");
-          scriptTag.append(code);
+          scriptTag = $("<script id='snippet-" + snippet_id + "'>"+ code +"</script>");
 
           $('body').append(scriptTag);
         }
@@ -419,7 +417,6 @@ module.exports = function(app, db) {
       }
 
       var addSnippetToEndpoint = function(snippet_id, urlEndpointId, user_id, callback) {
-        console.log("SNIPPET ID : " + snippet_id);
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
@@ -474,8 +471,7 @@ module.exports = function(app, db) {
                       var fileData = data.Body.toString();
 
                       //write the snippet into the file using cheerio
-                      var $ = cheerio.load(fileData);
-                      console.log("snippet id : TTT3333 " + snippet_id);
+                      var $ = cheerio.load(fileData, {decodeEntities: false});
 
                       snippetAlreadyOnPage = $('#snippet-' + snippet_id);
 
@@ -488,20 +484,18 @@ module.exports = function(app, db) {
                         if (err) {
                           callback(err);
                         } else {
+
                           if (action != "delete") {
                             var code = data.code;
                             var load_before_dom = data.load_before_dom;
+  
 
                             var scriptTag;
                             if (load_before_dom) {
-                              scriptTag = $("<script id='snippet-" + snippet_id + "' class='ds-no-modify'></script>");
-                              scriptTag.append(code);
+                              scriptTag = $("<script id='snippet-" + snippet_id + "' class='ds-no-modify'>" + code + "</script>");
                               $('head').append(scriptTag);
-
                             } else {
-                              scriptTag = $("<script id='snippet-" + snippet_id + "'></script>");
-                              scriptTag.append(code);
-
+                              scriptTag = $("<script id='snippet-" + snippet_id + "'>" + code + "</script>");
                               $('body').append(scriptTag);
                             }
                           }

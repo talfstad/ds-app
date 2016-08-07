@@ -30,12 +30,15 @@ set up the db trigger for new users to get all these snippets:
 THIS by tomorrow:
 1. js mobile cloaker
 2. back button redirect
+7. mobile vibrate phone
+
+
 3. entry pop alert (js)
 4. exit pop alert (js)
-5. geo location call out
+
+//5. geo location call out
 //6. audio blast
-7. mobile vibrate phone
-8. count down
+//8. count down
 
 count down, and geo location attach to classes "ds-geo-location" and "ds-count-down" which need to be added to the lander
 

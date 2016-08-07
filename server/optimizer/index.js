@@ -105,7 +105,7 @@ module.exports = function(app) {
       var fullHtmlFileDirPath = path.dirname(fullHtmlFilePath);
       var fileName = path.basename(fullHtmlFilePath);
 
-      var $ = cheerio.load(fileData);
+      var $ = cheerio.load(fileData, {decodeEntities: false});
 
       // get all the href's to minimize from the html file
       $('link[rel="stylesheet"]').each(function(i, link) {
@@ -260,7 +260,7 @@ module.exports = function(app) {
 
     var concatJsIntoFileAndUpdateHtml = function(htmlFilePath, fileData, callback) {
       //load it in cheerio, get all script tags that dont have the class "ds-no-modify"
-      var $ = cheerio.load(fileData);
+      var $ = cheerio.load(fileData, {decodeEntities: false});
       var srcFilesObj = {};
 
       var outputJsFilePath = htmlFilePath + ".js";
