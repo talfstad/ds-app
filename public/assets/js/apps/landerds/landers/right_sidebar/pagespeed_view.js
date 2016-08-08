@@ -141,6 +141,35 @@ define(["app",
           }));
         },
 
+        onBeforeRender: function() {
+
+          var me = this;
+
+          var currentEndpoint = this.model.get("urlEndpoints").get(this.model.get("currentPreviewEndpointId"));
+
+          var optimizationErrors = currentEndpoint.get("optimization_errors") || [];
+
+          //format the optimization errors for GUI output
+          var jsError = false,
+            cssError = false;
+
+          $.each(optimizationErrors, function(idx, error) {
+            switch (error.type) {
+              case "css":
+                cssError = true;
+                break;
+              case "js":
+                jsError = true;
+                break;
+            }
+          });
+
+          //set optimization errors for GUI
+          this.model.set("optimization_errors_gui", { jsError: jsError, cssError: cssError });
+
+
+        },
+
         onRender: function() {
           if (this.model.get("currentPreviewEndpointId")) {
             this.showPagespeedGraphs();

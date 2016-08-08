@@ -112,8 +112,6 @@ module.exports = function(app) {
       } catch (err) {
         callback({ code: "CouldNotPurifyCss", err: err });
       }
-
-
     }
 
     var optimizeCssFileForEndpoint = function(htmlFileObj, fileData, callback) {
@@ -150,26 +148,31 @@ module.exports = function(app) {
         .map(function(cssFilename) {
           //check extension
           var isCss = true;
+
+          //is there a character after .css
+
           if (cssFilename.indexOf('#') > -1) {
             var sanitizedCssFilename = cssFilename.substring(0, cssFilename.indexOf('#'));
             if (!/.css$/.test(sanitizedCssFilename)) {
               isCss = false;
             }
+
+            if (!(/.css([?#]+)/).test(cssFilename) || !(/.css$/).test(cssFilename)) {
+              //test if css file has crap. in here if NOT css file
+              //css does not end with css
+              isCss = false;
+            }
+
           }
 
           if (isCss) {
-
             //remove the original css file for this
             var linkToRemove = $('link[rel="stylesheet"][href="' + cssFilename + '"]');
             if (linkToRemove.length) {
-              console.log("GOOD removing: " + cssFilename + " stylesheet from HTML");
               linkToRemove.remove();
-            } else {
-              console.log("BAD NOT removing: " + cssFilename + " stylesheet from HTML");
             }
 
             return '@import url(' + cssFilename + ');';
-
           }
 
         })
@@ -192,8 +195,6 @@ module.exports = function(app) {
       } catch (err) {
         callback({ code: "CouldNotCleanCssAndMinify", err: err });
       }
-
-
     };
 
     var readFile = function(htmlFileObj, callback) {
@@ -314,7 +315,10 @@ module.exports = function(app) {
 
     var readSrcFile = function(filePath, callback) {
 
-      console.log("reading src file: " + filePath);
+      if (filePath == "placeholder") {
+        callback({ isPlaceholder: true });
+        return;
+      }
 
       //worker can do work no matter what because its just reading
       //file and isnt used by main loop. only used by another worker function
@@ -346,8 +350,6 @@ module.exports = function(app) {
 
     var compressAndWriteFile = function(htmlFileObj, jsFilePath, callback) {
 
-      console.log("TREVR!!!!! compressAndWriteFile " + JSON.stringify(htmlFileObj));
-
       //workers only do work if there are no errors on this endpoint for this type
       if (htmlFileObj.optimizationErrors.length > 0) {
         //check if errors are of this type
@@ -375,7 +377,6 @@ module.exports = function(app) {
         });
 
       } catch (err) {
-        console.log("COULDNT UGLIFY : " + htmlFileObj.filename);
         callback({ code: "CouldNotUglify", err: err });
       }
     };
@@ -429,18 +430,18 @@ module.exports = function(app) {
       for (var i = 0; i < scriptSrcArr.length; i++) {
         readSrcFile(scriptSrcArr[i], function(err, fileData, filePath) {
           if (err) {
-            // errors.push({ code: "CouldNotReadSrcFile", err: err });
-            //if error ignore because it will be placeholder error
+            if (!err.isPlaceholder) {
+              //if error is not placeholder returning then log it
+              errors.push({ code: "CouldNotReadSrcFile", err: err });
+            }
+            //increase the async index ...
             asyncIndex++;
           } else {
-
             srcFilesObj[scriptSrcArr.indexOf(filePath)] = fileData;
             if (++asyncIndex == scriptSrcArr.length) {
 
               //now that for loop is done call your error callback if its still here
               if (errors.length > 0) {
-                console.log("2WEIRD GETTING HERE")
-
                 callback(errors, htmlFileObj);
               } else {
 
@@ -467,15 +468,8 @@ module.exports = function(app) {
                   }
                 });
               }
-
-
             }
-
-
           }
-
-
-
         });
       }
 

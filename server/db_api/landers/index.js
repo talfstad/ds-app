@@ -516,7 +516,7 @@ module.exports = function(app, db) {
           if (err) {
             console.log(err);
           } else {
-            connection.query("SELECT id,filename,lander_id,original_pagespeed,optimized_pagespeed from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.id],
+            connection.query("SELECT id,filename,lander_id,optimization_errors, original_pagespeed,optimized_pagespeed from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.id],
               function(err, dbUrlEndpoints) {
                 if (err) {
                   callback(err);
@@ -527,6 +527,8 @@ module.exports = function(app, db) {
                   } else {
                     var idx = 0;
                     for (var i = 0; i < dbUrlEndpoints.length; i++) {
+                      //parse the optimization errors because they were stringified in the db
+                      dbUrlEndpoints[i].optimization_errors = JSON.parse(dbUrlEndpoints[i].optimization_errors);
                       getActiveSnippetsForUrlEndpoint(dbUrlEndpoints[i], function(err, activeSnippets) {
                         if (err) {
                           callback(err);

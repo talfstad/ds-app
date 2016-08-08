@@ -145,7 +145,7 @@ module.exports = function(app, db) {
           filename: filePath,
           original_pagespeed: originalPagespeed,
           optimized_pagespeed: optimizedPagespeed,
-          optimizationErrors: endpoint.optimizationErrors
+          optimization_errors: endpoint.optimizationErrors
         };
         var user_id = user.id;
 
@@ -158,8 +158,8 @@ module.exports = function(app, db) {
             var queryArr = [user_id, landerData.id, originalPagespeed, optimizedPagespeed, filePath, optimizationErrorsString];
             
             if (isUpdate) {
-              query = "UPDATE url_endpoints SET original_pagespeed = ?, optimized_pagespeed = ? WHERE lander_id = ?";
-              queryArr = [originalPagespeed, optimizedPagespeed, landerData.id];
+              query = "UPDATE url_endpoints SET original_pagespeed = ?, optimized_pagespeed = ?, optimization_errors = ? WHERE lander_id = ?";
+              queryArr = [originalPagespeed, optimizedPagespeed, optimizationErrorsString, landerData.id];
             }
 
             connection.query(query, queryArr, function(err, docs) {
@@ -262,8 +262,7 @@ module.exports = function(app, db) {
                                               id: landerData.id,
                                               created_on: landerData.created_on,
                                               s3_folder_name: s3_folder_name,
-                                              url_endpoints_arr: urlEndpoints,
-                                              optimization_errors: endpoint.optimizationErrors
+                                              url_endpoints_arr: urlEndpoints
                                             };
 
                                             callback(false, returnData);
