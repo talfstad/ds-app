@@ -256,6 +256,7 @@ module.exports = function(app, db) {
                                   //save/update the urlEndpoints in db
                                   runPageSpeedScores(endpoints[i], function(err, endpoint, originalPagespeed, optimizedPagespeed) {
                                     if (err) {
+                                      console.log("PAGESPEED ERROR: " + JSON.stringify(err));
                                       callback(err);
                                     } else {
 
@@ -263,9 +264,11 @@ module.exports = function(app, db) {
 
                                       addUpdateEndpointsToLander(originalPagespeed, optimizedPagespeed, endpoint, isUpdate, function(err, endpoint) {
                                         if (err) {
+                                      console.log("endpoitns to lander  ERROR: " + JSON.stringify(err));
                                           callback(err);
                                         } else {
                                           urlEndpoints.push(endpoint);
+                                      console.log("asyncTT: " + asyncIndex + " endpoints.length: " + endpoints.length);
 
                                           if (++asyncIndex == endpoints.length) {
                                             //done adding endpoints

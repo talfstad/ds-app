@@ -119,12 +119,26 @@ define(["app",
         };
 
         filtered.showPageWithModel = function(model) {
+
+          //if pagesize = 
+
+          //item index = 9 + 1 = 10
+
+
+
           filtered.resetWithOriginals(filtered.state.currentFilter);
           //1. get page number that this model is on
           var pageSize = filtered.state.gui.get("page_size");
           var itemIndex = original.indexOf(model) + 1;
           //2. goto that page!
-          var pageToGoto = Math.floor(itemIndex / pageSize) + 1
+          var pageToGoto;
+          if ((itemIndex / pageSize) % 1 == 0) {
+            //is integer is last on page so leave it
+            pageToGoto = Math.floor(itemIndex / pageSize);
+          } else {
+            pageToGoto = Math.floor(itemIndex / pageSize) + 1;            
+          }
+
           filtered.gotoPage(pageToGoto);
         };
 
