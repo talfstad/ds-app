@@ -12,6 +12,16 @@
           </div>
             </span>
           </div>
+          
+          <div class="alert-deleting-badge widget-menu domain-campaign-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
+            <span class="open_sidemenu_r label">
+        
+          <div class="text-danger">
+            <span style="position: relative; top: 2px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+            <span>Deleting</span>
+           </div>
+            </span>
+          </div>
 
           <div class="widget-menu domain-campaign-notification">
             <span class="fs11"><%= created_on_gui %></span>

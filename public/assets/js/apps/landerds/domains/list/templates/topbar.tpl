@@ -28,7 +28,7 @@
   if(total_deleting > 0) { %>
       
       <div>
-        <span class="badge-alert badge"><%= total_deleting %></span> <%= deletingDomainText %> Deleting
+        <span class="badge-danger badge"><%= total_deleting %></span> <%= deletingDomainText %> Deleting
       </div>
 
   <% }

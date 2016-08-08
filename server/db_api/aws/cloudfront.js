@@ -260,79 +260,91 @@ module.exports = function(app, db) {
 
       //disable it
       this.getDistributionConfig(credentials, distributionId, function(err, data) {
+        if(!data){
+          callback("NoDistribution");
+          return;
+        }
         var etag = data.ETag;
         var distributionConfig = data.DistributionConfig;
         if (err) {
           callback(err);
         } else {
-          // console.log("Distribution params for: " + distributionId);
+          app.log("Distribution params for: " + distributionId + " enabled: " + distributionConfig.Enabled, "debug");
 
-          //update distribution config to disable it
-          distributionConfig.Enabled = false;
+          //if disabled already return!
+          if (!distributionConfig.Enabled) {
+            callback(false);
+          } else {
+            //update distribution config to disable it
+            distributionConfig.Enabled = false;
 
-          //create the formatted params
-          var updateDistributionParams = {
-            Id: distributionId,
-            IfMatch: etag,
-            DistributionConfig: distributionConfig
-          };
+            //create the formatted params
+            var updateDistributionParams = {
+              Id: distributionId,
+              IfMatch: etag,
+              DistributionConfig: distributionConfig
+            };
 
-          //2. send the new config to aws
-          cloudfront_client.updateDistribution(updateDistributionParams, function(err, data) {
-            var etag = data.ETag;
-            if (err) {
-              callback(err);
-            } else {
+            //2. send the new config to aws
+            cloudfront_client.updateDistribution(updateDistributionParams, function(err, data) {
+              var etag = data.ETag;
+              if (err) {
+                callback(err);
+              } else {
 
-              //now that its disabling wait for it to disable and then delete it.
-              var interval = setInterval(function() {
-                //increase the elapsed time
-                elapsedTime += pollRate;
-                //if timeout has happened clear interval and return error
-                if (elapsedTime > timeout) {
-                  clearInterval(interval);
-                  var error = {
-                    code: "disableCloudfrontDistributionTimeout",
-                    msg: "Disabling Distribution has taken more than " + minutesToWait + " minutes"
-                  }
-                  console.log("Error: timeout on disable CF");
-                  callback(error);
-                } else {
+                //now that its disabling wait for it to disable and then delete it.
+                var interval = setInterval(function() {
+                  //increase the elapsed time
+                  elapsedTime += pollRate;
+                  //if timeout has happened clear interval and return error
+                  if (elapsedTime > timeout) {
+                    clearInterval(interval);
+                    var error = {
+                      code: "disableCloudfrontDistributionTimeout",
+                      msg: "Disabling Distribution has taken more than " + minutesToWait + " minutes"
+                    }
+                    console.log("Error: timeout on disable CF");
+                    callback(error);
+                  } else {
 
-                  //check to see if it's done disabling
-                  //1. get config for it
-                  me.getDistribution(credentials, distributionId, function(err, data) {
-                    if (err) {
-                      callback(err);
-                    } else {
-                      var distribution = data.Distribution;
-                      var enabled = data.DistributionConfig.Enabled;
-
-                      //quit if its enabled, something really weird/bad happened
-                      if (enabled) {
-                        clearInterval(interval);
-                        var error = {
-                          code: "DistributionNotDisabled",
-                          msg: "Somehow your distribution was re-enabled even though we just disabled it."
-                        }
-                        console.log("Error: distribution wasn't disabled so we're stopping");
-                        callback(error);
+                    //check to see if it's done disabling
+                    //1. get config for it
+                    me.getDistribution(credentials, distributionId, function(err, data) {
+                      app.log("got distribution: T " + err, "debug");
+                      if (err) {
+                        callback(err);
                       } else {
-                        //it's disabled so check status!
-                        //2. check the config status = "Deployed" if is then we're good
-                        if (distribution.Status === "Deployed") {
-                          console.log("successfully disabled cloudfront distribution")
-                            //successfully disabled, lets clear it
+                        var distribution = data.Distribution;
+                        var enabled = data.DistributionConfig.Enabled;
+
+                        //quit if its enabled, something really weird/bad happened
+                        if (enabled) {
                           clearInterval(interval);
-                          callback(false, etag);
+                          var error = {
+                            code: "DistributionNotDisabled",
+                            msg: "Somehow your distribution was re-enabled even though we just disabled it."
+                          }
+                          console.log("Error: distribution wasn't disabled so we're stopping");
+                          callback(error);
+                        } else {
+                          //it's disabled so check status!
+                          //2. check the config status = "Deployed" if is then we're good
+                          if (distribution.Status === "Deployed") {
+                            console.log("successfully disabled cloudfront distribution")
+                              //successfully disabled, lets clear it
+                            clearInterval(interval);
+                            callback(false, etag);
+                          }
                         }
                       }
-                    }
-                  });
-                }
-              }, pollRate);
-            }
-          });
+                    });
+                  }
+                }, pollRate);
+              }
+            });
+          }
+
+
         }
       });
     },
@@ -348,6 +360,8 @@ module.exports = function(app, db) {
 
       //disable first
       this.disableCloudfrontDistribution(credentials, distributionId, function(err, etag) {
+        app.log("disabled cloudfront distribution: " + err + " === etag: " + etag);
+
         if (err) {
           callback(err);
         } else {

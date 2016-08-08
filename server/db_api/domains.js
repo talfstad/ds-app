@@ -107,6 +107,24 @@ module.exports = function(db) {
       });
     },
 
+    getSharedDomainInfo: function(domain_id, aws_root_bucket, callback) {
+      console.log("domain_id: " + domain_id + " aws_root_bucket: " + aws_root_bucket)
+      db.getConnection(function(err, connection) {  
+        if (err) {
+          console.log(err);
+        }
+        connection.query("SELECT * FROM domains WHERE id = ? AND aws_root_bucket = ?", [domain_id, aws_root_bucket],
+          function(err, dbDomainInfo) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(false, dbDomainInfo[0]);
+            }
+            connection.release();
+          });
+      });
+    },
+
     getAll: function(user, rootBucket, successCallback) {
       var user_id = user.id;
 
@@ -406,6 +424,29 @@ module.exports = function(db) {
           callback(err);
         } else {
           connection.query("DELETE FROM domains WHERE user_id = ? AND id = ?", [user_id, domain_id],
+            function(err, docs) {
+              if (err) {
+                callback({
+                  code: "Error deleting domain from db."
+                });
+              } else {
+                callback(false, docs);
+              }
+              connection.release();
+            });
+        }
+      });
+
+    },
+
+    deleteSharedDomain: function(aws_root_bucket, domain_id, callback) {
+
+      //update model stuff into domains where id= model.id
+      db.getConnection(function(err, connection) {
+        if (err) {
+          callback(err);
+        } else {
+          connection.query("DELETE FROM domains WHERE aws_root_bucket = ? AND id = ?", [aws_root_bucket, domain_id],
             function(err, docs) {
               if (err) {
                 callback({

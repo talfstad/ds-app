@@ -63,6 +63,13 @@ define(["app",
           } else {
             this.$el.find(".alert-working-badge").hide();
           }
+
+          if (deployStatus == "deleting") {
+            this.$el.find(".alert-working-badge").hide();
+            this.$el.find(".alert-modified-badge").hide();
+            this.$el.find(".alert-deleting-badge").show();
+          }
+          
         },
 
         showAddToCampaign: function() {

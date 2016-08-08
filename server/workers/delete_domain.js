@@ -6,7 +6,14 @@ module.exports = function(app, db) {
 
 
     var myJobId = attr.id;
+    var interval;
 
+    var setErrorAndStop = function(err) {
+      var code = err.code || "UnkownError";
+      db.jobs.setErrorAndStop(code, myJobId, function(err) {
+        console.log("error occured during delete domain: " + err);
+      });
+    };
 
     var runJobCode = function() {
 
@@ -24,95 +31,87 @@ module.exports = function(app, db) {
           clearInterval(interval);
 
           //job code starts here!
-
-
           var domain_id = attr.domain_id;
           var job_id = attr.id;
 
-          //get all other domain info
-          db.domains.getDomain(user, domain_id, function(err, domainInfo) {
-            var baseBucketName = domainInfo.aws_root_bucket;
-            var hosted_zone_id = domainInfo.hosted_zone_id;
-            var distribution_id = domainInfo.cloudfront_id;
-            var domain = domainInfo.domain;
+          //get the aws stuff and the domain stuff
+          db.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
+            if (err) {
+              setErrorAndStop({ code: "CouldNotGetApiKeysAndRootBucket" });
+            } else {
 
-            var setErrorAndStop = function(err) {
-              var code = err.code || "UnkownError";
-              db.jobs.setErrorAndStop(code, job_id, function(err) {
-                console.log("error occured during delete domain: " + err);
-              });
-            };
+              //get all other domain info
+              db.domains.getSharedDomainInfo(domain_id, awsData.aws_root_bucket, function(err, domainInfo) {
+                if (err) {
+                  setErrorAndStop({ code: "CouldNotGetDomainInformation" });
+                } else {
+                  console.log("DOMAIN INFO :" + JSON.stringify(domainInfo));
 
-            //1. delete all things attached to this domain:
-            //a. remove domain from all campaigns that have it
-            db.domains.removeActiveCampaignsForDomain(user, domain_id, function(err, responseData) {
-              if (err) {
-                setErrorAndStop(err);
-              } else {
-                //b. remove all deployed_landers on that domain
-                db.domains.removeDeployedLandersFromDomain(user, domain_id, function(err, responseData) {
-                  if (err) {
-                    setErrorAndStop(err);
-                  } else {
+                  var baseBucketName = domainInfo.aws_root_bucket;
+                  var hosted_zone_id = domainInfo.hosted_zone_id;
+                  var distribution_id = domainInfo.cloudfront_id;
+                  var domain = domainInfo.domain;
 
-                    //2. remove from aws
-                    //a. get credentials
-                    db.aws.keys.getAmazonApiKeys(user, function(err, awsKeyData) {
-                      if (err) {
-                        setErrorAndStop(err);
-                      } else {
 
-                        var credentials = {
-                          accessKeyId: awsKeyData.aws_access_key_id,
-                          secretAccessKey: awsKeyData.aws_secret_access_key
-                        }
 
-                        //b. delete domain folder
-                        db.aws.s3.deleteDomainFromS3(domain, baseBucketName, credentials, function(err) {
-                          //dont care if bucket was already deleted, continue
-                          if (err && err.code !== "NoSuchBucket") {
-                            setErrorAndStop(err);
-                          } else {
-                            //c. delete hosted zone
-                            db.aws.route53.deleteHostedZoneInformationForDomain(credentials, domain, hosted_zone_id, function(err, deleteHostedZoneResponseData) {
+                  var credentials = {
+                    accessKeyId: awsData.aws_access_key_id,
+                    secretAccessKey: awsData.aws_secret_access_key
+                  }
+
+                  //b. delete domain folder
+                  db.aws.s3.deleteDomainFromS3(domain, baseBucketName, credentials, function(err) {
+                    //dont care if bucket was already deleted, continue
+                    app.log("done deleting from s3" + err, "debug");
+                    if (err && err.code !== "NoSuchBucket") {
+                      setErrorAndStop(err);
+                    } else {
+                      //c. delete hosted zone
+                      db.aws.route53.deleteHostedZoneInformationForDomain(credentials, domain, hosted_zone_id, function(err, deleteHostedZoneResponseData) {
+                        app.log("done deleteHostedZoneInformationForDomain" + err, "debug");
+
+                        if (err) {
+                          setErrorAndStop(err);
+                        } else {
+                          //d. delete cloudfront distribution
+                          db.aws.cloudfront.deleteDistribution(credentials, distribution_id, function(err, deleteDistributionData) {
+                            app.log("done deleteDistribution" + err, "debug");
+                            if (err) {
+                              // setErrorAndStop(err);
+
+                              //if there is an error continue because its just alreayd probably deleted
+                            }
+                            //3. remove domain from domains table
+                            db.domains.deleteSharedDomain(baseBucketName, domain_id, function(err, docs) {
+                              app.log("done deleteDomain" + err, "debug");
+
                               if (err) {
                                 setErrorAndStop(err);
                               } else {
-                                //d. delete cloudfront distribution
-                                db.aws.cloudfront.deleteDistribution(credentials, distribution_id, function(err, deleteDistributionData) {
+                                //4. finish job
+                                var finishedJobs = [job_id];
+                                db.jobs.finishedJobSuccessfully(user, finishedJobs, function(err) {
                                   if (err) {
-                                    setErrorAndStop(err);
+                                    setErrorAndStop(err)
                                   } else {
-                                    //3. remove domain from domains table
-                                    db.domains.deleteDomain(user, domain_id, function(err, docs) {
-                                      if (err) {
-                                        setErrorAndStop(err);
-                                      } else {
-                                        //4. finish job
-                                        var finishedJobs = [job_id];
-                                        db.jobs.finishedJobSuccessfully(user, finishedJobs, function(err) {
-                                          if (err) {
-                                            setErrorAndStop(err)
-                                          } else {
-                                            //5. total success!
-                                            console.log("successfully updated deleteDomain job to finished");
-                                          }
-                                        });
-                                      }
-                                    });
+                                    //5. total success!
+                                    console.log("successfully updated deleteDomain job to finished");
                                   }
                                 });
                               }
                             });
-                          }
-                        });
-                      }
-                    });
-                  }
-                });
-              }
-            });
+
+                          });
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }
           });
+
+
 
           //end job code
 
@@ -125,7 +124,7 @@ module.exports = function(app, db) {
     runJobCode();
 
     var intervalPeriod = 1000 * 30 // 30 seconds
-    var interval = setInterval(function() {
+    interval = setInterval(function() {
       runJobCode();
     }, intervalPeriod);
 

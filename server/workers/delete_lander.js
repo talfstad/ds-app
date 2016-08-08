@@ -26,7 +26,7 @@ module.exports = function(app, db) {
           var user_id = user.id;
           var lander_id = attr.lander_id;
 
-          // db.landers.deleteLander(user_id, lander_id, function() {
+          db.landers.deleteLander(user_id, lander_id, function() {
             //successCB
 
             var finishedJobs = [attr.id];
@@ -37,10 +37,10 @@ module.exports = function(app, db) {
 
             });
 
-          // }, function() {
-          //   //errorCB
-          //   console.log("Error deleting lander with id: " + lander_id);
-          // });
+          }, function() {
+            //errorCB
+            console.log("Error deleting lander with id: " + lander_id);
+          });
 
 
           //end job code

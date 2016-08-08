@@ -7,7 +7,7 @@
   <input id="deploy-folder-edit" name="deployment_folder_name" style="width: 100%; float: left;" class="form-control" type="text" value="<%= deployment_folder_name %>">
 </div>
 
-<table class="optimizations-table table">
+<!-- <table class="optimizations-table table">
   <tr>
     <td>Deploy to Domain Root</td>
     <td>
@@ -21,4 +21,4 @@
       </label>
     </td>
   </tr>
-</table>
+</table> -->

@@ -213,6 +213,7 @@ module.exports = function(app, db) {
       };
 
       route53.listResourceRecordSets(params, function(err, data) {
+        app.log("got record sets to list " + err);
         if (err) {
           callback(err);
         } else {
@@ -249,13 +250,16 @@ module.exports = function(app, db) {
 
 
           if (resourceRecordSets.length > 0) {
+            app.log("changing resource record sets");
             route53.changeResourceRecordSets(params, function(err, data) {
               if (err) {
                 callback(err);
               } else {
-                callback(false, true);
+                callback(false);
               }
             });
+          } else {
+            callback(false);
           }
         }
       });
@@ -273,13 +277,14 @@ module.exports = function(app, db) {
       var route53 = new AWS.Route53();
 
       //delete all hosted zone record sets first!
-      this.deleteRecordSets(credentials, hostedZoneId, function(err, data) {
-
+      this.deleteRecordSets(credentials, hostedZoneId, function(err) {
+        app.log("deleted hosted zones record sets: " + err);
         var params = {
           Id: hostedZoneId /* required */
         };
 
         route53.deleteHostedZone(params, function(err, data) {
+          app.log("deleted hosted zone: " + err);
           if (err) {
             callback(err);
           } else {
