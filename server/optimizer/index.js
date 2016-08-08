@@ -403,10 +403,10 @@ module.exports = function(app) {
       var outputJsFilePath = htmlFilePath + ".js";
 
       //get all javascript source itself from the file and concat it together into a var
-      var scriptTags = $('script:not(.ds-no-modify)');
+      var scriptTags = $('script:not(.ds-no-modify):not(#loadcss)');
 
       var scriptSrcArr = [];
-      $('script:not(.ds-no-modify)').each(function(i, link) {
+      scriptTags.each(function(i, link) {
         var src = $(this).attr("src");
         if (src) {
           var srcToAdd = src.replace(/^\//, ""); //remove leading slash if there is one
