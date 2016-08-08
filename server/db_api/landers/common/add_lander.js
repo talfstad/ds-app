@@ -98,6 +98,12 @@ module.exports = function(app, db) {
       };
 
       var saveLanderToDb = function(callback) {
+
+        //weird thing where landerData.id is a string on add lander but not on rip lander
+        if (landerData.id == "null") {
+          landerData.id = null;
+        }
+
         if (landerData.id) {
           //update lander, but optimization only updates urlEndpoints
           callback(false, true);
@@ -156,7 +162,7 @@ module.exports = function(app, db) {
             var query = "CALL add_url_endpoint(?, ?, ?, ?, ?, ?);";
 
             var queryArr = [user_id, landerData.id, originalPagespeed, optimizedPagespeed, filePath, optimizationErrorsString];
-            
+
             if (isUpdate) {
               query = "UPDATE url_endpoints SET original_pagespeed = ?, optimized_pagespeed = ?, optimization_errors = ? WHERE lander_id = ?";
               queryArr = [originalPagespeed, optimizedPagespeed, optimizationErrorsString, landerData.id];
@@ -189,7 +195,7 @@ module.exports = function(app, db) {
           var runPageSpeedScores = function(endpoint, callback) {
             endpoint.filename = endpoint.filename.replace(localStagingPath + "/", "");
             var filePath = endpoint.filename;
-            
+
             var originalUrl = 'http://' + awsData.aws_root_bucket + '.s3-website-us-west-2.amazonaws.com/' + user.user + '/landers/' + s3_folder_name + '/original/' + filePath;
             var optimizedUrl = 'http://' + awsData.aws_root_bucket + '.s3-website-us-west-2.amazonaws.com/' + user.user + '/landers/' + s3_folder_name + '/optimized/' + filePath;
 
@@ -235,6 +241,8 @@ module.exports = function(app, db) {
 
                             //5. save/update lander into DB, save endpoints into DB (create stored proc for this?)
                             saveLanderToDb(function(err, isUpdate) {
+                              console.log("11is update: " + isUpdate);
+
                               if (err) {
                                 callback(err);
                               } else {
@@ -250,6 +258,9 @@ module.exports = function(app, db) {
                                     if (err) {
                                       callback(err);
                                     } else {
+
+                                      console.log("is update: " + isUpdate + " ENDPOINT ADDING: " + JSON.stringify(endpoint));
+
                                       addUpdateEndpointsToLander(originalPagespeed, optimizedPagespeed, endpoint, isUpdate, function(err, endpoint) {
                                         if (err) {
                                           callback(err);

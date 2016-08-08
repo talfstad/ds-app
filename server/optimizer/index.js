@@ -51,7 +51,6 @@ module.exports = function(app) {
     });
   };
 
-
   //read all css files from endpoint into a string
   //compress them all
   //write it to a file
@@ -97,8 +96,9 @@ module.exports = function(app) {
                   //runs in its own thread so it will clean up its stupid ass tmp files
                   cmd.get("node ./optimizer/critical_css_thread " + fullHtmlFilePath + " " + outputCssFile + " " + fileName, function(output) {
                     // search output for custom error and get the JSON
-                    var err = JSON.parse(/%startErr%(.*?)%endErr%/.exec(output));
-                    if (err) {
+                    // console.log("critical output: " + output);
+                    var err = JSON.parse(output.replace(/(.*%startErr%\s+)(.*)(\s+%endErr%.*)/, "$2"));
+                    if (!err.noErr) {
                       callback({ code: "CouldNotCriticalCss", err: err });
                     } else {
                       callback(false);
@@ -120,7 +120,7 @@ module.exports = function(app) {
         //check if errors are of this type
         for (var i = 0; i < htmlFileObj.optimizationErrors; i++) {
           if (htmlFileObj.optimizationErrors[i].type == 'css') {
-            callback(false);
+            callback(false, htmlFileObj);
             return;
           }
         }
@@ -140,7 +140,8 @@ module.exports = function(app) {
         cssFiles.push(href);
       });
 
-      $('<link rel="stylesheet" type="text/css" href="' + fileName + '.css">').appendTo('head');
+      var head = $('head').first();
+      $('<link rel="stylesheet" type="text/css" href="' + fileName + '.css">').appendTo(head);
 
       //with list of relative or absolute css files use clean css to combine them
       //and rewrite the urls
@@ -183,17 +184,17 @@ module.exports = function(app) {
           root: fullHtmlFileDirPath
         }).minify(cleanCssFiles, function(err, minified) {
           if (err) {
-            callback({ code: "CouldNotCleanCssAndMinify", err: err });
+            callback({ code: "CouldNotCleanCssAndMinify", err: err }, htmlFileObj);
           } else {
 
             app.log("cleaned css files: " + JSON.stringify(cleanCssFiles), "debug");
 
             var styles = minified.styles;
-            callback(false, $.html(), styles);
+            callback(false, htmlFileObj, $.html(), styles);
           }
         });
       } catch (err) {
-        callback({ code: "CouldNotCleanCssAndMinify", err: err });
+        callback({ code: "CouldNotCleanCssAndMinify", err: err }, htmlFileObj);
       }
     };
 
@@ -234,7 +235,7 @@ module.exports = function(app) {
             code: err.code
           });
         }
-        optimizeCssFileForEndpoint(htmlFileObj, fileData, function(err, html, styles) {
+        optimizeCssFileForEndpoint(htmlFileObj, fileData, function(err, htmlFileObj, html, styles) {
           if (err) {
             htmlFiles[asyncIndex].optimizationErrors.push({
               type: "css",
@@ -421,7 +422,8 @@ module.exports = function(app) {
       minifiedSrc = minifiedSrc.replace(/^\//, "");
 
       var newScriptTag = $("<script async type='text/javascript' src='" + minifiedSrc + "'></script>")
-      newScriptTag.appendTo("body");
+      var body = $('body').first();
+      newScriptTag.appendTo(body);
 
       var asyncIndex = 0;
       var finalJsString = "";
