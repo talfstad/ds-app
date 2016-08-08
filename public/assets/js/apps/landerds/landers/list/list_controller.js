@@ -14,12 +14,13 @@ define(["app",
     "assets/js/apps/landerds/landers/dao/deployed_domain_model",
     "assets/js/jobs/jobs_model",
     "assets/js/apps/landerds/landers/dao/active_campaign_model",
+    "assets/js/common/notification",
     "assets/js/apps/landerds/landers/list/views/list_layout_view"
   ],
   function(Landerds, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
     PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView,
     DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView, DeployedDomainModel,
-    JobModel, ActiveCampaignModel) {
+    JobModel, ActiveCampaignModel, Notification) {
     Landerds.module("LandersApp.Landers.List", function(List, Landerds, Backbone, Marionette, $, _) {
 
       List.Controller = {
@@ -45,7 +46,7 @@ define(["app",
               activeSnippets.remove(activeSnippetToRemove);
               //update the sidemenu views
               Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerToUpdate);
-              
+
               landerToUpdate.set("modified", true);
             }
 
@@ -117,6 +118,14 @@ define(["app",
           domainModelActiveCampaignCollection.add(activeCampaignModel);
 
           if (landersToDeploy.length > 0) {
+
+            //notification that deployment may take up to 20 minutes
+            if (landersToDeploy.length > 1) {
+              Notification("Deploying Landing Pages", "May take up to 20 minutes", "success", "stack_top_right");
+            } else {
+              Notification("Deploying Landing Page", "May take up to 20 minutes", "success", "stack_top_right");
+            }
+
             activeCampaignModel.set("deploy_status", "deploying");
 
             $.each(landersToDeploy, function(idx, deployedDomainModelToDeploy) {

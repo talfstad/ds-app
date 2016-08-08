@@ -24,7 +24,14 @@ define(["app",
         regions: {},
 
         events: {
-          "click .add-new-domain-confirm": "confirmedAddNewDomain"
+          "click .add-new-domain-confirm": "confirmedAddNewDomain",
+          "keyup input": "ifEnterSubmit"
+        },
+
+        ifEnterSubmit: function(e) {
+          if (e.keyCode == 13) {
+            this.$el.find("button[type='submit']").click();
+          }
         },
 
         modelEvents: {
@@ -107,7 +114,7 @@ define(["app",
             var adminForm = this.$el.find(".admin-form");
             adminForm.addClass("has-error");
             var errorAlert = this.$el.find(".aws-error-alert");
-            errorAlert.html("Error: You have already added this domain.");
+            errorAlert.html("Error: This domain already exists within AWS.");
             errorAlert.fadeIn();
           
           }

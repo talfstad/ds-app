@@ -1,7 +1,8 @@
 define(["app",
-    "tpl!assets/js/apps/landerds/domains/deploy_new_lander/templates/deploy_new_lander_layout.tpl"
+    "tpl!assets/js/apps/landerds/domains/deploy_new_lander/templates/deploy_new_lander_layout.tpl",
+    "assets/js/common/notification"
   ],
-  function(Landerds, DeployToDomainLayout) {
+  function(Landerds, DeployToDomainLayout, Notification) {
 
     Landerds.module("DomainsApp.Domains.DeployNewLander", function(DeployNewLander, Landerds, Backbone, Marionette, $, _) {
 
@@ -28,6 +29,9 @@ define(["app",
         },
 
         confirmedToDeploy: function() {
+
+          //notification that deployment may take up to 20 minutes
+          Notification("Deploying Landing Page", "May take up to 20 minutes", "success", "stack_top_right");
 
           //show error if no domain selected or if more than 1 is somehow selected
           var selectedRow = $("#landers-list-datatable").find("tr.primary");

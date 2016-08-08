@@ -15,8 +15,8 @@
 
 
     	<div class="modal-footer">
-            <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Close</button>
-    		<button type="button" class="delete-lander-confirm btn btn-primary btn-clipboard">Delete</button>
+            <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Cancel</button>
+    		<button type="submit" class="delete-lander-confirm btn btn-primary btn-clipboard">Delete</button>
     	</div> 
     </div>
 </div>

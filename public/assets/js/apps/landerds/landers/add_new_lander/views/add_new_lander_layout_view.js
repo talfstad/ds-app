@@ -24,7 +24,14 @@ define(["app",
         regions: {},
 
         events: {
-          "click .add-new-lander-confirm": "confirmedAddNewLander"
+          "click .add-new-lander-confirm": "confirmedAddNewLander",
+          "keyup input": "ifEnterSubmit"
+        },
+
+        ifEnterSubmit: function(e) {
+          if (e.keyCode == 13) {
+            this.$el.find("button[type='submit']").click();
+          }
         },
 
         modelEvents: {
@@ -65,7 +72,7 @@ define(["app",
 
             //trigger upload. server adds the lander to db, registers active job, and starts job
             $("#new-lander-file").fileinput("upload");
-            
+
           } else {
             var alert = this.$el.find(".new-lander-info-alert");
             var adminForm = this.$el.find(".admin-form");

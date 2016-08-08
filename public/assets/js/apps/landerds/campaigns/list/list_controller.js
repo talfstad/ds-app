@@ -12,13 +12,14 @@ define(["app",
     "assets/js/apps/landerds/campaigns/dao/deployed_lander_model",
     "assets/js/apps/landerds/campaigns/dao/deployed_domain_model",
     "assets/js/jobs/jobs_model",
+    "assets/js/common/notification",
     "assets/js/apps/landerds/campaigns/dao/campaign_collection",
     "assets/js/apps/landerds/campaigns/list/views/list_layout_view"
   ],
   function(Landerds, ListView, FilteredPaginatedCollection, PaginatedModel,
     PaginatedButtonView, TopbarView, LoadingView, LanderTabHandleView, DomainTabHandleView,
     DeployedLandersView, DeployedDomainsView, DeployedLanderModel, DeployedDomainModel,
-    JobModel) {
+    JobModel, Notification) {
     Landerds.module("CampaignsApp.Campaigns.List", function(List, Landerds, Backbone, Marionette, $, _) {
 
       List.Controller = {
@@ -94,6 +95,14 @@ define(["app",
 
           //now we have lander model, we can create our jobs
           var deployedDomainsCollection = campaignModel.get("deployedDomains");
+
+          //notification that deployment may take up to 20 minutes
+          if (deployedDomainsCollection.length > 1) {
+            Notification("Deploying Landing Pages", "May take up to 20 minutes", "success", "stack_top_right");
+          } else {
+            Notification("Deploying Landing Page", "May take up to 20 minutes", "success", "stack_top_right");
+          }
+
           deployedDomainsCollection.each(function(deployedDomainModel) {
 
             //if there are any domains set deploy status to deploying

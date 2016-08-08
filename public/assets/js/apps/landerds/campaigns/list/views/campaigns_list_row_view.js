@@ -52,10 +52,10 @@ define(["app",
           var deployStatus = this.model.get("deploy_status");
 
           if (deployStatus === "deleting") {
-            this.$el.find(".deploy-status-text").text("Deleting...");
+            this.$el.find(".deploy-status-text").text("Deleting");
             this.$el.find(".alert-working-badge").show();
           } else {
-            this.$el.find(".deploy-status-text").text("Working...");
+            this.$el.find(".deploy-status-text").text("Working");
 
             if (deployStatus !== "deployed" && deployStatus !== "not_deployed") {
               this.$el.find(".alert-working-badge").show();

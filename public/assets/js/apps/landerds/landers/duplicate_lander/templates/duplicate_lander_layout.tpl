@@ -43,8 +43,8 @@
 
 
         <div class="modal-footer">
-            <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Close</button>
-            <button type="button" class="duplicate-lander-confirm btn btn-primary btn-clipboard">Duplicate Lander</button>
+            <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Cancel</button>
+            <button type="submit" class="duplicate-lander-confirm btn btn-primary btn-clipboard">Create Copy</button>
         </div> 
     </div>
 </div>

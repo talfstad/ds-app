@@ -19,12 +19,8 @@ define(["app",
 
         template: DeleteLanderLayoutTpl,
 
-        regions: {
-          // "campaignsListRegion": ".campaigns-list-region"
-        },
-
         events: {
-          "click .delete-lander-confirm": "confirmedDeleteLander",
+          "click .delete-lander-confirm": "confirmedDeleteLander"
         },
 
         confirmedDeleteLander: function() {

@@ -24,10 +24,17 @@ define(["app",
         regions: {},
 
         events: {
-          "click .rip-new-lander-confirm": "confirmedRipNewLander"
+          "click .rip-new-lander-confirm": "confirmedRipNewLander",
+          "keyup input": "ifEnterSubmit"
         },
 
-        modelEvents: {
+        ifEnterSubmit: function(e) {
+          if (e.keyCode == 13) {
+            this.$el.find("button[type='submit']").click();
+          }
+        },
+
+          modelEvents: {
           "change:alertLoading": "alertLoading",
           "change:alertInvalidInputs": "alertInvalidInputs"
         },

@@ -52,6 +52,7 @@ define(["app",
             me.$el.find("button.rows-per-page span.rows-per-page-number").text(newPageSize);
             //call to change pagelength in collection
             me.trigger("landers:changepagesize", newPageSize); //TODO
+            $(this).dropdown("toggle");
           });
 
           var updateSortbyButtonText = function(){
@@ -65,6 +66,7 @@ define(["app",
             updateSortbyButtonText();
             Landerds.trigger('landers:closesidebar');
             me.trigger("landers:sort");
+            $(this).dropdown("toggle");
           });
 
        
@@ -87,6 +89,7 @@ define(["app",
 
             Landerds.trigger('landers:closesidebar');
             me.trigger("landers:sort");
+            $(this).dropdown("toggle");
           });
 
 

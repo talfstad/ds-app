@@ -10,7 +10,7 @@
         
           <div class="text-alert">
             <span style="position: relative; top: 2px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>  
-           <span>Working</span>
+           <span style="padding-left: 5px">Working</span>
            </div>
             </span>
           </div>

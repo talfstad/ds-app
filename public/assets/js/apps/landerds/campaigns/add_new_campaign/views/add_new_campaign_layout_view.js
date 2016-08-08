@@ -24,7 +24,14 @@ define(["app",
         regions: {},
 
         events: {
-          "click .add-new-campaign-confirm": "confirmedAddNewCampaign"
+          "click .add-new-campaign-confirm": "confirmedAddNewCampaign",
+          "keyup input": "ifEnterSubmit"
+        },
+
+        ifEnterSubmit: function(e) {
+          if (e.keyCode == 13) {
+            this.$el.find("button[type='submit']").click();
+          }
         },
 
         modelEvents: {

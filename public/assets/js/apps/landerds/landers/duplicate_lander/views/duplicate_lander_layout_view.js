@@ -24,7 +24,14 @@ define(["app",
         regions: {},
 
         events: {
-          "click .duplicate-lander-confirm": "confirmedDuplicateLander"
+          "click .duplicate-lander-confirm": "confirmedDuplicateLander",
+          "keyup input": "ifEnterSubmit"
+        },
+
+        ifEnterSubmit: function(e) {
+          if (e.keyCode == 13) {
+            this.$el.find("button[type='submit']").click();
+          }
         },
 
         modelEvents: {

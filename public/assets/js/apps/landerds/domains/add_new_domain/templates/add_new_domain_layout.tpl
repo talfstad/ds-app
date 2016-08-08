@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="alert alert-micro alert-border-left alert-default aws-default-alert">
-        <i class="fa fa-info pr10"></i> To add a new domain just enter it's URL. Have questions? <a href="#" class="alert-link">Check out this step by step guide.</a>
+        <i class="fa fa-info pr10"></i> To add a new domain just enter its URL. Have questions? <a href="#" class="alert-link">Check out this step by step guide.</a>
       </div>
       <div style="display:none;" class="alert has-error alert-micro alert-border-left alert-danger aws-error-alert"></div>
       <div class="panel panel-primary top mb35">
@@ -32,25 +32,13 @@
                 </label>
               </div>
             </div>
-            <!-- <div class="section row mb10">
-              <label for="domainName" class="text-align-right field-label col-md-3 text-center">
-                <a style="float: right;margin-left: 3px;margin-top: 1px;" href="#">
-                  <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
-                </a>Is this a subdomain?</label>
-              <div class="col-md-9">
-                <label class="switch switch-success switch-round block mn">
-                  <input type="checkbox" name="subdomain" id="subdomain" value="angular">
-                  <label for="subdomain" data-on="YES" data-off="NO" style="margin-top: 8px;"></label>
-                </label>
-              </div>
-            </div> -->
           </div>
         </div>
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Close</button>
-      <button type="button" class="add-new-domain-confirm btn btn-primary btn-clipboard">Add Domain</button>
+      <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Cancel</button>
+      <button type="submit" class="add-new-domain-confirm btn btn-primary btn-clipboard">Add Domain</button>
     </div>
   </div>
 </div>
