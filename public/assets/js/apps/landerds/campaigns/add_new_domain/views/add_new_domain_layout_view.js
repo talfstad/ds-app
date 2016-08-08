@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!assets/js/apps/landerds/landers/deploy_to_domain/templates/deploy_to_domain_layout.tpl"
+    "tpl!assets/js/apps/landerds/campaigns/add_new_domain/templates/add_new_domain_layout.tpl"
   ],
   function(Landerds, DeployToDomainLayout) {
 

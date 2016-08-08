@@ -11,7 +11,7 @@
   <div class="alert alert-micro alert-primary light alert-dismissable" style="margin-bottom: 0">
   <span>
     <i class="fa fa-info pr10"></i>
-    <strong>Instructions:</strong> Click the domain you'd like to deploy on, and select the deploy button.
+    <strong>Instructions:</strong> Select the domain you'd like to add to this campaign, and click the Add Domain button.
   </span>
                 </div>
 

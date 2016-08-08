@@ -1,7 +1,7 @@
   <div class="alert alert-micro alert-primary light alert-dismissable" style="margin-bottom: 0">
   <span>
     <i class="fa fa-info pr10"></i>
-    <strong>Instructions:</strong> Click on the campaign you'd like add this lander to, and select the Add button.
+    <strong>Instructions:</strong> Select the campaign you'd like add this lander to, and click the Add Campaign button.
   </span>
                 </div>
 

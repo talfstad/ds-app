@@ -3,7 +3,8 @@
 }
 
 body.external-page #main {
-	background: url("../../img/login/buildcave_bg.png") no-repeat bottom 30px right 30px #000000 !important;
+	background: url("../../img/login/buildcave_bg_new.png") no-repeat bottom 30px right 30px #000000 !important;
+	background-size: 180px auto !important;
 }
 
 #root-region, #login-container {

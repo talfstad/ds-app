@@ -8,7 +8,7 @@
 <div class="alert alert-micro alert-primary light alert-dismissable" style="margin-bottom: 0">
   <span>
     <i class="fa fa-info pr10"></i>
-    <strong>Instructions:</strong> Click the lander you'd like to deploy, and select the deploy button.
+    <strong>Instructions:</strong> Select the lander you'd like to deploy, and click the Deploy Lander button.
   </span>
 </div>
 <div class="panel-body pn">
