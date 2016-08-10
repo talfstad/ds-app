@@ -25,7 +25,6 @@ define(["app",
             domainModel.save({}, {
               success: function(savedDomainModel, serverResponse, options) {
                 //remove loading
-                domainModel.set("alertLoading", false);
 
                 if (serverResponse.error) {
                   
@@ -45,7 +44,8 @@ define(["app",
                   //now add it to the collection
                   Landerds.trigger("domains:list:addDomain", savedDomainModel);
                 }
-
+                domainModel.set("alertLoading", false);
+                
 
               },
               error: function() {

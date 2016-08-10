@@ -52,47 +52,51 @@ define(["app",
 
           e.preventDefault();
 
-          //key fields are valid
-          var newLanderData = Backbone.Syphon.serialize(this);
+          if (!this.model.get("alertLoading")) {
+            //key fields are valid
+            var newLanderData = Backbone.Syphon.serialize(this);
 
-          //on successful upload callback this function
-          $("#new-lander-file").on('fileuploaded', function(e, data, previewId, index) {
-            me.trigger("fileUploadComplete", data);
-          });
-
-
-          //weird fileupload bug for drag and drop. set the path manually
-          var filename = $('.file-caption-name').attr('title');
-          newLanderData.landerFile = filename;
-
-          //just a very small amount of validation, all really done on server
-          if (newLanderData.landerName != "" && filename !== undefined) {
-
-            this.model.set("name", newLanderData.landerName);
-            this.model.set("alertLoading", true);
-
-            //trigger upload. server adds the lander to db, registers active job, and starts job
-            $("#new-lander-file").fileinput("upload");
-
-          } else {
-            var alert = this.$el.find(".new-lander-info-alert");
-            var adminForm = this.$el.find(".admin-form");
-            var currentHtml = alert.html();
-
-            adminForm.addClass("has-error");
-
-            alert.addClass("alert-danger");
-            alert.removeClass("alert-default");
-            alert.html("You must add both a new lander name &amp; lander file to create a new lander");
+            //on successful upload callback this function
+            $("#new-lander-file").on('fileuploaded', function(e, data, previewId, index) {
+              me.trigger("fileUploadComplete", data);
+            });
 
 
-            setTimeout(function() {
-              adminForm.removeClass("has-error");
-              alert.removeClass("alert-danger").addClass("alert-default");
-              alert.html(currentHtml);
-            }, 10000);
+            //weird fileupload bug for drag and drop. set the path manually
+            var filename = $('.file-caption-name').attr('title');
+            newLanderData.landerFile = filename;
+
+            //just a very small amount of validation, all really done on server
+            if (newLanderData.landerName != "" && filename !== undefined) {
+
+              this.model.set("name", newLanderData.landerName);
+              this.model.set("alertLoading", true);
+
+              //trigger upload. server adds the lander to db, registers active job, and starts job
+              $("#new-lander-file").fileinput("upload");
+
+            } else {
+              var alert = this.$el.find(".new-lander-info-alert");
+              var adminForm = this.$el.find(".admin-form");
+              var currentHtml = alert.html();
+
+              adminForm.addClass("has-error");
+
+              alert.addClass("alert-danger");
+              alert.removeClass("alert-default");
+              alert.html("You must add both a new lander name &amp; lander file to create a new lander");
+
+
+              setTimeout(function() {
+                adminForm.removeClass("has-error");
+                alert.removeClass("alert-danger").addClass("alert-default");
+                alert.html(currentHtml);
+              }, 10000);
+
+            }
 
           }
+
         },
 
         onRender: function() {

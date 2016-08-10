@@ -37,12 +37,13 @@ define(["app",
                   var endpointsArr = savedLanderModel.get("url_endpoints_arr");
                   landerModel.get("urlEndpoints").add(endpointsArr);
 
+                  ripNewLanderLayout.closeModal();
+
                   landerModel.set({
                     deployment_folder_name: savedLanderModel.get("s3_folder_name"),
                     alertLoading: false
                   });
 
-                  ripNewLanderLayout.closeModal();
                   Landerds.trigger("landers:list:addLander", landerModel);
 
                 }

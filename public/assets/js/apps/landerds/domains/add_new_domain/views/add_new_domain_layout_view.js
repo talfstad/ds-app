@@ -70,7 +70,7 @@ define(["app",
             var errorAlert = this.$el.find(".aws-error-alert");
             errorAlert.html("We encountered an error while adding your new domain. The error code is: " + this.model.get('errorCode') || "Unknown");
             errorAlert.fadeIn();
-            
+
           }
         },
 
@@ -93,7 +93,7 @@ define(["app",
             var errorAlert = this.$el.find(".aws-error-alert");
             errorAlert.html("Error: You must enter a valid domain name.");
             errorAlert.fadeIn();
-          
+
           }
         },
 
@@ -116,7 +116,7 @@ define(["app",
             var errorAlert = this.$el.find(".aws-error-alert");
             errorAlert.html("Error: This domain already exists within AWS.");
             errorAlert.fadeIn();
-          
+
           }
 
         },
@@ -140,7 +140,7 @@ define(["app",
             var errorAlert = this.$el.find(".aws-error-alert");
             errorAlert.html("Error: You must enter a domain name before adding it.");
             errorAlert.fadeIn();
-          
+
           }
 
         },
@@ -151,20 +151,22 @@ define(["app",
 
           e.preventDefault();
 
-          //key fields are valid
-          var newDomainData = Backbone.Syphon.serialize(this);
+          if (!this.model.get("alertLoading")) {
+            //key fields are valid
+            var newDomainData = Backbone.Syphon.serialize(this);
 
-          //just a very small amount of validation, all really done on server
-          if (newDomainData.domainName != "") {
+            //just a very small amount of validation, all really done on server
+            if (newDomainData.domainName != "") {
 
-            //1. set the new values into the job model
-            this.model.set("domain", newDomainData.domainName);
-            this.model.set("subdomain", newDomainData.subdomain);
+              //1. set the new values into the job model
+              this.model.set("domain", newDomainData.domainName);
+              this.model.set("subdomain", newDomainData.subdomain);
 
-            this.trigger("confirmAddDomain", this.model);
+              this.trigger("confirmAddDomain", this.model);
 
-          } else {
-            this.model.set("domainInputError", true);
+            } else {
+              this.model.set("domainInputError", true);
+            }
           }
         },
 

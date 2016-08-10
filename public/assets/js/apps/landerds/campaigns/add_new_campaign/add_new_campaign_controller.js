@@ -25,8 +25,6 @@ define(["app",
             campaignModel.save({}, {
               success: function(savedCampaignModel, serverResponse, options) {
                 //remove loading
-                campaignModel.set("alertLoading", false);
-
                 if (serverResponse.error) {
                   
                     campaignModel.set("errorCode", serverResponse.error.code);
@@ -39,7 +37,8 @@ define(["app",
                   //now add it to the collection
                   Landerds.trigger("campaigns:list:addCampaign", savedCampaignModel);
                 }
-
+                campaignModel.set("alertLoading", false);
+                
 
               },
               error: function() {

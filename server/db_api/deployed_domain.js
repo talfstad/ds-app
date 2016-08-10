@@ -10,7 +10,7 @@ module.exports = function(app, db) {
       var deployed_lander_id = params.id;
       var user_id = user.id;
 
-
+      app.log("getting load time for: " + link, "debug");
       //deploy with this
       var yslow = new YSlow(link, ['--info', 'basic']);
 

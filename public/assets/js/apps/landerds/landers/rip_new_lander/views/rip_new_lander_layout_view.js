@@ -34,7 +34,7 @@ define(["app",
           }
         },
 
-          modelEvents: {
+        modelEvents: {
           "change:alertLoading": "alertLoading",
           "change:alertInvalidInputs": "alertInvalidInputs"
         },
@@ -70,21 +70,24 @@ define(["app",
           var me = this;
           e.preventDefault();
 
-          //key fields are valid
-          var newLanderData = Backbone.Syphon.serialize(this);
+          //only submit if not already confirmed
+          if (!this.model.get("alertLoading")) {
+            //key fields are valid
+            var newLanderData = Backbone.Syphon.serialize(this);
 
-          //just a very small amount of validation, all really done on server
-          if (newLanderData.landerName != "" && newLanderData.landerUrl != "") {
+            //just a very small amount of validation, all really done on server
+            if (newLanderData.landerName != "" && newLanderData.landerUrl != "") {
 
-            //1. set the new values into the job model
-            this.model.set("name", newLanderData.landerName);
-            this.model.set("lander_url", newLanderData.landerUrl);
-            this.model.set("alertInvalidInputs", false);
+              //1. set the new values into the job model
+              this.model.set("name", newLanderData.landerName);
+              this.model.set("lander_url", newLanderData.landerUrl);
+              this.model.set("alertInvalidInputs", false);
 
-            me.trigger("ripLanderConfirmed");
+              me.trigger("ripLanderConfirmed");
 
-          } else {
-            this.model.set("alertInvalidInputs", true);
+            } else {
+              this.model.set("alertInvalidInputs", true);
+            }
           }
         },
 

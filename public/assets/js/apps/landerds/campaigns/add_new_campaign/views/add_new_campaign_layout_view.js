@@ -92,7 +92,7 @@ define(["app",
             var errorAlert = this.$el.find(".aws-error-alert");
             errorAlert.html("Error: You must enter a valid campaign name.");
             errorAlert.fadeIn();
-          
+
           }
         },
 
@@ -115,7 +115,7 @@ define(["app",
             var errorAlert = this.$el.find(".aws-error-alert");
             errorAlert.html("Error: You have already added this campaign.");
             errorAlert.fadeIn();
-          
+
           }
 
         },
@@ -139,7 +139,7 @@ define(["app",
             var errorAlert = this.$el.find(".aws-error-alert");
             errorAlert.html("Error: You must enter a campaign name before adding it.");
             errorAlert.fadeIn();
-          
+
           }
 
         },
@@ -150,20 +150,23 @@ define(["app",
 
           e.preventDefault();
 
-          //key fields are valid
-          var newCampaignData = Backbone.Syphon.serialize(this);
+          if (!this.model.get("alertLoading")) {
+            //key fields are valid
+            var newCampaignData = Backbone.Syphon.serialize(this);
 
-          //just a very small amount of validation, all really done on server
-          if (newCampaignData.campaignName != "") {
+            //just a very small amount of validation, all really done on server
+            if (newCampaignData.campaignName != "") {
 
-            //1. set the new values into the job model
-            this.model.set("name", newCampaignData.campaignName);
+              //1. set the new values into the job model
+              this.model.set("name", newCampaignData.campaignName);
 
-            this.trigger("confirmAddCampaign", this.model);
+              this.trigger("confirmAddCampaign", this.model);
 
-          } else {
-            this.model.set("campaignInputError", true);
+            } else {
+              this.model.set("campaignInputError", true);
+            }
           }
+
         },
 
         onRender: function() {
