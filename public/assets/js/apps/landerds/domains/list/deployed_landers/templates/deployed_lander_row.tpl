@@ -1,5 +1,5 @@
 <td><%= viewIndex %></td>
-<td class="table-lander-name" style="white-space: nowrap; max-width: 305px; min-width: 145px">
+<td class="table-lander-name" style="white-space: nowrap; max-width: 305px; min-width: 115px">
       <span><%= name %></span>
 </td>
 
@@ -15,7 +15,7 @@
         
         <% _.each(urlEndpoints, function(endpoint) { %>
         
-        <option><%= domain %>/<%= deployment_folder_name %>/<%= endpoint.filename %></option>
+        <option data-filename="<%= endpoint.filename %>" value="<%= endpoint.id %>"><%= endpoint.filename %></option>
 
         <% }); %>
       
@@ -23,14 +23,22 @@
 
       </div>
       <div style="display: inline; position: relative; top: 3px">
-            <a style="margin-left: 10px;" class="open-link" href="#">
-              <span class="fa fa-eye"></span>
-            </a>
+        <a style="margin-left: 10px;" class="open-link" href="#">
+          <span class="fa fa-eye"></span>
+        </a>
 
-            <a style="margin-left: 15px;" class="copy-clipboard" href="#">
-              <span class="fa fa-clipboard"></span>
-            </a>
-          </div>
+        <a style="margin-left: 15px;" class="copy-clipboard" href="#">
+          <span class="fa fa-clipboard"></span>
+        </a>
+
+        <span style="margin-left: 40px;">
+          <span class="load-time-display" style="margin-right: 5px"></span>
+          <a class="get-load-time refresh" href="#">
+            <span class="glyphicon glyphicon-refresh" style="position: relative; right: 1px; left: 2px;"></span>
+          </a>
+        </span>
+            
+      </div>
 
       <% } %>
 

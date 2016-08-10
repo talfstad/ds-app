@@ -109,7 +109,7 @@ module.exports = function(db) {
 
     getSharedDomainInfo: function(domain_id, aws_root_bucket, callback) {
       console.log("domain_id: " + domain_id + " aws_root_bucket: " + aws_root_bucket)
-      db.getConnection(function(err, connection) {  
+      db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         }
@@ -272,6 +272,22 @@ module.exports = function(db) {
         });
       };
 
+      var getLoadTimesForDeployedLander = function(lander, callback) {
+        var deployed_lander_id = lander.id;
+
+
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          } else {
+            connection.query("SELECT id,url_endpoint_id,load_time FROM endpoint_load_times WHERE deployed_lander_id = ? AND user_id = ?", [deployed_lander_id, user_id],
+              function(err, dbLoadTimes) {
+                callback(false, dbLoadTimes);
+              });
+          }
+          connection.release();
+        });
+      };
 
       var getExtraNestedForLander = function(lander, domain, callback) {
         getEndpointsForLander(lander, function(err, endpoints) {
@@ -285,7 +301,15 @@ module.exports = function(db) {
                 callback(err);
               } else {
                 lander.activeJobs = activeJobs;
-                callback(false);
+
+                getLoadTimesForDeployedLander(lander, function(err, loadTimes) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    lander.endpoint_load_times = loadTimes;
+                    callback(false);
+                  }
+                });
               }
             });
           }

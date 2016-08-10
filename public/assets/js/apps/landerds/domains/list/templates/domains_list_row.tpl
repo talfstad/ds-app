@@ -37,11 +37,14 @@
         <div class="tab-pane " role="tabpanel" id="landers-tab-id-<%= id %>">
           <div class="panel-menu clearfix">
             <div class="row" style="margin-left: 0px; margin-right: 0px;">
-              <div class="clearfix deployed-landers-header-container">
+             
+              <div style="display: block" class="clearfix deployed-landers-header-container">
                 <span style="width: 20px">#</span>
-                <span style="margin-left: 15px">Lander Name</span>
-                <span class="deployed-landers-header">Lander Links</span>
+                <span class="table-name-header" style="margin-left: 15px">Lander Name</span>
+                <span class="deployed-landers-header deployed-domain-links-header">Lander Links</span>
+                <span class="deployed-landers-header " style="margin-left: 315px">Load Time</span>
               </div>
+
               <div style="float: right;" class="deploy-to-new-domain-region clearfix">
               </div>
             </div>

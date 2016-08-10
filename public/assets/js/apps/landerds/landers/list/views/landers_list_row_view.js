@@ -8,14 +8,15 @@ define(["app",
     "assets/js/apps/landerds/landers/list/views/campaign_tab_handle_view",
     "assets/js/apps/landerds/landers/list/active_campaigns/views/active_campaigns_collection_view",
     "assets/js/apps/landerds/landers/list/deployed_domains/views/deployed_domains_collection_view",
+    "assets/js/apps/landerds/base_classes/list_rows/views/list_rows_base_view",
     "bootstrap",
     "jstz"
   ],
   function(Landerds, LandersListItemTpl, DeployedListChildView, DeployedListEmptyView, SidebarModel, moment,
-    DeployStatusView, CampaignTabHandleView, ActiveCampaignsView, DeployedDomainsView) {
+    DeployStatusView, CampaignTabHandleView, ActiveCampaignsView, DeployedDomainsView, ListRowsBaseView) {
 
     Landerds.module("LandersApp.Landers.List", function(List, Landerds, Backbone, Marionette, $, _) {
-      List.childView = Marionette.LayoutView.extend({
+      List.childView = ListRowsBaseView.extend({
 
         initialize: function() {
           var me = this;
@@ -96,37 +97,6 @@ define(["app",
           this.$el.find("a:first").click();
         },
 
-        reAlignTableHeader: function() {
-          var me = this;
-
-          //setTimeout is used to let dom set to visible to extract widths/heights!
-          //run this after a very little bit so we can have the items VISIBLE!!!
-          setTimeout(function() {
-            //set the correct margin for the top headers
-            var landersColumnWidth = me.$el.find(".table-lander-name").width();
-            var newLanderLinkMargin = landersColumnWidth - 100;
-            if (newLanderLinkMargin > 0) {
-              me.$el.find(".deployed-domain-links-header").css("margin-left", newLanderLinkMargin);
-              me.$el.find(".deployed-landers-header").show();
-            } else {
-              me.$el.find(".deployed-landers-header").hide();
-            }
-
-            //fade  in the headers fast
-            $(".deployed-landers-header-container").show();
-
-
-            //hide unneccessary columns if we're deploying/undeploying
-            var deployStatus = me.model.get('deploy_status');
-            if (deployStatus == "deploying" || deployStatus == "undeploying") {
-              me.$el.find(".deployed-landers-header").hide();
-            }
-
-          }, 10);
-
-        },
-
-
         disableAccordionPermanently: function() {
           //disable tab links
           var me = this;
@@ -162,10 +132,6 @@ define(["app",
           this.alertDeployStatus();
 
           this.reAlignTableHeader();
-
-
-
-
 
           //if deleting need to show delet state (which is disabling the whole thing)
           if (this.model.get("deploy_status") === "deleting") {

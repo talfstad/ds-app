@@ -1,14 +1,19 @@
 define(["app",
     "assets/js/apps/landerds/landers/list/deployed_domains/views/deployed_domain_row_view",
-    "assets/js/apps/landerds/landers/list/deployed_domains/views/deployed_domains_empty_view"
+    "assets/js/apps/landerds/landers/list/deployed_domains/views/deployed_domains_empty_view",
+    "assets/js/apps/landerds/base_classes/deployed_rows/views/deployed_rows_collection_base_view"
   ],
-  function(Landerds, DeployedDomainRowView, EmptyView) {
+  function(Landerds, DeployedDomainRowView, EmptyView, DeployedRowsCollectionBaseView) {
 
     Landerds.module("LandersApp.Landers.List.Deployed", function(Deployed, Landerds, Backbone, Marionette, $, _) {
-      Deployed.ChildView = Marionette.CollectionView.extend({
+      Deployed.ChildView = DeployedRowsCollectionBaseView.extend({
         tagName: "tbody",
         childView: DeployedDomainRowView,
         emptyView: EmptyView,
+
+        childEvents: {
+          "getLoadTime": "getLoadTime"
+        },
 
         onAddChild: function(childView) {
           this.reIndex();
@@ -31,7 +36,7 @@ define(["app",
           model.set('landerName', this.collection.landerName);
           model.set('activeCampaignCollection', this.collection.activeCampaignCollection);
           model.set('deployment_folder_name', this.collection.deployment_folder_name);
-          
+
           //return options ONLY used by our empty view.
           return {
             isInitializing: this.collection.isInitializing || false

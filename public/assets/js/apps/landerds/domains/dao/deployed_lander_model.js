@@ -6,7 +6,7 @@ define(["app",
   function(Landerds, JobsGuiBaseModel, ActiveCampaignCollection) {
     var DeployedLanderModel = JobsGuiBaseModel.extend({
 
-      url: '/',
+      url: '/api/deployed_lander',
 
       initialize: function() {
         var me = this;

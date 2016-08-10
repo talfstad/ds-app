@@ -1,89 +1,39 @@
 define(["app",
     "tpl!assets/js/apps/landerds/domains/list/deployed_landers/templates/deployed_lander_row.tpl",
+    "assets/js/apps/landerds/base_classes/deployed_rows/views/deployed_row_base_view",
     "assets/js/common/notification",
     "select2"
   ],
-  function(Landerds, DeployedDomainRowTpl, Notification) {
+  function(Landerds, DeployedDomainRowTpl, DeployedRowBaseView, Notification) {
 
     Landerds.module("DomainsApp.Domains.List.Deployed", function(Deployed, Landerds, Backbone, Marionette, $, _) {
-      Deployed.DeployedRowView = Marionette.ItemView.extend({
+      Deployed.DeployedRowView = DeployedRowBaseView.extend({
 
         template: DeployedDomainRowTpl,
         tagName: "tr",
 
         modelEvents: {
-          "change": "render",
+          "change:urlEndpoints": "render",
           "change:activeJobs": "render",
           "destroy:activeJobs": "render",
           "destroy:activeCampaigns": "render",
-          "add:activeCampaigns": "render"
+          "add:activeCampaigns": "render",
+          "change:load_time_spinner_gui": "setLoadTimeSpinnerState"
         },
 
         events: {
           "click .undeploy": "showUndeployLander",
           "click .campaign-tab-link": "selectCampaignTab",
           "click .open-link": "openLanderLink",
+          "change .lander-links-select": "updateLoadTime",
+          "click .get-load-time": "getLoadTime",
           "click .copy-clipboard": function(e) {
             e.preventDefault();
-            this.copyLinkToClipboard(this.getCurrentLink());
-            Notification("", "Successfully Copied Lander Link", "success", "stack_top_right");
+            this.copyLinkToClipboard(this.getCurrentLink().link);
           }
         },
 
-        getCurrentLink: function() {
-          //return the combination of selects
-          var endpointVal = this.$el.find(".lander-links-select").val();
-          return "http://" + endpointVal;
-        },
-
-        openLanderLink: function() {
-          window.open(this.getCurrentLink(), '_blank');
-          return false;
-        },
-
-        copyLinkToClipboard: function(text) {
-
-          var textArea = $("<textarea></textarea>");
-
-          // Place in top-left corner of screen regardless of scroll position.
-          textArea.css("position", "fixed");
-          textArea.css("top", "0");
-          textArea.css("left", "0");
-
-          // Ensure it has a small width and height. Setting to 1px / 1em
-          // doesn't work as this gives a negative w/h on some browsers.
-          textArea.css("width", "2em");
-          textArea.css("height", "2em");
-
-          // We don't need padding, reducing the size if it does flash render.
-          textArea.css("padding", "0");
-
-          // Clean up any borders.
-          textArea.css("border", "none");
-          textArea.css("outline", "none");
-          textArea.css("boxShadow", "none");
-
-          // Avoid flash of white box if rendered for any reason.
-          textArea.css("background", "transparent");
-          textArea.text(text);
-
-          $("body").append(textArea);
-
-          textArea.select();
-
-          try {
-            var successful = document.execCommand('copy');
-          } catch (err) {}
-
-          textArea.remove();
-          return false;
-        },
-
-        selectCampaignTab: function(e) {
-          e.preventDefault();
-          this.trigger("selectCampaignTab");
-        },
-
+        
         onBeforeRender: function() {
           var me = this;
           var deployStatus = this.model.get("deploy_status");
@@ -118,34 +68,8 @@ define(["app",
           });
         },
 
-        onDestroy: function() {
-          this.trigger("updateParentLayout", this.model);
-        },
-
         onRender: function() {
-
-          this.$el.find(".lander-links-select").select2();
-
-
-          var deployStatus = this.model.get("deploy_status");
-          this.$el.removeClass("success alert warning");
-          if (deployStatus === "deployed") {
-            this.$el.addClass("success");
-          } else if (deployStatus === "deploying" ||
-            deployStatus === "undeploying" ||
-            deployStatus === "invalidating_delete" ||
-            deployStatus === "optimizing" ||
-            deployStatus === "invalidating") {
-            this.$el.addClass("alert");
-          }
-
-          if (this.model.get("modified")) {
-            this.$el.removeClass("success alert warning");
-            this.$el.addClass("warning");
-          }
-
-          this.trigger("updateParentLayout", this.model);
-
+          this.baseClassOnRender();
         },
 
         showUndeployLander: function(e) {

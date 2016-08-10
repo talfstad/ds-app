@@ -12,10 +12,10 @@ module.exports = function(app, db) {
 
       app.log("getting load time for: " + link, "debug");
       //deploy with this
-      var yslow = new YSlow(link, ['--info', 'basic']);
+      // var yslow = new YSlow(link, ['--info', 'basic']);
 
       //testing this 
-      // var yslow = new YSlow("landerds.com", ['--info', 'basic']);
+      var yslow = new YSlow("landerds.com", ['--info', 'basic']);
 
       yslow.run(function(err, results) {
         if (err) {
@@ -31,10 +31,17 @@ module.exports = function(app, db) {
             } else {
               connection.query("REPLACE INTO endpoint_load_times(user_id, url_endpoint_id, deployed_lander_id, load_time) VALUES(?,?,?,?);", [user_id, url_endpoint_id, deployed_lander_id, load_time],
                 function(err, docs) {
+                  
+                  var returnObj = {
+                    url_endpoint_id: url_endpoint_id
+                  }
+
                   if (err) {
-                    callback(err);
+                    returnObj.load_time = "N/A";
+                    callback(err, responseObj);
                   } else {
-                    callback(false, load_time);
+                    returnObj.load_time = load_time;
+                    callback(false, returnObj);
                   }
                   connection.release();
                 });

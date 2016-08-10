@@ -31,7 +31,7 @@
               <span class="fa fa-clipboard"></span>
             </a>
 
-            <span style="margin-left: 50px;">
+            <span style="margin-left: 45px;">
               <span class="load-time-display" style="margin-right: 5px"></span>
               <a class="get-load-time refresh" href="#">
                 <span class="glyphicon glyphicon-refresh" style="position: relative; right: 1px; left: 2px;"></span>

@@ -489,38 +489,7 @@ define(["app",
                     domainTabHandleView.model.set("deployed_domains_count", length);
                     landerView.reAlignTableHeader();
                   });
-
-                  deployedDomainsView.on("childview:getLoadTime", function(childView, linkObj) {
-
-                    childView.model.set("load_time_spinner_gui", true);
-
-                    //update the loading:true for this endpoint
-                    $.each(childView.model.get("endpoint_load_times"), function(idx, endpoint) {
-                      if (linkObj.url_endpoint_id == endpoint.url_endpoint_id) {
-                        endpoint.loading = true;
-                      }
-                    });
-
-                    childView.model.save({ load_time_data: linkObj }, {
-                      success: function(one, response, three) {
-
-                        //update the correct endpoint load time in endpoint_load_times
-                        var newEndpointLoadTimes = [];
-                        $.each(childView.model.get("endpoint_load_times"), function(idx, endpoint) {
-                          if (linkObj.url_endpoint_id == endpoint.url_endpoint_id) {
-                            endpoint.load_time = response.loadTime;
-                            endpoint.loading = false;
-                          }
-                          newEndpointLoadTimes.push(endpoint);
-                        });
-
-                        childView.model.set("load_time_spinner_gui", false);
-                        childView.updateLoadTime();
-                      }
-                    });
-
-                  });
-
+                  
                   domainTabHandleView.on("reAlignHeader", function() {
                     landerView.reAlignTableHeader();
                   });

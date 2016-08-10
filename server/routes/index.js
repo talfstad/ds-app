@@ -23,6 +23,7 @@ module.exports = function(app, passport) {
   require('./jobs')(app, passport);
   require('./user')(app, passport);
   require('./deployed_domain')(app, passport);
+  require('./deployed_lander')(app, passport);
 
   app.get("*", function(req, res) {
     res.render('index', {

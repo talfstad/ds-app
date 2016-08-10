@@ -5,7 +5,7 @@ module.exports = function(app, passport) {
   var uuid = require('uuid');
 
 
-  app.put('/api/deployed_domain', passport.isAuthenticated(), function(req, res) {
+  app.put('/api/deployed_lander', passport.isAuthenticated(), function(req, res) {
 
     var user = req.user;
 

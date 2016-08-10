@@ -15,7 +15,7 @@ define(["app",
         className: "accordion",
         emptyView: landersEmptyView,
         childView: landersListRowView,
-        
+
         initialize: function() {
           this.listenTo(this, "landers:sort", this.triggerSort);
         },
@@ -26,32 +26,32 @@ define(["app",
           // }
         },
 
-        triggerSort: function(){
+        triggerSort: function() {
           var me = this;
-          
+
           var sortKey = $('input[name=sort-radio]:checked').attr("data-sort-by");
           var sortOrder = $(".btn-group-nav a.active").attr("data-sort-order");
 
           if (sortKey === "lander-name") {
             me.collection.comparator = function(a, b) {
 
-              var aLanderName = a.get("name").toLowerCase(); 
+              var aLanderName = a.get("name").toLowerCase();
               var bLanderName = b.get("name").toLowerCase();
 
-              if(aLanderName === bLanderName) {
+              if (aLanderName === bLanderName) {
                 return 0;
               } else {
-                if(aLanderName < bLanderName) {
-                  if(sortOrder === 'asc') {
+                if (aLanderName < bLanderName) {
+                  if (sortOrder === 'asc') {
                     return -1;
                   } else {
                     return 1;
                   }
                 } else {
-                  if(sortOrder === 'asc') {
+                  if (sortOrder === 'asc') {
                     return 1
                   } else {
-                    return -1; 
+                    return -1;
                   }
                 }
               }
@@ -61,33 +61,33 @@ define(["app",
             me.collection.trigger('reset');
 
           } else if (sortKey === "last-updated") {
-            
+
             me.collection.comparator = function(a, b) {
 
-              var aLastUpdated = moment(new Date(a.get("created_on"))).unix(); 
+              var aLastUpdated = moment(new Date(a.get("created_on"))).unix();
               var bLastUpdated = moment(new Date(b.get("created_on"))).unix();
 
-              if(aLastUpdated === bLastUpdated) {
+              if (aLastUpdated === bLastUpdated) {
                 return 0;
               } else {
-                if(aLastUpdated < bLastUpdated) {
-                  if(sortOrder === 'asc') {
+                if (aLastUpdated < bLastUpdated) {
+                  if (sortOrder === 'asc') {
                     return -1;
                   } else {
                     return 1;
                   }
                 } else {
-                  if(sortOrder === 'asc') {
+                  if (sortOrder === 'asc') {
                     return 1
                   } else {
-                    return -1; 
+                    return -1;
                   }
                 }
               }
             };
 
             me.collection.sortFiltered();
-          } else if(sortKey === "deployed") {
+          } else if (sortKey === "deployed") {
             me.collection.comparator = function(a, b) {
 
               //DEPLOYING
@@ -104,13 +104,13 @@ define(["app",
               var bDeployed = b.get("deployed");
               var bDeploying = a.get("deploying");
 
-              
+
 
               // var aIsDeployed = false;
               // var aIsDeploying = false;
               // var bIsDeployed = false;
               // var bIsDeploying = false;
-              
+
 
               // if(aDeploying && aDeploying) {
               //   aIsDeploying = true;
@@ -162,11 +162,11 @@ define(["app",
               // }
 
               // return 0;
-            
+
             };
             me.collection.sortFiltered();
           }
-          
+
         },
 
         onDomRefresh: function() {

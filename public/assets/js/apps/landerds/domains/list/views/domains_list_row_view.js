@@ -8,14 +8,15 @@ define(["app",
     "assets/js/apps/landerds/domains/list/views/campaign_tab_handle_view",
     "assets/js/apps/landerds/domains/list/active_campaigns/views/active_campaigns_collection_view",
     "assets/js/common/notification",
+    "assets/js/apps/landerds/base_classes/list_rows/views/list_rows_base_view",
     "bootstrap",
     "jstz"
   ],
   function(Landerds, LandersListItemTpl, DeployedListChildView, DeployedListEmptyView, SidebarModel, moment,
-    DeployStatusView, CampaignTabHandleView, ActiveCampaignsView, Notification) {
+    DeployStatusView, CampaignTabHandleView, ActiveCampaignsView, Notification, ListRowsBaseView) {
 
     Landerds.module("DomainsApp.Domains.List", function(List, Landerds, Backbone, Marionette, $, _) {
-      List.childView = Marionette.LayoutView.extend({
+      List.childView = ListRowsBaseView.extend({
 
         initialize: function() {
           var me = this;
@@ -122,30 +123,6 @@ define(["app",
           });
 
           this.$el.find("ul li").addClass("disabled");
-
-        },
-
-        reAlignTableHeader: function() {
-          var me = this;
-
-          //setTimeout is used to let dom set to visible to extract widths/heights!
-          //run this after a very little bit so we can have the items VISIBLE!!!
-          setTimeout(function() {
-            //set the correct margin for the top headers
-            var landersColumnWidth = me.$el.find(".table-lander-name").width();
-            var newLanderLinkMargin = landersColumnWidth - 70;
-            if (newLanderLinkMargin > 0) {
-              me.$el.find(".deployed-domain-links-header").css("margin-left", newLanderLinkMargin);
-              me.$el.find(".deployed-landers-header").show();
-            } else {
-              me.$el.find(".deployed-landers-header").hide();
-            }
-
-
-            //fade  in the headers fast
-            $(".deployed-landers-header-container").show();
-
-          }, 10);
 
         },
 

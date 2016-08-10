@@ -49,7 +49,7 @@
               <div class="row" style="margin-left: 0px; margin-right: 0px;">
                 <div style="display: block" class="clearfix deployed-landers-header-container">
                   <span style="width: 20px">#</span>
-                  <span style="margin-left: 15px">Deployed Domains</span>
+                  <span class="table-name-header" style="margin-left: 15px">Deployed Domains</span>
                   <span class="deployed-landers-header deployed-domain-links-header">Domain Links</span>
                   <span class="deployed-landers-header " style="margin-left: 315px">Load Time</span>
                 </div>
