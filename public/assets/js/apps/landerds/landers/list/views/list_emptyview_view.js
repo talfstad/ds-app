@@ -19,9 +19,15 @@ define(["app",
         },
 
         modelEvents: {
-          "change:showAwsHelp": "render"
+          "change:showAwsHelp": "showSetUpAwsModal"
         },
 
+        showSetUpAwsModal: function() {
+          if (this.model.get("showAwsHelp")) {
+            this.trigger("showAwsTutorial");
+          }
+        },
+        
         onBeforeRender: function() {
 
           if (Landerds.loginModel.get("accessKeyId") || Landerds.loginModel.get("aws_access_key_id")) {

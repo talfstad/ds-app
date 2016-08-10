@@ -18,7 +18,13 @@ define(["app",
         },
 
         modelEvents: {
-          "change:showAwsHelp": "render"
+          "change:showAwsHelp": "showSetUpAwsModal"
+        },
+
+        showSetUpAwsModal: function() {
+          if (this.model.get("showAwsHelp")) {
+            this.trigger("showAwsTutorial");
+          }
         },
 
         onBeforeRender: function() {
@@ -30,7 +36,7 @@ define(["app",
           }
 
           this.model.set('filterVal', $('.lander-search').val());
-          
+
 
         },
 
@@ -46,7 +52,7 @@ define(["app",
               margin: [20, 60, 20, 60] // Increase left/right margin
             });
         }
-        
+
       });
     });
     return Landerds.CampaignsApp.Campaigns.List.CollectionView.EmptyView;

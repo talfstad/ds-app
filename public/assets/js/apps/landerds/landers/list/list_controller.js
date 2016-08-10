@@ -15,6 +15,7 @@ define(["app",
     "assets/js/jobs/jobs_model",
     "assets/js/apps/landerds/landers/dao/active_campaign_model",
     "assets/js/common/notification",
+    "assets/js/apps/help/help_app",
     "assets/js/apps/landerds/landers/list/views/list_layout_view"
   ],
   function(Landerds, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
@@ -341,7 +342,9 @@ define(["app",
               collection: me.filteredLanderCollection
             });
 
-            //todo: use a real model here instead of the job model lol
+            landersListView.on("childview:showAwsTutorial", function() {
+              Landerds.trigger("help:showAwsTutorial");
+            });
 
             landersListLayout.on("landers:filterList", function(filterVal) {
               me.filteredLanderCollection.filter(filterVal);
@@ -598,7 +601,9 @@ define(["app",
 
 
             var filterVal = $(".lander-search").val() || "";
-            me.filteredLanderCollection.filter(filterVal);
+            if (me.filteredLanderCollection.length > 0) {
+              me.filteredLanderCollection.filter(filterVal);
+            }
           });
         },
 

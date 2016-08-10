@@ -13,6 +13,7 @@ define(["app",
     "assets/js/apps/landerds/campaigns/dao/deployed_domain_model",
     "assets/js/jobs/jobs_model",
     "assets/js/common/notification",
+    "assets/js/apps/help/help_app",
     "assets/js/apps/landerds/campaigns/dao/campaign_collection",
     "assets/js/apps/landerds/campaigns/list/views/list_layout_view"
   ],
@@ -205,6 +206,10 @@ define(["app",
               collection: me.filteredCampaignCollection
             });
 
+            campaignsListView.on("childview:showAwsTutorial", function() {
+              Landerds.trigger("help:showAwsTutorial");
+            });
+
             campaignsListLayout.on("campaigns:filterList", function(filterVal) {
               me.filteredCampaignCollection.filter(filterVal);
             });
@@ -389,7 +394,10 @@ define(["app",
             }
 
             var filterVal = $(".lander-search").val() || "";
-            me.filteredCampaignCollection.filter(filterVal);
+            //only filter if we have campaigns to filter
+            if (me.filteredCampaignCollection.length > 0) {
+              me.filteredCampaignCollection.filter(filterVal);
+            }
           });
         },
 

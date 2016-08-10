@@ -144,7 +144,7 @@ define(["app",
             original_backup.add(original.models);
 
             //empty original
-            original.reset();
+            original.reset(undefined, {silent: true});
 
             var criterion = "";
             var items = applyFilter(criterion, "filter");
