@@ -358,13 +358,17 @@ define(["app",
               me.filteredLanderCollection.setPageSize(pageSize);
             });
 
-            landersListLayout.on("toggleInfo", function(toggle) {
-              if (toggle) {
-                //show empty view
-                me.filteredLanderCollection.showEmpty(true);
-              } else {
-                //show landersListView
-                me.filteredLanderCollection.showEmpty(false);
+            landersListLayout.on("toggleInfo", function() {
+              if (me.filteredLanderCollection) {
+                var toggle = this.toggleHelpInfo();
+
+                if (toggle) {
+                  //show empty view
+                  me.filteredLanderCollection.showEmpty(true);
+                } else {
+                  //show landersListView
+                  me.filteredLanderCollection.showEmpty(false);
+                }
               }
             });
 

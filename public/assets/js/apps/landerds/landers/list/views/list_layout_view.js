@@ -24,11 +24,11 @@ define(["app",
         events: {
           "click .add-new-lander-button": "showAddNewLander",
           "click .rip-and-deploy-button": "showRipNewLander",
-          "click .toggle-help-info": "toggleHelpInfo"
+          "click .toggle-help-info": "triggerToggleHelpInfo"
         },
 
         toggleHelpInfo: function(e) {
-          if(e) e.preventDefault();
+          if (e) e.preventDefault();
 
           if (this.toggle) {
             this.$el.find(".toggle-help-info").addClass("btn-gradient").removeClass("active");
@@ -37,6 +37,11 @@ define(["app",
             this.$el.find(".toggle-help-info").removeClass("btn-gradient").addClass("active");
             this.toggle = true;
           }
+          return this.toggle;
+        },
+
+        triggerToggleHelpInfo: function(e){
+          if (e) e.preventDefault();
 
           this.trigger("toggleInfo", this.toggle);
         },

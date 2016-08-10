@@ -263,13 +263,17 @@ define(["app",
               me.filteredDomainCollection.setPageSize(pageSize);
             });
 
-            domainsListLayout.on("toggleInfo", function(toggle) {
-              if (toggle) {
-                //show empty view
-                me.filteredDomainCollection.showEmpty(true);
-              } else {
-                //show landersListView
-                me.filteredDomainCollection.showEmpty(false);
+            domainsListLayout.on("toggleInfo", function() {
+              if (me.filteredDomainCollection) {
+                var toggle = this.toggleHelpInfo();
+
+                if (toggle) {
+                  //show empty view
+                  me.filteredDomainCollection.showEmpty(true);
+                } else {
+                  //show landersListView
+                  me.filteredDomainCollection.showEmpty(false);
+                }
               }
             });
 

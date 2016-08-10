@@ -21,7 +21,7 @@ define(["app",
 
         events: {
           "click .add-new-campaign-button": "showAddNewCampaign",
-          "click .toggle-help-info": "toggleHelpInfo"
+          "click .toggle-help-info": "triggerToggleHelpInfo"
         },
 
         toggleHelpInfo: function(e) {
@@ -34,6 +34,11 @@ define(["app",
             this.$el.find(".toggle-help-info").removeClass("btn-gradient").addClass("active");
             this.toggle = true;
           }
+          return this.toggle;
+        },
+
+        triggerToggleHelpInfo: function(e){
+          if (e) e.preventDefault();
 
           this.trigger("toggleInfo", this.toggle);
         },
