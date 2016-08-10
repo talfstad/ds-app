@@ -193,13 +193,13 @@ define(["app",
         showDomains: function(model) {
           //make layout for landers
           var me = this;
-          var landersListLayout = new List.Layout();
-          landersListLayout.render();
+          var domainsListLayout = new List.Layout();
+          domainsListLayout.render();
 
-          Landerds.rootRegion.currentView.mainContentRegion.show(landersListLayout);
+          Landerds.rootRegion.currentView.mainContentRegion.show(domainsListLayout);
 
           var loadingView = new LoadingView();
-          landersListLayout.landersCollectionRegion.show(loadingView);
+          domainsListLayout.landersCollectionRegion.show(loadingView);
 
 
           //set initial topbar view crap reloads when data loads
@@ -221,7 +221,7 @@ define(["app",
             })
           });
 
-          landersListLayout.topbarRegion.show(topbarView);
+          domainsListLayout.topbarRegion.show(topbarView);
 
           //request landers collection
           var deferredLandersCollection = Landerds.request("domains:domainsCollection");
@@ -246,20 +246,30 @@ define(["app",
               collection: me.filteredDomainCollection
             });
 
-            landersListLayout.on("domains:filterList", function(filterVal) {
+            domainsListLayout.on("domains:filterList", function(filterVal) {
               me.filteredDomainCollection.filter(filterVal);
             });
 
-            landersListLayout.on("domains:sort", function() {
+            domainsListLayout.on("domains:sort", function() {
               domainsListView.trigger("domains:sort");
             });
 
-            landersListLayout.on("domains:changepagesize", function(pageSize) {
+            domainsListLayout.on("domains:changepagesize", function(pageSize) {
               me.filteredDomainCollection.setPageSize(pageSize);
             });
 
-            if (landersListLayout.isRendered) {
-              landersListLayout.landersCollectionRegion.show(domainsListView);
+            domainsListLayout.on("toggleInfo", function(toggle) {
+              if (toggle) {
+                //show empty view
+                me.filteredDomainCollection.showEmpty(true);
+              } else {
+                //show landersListView
+                me.filteredDomainCollection.showEmpty(false);
+              }
+            });
+
+            if (domainsListLayout.isRendered) {
+              domainsListLayout.landersCollectionRegion.show(domainsListView);
             }
 
             //this is the pagination pages totals and lander count totals view
@@ -366,7 +376,6 @@ define(["app",
                     }
                   });
 
-
                   domainView.lander_tab_handle_region.show(landerTabHandleView);
                   domainView.campaign_tab_handle_region.show(campaignTabHandleView);
                   domainView.deployed_landers_region.show(deployedLandersView);
@@ -399,9 +408,9 @@ define(["app",
             });
 
 
-            if (landersListLayout.isRendered) {
-              landersListLayout.footerRegion.show(paginatedButtonView);
-              landersListLayout.topbarRegion.show(topbarView);
+            if (domainsListLayout.isRendered) {
+              domainsListLayout.footerRegion.show(paginatedButtonView);
+              domainsListLayout.topbarRegion.show(topbarView);
             }
 
             var filterVal = $(".lander-search").val() || "";

@@ -217,6 +217,16 @@ define(["app",
               me.filteredCampaignCollection.setPageSize(pageSize);
             });
 
+            campaignsListLayout.on("toggleInfo", function(toggle) {
+              if (toggle) {
+                //show empty view
+                me.filteredCampaignCollection.showEmpty(true);
+              } else {
+                //show landersListView
+                me.filteredCampaignCollection.showEmpty(false);
+              }
+            });
+
             if (campaignsListLayout.isRendered) {
               campaignsListLayout.campaignsCollectionRegion.show(campaignsListView);
             }

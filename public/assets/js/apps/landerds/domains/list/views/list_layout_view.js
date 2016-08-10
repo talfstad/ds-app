@@ -21,9 +21,24 @@ define(["app",
 
         events: {
           "click .add-new-domain-button": "showAddNewDomain",
+          "click .toggle-help-info": "toggleHelpInfo"
         },
 
-        showAddNewDomain: function(e){
+        toggleHelpInfo: function(e) {
+          if (e) e.preventDefault();
+
+          if (this.toggle) {
+            this.$el.find(".toggle-help-info").addClass("btn-gradient").removeClass("active");
+            this.toggle = false;
+          } else {
+            this.$el.find(".toggle-help-info").removeClass("btn-gradient").addClass("active");
+            this.toggle = true;
+          }
+
+          this.trigger("toggleInfo", this.toggle);
+        },
+
+        showAddNewDomain: function(e) {
           e.preventDefault();
           Landerds.trigger("domains:showAddNewDomainModal");
         },
@@ -37,7 +52,7 @@ define(["app",
           var me = this;
 
 
-          $('input[type=radio][name=pages-radio]').change(function(e){
+          $('input[type=radio][name=pages-radio]').change(function(e) {
             e.preventDefault();
             //pages changed update the button text
             var newPageSize = $(e.currentTarget).val();
@@ -46,7 +61,7 @@ define(["app",
             me.trigger("domains:changepagesize", newPageSize); //TODO
           });
 
-          var updateSortbyButtonText = function(){
+          var updateSortbyButtonText = function() {
             var sortbyname = me.$el.find("input[name=sort-radio]:checked").attr("data-sortby-name");
             var sortbyorder = me.$el.find(".sort-order-button-group a.active").attr('data-sortby-order');
             me.$el.find("button span.sortbyname").text(sortbyname);

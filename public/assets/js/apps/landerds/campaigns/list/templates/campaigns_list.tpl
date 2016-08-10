@@ -77,7 +77,10 @@
         </ul>
 
         <div class="topbar-right hidden-xs hidden-sm">
-           <div class="bs-component btn-group ml15">
+          <button type="button" class="toggle-help-info btn btn-default btn-gradient dark pl10 pt5 pb5">
+            <i class="fa fa-info-circle"></i>
+          </button>
+           <div class="bs-component btn-group ml5">
             <button type="button" class="add-new-campaign-button pl10 pt5 pb5 btn btn-default btn-gradient dark">
               <span class="fa fa-plus pr5"></span>Add New Campaign
             </button>

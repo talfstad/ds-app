@@ -29,9 +29,6 @@ define(["app",
           //init
           filtered.state.gui.set('current_page', 1);
           filtered.state.gui.set('num_pages', 1);
-
-
-
           filtered.state.gui.set('total_not_deployed', 0);
           filtered.state.gui.set('total_undeploying', 0);
           filtered.state.gui.set('total_deploying', 0);
@@ -124,12 +121,6 @@ define(["app",
 
         filtered.showPageWithModel = function(model) {
 
-          //if pagesize = 
-
-          //item index = 9 + 1 = 10
-
-
-
           filtered.resetWithOriginals(filtered.state.currentFilter);
           //1. get page number that this model is on
           var pageSize = filtered.state.gui.get("page_size");
@@ -148,10 +139,23 @@ define(["app",
 
         filtered.showEmpty = function(showEmpty) {
           if (showEmpty) {
+            //make backup
+            original_backup = new original.constructor();
+            original_backup.add(original.models);
+
+            //empty original
             original.reset();
-          } else {
+
             var criterion = "";
-            var items = applyFilter(criterion, "filter", original_backup);
+            var items = applyFilter(criterion, "filter");
+            filtered.reset(items);
+          } else {
+            //restore backup
+            original = new original_backup.constructor();
+            original.add(original_backup.models);
+
+            var criterion = "";
+            var items = applyFilter(criterion, "filter");
             filtered.reset(items);
           }
         };
