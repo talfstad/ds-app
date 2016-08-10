@@ -20,6 +20,7 @@ define(["app",
           });
 
           addNewLanderLayout.on("fileUploadComplete", function(data) {
+            landerModel.set("alertLoading", false);
 
             //add the new url endpoints
             var endpointsArr = data.response.url_endpoints_arr;

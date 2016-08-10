@@ -69,6 +69,7 @@ define(["app",
           if (newLanderData.landerName != "" && filename !== undefined) {
 
             this.model.set("name", newLanderData.landerName);
+            this.model.set("alertLoading", true);
 
             //trigger upload. server adds the lander to db, registers active job, and starts job
             $("#new-lander-file").fileinput("upload");

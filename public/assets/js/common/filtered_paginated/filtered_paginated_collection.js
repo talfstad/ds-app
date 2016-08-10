@@ -9,6 +9,9 @@ define(["app",
       Entities.FilteredPaginatedCollection = function(options) {
         var original = options.collection;
 
+        var original_backup = new original.constructor();
+        original_backup.add(original.models);
+
         var filtered = new original.constructor();
         filtered.original = original;
         filtered.add(original.models);
@@ -137,10 +140,20 @@ define(["app",
             //is integer is last on page so leave it
             pageToGoto = Math.floor(itemIndex / pageSize);
           } else {
-            pageToGoto = Math.floor(itemIndex / pageSize) + 1;            
+            pageToGoto = Math.floor(itemIndex / pageSize) + 1;
           }
 
           filtered.gotoPage(pageToGoto);
+        };
+
+        filtered.showEmpty = function(showEmpty) {
+          if (showEmpty) {
+            original.reset();
+          } else {
+            var criterion = "";
+            var items = applyFilter(criterion, "filter", original_backup);
+            filtered.reset(items);
+          }
         };
 
         /////

@@ -21,14 +21,10 @@ module.exports = function(app, db) {
         if (err) {
           callback(err);
         } else {
-          console.log("results: " + JSON.stringify(results));
-          console.log("err: " + JSON.stringify(JSON.stringify(err)));
-
           var load_time = results.lt;
           var grade = results.o;
 
           //got load time now save in db
-
           db.getConnection(function(err, connection) {
             if (err) {
               callback(err);

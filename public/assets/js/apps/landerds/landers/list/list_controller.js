@@ -341,6 +341,8 @@ define(["app",
               collection: me.filteredLanderCollection
             });
 
+            //todo: use a real model here instead of the job model lol
+
             landersListLayout.on("landers:filterList", function(filterVal) {
               me.filteredLanderCollection.filter(filterVal);
             });
@@ -351,6 +353,16 @@ define(["app",
 
             landersListLayout.on("landers:changepagesize", function(pageSize) {
               me.filteredLanderCollection.setPageSize(pageSize);
+            });
+
+            landersListLayout.on("toggleInfo", function(toggle) {
+              if (toggle) {
+                //show empty view
+                me.filteredLanderCollection.showEmpty(true);
+              } else {
+                //show landersListView
+                me.filteredLanderCollection.showEmpty(false);
+              }
             });
 
             if (landersListLayout.isRendered) {

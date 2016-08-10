@@ -77,7 +77,13 @@
         </ul>
 
         <div class="topbar-right hidden-xs hidden-sm">
-           <div class="bs-component btn-group ml15">
+        
+          <button type="button" class="toggle-help-info btn btn-default btn-gradient dark pl10 pt5 pb5">
+            <i class="fa fa-info-circle"></i>
+          </button>
+
+           <div class="bs-component btn-group ml5">
+
             <button type="button" class="rip-and-deploy-button pl10 pt5 pb5 btn btn-default btn-gradient dark">
               <span class="fa fa-cloud-download pr5"></span>Rip Lander
             </button>
@@ -85,6 +91,9 @@
               <span class="fa fa-plus pr5"></span>New Lander
             </button>
           </div>
+
+          
+
         </div>
       </header>
       <!-- End: Topbar -->

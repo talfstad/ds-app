@@ -13,6 +13,8 @@ define(["app",
         tagName: "section",
         id: "content_wrapper",
 
+        toggle: false,
+
         regions: {
           landersCollectionRegion: "#landers-region",
           footerRegion: "#footer-region",
@@ -21,17 +23,40 @@ define(["app",
 
         events: {
           "click .add-new-lander-button": "showAddNewLander",
-          "click .rip-and-deploy-button": "showRipNewLander"
+          "click .rip-and-deploy-button": "showRipNewLander",
+          "click .toggle-help-info": "toggleHelpInfo"
         },
 
-        showRipNewLander: function(e){
+        toggleHelpInfo: function(e) {
+          if(e) e.preventDefault();
+
+          if (this.toggle) {
+            this.$el.find(".toggle-help-info").addClass("btn-gradient").removeClass("active");
+            this.toggle = false;
+          } else {
+            this.$el.find(".toggle-help-info").removeClass("btn-gradient").addClass("active");
+            this.toggle = true;
+          }
+
+          this.trigger("toggleInfo", this.toggle);
+        },
+
+        showRipNewLander: function(e) {
           e.preventDefault();
+          
+          if(this.toggle){
+            this.toggleHelpInfo();
+          }
 
           Landerds.trigger("landers:showRipNewLanderModal");
         },
 
-        showAddNewLander: function(e){
+        showAddNewLander: function(e) {
           e.preventDefault();
+
+          if(this.toggle){
+            this.toggleHelpInfo();
+          }
 
           Landerds.trigger("landers:showAddNewLanderModal");
         },
@@ -45,7 +70,7 @@ define(["app",
           var me = this;
 
 
-          $('input[type=radio][name=pages-radio]').change(function(e){
+          $('input[type=radio][name=pages-radio]').change(function(e) {
             e.preventDefault();
             //pages changed update the button text
             var newPageSize = $(e.currentTarget).val();
@@ -55,7 +80,7 @@ define(["app",
             $(this).dropdown("toggle");
           });
 
-          var updateSortbyButtonText = function(){
+          var updateSortbyButtonText = function() {
             var sortbyname = me.$el.find("input[name=sort-radio]:checked").attr("data-sortby-name");
             var sortbyorder = me.$el.find(".sort-order-button-group a.active").attr('data-sortby-order');
             me.$el.find("button span.sortbyname").text(sortbyname);
@@ -69,7 +94,7 @@ define(["app",
             $(this).dropdown("toggle");
           });
 
-       
+
 
           // Prevents a dropdown menu from closing when
           // a btn-group nav menu it contains is clicked

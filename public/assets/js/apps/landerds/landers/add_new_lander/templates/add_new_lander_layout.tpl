@@ -7,7 +7,7 @@
 
         <div class="campaigns-list-region modal-body">
           <div class="alert-loading spinner-full-container">
-            <div class="modal-loading-container">
+            <div class="modal-loading-container" style="margin-top: 200px">
               <span class="spinner-large glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
               <h4 class="loading-text">Adding New Lander</span></h4>
             </div>
@@ -18,7 +18,7 @@
             To add a new lander select a new lander name and upload your lander. <a href="#" class="alert-link">How should I format my zip file for upload?</a>
           </div>
 
-          <div class="panel panel-primary top mb35">
+          <div class="panel panel-primary top mb5">
             <div class="panel-heading">
               <span class="panel-title">New Lander Information</span>
             </div>
