@@ -305,6 +305,7 @@ define(["app",
               showing_low: 0,
               showing_total: 0,
               total_deleting: 0,
+              total_undeploying: 0,
               total_deploying: 0,
               total_initializing: 0,
               total: 0,
@@ -470,10 +471,40 @@ define(["app",
                     landerView.reAlignTableHeader();
                   });
 
+                  deployedDomainsView.on("childview:getLoadTime", function(childView, linkObj) {
+
+                    childView.model.set("load_time_spinner_gui", true);
+
+                    //update the loading:true for this endpoint
+                    $.each(childView.model.get("endpoint_load_times"), function(idx, endpoint) {
+                      if (linkObj.url_endpoint_id == endpoint.url_endpoint_id) {
+                        endpoint.loading = true;
+                      }
+                    });
+
+                    childView.model.save({ load_time_data: linkObj }, {
+                      success: function(one, response, three) {
+
+                        //update the correct endpoint load time in endpoint_load_times
+                        var newEndpointLoadTimes = [];
+                        $.each(childView.model.get("endpoint_load_times"), function(idx, endpoint) {
+                          if (linkObj.url_endpoint_id == endpoint.url_endpoint_id) {
+                            endpoint.load_time = response.loadTime;
+                            endpoint.loading = false;
+                          }
+                          newEndpointLoadTimes.push(endpoint);
+                        });
+
+                        childView.model.set("load_time_spinner_gui", false);
+                        childView.updateLoadTime();
+                      }
+                    });
+
+                  });
+
                   domainTabHandleView.on("reAlignHeader", function() {
                     landerView.reAlignTableHeader();
                   });
-
 
                   //update view information on model change
                   landerView.model.on("change:deploy_status", function() {

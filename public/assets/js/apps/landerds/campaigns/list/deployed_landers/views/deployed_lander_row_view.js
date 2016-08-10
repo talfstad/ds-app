@@ -1,8 +1,9 @@
 define(["app",
     "tpl!assets/js/apps/landerds/campaigns/list/deployed_landers/templates/deployed_lander_row.tpl",
+    "assets/js/common/notification",
     "select2"
   ],
-  function(Landerds, DeployedLanderRowTpl) {
+  function(Landerds, DeployedLanderRowTpl, Notification) {
 
     Landerds.module("CampaignsApp.Campaigns.List.CollectionView.RowView.DeployedLandersCollectionView", function(DeployedLandersCollectionView, Landerds, Backbone, Marionette, $, _) {
       DeployedLandersCollectionView.DeployedLanderRowView = Marionette.ItemView.extend({
@@ -49,6 +50,7 @@ define(["app",
           "click .open-link": "openLanderLink",
           "click .copy-clipboard": function() {
             this.copyLinkToClipboard(this.getCurrentLink());
+            Notification("", "Successfully Copied Lander Link", "success", "stack_top_right");
           }
         },
 

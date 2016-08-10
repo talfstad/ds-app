@@ -115,6 +115,13 @@ define(["app",
             //fade  in the headers fast
             $(".deployed-landers-header-container").show();
 
+
+            //hide unneccessary columns if we're deploying/undeploying
+            var deployStatus = me.model.get('deploy_status');
+            if (deployStatus == "deploying" || deployStatus == "undeploying") {
+              me.$el.find(".deployed-landers-header").hide();
+            }
+
           }, 10);
 
         },
@@ -155,6 +162,9 @@ define(["app",
           this.alertDeployStatus();
 
           this.reAlignTableHeader();
+
+
+
 
 
           //if deleting need to show delet state (which is disabling the whole thing)

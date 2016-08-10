@@ -10,3 +10,8 @@ deployments are done like this:
 
 
 
+
+// NEED TO DO THIS if running on mac to make the npm install work correctly
+npm install phantomjs@1.9.8 -g
+
+specifically use the yslow version that uses phantomjs 1.9.8 (1.9.12 in package.json)

@@ -1,7 +1,8 @@
 define(["app",
-    "tpl!assets/js/apps/landerds/landers/list/deployed_domains/templates/deployed_domain_row.tpl"
+    "tpl!assets/js/apps/landerds/landers/list/deployed_domains/templates/deployed_domain_row.tpl",
+    "assets/js/common/notification"
   ],
-  function(Landerds, DeployedDomainRowTpl) {
+  function(Landerds, DeployedDomainRowTpl, Notification) {
 
     Landerds.module("LandersApp.Landers.List.Deployed", function(Deployed, Landerds, Backbone, Marionette, $, _) {
       Deployed.DeployedRowView = Marionette.ItemView.extend({
@@ -13,14 +14,84 @@ define(["app",
           "click .undeploy": "showRemoveDomain",
           "click .campaign-tab-link": "selectCampaignTab",
           "click .open-link": "openLanderLink",
+          "change .lander-links-select": "updateLoadTime",
+          "click .get-load-time": "getLoadTime",
           "click .copy-clipboard": function(e) {
             e.preventDefault();
             this.copyLinkToClipboard(this.getCurrentLink());
+            Notification("", "Successfully Copied Lander Link", "success", "stack_top_right");
           }
         },
 
         modelEvents: {
-          "change": "render"
+          "change:urlEndpoints": "render",
+          "change:load_time_spinner_gui": "setLoadTimeSpinnerState"
+        },
+
+        updateLoadTime: function(e) {
+          if (e) e.preventDefault();
+
+          var urlEndpointIdToUpdateTo = this.$el.find(".lander-links-select option:selected").val();
+          this.updateLoadTimeDisplay(urlEndpointIdToUpdateTo);
+        },
+
+        updateLoadTimeDisplay: function(url_endpoint_id) {
+
+          //use endpoint id to get the correct load time to show
+
+          var loadTimesArr = this.model.get("endpoint_load_times");
+
+          // search load times for this endpoint id, when find it assign load time, else show "N/A"
+          var loadTime;
+          var loading;
+          $.each(loadTimesArr, function(idx, loadTimeObj) {
+            if (loadTimeObj.url_endpoint_id == url_endpoint_id) {
+              loadTime = loadTimeObj.load_time;
+              loading = loadTimeObj.loading || false;
+            }
+          });
+
+          if (loading) {
+            this.model.set("load_time_spinner_gui", true);
+          } else {
+            this.model.set("load_time_spinner_gui", false);
+          }
+
+          if (loadTime) {
+            var seconds = (parseInt(loadTime) / 1000).toFixed(2);
+            var text = seconds + " sec";
+            this.$el.find(".load-time-display").text(text);
+          } else {
+            this.$el.find(".load-time-display").text("N/A");
+          }
+        },
+
+        setLoadTimeSpinnerState: function() {
+          if (this.model.get("load_time_spinner_gui")) {
+            this.$el.find(".get-load-time span").addClass("glyphicon-refresh-animate")
+          } else {
+            this.$el.find(".get-load-time span").removeClass("glyphicon-refresh-animate")
+          }
+        },
+
+        getLoadTime: function(e) {
+          e.preventDefault();
+          //get the load time for the current endpoint
+          var currentLink = this.getCurrentLink();
+          var loadTimesArr = this.model.get("endpoint_load_times");
+          var shouldGetLoadTime = true;
+          //if already loading don't send another request to get load time
+          $.each(loadTimesArr, function(idx, loadTimeObj) {
+            if (loadTimeObj.url_endpoint_id == currentLink.url_endpoint_id) {
+              if (loadTimeObj.loading) {
+                shouldGetLoadTime = false;
+              }
+            }
+          });
+
+          if (shouldGetLoadTime) {
+            this.trigger("getLoadTime", currentLink);
+          }
         },
 
         onDestroy: function() {
@@ -29,12 +100,14 @@ define(["app",
 
         getCurrentLink: function() {
           //return the combination of selects
-          var endpointVal = this.$el.find(".lander-links-select").val();
-          return "http://" + this.model.get("domain") + "/" + this.model.get("deployment_folder_name") + "/" + endpointVal;
+          var endpointFilename = this.$el.find(".lander-links-select option:selected").attr("data-filename");
+          var endpointId = this.$el.find(".lander-links-select option:selected").val();
+
+          return { link: "http://" + this.model.get("domain") + "/" + this.model.get("deployment_folder_name") + "/" + endpointFilename, url_endpoint_id: endpointId }
         },
 
         openLanderLink: function() {
-          window.open(this.getCurrentLink(), '_blank');
+          window.open(this.getCurrentLink().link, '_blank');
           return false;
         },
 
@@ -92,7 +165,7 @@ define(["app",
             urlEndpointsJSON = [];
           }
           this.model.set("urlEndpointsJSON", urlEndpointsJSON);
-          
+
           var deployStatus = this.model.get("deploy_status");
           if (deployStatus === "deployed") {
             this.model.set("deploy_status_gui", "");
@@ -127,8 +200,15 @@ define(["app",
           });
         },
 
+
+
         onRender: function() {
+
           this.$el.find(".lander-links-select").select2();
+
+          var currentShowingEndpointId = this.$el.find(".lander-links-select option:first").val();
+          this.updateLoadTimeDisplay(currentShowingEndpointId);
+
 
           var deployStatus = this.model.get("deploy_status");
           this.$el.removeClass("success alert warning");

@@ -25,22 +25,30 @@
         deployingDomainsText = "Domains"
       }
 
+      var undeployingDomainsText = "Domain"
+      if(total_undeploying > 1 || total_undeploying < 1) {
+        deployingDomainsText = "Domains"
+      }
+
+      var totalWorkingLander = "Lander"
+      var total_working = parseInt(total_undeploying) + parseInt(total_deploying)
+      if(total_working > 1 || total_working < 1) {
+        totalWorkingLander = "Landers"
+      }
+
   if(total_deleting > 0) { %>
       
       <div>
         <span class="badge-danger badge"><%= total_deleting %></span> <%= deletingDomainText %> Deleting
       </div>
 
-  <% }
-
-    if(total_deploying > 0) { %>
-      
-      <div>
-        <span class="badge-alert badge"><%= total_deploying %></span> <%= deployingDomainsText %> Working
-      </div>
-
   <% } %>
 
+      <% if(total_working > 0) { %>
+      <div>
+        <span class="badge-alert badge"><%= total_working %></span> <%= totalWorkingLander %> Working
+      </div>
+       <% } %>
 
     <div>
       <span class="badge-light badge"><%= total %></span> Total <%= total_domains %>

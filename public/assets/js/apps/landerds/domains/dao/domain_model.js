@@ -106,7 +106,37 @@ define(["app",
         activeCampaignsCollection.add(activeCampaignAttributes);
 
 
-        applyUpdatedDeployStatusToLander();
+        // applyUpdatedDeployStatusToLander();
+
+
+        //deployedDomain Jobs
+        var deployStatus = "not_deployed";
+        if (deployedLandersCollection.length > 0) {
+          deployStatus = "deployed";
+          deployedLandersCollection.each(function(location) {
+
+            location.get("activeJobs").each(function(job) {
+              if (job.get("action") === "undeployLanderFromDomain") {
+                deployStatus = "undeploying";
+              } else if (job.get("action") === "deployLanderToDomain") {
+                deployStatus = "deploying";
+              }
+            });
+
+          });
+        }
+
+        //lander level jobs override deployedDomain jobs
+        if (activeJobsCollection.length > 0) {
+          activeJobsCollection.each(function(job) {
+            if (job.get("action") === "deletingDomain") {
+              deployStatus = "deleting";
+            }
+          });
+        }
+        
+        this.set("deploy_status", deployStatus);
+
       },
 
       defaults: {

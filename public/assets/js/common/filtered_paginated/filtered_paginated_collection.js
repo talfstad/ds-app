@@ -30,6 +30,7 @@ define(["app",
 
 
           filtered.state.gui.set('total_not_deployed', 0);
+          filtered.state.gui.set('total_undeploying', 0);
           filtered.state.gui.set('total_deploying', 0);
           filtered.state.gui.set('total', 0);
           filtered.state.gui.set('total_initializing', 0);
@@ -190,6 +191,7 @@ define(["app",
         filtered.updateTotals = function() {
           var notDeployedTotal = 0;
           var deployingTotal = 0;
+          var undeployingTotal = 0;
           var totalLanders = 0;
           var initializing = 0;
           var deleting = 0;
@@ -206,6 +208,8 @@ define(["app",
                 notDeployedTotal++;
               } else if (deployStatus === "deploying") {
                 deployingTotal++;
+              } else if (deployStatus === "undeploying") {
+                undeployingTotal++;
               } else if (deployStatus === "initializing") {
                 initializing++;
               } else if (deployStatus === "deleting") {
@@ -214,6 +218,7 @@ define(["app",
             }
           });
           filtered.state.gui.set("total_not_deployed", notDeployedTotal);
+          filtered.state.gui.set('total_undeploying', undeployingTotal);
           filtered.state.gui.set("total_deploying", deployingTotal);
           filtered.state.gui.set("total", totalLanders);
           filtered.state.gui.set("total_initializing", initializing);

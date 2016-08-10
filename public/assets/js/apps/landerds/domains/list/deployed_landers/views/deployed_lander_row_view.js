@@ -1,8 +1,9 @@
 define(["app",
     "tpl!assets/js/apps/landerds/domains/list/deployed_landers/templates/deployed_lander_row.tpl",
+    "assets/js/common/notification",
     "select2"
   ],
-  function(Landerds, DeployedDomainRowTpl) {
+  function(Landerds, DeployedDomainRowTpl, Notification) {
 
     Landerds.module("DomainsApp.Domains.List.Deployed", function(Deployed, Landerds, Backbone, Marionette, $, _) {
       Deployed.DeployedRowView = Marionette.ItemView.extend({
@@ -25,6 +26,7 @@ define(["app",
           "click .copy-clipboard": function(e) {
             e.preventDefault();
             this.copyLinkToClipboard(this.getCurrentLink());
+            Notification("", "Successfully Copied Lander Link", "success", "stack_top_right");
           }
         },
 

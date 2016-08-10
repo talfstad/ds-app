@@ -61,11 +61,14 @@
     "website-scraper": "*",
     "wordpress-hash-node": "*",
     "xoauth2": "*",
+    "phapper": "*",
+    "yslowjs": "0.3.3",
     "zip-dir": "^1.0.2"
   },
   "devDependencies": {
     "zip-dir": "^1.0.2",
     "exec": "^0.2.1",
+    "yuicompressor": "*",
     "rsync": "^0.4.0"
   }
 }

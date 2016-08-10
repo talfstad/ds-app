@@ -350,6 +350,7 @@ module.exports = function(app) {
     };
 
     var compressAndWriteFile = function(htmlFileObj, jsFilePath, callback) {
+      console.log("compress write file: " + JSON.stringify(htmlFileObj));
 
       //workers only do work if there are no errors on this endpoint for this type
       if (htmlFileObj.optimizationErrors.length > 0) {
@@ -376,13 +377,14 @@ module.exports = function(app) {
             callback(false);
           }
         });
-
       } catch (err) {
+
         callback({ code: "CouldNotUglify", err: err });
       }
     };
 
     var concatJsIntoFileAndUpdateHtml = function(htmlFileObj, fileData, callback) {
+
       //workers only do work if there are no errors on this endpoint for this type
       if (htmlFileObj.optimizationErrors.length > 0) {
         //check if errors are of this type
@@ -436,40 +438,39 @@ module.exports = function(app) {
               //if error is not placeholder returning then log it
               errors.push({ code: "CouldNotReadSrcFile", err: err });
             }
-            //increase the async index ...
-            asyncIndex++;
           } else {
             srcFilesObj[scriptSrcArr.indexOf(filePath)] = fileData;
-            if (++asyncIndex == scriptSrcArr.length) {
+          }
 
-              //now that for loop is done call your error callback if its still here
-              if (errors.length > 0) {
-                callback(errors, htmlFileObj);
-              } else {
+          if (++asyncIndex == scriptSrcArr.length) {
 
-                for (var j = 0; j < scriptSrcArr.length; j++) {
+            //now that for loop is done call your error callback if its still here
+            if (errors.length > 0) {
+              callback(errors, htmlFileObj);
+            } else {
 
-                  //make sure src file ends with a new line (signifying done statement)
-                  srcFilesObj[j] += "\n";
+              for (var j = 0; j < scriptSrcArr.length; j++) {
 
-                  finalJsString += srcFilesObj[j];
-                }
+                //make sure src file ends with a new line (signifying done statement)
+                srcFilesObj[j] += "\n";
 
-                fs.writeFile(outputJsFilePath, finalJsString, function(err) {
-                  if (err) {
-                    callback({ code: "CouldNotWriteUnCompressedJsFile", err: err }, htmlFileObj);
-                  } else {
-                    //append the optimized script tag to the body
-                    fs.writeFile(htmlFilePath, $.html(), function(err) {
-                      if (err) {
-                        callback({ code: "CouldNotWriteHtmlFile", err: err }, htmlFileObj);
-                      } else {
-                        callback(false, htmlFileObj, outputJsFilePath);
-                      }
-                    });
-                  }
-                });
+                finalJsString += srcFilesObj[j];
               }
+
+              fs.writeFile(outputJsFilePath, finalJsString, function(err) {
+                if (err) {
+                  callback({ code: "CouldNotWriteUnCompressedJsFile", err: err }, htmlFileObj);
+                } else {
+                  //append the optimized script tag to the body
+                  fs.writeFile(htmlFilePath, $.html(), function(err) {
+                    if (err) {
+                      callback({ code: "CouldNotWriteHtmlFile", err: err }, htmlFileObj);
+                    } else {
+                      callback(false, htmlFileObj, outputJsFilePath);
+                    }
+                  });
+                }
+              });
             }
           }
         });
@@ -485,6 +486,7 @@ module.exports = function(app) {
     for (var i = 0; i < htmlFiles.length; i++) {
 
       //read file in as a string
+
       readLocalFile(htmlFiles[i], function(err, fileData, htmlFileObj) {
         if (err) {
           htmlFileObj.optimizationErrors.push({
@@ -493,6 +495,8 @@ module.exports = function(app) {
           });
         }
         concatJsIntoFileAndUpdateHtml(htmlFileObj, fileData, function(err, htmlFileObj, jsFilePath) {
+          // htmlFileObj
+
           if (err) {
             if (err.constructor == Array) {
               //concat the errors on if there were errors from for loop
@@ -505,7 +509,7 @@ module.exports = function(app) {
             }
           }
 
-          console.log("JS FILE PATH: " + jsFilePath);
+          console.log("TTT JS file path N: " + jsFilePath);
 
           compressAndWriteFile(htmlFileObj, jsFilePath, function(err) {
             if (err) {

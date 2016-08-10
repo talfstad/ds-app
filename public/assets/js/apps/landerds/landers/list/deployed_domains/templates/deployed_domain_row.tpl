@@ -15,7 +15,7 @@
         
         <% _.each(urlEndpointsJSON, function(endpoint) { %>
         
-        <option><%= endpoint.filename %></option>
+        <option data-filename="<%= endpoint.filename %>" value="<%= endpoint.id %>"><%= endpoint.filename %></option>
 
         <% }); %>
       
@@ -32,9 +32,9 @@
             </a>
 
             <span style="margin-left: 50px;">
-              <span style="margin-right: 5px">2.0 sec</span>
-              <a class="refresh" href="#">
-                <span class="fa fa-refresh" style="padding-right: 1px; padding-left: 2px"></span>
+              <span class="load-time-display" style="margin-right: 5px"></span>
+              <a class="get-load-time refresh" href="#">
+                <span class="glyphicon glyphicon-refresh" style="position: relative; right: 1px; left: 2px;"></span>
               </a>
             </span>
 

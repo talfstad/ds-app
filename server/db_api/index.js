@@ -16,7 +16,7 @@ module.exports = function(app) {
   module.aws = require('./aws')(app, db);
   module.common = require('./common')(db);
   module.log = require('./log')(app, db);
-  
+  module.deployed_domain = require('./deployed_domain')(app,db);
   return module;
 
 }

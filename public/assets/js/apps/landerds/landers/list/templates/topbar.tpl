@@ -17,10 +17,13 @@
       if(total > 1 || total < 1) {
         totalLander = "Landers"
       }
-      var totalDeployingLander = "Lander"
-      if(total_deploying > 1 || total_deploying < 1) {
-        totalDeployingLander = "Landers"
+
+      var totalWorkingLander = "Lander"
+      var total_working = parseInt(total_undeploying) + parseInt(total_deploying)
+      if(total_working > 1 || total_working < 1) {
+        totalWorkingLander = "Landers"
       }
+
       var initializingLanderText = "Lander"
       if(total_initializing > 1 || total_initializing < 1){ 
         initializingLanderText = "Landers"
@@ -29,6 +32,7 @@
       if(total_deleting > 1 || total_deleting < 1){
         deletingLanderText = "Landers"
       }
+      
       var modifiedLanderText = "Lander"
       if(total_modified > 1 || total_modified < 1){
         modifiedLanderText = "Landers"
@@ -59,12 +63,13 @@
       
       <% } %> -->
       
-      <% if(total_deploying > 0) { %>
+      <% if(total_working > 0) { %>
 
       <div>
-        <span class="badge-alert badge"><%= total_deploying %></span> <%= totalDeployingLander %> Working
+        <span class="badge-alert badge"><%= total_working %></span> <%= totalWorkingLander %> Working
       </div>
        <% } %>
+
 
        <% if(total_modified > 0) { %>
 
