@@ -19,12 +19,15 @@ define(["app",
     Landerds.module("LandersApp", function(LandersApp, Landerds, Backbone, Marionette, $, _) {
 
       var landersAppAPI = {
-        showLanders: function(d) {
+        showLanders: function(id) {
           Landerds.landers = {};
-
-          Landerds.navigate("landers");
+          if (id) {
+            Landerds.navigate("landers/show/" + id);
+          } else {
+            Landerds.navigate("landers");
+          }
           CommonLogin.Check(function() {
-            ListController.showLanders();
+            ListController.showLanders(id);
             Landerds.trigger("header:active", "landers");
           });
         },
@@ -121,8 +124,8 @@ define(["app",
         landersAppAPI.deployCampaignLandersToDomain(attr);
       });
 
-      Landerds.on("landers:list", function() {
-        landersAppAPI.showLanders();
+      Landerds.on("landers:list", function(id) {
+        landersAppAPI.showLanders(id);
       });
 
       Landerds.on("landers:opensidebar", function(model) {

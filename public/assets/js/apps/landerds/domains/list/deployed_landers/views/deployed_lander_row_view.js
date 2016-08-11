@@ -25,6 +25,7 @@ define(["app",
           "click .undeploy": "showUndeployLander",
           "click .campaign-tab-link": "selectCampaignTab",
           "click .open-link": "openLanderLink",
+          "click .goto-edit-lander": "gotoEditLander",
           "change .lander-links-select": "updateLoadTime",
           "click .get-load-time": "getLoadTime",
           "click .copy-clipboard": function(e) {
@@ -33,7 +34,12 @@ define(["app",
           }
         },
 
-        
+        gotoEditLander: function(e) {
+          if (e) e.preventDefault();
+          this.trigger("gotoEditLander");
+        },
+
+
         onBeforeRender: function() {
           var me = this;
           var deployStatus = this.model.get("deploy_status");

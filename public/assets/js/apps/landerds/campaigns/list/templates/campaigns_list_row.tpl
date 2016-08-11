@@ -32,7 +32,7 @@
             <div class="row" style="margin-left: 0px; margin-right: 0px;">
               <div style="margin-left: 5px; font-weight: 600; padding-top: 10px; float: left;" class="clearfix">
                 <span style="width: 20px">#</span>
-                <span style="margin-left: 15px">Deployed Domains</span>
+                <span style="margin-left: 15px">Domain Name</span>
               </div>
               <div style="float: right;" class="add-to-new-campaign-region clearfix">
               </div>
@@ -50,7 +50,6 @@
               <div class="clearfix deployed-landers-header-container">
                 <span style="width: 20px">#</span>
                 <span style="margin-left: 15px">Lander Name</span>
-                <span class="deployed-landers-header">Lander Links</span>
               </div>
               <div style="float: right;" class="deploy-to-new-campaign-region clearfix">
               </div>

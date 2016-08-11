@@ -1,4 +1,4 @@
-define(["app", 
+define(["app",
     "assets/js/apps/landerds/domains/list/list_controller",
     "assets/js/common/login/common_login",
     "assets/js/apps/landerds/domains/right_sidebar/sidebar_controller",
@@ -15,12 +15,15 @@ define(["app",
     Landerds.module("DomainsApp", function(DomainsApp, Landerds, Backbone, Marionette, $, _) {
 
       var domainsAppAPI = {
-        showDomains: function(d) {
-          Landerds.domains = {};
+        showDomains: function(id) {
+          if (id) {
+            Landerds.navigate("domains/show/" + id);
+          } else {
+            Landerds.navigate("domains");
+          }
 
-          Landerds.navigate("domains");
           CommonLogin.Check(function() {
-            ListController.showDomains();
+            ListController.showDomains(id);
             Landerds.trigger("header:active", "domains");
           });
         },
@@ -40,10 +43,6 @@ define(["app",
 
         addDomain: function(domainModel) {
           ListController.addDomain(domainModel);
-        },
-
-        loadDomainsSideMenu: function(d) {
-          SidemenuController.loadDomainsSideMenu();
         },
 
         deleteDomain: function(model) {
@@ -86,9 +85,8 @@ define(["app",
 
       };
 
-      Landerds.on("domains:list", function() {
-        domainsAppAPI.showDomains();
-        domainsAppAPI.loadDomainsSideMenu();
+      Landerds.on("domains:list", function(id) {
+        domainsAppAPI.showDomains(id);
       });
 
       Landerds.on("domains:opensidebar", function(model) {

@@ -254,7 +254,7 @@ module.exports = function(db) {
           if (err) {
             callback(err);
           }
-          connection.query("SELECT a.id AS domain_id,a.domain,b.id from domains a JOIN campaigns_with_domains b ON a.id=b.domain_id WHERE (a.user_id = ? AND campaign_id = ?)", [user_id, campaign.id],
+          connection.query("SELECT a.id AS domain_id,b.campaign_id,a.domain,b.id from domains a JOIN campaigns_with_domains b ON a.id=b.domain_id WHERE (a.user_id = ? AND b.campaign_id = ?)", [user_id, campaign.id],
             function(err, dbDeployedDomains) {
               if (err) {
                 callback(err);
@@ -370,7 +370,7 @@ module.exports = function(db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT a.id, b.id AS lander_id, b.name FROM landers_with_campaigns a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.id],
+          connection.query("SELECT a.id, b.id AS lander_id, a.campaign_id, b.name FROM landers_with_campaigns a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.id],
             function(err, dbLandersOnCampaign) {
               if (err) {
                 callback(err);

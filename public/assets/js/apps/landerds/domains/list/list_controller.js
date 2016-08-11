@@ -191,7 +191,7 @@ define(["app",
 
         },
 
-        showDomains: function(model) {
+        showDomains: function(domain_id_to_goto_and_expand) {
           //make layout for landers
           var me = this;
           var domainsListLayout = new List.Layout();
@@ -416,7 +416,6 @@ define(["app",
               me.filteredDomainCollection.gotoPage(page);
             });
 
-
             if (domainsListLayout.isRendered) {
               domainsListLayout.footerRegion.show(paginatedButtonView);
               domainsListLayout.topbarRegion.show(topbarView);
@@ -426,6 +425,13 @@ define(["app",
             if (me.filteredDomainCollection.length > 0) {
               me.filteredDomainCollection.filter(filterVal);
             }
+
+            if (domain_id_to_goto_and_expand) {
+              var domainModelToExpand = me.filteredDomainCollection.original.get(domain_id_to_goto_and_expand)
+              if (domainModelToExpand) {
+                me.expandAndShowDomain(domainModelToExpand);
+              }
+            }
           });
         },
 
@@ -434,9 +440,16 @@ define(["app",
           Landerds.trigger('domains:closesidebar');
           this.filteredDomainCollection.add(domainModel);
           //1. goto page with new lander on it
-          this.filteredDomainCollection.showPageWithModel(domainModel);
-          //2. expand new lander
-          domainModel.trigger("view:expand");
+          this.expandAndShowDomain(domainModel);
+        },
+
+        expandAndShowDomain: function(domainModel) {
+          if (this.filteredDomainCollection) {
+            //1. show the page with this model
+            this.filteredDomainCollection.showPageWithModel(domainModel);
+            //2. expand new lander row item
+            domainModel.trigger("view:expand");
+          }
         },
 
         //remove the domain from the landers list by starting a delete job!

@@ -10,6 +10,20 @@ define(["app",
         childView: DeployedDomainRowView,
         emptyView: EmptyView,
 
+        childEvents: {
+          "gotoEditLander": "gotoEditLander"
+        },
+
+        gotoEditLander: function(childView) {
+
+          var landerId = childView.model.get("lander_id");;
+          var campaignId = childView.model.get("campaign_id");;
+
+          //save this domain so on back button it reopens the domain
+          Landerds.navigate("campaigns/show/" + campaignId);
+          //go to edit the lander
+          Landerds.trigger("landers:list", landerId);
+        },
 
         onAddChild: function(childView) {
           this.reIndex();

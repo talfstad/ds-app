@@ -11,10 +11,16 @@ define(["app",
 
         events: {
           "click .remove-domain": "showRemoveDomain",
+          "click .goto-edit-domain": "gotoEditDomain",
         },
 
         modelEvents: {
           "change": "render"
+        },
+
+        gotoEditDomain: function(e) {
+          if (e) e.preventDefault();
+          this.trigger("gotoEditDomain");
         },
 
         onDestroy: function() {

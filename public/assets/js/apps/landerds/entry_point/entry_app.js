@@ -12,34 +12,55 @@ define(["app",
       Landerds.Router = Marionette.AppRouter.extend({
         appRoutes: {
           "domains": "showDomains",
+          "domains/show/:id": "showDomainsAndExpandDomain",
           "landers": "showLanders",
+          "landers/show/:id": "showLandersAndExpandLander",
           "campaigns": "showCampaigns",
+          "campaigns/show/:id": "showCampaignsAndExpandCampaign",
           "*notFound": "showLanders",
         }
       });
 
-      var loadCommonStuff = function() {
+      var loadCommonStuff = function(callback) {
         //landerds layout here
         EntryController.loadAnchorLayout();
 
         //load the header here
-        Landerds.trigger("header:list");
-        //load the left nav here
-        // Landerds.trigger("left_nav:list");
+        Landerds.trigger("header:list", function() {
+          callback(false);
+        });
       }
 
       var landerdsRoutes = {
         showDomains: function() {
-          loadCommonStuff();
-          Landerds.trigger("domains:list");
+          loadCommonStuff(function() {
+            Landerds.trigger("domains:list");
+          });
+        },
+        showDomainsAndExpandDomain: function(domain_id) {
+          loadCommonStuff(function() {
+            Landerds.trigger("domains:list", domain_id);
+          });
+        },
+        showCampaignsAndExpandCampaign: function(campaign_id) {
+          loadCommonStuff(function() {
+            Landerds.trigger("campaigns:list", campaign_id);
+          });
         },
         showLanders: function() {
-          loadCommonStuff();
-          Landerds.trigger("landers:list");
+          loadCommonStuff(function() {
+            Landerds.trigger("landers:list");
+          });
+        },
+        showLandersAndExpandLander: function(lander_id) {
+          loadCommonStuff(function() {
+            Landerds.trigger("landers:list", lander_id);
+          });
         },
         showCampaigns: function() {
-          loadCommonStuff();
-          Landerds.trigger("campaigns:list");
+          loadCommonStuff(function() {
+            Landerds.trigger("campaigns:list");
+          });
         }
       };
 

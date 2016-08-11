@@ -48,10 +48,16 @@ define(["app",
         events: {
           "click .remove-lander": "showRemoveLander",
           "click .open-link": "openLanderLink",
+          "click .goto-edit-lander": "gotoEditLander",
           "click .copy-clipboard": function() {
             this.copyLinkToClipboard(this.getCurrentLink());
             Notification("", "Successfully Copied Lander Link", "success", "stack_top_right");
           }
+        },
+
+        gotoEditLander: function(e) {
+          if (e) e.preventDefault();
+          this.trigger("gotoEditLander");
         },
 
         getCurrentLink: function() {

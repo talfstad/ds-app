@@ -143,15 +143,11 @@ define(["app",
 
           Landerds.trigger('campaigns:closesidebar');
           this.filteredCampaignCollection.add(model);
-          //1. goto page with new lander on it
-          this.filteredCampaignCollection.showPageWithModel(model);
-          //2. expand new lander
-          model.trigger("view:expand");
-
+          this.expandAndShowCampaign(model);
         },
 
 
-        showCampaigns: function(model) {
+        showCampaigns: function(campaign_id_to_goto_and_expand) {
           //make layout for campaigns
           var me = this;
           var campaignsListLayout = new List.Layout();
@@ -248,8 +244,7 @@ define(["app",
             campaignCollection.on("resortAndExpandModelView", function(model) {
               campaignsListView.trigger("campaigns:sort");
 
-              me.filteredCampaignCollection.showPageWithModel(model);
-              model.trigger("view:expand");
+              expandAndShowCampaign(model);
               model.trigger("notifySuccessChangeCampaignName");
             });
 
@@ -391,7 +386,6 @@ define(["app",
               me.filteredCampaignCollection.gotoPage(page);
             });
 
-
             if (campaignsListLayout.isRendered) {
               campaignsListLayout.footerRegion.show(paginatedButtonView);
               campaignsListLayout.topbarRegion.show(topbarView);
@@ -402,9 +396,25 @@ define(["app",
             if (me.filteredCampaignCollection.length > 0) {
               me.filteredCampaignCollection.filter(filterVal);
             }
+
+            if (campaign_id_to_goto_and_expand) {
+              var campaignModelToExpand = me.filteredCampaignCollection.original.get(campaign_id_to_goto_and_expand)
+              if (campaignModelToExpand) {
+                me.expandAndShowCampaign(campaignModelToExpand);
+              }
+            }
+
           });
         },
 
+        expandAndShowCampaign: function(campaignModel) {
+          if (this.filteredCampaignCollection) {
+            //1. show the page with this model
+            this.filteredCampaignCollection.showPageWithModel(campaignModel);
+            //2. expand new lander row item
+            campaignModel.trigger("view:expand");
+          }
+        },
 
         updateTopbarTotals: function() {
           if (this.filteredCampaignCollection) {

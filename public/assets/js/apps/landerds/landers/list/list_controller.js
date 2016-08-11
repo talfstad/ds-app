@@ -286,7 +286,7 @@ define(["app",
 
         },
 
-        showLanders: function(model) {
+        showLanders: function(lander_id_to_goto_and_expand) {
           //make layout for landers
           var me = this;
           var landersListLayout = new List.Layout();
@@ -489,7 +489,7 @@ define(["app",
                     domainTabHandleView.model.set("deployed_domains_count", length);
                     landerView.reAlignTableHeader();
                   });
-                  
+
                   domainTabHandleView.on("reAlignHeader", function() {
                     landerView.reAlignTableHeader();
                   });
@@ -572,11 +572,18 @@ define(["app",
               landersListLayout.topbarRegion.show(topbarView);
             }
 
-
             var filterVal = $(".lander-search").val() || "";
             if (me.filteredLanderCollection.length > 0) {
               me.filteredLanderCollection.filter(filterVal);
             }
+
+            if (lander_id_to_goto_and_expand) {
+              var landerModelToExpand = me.filteredLanderCollection.original.get(lander_id_to_goto_and_expand)
+              if (landerModelToExpand) {
+                me.expandAndShowLander(landerModelToExpand);
+              }
+            }
+
           });
         },
 
@@ -647,9 +654,16 @@ define(["app",
           Landerds.trigger('landers:closesidebar');
           this.filteredLanderCollection.add(landerModel);
           //1. goto page with new lander on it
-          this.filteredLanderCollection.showPageWithModel(landerModel);
-          //2. expand new lander
-          landerModel.trigger("view:expand");
+          this.expandAndShowLander(landerModel);
+        },
+
+        expandAndShowLander: function(landerModel) {
+          if (this.filteredLanderCollection) {
+            //1. show the page with this model
+            this.filteredLanderCollection.showPageWithModel(landerModel);
+            //2. expand new lander row item
+            landerModel.trigger("view:expand");
+          }
         },
 
         addNewDuplicatedLander: function(landerModel) {
@@ -657,10 +671,7 @@ define(["app",
           Landerds.trigger('landers:closesidebar');
           this.filteredLanderCollection.add(landerModel);
           //1. goto page with new lander on it
-          this.filteredLanderCollection.showPageWithModel(landerModel);
-          //2. expand new lander
-          landerModel.trigger("view:expand");
-
+          this.expandAndShowLander(landerModel);
         },
 
         deleteLander: function(model) {

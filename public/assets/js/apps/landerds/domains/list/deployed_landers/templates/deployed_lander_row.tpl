@@ -46,7 +46,7 @@
 
         <% if(deploy_status === "deployed") { %>
         
-        <a class="" href="#" style="margin-right: 10px">
+        <a class="goto-edit-lander" href="#" style="margin-right: 10px">
           <span class="fa fa-edit"></span>
         </a>
 

@@ -15,12 +15,15 @@ define(["app",
     Landerds.module("CampaignsApp", function(CampaignsApp, Landerds, Backbone, Marionette, $, _) {
 
       var campaignsAppAPI = {
-        showCampaigns: function(d) {
-          Landerds.campaigns = {};
+        showCampaigns: function(id) {
+          if (id) {
+            Landerds.navigate("campaigns/show/" + id);
+          } else {
+            Landerds.navigate("campaigns");
+          }
 
-          Landerds.navigate("campaigns");
           CommonLogin.Check(function() {
-            ListController.showCampaigns();
+            ListController.showCampaigns(id);
             Landerds.trigger("header:active", "campaigns");
           });
         },
@@ -65,10 +68,6 @@ define(["app",
           RemoveDomainController.showRemoveDomain(model);
         },
 
-        loadCampaignsSideMenu: function(d) {
-          SidemenuController.loadCampaignsSideMenu();
-        },
-
         updateTopbarTotals: function() {
           ListController.updateTopbarTotals();
         },
@@ -79,9 +78,8 @@ define(["app",
 
       };
 
-      Landerds.on("campaigns:list", function() {
-        campaignsAppAPI.showCampaigns();
-        campaignsAppAPI.loadCampaignsSideMenu();
+      Landerds.on("campaigns:list", function(id) {
+        campaignsAppAPI.showCampaigns(id);
       });
 
       Landerds.on("campaigns:opensidebar", function(model) {

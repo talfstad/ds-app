@@ -12,7 +12,19 @@ define(["app",
         emptyView: EmptyView,
 
         childEvents: {
-          "getLoadTime": "getLoadTime"
+          "getLoadTime": "getLoadTime",
+          "gotoEditLander": "gotoEditLander"
+        },
+
+        gotoEditLander: function(childView) {
+          
+          var landerId = childView.model.get("lander_id");;
+          var domainId = childView.model.get("domain_id");;
+
+          //save this domain so on back button it reopens the domain
+          Landerds.navigate("domains/show/" + domainId);
+          //go to edit the lander
+          Landerds.trigger("landers:list", landerId);
         },
 
         onAddChild: function(childView) {
