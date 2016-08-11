@@ -51,12 +51,7 @@
                 <label class="ml5" for="last-updated">Created On</label>
               </a>
             </li>
-            <!-- <li>
-              <a class="pl5 radio-custom radio-primary" href="#">
-                <input data-sortby-name="Deployed" data-sort-by="deployed" type="radio" id="deployed" name="sort-radio">
-                <label class="ml5" for="deployed">Deployed</label>
-              </a>
-            </li> -->
+           
             <li class="divider">
             </li>
             <div class="ptn pb5 p10">
@@ -103,7 +98,7 @@
         
         <div style="float: left; margin-left: 15px; margin-bottom: 10px">Landing Page Name</div>
         <div style="float: right; margin-right: 95px; margin-bottom: 10px">Deployed Domains</div>
-        <div style="float: right; margin-right: 51px; margin-bottom: 10px">Active Campaigns</div>
+        <div style="float: right; margin-right: 32px; margin-bottom: 10px">Campaigns on Lander</div>
         <div style="float: right; margin-right: 82px; margin-bottom: 10px">Created On</div>
         
 

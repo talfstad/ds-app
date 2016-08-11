@@ -5,12 +5,18 @@ define(["app",
 
     Landerds.module("LandersApp.Landers.List.ActiveCampaigns", function(ActiveCampaigns, Landerds, Backbone, Marionette, $, _) {
       ActiveCampaigns.ActiveCampaignRowView = Marionette.ItemView.extend({
-        
+
         template: ActiveCampaignRowTpl,
         tagName: "tbody",
 
         events: {
-          "click .remove-campaign": "showUndeployDomainFromCampaignDialog"
+          "click .remove-campaign": "showUndeployDomainFromCampaignDialog",
+          "click .goto-edit-campaign": "gotoEditCampaign",
+        },
+
+        gotoEditCampaign: function(e) {
+          if (e) e.preventDefault();
+          this.trigger("gotoEditCampaign");
         },
 
         showUndeployDomainFromCampaignDialog: function(e) {

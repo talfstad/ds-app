@@ -80,7 +80,7 @@
              </div>
             <div class="panel-body">
               <div style="padding-bottom: 15px">
-                <table class="table active_campaigns_region"></table>
+                <table class="table active-campaigns-region"></table>
               </div>
             </div>
           </div>

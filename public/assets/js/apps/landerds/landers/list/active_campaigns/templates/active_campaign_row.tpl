@@ -7,6 +7,10 @@
       <%= name %>
         <div style="float: right; margin-right: 10px; font-size: 16px">
         <% if(deploy_status === "deployed"){ %>
+          <a class="goto-edit-campaign mr10" href="#">
+            <span class="fa fa-edit"></span>
+          </a>
+
           <a class="undeploy" data-domainId="df" data-domainName="fd" href="#">
             <span class="remove-campaign fa fa-trash-o"></span>
           </a>

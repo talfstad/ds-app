@@ -46,16 +46,16 @@
 
         <% if(deploy_status === "deployed") { %>
         
-          
+        <a class="goto-edit-domain mr10" href="#">
+          <span class="fa fa-edit"></span>
+        </a>
+
         <% if(hasActiveCampaigns) { %>
 
           <a class="campaign-tab-link" href="#">
-            <span class="icon-campaigns_icon">
-                
-                </span>
+            <span class="icon-campaigns_icon"></span>
           </a>
           
-
           <% } else { %>
         
           <a class="undeploy" href="#">
@@ -63,6 +63,7 @@
           </a>
 
           <% } %>
+
 
          
 

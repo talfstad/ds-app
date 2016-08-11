@@ -16,6 +16,7 @@ define(["app",
           "click .open-link": "openLanderLink",
           "change .lander-links-select": "updateLoadTime",
           "click .get-load-time": "getLoadTime",
+          "click .goto-edit-domain": "gotoEditDomain",
           "click .copy-clipboard": function(e) {
             e.preventDefault();
             this.copyLinkToClipboard(this.getCurrentLink().link);
@@ -25,6 +26,11 @@ define(["app",
         modelEvents: {
           "change:urlEndpoints": "render",
           "change:load_time_spinner_gui": "setLoadTimeSpinnerState"
+        },
+
+        gotoEditDomain: function(e) {
+          if (e) e.preventDefault();
+          this.trigger("gotoEditDomain");
         },
 
         onBeforeRender: function() {
