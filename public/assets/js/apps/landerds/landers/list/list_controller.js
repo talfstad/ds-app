@@ -48,11 +48,14 @@ define(["app",
               //update the sidemenu views
               Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerToUpdate);
 
-              landerToUpdate.set("modified", true);
+              landerToUpdate.set({
+                modified: true,
+                no_optimize_on_save: false,
+              });
+
             }
 
           });
-
 
         },
 
@@ -65,7 +68,11 @@ define(["app",
             var landerToUpdate = me.filteredLanderCollection.original.get(landerId);
 
             if (landerToUpdate) {
-              landerToUpdate.set("modified", true);
+              landerToUpdate.set({
+                modified: true,
+                no_optimize_on_save: false,
+                no_optimize_on_save: false
+              });
             }
 
           });

@@ -84,7 +84,11 @@ define(["app",
             model.save({}, {
               success: function(dataModel) {
 
-                model.set("saving", false);
+                model.set({
+                  saving: false,
+                  no_optimize_on_save: true
+                });
+
                 var error = dataModel.get("error");
 
                 if (error) {
@@ -221,7 +225,12 @@ define(["app",
               if (snippetToDestroy) {
                 snippetToDestroy.destroy({
                   success: function(model, response) {
-                    me.landerModel.set("saving", false);
+                    
+                    me.landerModel.set({
+                      saving: false,
+                      no_optimize_on_save: false
+                    });
+                    
                   }
                 });
               }

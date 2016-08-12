@@ -171,16 +171,17 @@ define(["app",
                   "lander_id": landerId
                 });
 
-
-                landerModel.set("saving", true);
+                //set no optimize on save false when add snippet!
+                landerModel.set({
+                  saving: true
+                });
 
                 newActiveSnippetModel.save({}, {
                   success: function(activeSnippetModel, two, three) {
-                    
-                    //!important: set no_optimize_on_save to FALSE when adding snippet
+
                     landerModel.set({
-                      no_optimize_on_save: false,
-                      saving: false
+                      saving: false,
+                      no_optimize_on_save: false
                     });
 
                     // add it to the colleciton
@@ -208,6 +209,7 @@ define(["app",
               });
 
               newSnippetDetailView.on("saveCode", function(code) {
+
                 var snippetModel = this.model;
 
                 snippetModel.set({
@@ -240,8 +242,12 @@ define(["app",
 
                 snippetModel.destroy({
                   success: function(deletedModel, affectedLanders) {
-                    // Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerModel);
-                    
+
+                    //set no optimize on save false when add snippet!
+                    landerModel.set({
+                      saving: false
+                    });
+
                     //  . remove active snippets from landers
                     Landerds.trigger("landers:updateAffectedLanderIdsRemoveActiveSnippets", affectedLanders);
 

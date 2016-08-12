@@ -9,15 +9,16 @@ define(["app",
       RightSidebar.DeploymentOptionsView = Marionette.ItemView.extend({
 
         initialize: function() {
-
+          //on load set noOptimize on save to false if modified from server
+          if (this.model.get("modified")) {
+            this.model.set("no_optimize_on_save", false);
+          }
         },
 
         template: DeploymentOptionsTpl,
 
         events: {
-          "change #optimized": "landerIsModified",
-          "change #deploy-root": "landerIsModified",
-          "keyup #deploy-folder-edit": "landerIsModified"
+          "keyup #deploy-folder-edit": "deploymentFolderNameChanged"
         },
 
         validateDeploymentFolderName: function() {
@@ -45,27 +46,30 @@ define(["app",
           });
         },
 
-        landerIsModified: function() {
-          
-          this.landerIsAlreadyModified = this.model.get("modified");
+
+        deploymentFolderNameChanged: function() {
+
+          //deployment folder last thing changed true unless its set to false
 
           //set new vals to model
           this.model.set(Backbone.Syphon.serialize(this));
 
-          if (this.model.get("deployment_folder_name") == this.model.get("originalValueDeploymentFolderName") &&
-            this.model.get("originalValueDeployRoot") == this.model.get("deploy_root") && !this.landerIsAlreadyModified) {
+          //validate the deploymentfoldername
+          this.validateDeploymentFolderName();
 
-            this.trigger("modified", false);
+          var noOptimizeOnSave = this.model.get("no_optimize_on_save");
+          var deploymentFolderHasChanged = (this.model.get("deployment_folder_name") != this.model.get("originalValueDeploymentFolderName"));
+          var modified = this.model.get("modified");
 
-          } else {
 
-            //if not currently modified then set no_optimize_on_save = true
-            if (!this.landerIsAlreadyModified) {
-              this.model.set("no_optimize_on_save", true);
+          if (noOptimizeOnSave) {
+            if (deploymentFolderHasChanged) {
+              this.trigger("modified", true);
+            } else {
+              this.trigger("modified", false);
             }
-
-            this.trigger("modified", true);
           }
+
         }
 
       });
