@@ -33,7 +33,7 @@ define(["app",
           }
           //2. save it no matter what
           deployedLanderCollection.each(function(location) {
-            location.set("deploy_status", "modified");
+            location.set("modified", true);
           });
 
         },

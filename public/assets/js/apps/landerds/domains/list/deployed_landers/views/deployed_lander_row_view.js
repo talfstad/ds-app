@@ -13,6 +13,7 @@ define(["app",
         tagName: "tr",
 
         modelEvents: {
+          "change:deploy_status": "render",
           "change:urlEndpoints": "render",
           "change:activeJobs": "render",
           "destroy:activeJobs": "render",

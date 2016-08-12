@@ -154,7 +154,8 @@ define(["app",
           this.$el.addClass("alert");
         }
 
-        if (this.model.get("modified")) {
+        if (this.model.get("modified") && (this.model.get("deploy_status") != "deploying" && 
+          this.model.get("deploy_status") != "undeploying")) {
           this.$el.removeClass("success alert warning");
           this.$el.addClass("warning");
         }

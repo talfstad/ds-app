@@ -46,18 +46,21 @@ define(["app",
         },
 
         landerIsModified: function() {
+          
+          this.landerIsAlreadyModified = this.model.get("modified");
+
           //set new vals to model
           this.model.set(Backbone.Syphon.serialize(this));
 
           if (this.model.get("deployment_folder_name") == this.model.get("originalValueDeploymentFolderName") &&
-            this.model.get("originalValueDeployRoot") == this.model.get("deploy_root")) {
+            this.model.get("originalValueDeployRoot") == this.model.get("deploy_root") && !this.landerIsAlreadyModified) {
 
             this.trigger("modified", false);
 
           } else {
 
             //if not currently modified then set no_optimize_on_save = true
-            if (!this.model.get("modified")) {
+            if (!this.landerIsAlreadyModified) {
               this.model.set("no_optimize_on_save", true);
             }
 

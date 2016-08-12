@@ -21,7 +21,6 @@ define(["app",
 
         showUndeployDomainFromCampaignDialog: function(e) {
           e.preventDefault();
-          e.stopPropagation();
 
           this.model.trigger("showUndeployDomainFromCampaignDialog", this.model);
         },

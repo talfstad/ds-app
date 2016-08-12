@@ -122,7 +122,7 @@ define(["app",
       defaults: {
         domain: "",
         nameservers: "",
-
+        endpoint_load_times: [],
         //gui attributes
         //should default true since deployed_domains is where this model is used
         deploy_status: 'deployed',

@@ -321,7 +321,7 @@ module.exports = function(db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT a.id, b.name, b.deployment_folder_name, a.lander_id, a.domain_id FROM deployed_landers a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.domain_id = ?)", [user_id, domain.id],
+            connection.query("SELECT a.id, b.name, b.deployment_folder_name, b.modified, a.lander_id, a.domain_id FROM deployed_landers a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.domain_id = ?)", [user_id, domain.id],
               function(err, dbDeployedLanders) {
                 if (dbDeployedLanders.length <= 0) {
                   callback(false, []);

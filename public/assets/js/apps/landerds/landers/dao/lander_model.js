@@ -197,6 +197,7 @@ define(["app",
         deployedDomains: [],
         activeCampaigns: [],
         no_optimize_on_save: false,
+        deploymentFolderInvalid: false,
         //gui update attributes
         deploy_status: 'not_deployed',
         totalNumJsSnippets: 0,

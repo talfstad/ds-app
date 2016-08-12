@@ -18,7 +18,8 @@ define(["app",
 
         modelEvents: {
           "change:deploy_status": "render",
-          "change:modified": "render"
+          "change:modified": "render",
+          "change:deploymentFolderInvalid": "render"
         },
 
         updateOriginalValues: function() {

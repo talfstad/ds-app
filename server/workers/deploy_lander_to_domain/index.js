@@ -54,7 +54,7 @@ module.exports = function(app, db) {
                   callback({ code: 'CouldNotCreateStagingArea' }, [myJobId]);
                 } else {
                   //- copy lander from s3 to staging area
-                  var awsS3FolderPath = "/landers/" + s3_folder_name;
+                  var awsS3FolderPath = "/landers/" + s3_folder_name + "/optimized";
                   db.aws.s3.copyDirFromS3ToStaging(staging_path, credentials, username, aws_root_bucket, awsS3FolderPath, function(err) {
                     if (err) {
                       callback({ code: "CouldNotCopyLanderFromS3ToStaging" }, [myJobId]);
@@ -112,21 +112,11 @@ module.exports = function(app, db) {
                             });
                           }
                         });
-                      }
+                      };
 
-                      db.jobs.updateDeployStatus(user, myJobId, "optimizing", function(err) {
-                        if (err) {
-                          callback({ code: "CouldNotUpdateDeployStatusOptimizing" }, [myJobId]);
-                        } else {
-                          // optimizations.fullyOptimize(staging_path, function(err) {
-                            // if (err) {
-                              // callback({ code: "CouldNotOptimizeJs" }, [myJobId]);
-                            // } else {
-                              pushToS3AndInvalidate();
-                            // }
-                          // });
-                        }
-                      });
+
+                      pushToS3AndInvalidate();
+
                     }
                   });
                 }
