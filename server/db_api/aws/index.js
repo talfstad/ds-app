@@ -6,7 +6,8 @@ module.exports = function(app, db) {
     module.s3 = require('./s3')(app, db);
     module.cloudfront = require('./cloudfront')(app, db);
     module.route53 = require('./route53')(app, db);
-
+    module.common = require('./common')(app, db);
+    
     return module;
 
 }

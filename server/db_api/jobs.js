@@ -33,8 +33,16 @@ module.exports = function(app, db) {
 
     },
 
+    //TODO
+    cancelDeployJobsForLander: function(lander_id, callback) {
+      callback(false);
+    },
+
     cancelAnyCurrentRunningDuplicateJobs: function(user, list, callback) {
       var user_id = user.id;
+
+      console.log("canceling these jobs: " + JSON.stringify(list));
+
 
       var ExternalInterruptJob = function(job) {
         db.getConnection(function(err, connection) {

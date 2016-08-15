@@ -41,6 +41,7 @@ module.exports = function(app, passport) {
           res.json({});
         }
       });
+
     } else if (action === "saveCode") {
       db.js_snippets.saveCode(user, params, function(err, returnObj) {
         if (err) {

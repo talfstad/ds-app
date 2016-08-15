@@ -80,6 +80,7 @@ module.exports = function(app, passport) {
     var user = req.user;
     var modelAttributes = req.body;
     var no_optimize_on_save = modelAttributes.no_optimize_on_save;
+    var lander_id = modelAttributes.id;
 
     db.landers.updateAllLanderData(user, modelAttributes, function(err, returnModelAttributes) {
       if (err) {
@@ -114,7 +115,7 @@ module.exports = function(app, passport) {
                 }
 
                 //copy the data down from the old s3, then push it to the new
-                db.aws.s3.copyDirFromS3ToStaging(stagingPath, credentials, username, baseBucketName, directory, function(err) {
+                db.aws.s3.copyDirFromS3ToStaging(lander_id, stagingPath, credentials, username, baseBucketName, directory, function(err) {
                   if (err) {
                     res.json({ error: { err } });
                   } else {
@@ -123,9 +124,7 @@ module.exports = function(app, passport) {
                       if (err) {
                         res.json({ error: { err } });
                       } else {
-
                         res.json(data);
-
                       }
                     });
 

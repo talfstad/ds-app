@@ -31,7 +31,7 @@ define(["app",
           //save if deployment folder is valid
           if (!this.model.get("deploymentFolderInvalid")) {
             this.model.set("modified", false);
-            this.model.set("saving", true);
+            this.model.set("saving_lander", true);
             this.updateOriginalValues();
             this.trigger("save");
           }

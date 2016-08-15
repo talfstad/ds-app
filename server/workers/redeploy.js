@@ -91,7 +91,7 @@ module.exports = function(app, db) {
                     callback(err);
                   } else {
                     //-bring lander into staging area from s3
-                    db.aws.s3.copyDirFromS3ToStaging(staging_path, credentials, username, aws_root_bucket, awsS3FolderPath, function(err) {
+                    db.aws.s3.copyDirFromS3ToStaging(lander_id, staging_path, credentials, username, aws_root_bucket, awsS3FolderPath, function(err) {
                       if (err) {
                         callback({ code: "CouldNotCopyLanderFromS3ToStaging" }, [myJobId]);
                       } else {
@@ -138,7 +138,7 @@ module.exports = function(app, db) {
             var pushNewLanderToS3AndInvalidate = function() {
               //- copy the lander up to the domain folder using the deployment_folder_name
               var awsDeploymentPath = "domains/" + domain_name + "/" + deployment_folder_name;
-              db.aws.s3.copyDirFromStagingToS3(staging_path, credentials, username, aws_root_bucket, awsDeploymentPath, function(err) {
+              db.aws.s3.copyDirFromStagingToS3(lander_id, false, staging_path, credentials, username, aws_root_bucket, awsDeploymentPath, function(err) {
                 if (err) {
                   callback({ code: "CoudNotCopyLanderToS3DeploymentFolder" }, [myJobId]);
                 } else {

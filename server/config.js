@@ -30,6 +30,9 @@ module.exports = {
     cloudfront: {
       invalidationPollDuration: 1000 * 60 // 30 seconds
     },
+    s3: {
+      getLockPollDuration: 1000 * 5 // 5 seconds
+    },
     optimize: {
       images: false
     },
@@ -66,6 +69,9 @@ module.exports = {
     },
     cloudfront: {
       invalidationPollDuration: 1000 * 30 // 30 seconds
+    },
+    s3: {
+      getLockPollDuration: 1000 * 5 // 5 seconds
     },
     optimize: {
       images: true

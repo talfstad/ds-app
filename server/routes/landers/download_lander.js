@@ -39,7 +39,7 @@ module.exports = function(app, passport) {
               } else {
                 var directory = path.join('landers', s3_folder_name, 'optimized');
                 //1. download original from s3
-                db.aws.s3.copyDirFromS3ToStaging(staging_path, credentials, username, aws_root_bucket, directory, function(err) {
+                db.aws.s3.copyDirFromS3ToStaging(lander_id, staging_path, credentials, username, aws_root_bucket, directory, function(err) {
                   if (err) {
                     callback(err);
                   } else {
@@ -103,7 +103,7 @@ module.exports = function(app, passport) {
                 var directory = path.join('landers', s3_folder_name, 'original');
 
                 //1. download original from s3
-                db.aws.s3.copyDirFromS3ToStaging(staging_path, credentials, username, aws_root_bucket, directory, function(err) {
+                db.aws.s3.copyDirFromS3ToStaging(lander_id, staging_path, credentials, username, aws_root_bucket, directory, function(err) {
                   if (err) {
                     callback(err);
                   } else {

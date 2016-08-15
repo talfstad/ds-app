@@ -39,7 +39,7 @@ module.exports = function(app, passport) {
               }
 
               //copy the data down from the old s3, then push it to the new
-              db.aws.s3.copyDirFromS3ToStaging(stagingPath, credentials, username, baseBucketName, fromDirectory, function(err) {
+              db.aws.s3.copyDirFromS3ToStaging(false, stagingPath, credentials, username, baseBucketName, fromDirectory, function(err) {
                 if (err) {
                   callback(err);
                 } else {

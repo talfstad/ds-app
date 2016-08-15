@@ -141,7 +141,7 @@ module.exports = function(app, db) {
                 var rootBucket = awsData.aws_root_bucket;
                 var key = user.user + "/landers/" + s3_folder_name + "/original/" + filename;
 
-                dbAws.s3.getObject(credentials, rootBucket, key, function(err, data) {
+                dbAws.s3.getObject(lander_id.lander_id, credentials, rootBucket, key, function(err, data) {
                   if (err) {
                     callback(err);
                   } else {
@@ -193,7 +193,7 @@ module.exports = function(app, db) {
                 run_custom_sync($);
 
                 //write the file $.html() to s3
-                dbAws.s3.putObject(credentials, rootBucket, key, $.html(), function(err, data) {
+                dbAws.s3.putObject(lander_id, credentials, rootBucket, key, $.html(), function(err, data) {
                   if (err) {
                     callback(err);
                   } else {
@@ -464,7 +464,7 @@ module.exports = function(app, db) {
                   var rootBucket = awsData.aws_root_bucket;
                   var key = user.user + "/landers/" + s3_folder_name + "/original/" + filename;
 
-                  dbAws.s3.getObject(credentials, rootBucket, key, function(err, data) {
+                  dbAws.s3.getObject(lander.id, credentials, rootBucket, key, function(err, data) {
                     if (err) {
                       callback(err);
                     } else {
@@ -501,7 +501,7 @@ module.exports = function(app, db) {
                           }
 
                           //write the file $.html() to s3
-                          dbAws.s3.putObject(credentials, rootBucket, key, $.html(), function(err, data) {
+                          dbAws.s3.putObject(lander_id.lander_id, credentials, rootBucket, key, $.html(), function(err, data) {
                             if (err) {
                               callback(err);
                             } else {

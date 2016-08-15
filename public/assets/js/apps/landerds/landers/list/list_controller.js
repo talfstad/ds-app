@@ -270,7 +270,7 @@ define(["app",
             //if modified we're going to be saving so set saving = true
             //  . this gets set false when the job updateStatus is correct
             if (landerModel.get("modified")) {
-              landerModel.set({saving_lander: true, modified: false});
+              landerModel.set({saving_lander: true});
             }
 
             var redeployJobModel = new JobModel({

@@ -77,23 +77,14 @@ module.exports = function(app, db) {
           accessKeyId: awsData.aws_access_key_id,
           secretAccessKey: awsData.aws_secret_access_key
         }
-        if (gzipped) {
-          dbAws.s3.copyGzippedDirFromStagingToS3(localStagingPath, credentials, username, baseBucketName, fullDirectory, function(err) {
-            if (err) {
-              callback(err);
-            } else {
-              callback(false);
-            }
-          });
-        } else {
-          dbAws.s3.copyDirFromStagingToS3(localStagingPath, credentials, username, baseBucketName, fullDirectory, function(err) {
-            if (err) {
-              callback(err);
-            } else {
-              callback(false);
-            }
-          });
-        }
+
+        dbAws.s3.copyDirFromStagingToS3(landerData.id, gzipped, localStagingPath, credentials, username, baseBucketName, fullDirectory, function(err) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(false);
+          }
+        });
 
       };
 
@@ -235,31 +226,31 @@ module.exports = function(app, db) {
             if (err) {
               callback(err);
             } else {
-              var directory = "/landers/" + s3_folder_name + "/original/";
-              pushLanderToS3(directory, awsData, false, function(err) {
+              //5. save/update lander into DB, save endpoints into DB (create stored proc for this?)
+              saveLanderToDb(function(err, isUpdate) {
                 if (err) {
                   callback(err);
                 } else {
-                  //3. optimize the staging directory
-                  htmlFileOptimizer.fullyOptimize(localStagingPath, function(err, endpoints) {
+
+                  var directory = "/landers/" + s3_folder_name + "/original/";
+                  pushLanderToS3(directory, awsData, false, function(err) {
                     if (err) {
                       callback(err);
                     } else {
-                      //4. push optimized to s3
-                      var directory = "/landers/" + s3_folder_name + "/optimized/";
-                      pushLanderToS3(directory, awsData, true, function(err) {
+                      //3. optimize the staging directory
+                      htmlFileOptimizer.fullyOptimize(localStagingPath, function(err, endpoints) {
                         if (err) {
                           callback(err);
                         } else {
-
-                          //4. remove local staging
-                          deleteStagingAreaIfFlag(localStagingPath, function(err) {
+                          //4. push optimized to s3
+                          var directory = "/landers/" + s3_folder_name + "/optimized/";
+                          pushLanderToS3(directory, awsData, true, function(err) {
                             if (err) {
                               callback(err);
                             } else {
 
-                              //5. save/update lander into DB, save endpoints into DB (create stored proc for this?)
-                              saveLanderToDb(function(err, isUpdate) {
+                              //4. remove local staging
+                              deleteStagingAreaIfFlag(localStagingPath, function(err) {
                                 if (err) {
                                   callback(err);
                                 } else {
@@ -267,7 +258,7 @@ module.exports = function(app, db) {
 
                                   //save
                                   var asyncIndex = 0;
-                                  if (endpoints > 0) {
+                                  if (endpoints.length > 0) {
                                     for (var i = 0; i < endpoints.length; i++) {
                                       //strip off the staging part of the path so its web root
 
@@ -306,7 +297,13 @@ module.exports = function(app, db) {
                                       });
                                     }
                                   } else {
-                                    callback(false);
+                                    var returnData = {
+                                      id: landerData.id,
+                                      created_on: landerData.created_on,
+                                      s3_folder_name: s3_folder_name,
+                                      url_endpoints_arr: []
+                                    };
+                                    callback(false, returnData);
                                   }
                                 }
                               });
@@ -316,8 +313,14 @@ module.exports = function(app, db) {
                       });
                     }
                   });
+
+
+
+
+
                 }
               });
+
             }
           });
         }

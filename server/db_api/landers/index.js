@@ -22,9 +22,6 @@ module.exports = function(app, db) {
           return;
         }
 
-        //validate deployment folder name isn't taken by another guy
-
-
         var checkIfDeploymentFolderExists = function(currentDeploymentFolder, callback) {
 
           if (deployment_folder_name == currentDeploymentFolder) {
