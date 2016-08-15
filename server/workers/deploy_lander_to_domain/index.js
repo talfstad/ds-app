@@ -192,37 +192,55 @@ module.exports = function(app, db) {
 
             var pushNewLanderToS3AndInvalidate = function(staging_path, callback) {
               //- copy the lander up to the domain folder using the deployment_folder_name
-
-              db.aws.s3.copyDirFromStagingToS3(staging_path, credentials, username, aws_root_bucket, folderPathToDeploy, function(err) {
-                if (err) {
-                  callback({ code: "CoudNotCopyLanderToS3DeploymentFolder" });
+              db.jobs.checkIfExternalInterrupt(user, myJobId, function(err, isInterrupt) {
+                if (err || isInterrupt) {
+                  if (isInterrupt) {
+                    app.log("external interrupt!! " + myJobId);
+                    var err = {
+                      code: "ExternalInterrupt",
+                      staging_path: staging_path
+                    };
+                    callback(err);
+                  } else {
+                    callback(err);
+                  }
                 } else {
-                  //- create invalidation for this deployment
-                  var invalidationPath = "/" + deployment_folder_name + "/*";
-                  console.log("invalidation path: " + invalidationPath);
-                  db.aws.cloudfront.createInvalidation(credentials, cloudfront_id, invalidationPath, function(err, invalidationData) {
+                  db.aws.s3.copyDirFromStagingToS3(staging_path, credentials, username, aws_root_bucket, folderPathToDeploy, function(err) {
                     if (err) {
-                      console.log(err);
-                      callback({ code: "CouldNotCreateInvalidation" });
+                      callback({ code: "CoudNotCopyLanderToS3DeploymentFolder" });
                     } else {
-                      console.log("invalidationData: " + JSON.stringify(invalidationData));
-
-                      var invalidation_id = invalidationData.Invalidation.Id;
-                      console.log("invalidation id: " + invalidation_id);
-                      db.jobs.updateDeployStatus(user, myJobId, "invalidating", function(err) {
+                      //- create invalidation for this deployment
+                      var invalidationPath = "/" + deployment_folder_name + "/*";
+                      console.log("invalidation path: " + invalidationPath);
+                      db.aws.cloudfront.createInvalidation(credentials, cloudfront_id, invalidationPath, function(err, invalidationData) {
                         if (err) {
-                          callback({ code: "CouldNotUpdateDeployStatus" });
+                          console.log(err);
+                          callback({ code: "CouldNotCreateInvalidation" });
                         } else {
-                          //- wait for invalidation to finish and then finish job
-                          db.aws.cloudfront.waitForInvalidationComplete(credentials, cloudfront_id, invalidation_id, function(err) {
+                          console.log("invalidationData: " + JSON.stringify(invalidationData));
+
+                          var invalidation_id = invalidationData.Invalidation.Id;
+                          console.log("invalidation id: " + invalidation_id);
+                          db.jobs.updateDeployStatus(user, myJobId, "invalidating", function(err) {
                             if (err) {
-                              callback({ code: "CouldNotWaitForInvalidationComplete" });
+                              callback({ code: "CouldNotUpdateDeployStatus" });
                             } else {
-                              db.jobs.updateDeployStatus(user, myJobId, "deployed", function(err) {
+                              //- wait for invalidation to finish and then finish job
+                              db.aws.cloudfront.waitForInvalidationComplete(user, myJobId, credentials, cloudfront_id, invalidation_id, function(err) {
                                 if (err) {
-                                  callback({ code: "CouldNotUpdateDeployStatus" });
+                                  if (err.code == "ExternalInterrupt") {
+                                    app.log("external interrupt2!! " + myJobId);
+                                    err.staging_path = staging_path;
+                                  }
+                                  callback(err);
                                 } else {
-                                  callback(false);
+                                  db.jobs.updateDeployStatus(user, myJobId, "deployed", function(err) {
+                                    if (err) {
+                                      callback({ code: "CouldNotUpdateDeployStatus" });
+                                    } else {
+                                      callback(false);
+                                    }
+                                  });
                                 }
                               });
                             }

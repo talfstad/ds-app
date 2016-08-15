@@ -6,6 +6,8 @@ module.exports = function(app, db) {
   var uuid = require('uuid');
   var moment = require('moment');
 
+  var dbJobsApi = require('../jobs')(app, db);
+
   return {
 
     createInvalidation: function(credentials, distribution_id, invalidationPath, callback) {
@@ -41,7 +43,7 @@ module.exports = function(app, db) {
 
     },
 
-    waitForInvalidationComplete: function(credentials, distribution_id, invalidation_id, callback) {
+    waitForInvalidationComplete: function(user, job_id, credentials, distribution_id, invalidation_id, callback) {
       AWS.config.update({
         region: 'us-west-2',
         maxRetries: 0
@@ -58,20 +60,31 @@ module.exports = function(app, db) {
           if (err) {
             callback(err);
           } else {
-            setTimeout(function() {
-
-              console.log("checking invalidation status: " + data.Invalidation.Status);
-              
-              if (data.Invalidation.Status === "Completed") {
-                callback(false);
+            dbJobsApi.checkIfExternalInterrupt(user, job_id, function(err, isInterrupt) {
+              if (err || isInterrupt) {
+                if (isInterrupt) {
+                  var err = {
+                    code: "ExternalInterrupt",
+                  };
+                  callback(err);
+                } else {
+                  callback({ code: "CouldNotWaitForInvalidationComplete" });
+                }
               } else {
-                getInvalidation();
+                setTimeout(function() {
+                  console.log("checking invalidation status: " + data.Invalidation.Status);
+                  if (data.Invalidation.Status === "Completed") {
+                    callback(false);
+                  } else {
+                    getInvalidation();
+                  }
+                }, app.config.cloudfront.invalidationPollDuration);
+                console.log("in wait for invalidation to complete ran this code before first check ran this code")
               }
-            }, app.config.cloudfront.invalidationPollDuration);
-            console.log("in wait for invalidation to complete ran this code before first check ran this code")
+            });
           }
         });
-      }
+      };
 
       getInvalidation();
 
@@ -263,7 +276,7 @@ module.exports = function(app, db) {
 
       //disable it
       this.getDistributionConfig(credentials, distributionId, function(err, data) {
-        if(!data){
+        if (!data) {
           callback("NoDistribution");
           return;
         }

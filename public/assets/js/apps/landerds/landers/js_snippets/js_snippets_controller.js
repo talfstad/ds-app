@@ -173,14 +173,14 @@ define(["app",
 
                 //set no optimize on save false when add snippet!
                 landerModel.set({
-                  saving: true
+                  saving_snippet: true
                 });
 
                 newActiveSnippetModel.save({}, {
                   success: function(activeSnippetModel, two, three) {
 
                     landerModel.set({
-                      saving: false,
+                      saving_snippet: false,
                       no_optimize_on_save: false
                     });
 
@@ -242,11 +242,6 @@ define(["app",
 
                 snippetModel.destroy({
                   success: function(deletedModel, affectedLanders) {
-
-                    //set no optimize on save false when add snippet!
-                    landerModel.set({
-                      saving: false
-                    });
 
                     //  . remove active snippets from landers
                     Landerds.trigger("landers:updateAffectedLanderIdsRemoveActiveSnippets", affectedLanders);

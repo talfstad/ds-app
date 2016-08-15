@@ -19,6 +19,7 @@ module.exports = function(app, db) {
         if (err) {
           if (err.code == "ExternalInterrupt") {
             if (err.staging_path) {
+              var staging_path = err.staging_path;
               //delete the staging area
               db.common.deleteStagingArea(staging_path, function(err) {
                 app.log("deleted the staging area from job error: " + staging_path, "debug");

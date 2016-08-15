@@ -206,7 +206,8 @@ define(["app",
         deployed_domains_count: 0,
         active_campaigns_count: 0,
         currentPreviewEndpointId: 0,
-        saving: false
+        saving_lander: false,
+        saving_snippet: false
       }
 
     });

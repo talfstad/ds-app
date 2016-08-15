@@ -85,7 +85,7 @@ define(["app",
               success: function(dataModel) {
 
                 model.set({
-                  saving: false,
+                  saving_lander: false,
                   no_optimize_on_save: true
                 });
 
@@ -203,7 +203,7 @@ define(["app",
 
           activeSnippetsView.on("childview:childview:deleteActiveJsSnippet", function(childView, childChildView, active_snippet_id) {
 
-            if (!model.get("saving")) {
+            if (!model.get("saving_snippet")) {
               //1. get the correct urlEndpoint model
               var snippetToDestroy = null;
               var endpointThisIsOn = null;
@@ -220,14 +220,14 @@ define(["app",
                 });
               });
 
-              me.landerModel.set("saving", true);
+              me.landerModel.set("saving_snippet", true);
 
               if (snippetToDestroy) {
                 snippetToDestroy.destroy({
                   success: function(model, response) {
                     
                     me.landerModel.set({
-                      saving: false,
+                      saving_snippet: false,
                       no_optimize_on_save: false
                     });
                     
