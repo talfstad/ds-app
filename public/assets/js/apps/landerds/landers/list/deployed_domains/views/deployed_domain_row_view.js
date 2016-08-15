@@ -24,7 +24,7 @@ define(["app",
         },
 
         modelEvents: {
-          "change:urlEndpoints": "render",
+          "change:deploy_status": "render",
           "change:load_time_spinner_gui": "setLoadTimeSpinnerState"
         },
 

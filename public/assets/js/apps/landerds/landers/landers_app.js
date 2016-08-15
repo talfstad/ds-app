@@ -46,7 +46,7 @@ define(["app",
         updateAllActiveSnippetNames: function(model) {
           ListController.updateAllActiveSnippetNames(model);
         },
-        deployLanderToNewDomain: function(attr) {
+        deployLanderToDomain: function(attr) {
           ListController.deployLanderToDomain(attr);
         },
         showJsSnippetsModal: function(model) {
@@ -176,8 +176,8 @@ define(["app",
         landersAppAPI.addNewDuplicatedLander(model);
       });
 
-      Landerds.on("landers:deployLanderToNewDomain", function(attr) {
-        landersAppAPI.deployLanderToNewDomain(attr);
+      Landerds.on("landers:deployLanderToDomain", function(attr) {
+        landersAppAPI.deployLanderToDomain(attr);
       });
 
       Landerds.on("landers:removeCampaignFromLander", function(campaignModel) {

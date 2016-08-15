@@ -37,8 +37,9 @@ module.exports = function(app, passport) {
                     stagingPath += "/" + files[0];
                   }
 
+                  var deleteStaging = true;
                   //rip and add lander both call this to finish the add lander process           
-                  db.landers.common.add_lander.addOptimizePushSave(user, stagingPath, stagingDir, landerData, function(err, data) {
+                  db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, stagingDir, landerData, function(err, data) {
                     if (err) {
                       console.log('err: ' + err);
                       callback(err);

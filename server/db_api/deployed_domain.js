@@ -12,10 +12,10 @@ module.exports = function(app, db) {
 
       app.log("getting load time for: " + link, "debug");
       //deploy with this
-      // var yslow = new YSlow(link, ['--info', 'basic']);
+      var yslow = new YSlow(link, ['--info', 'basic']);
 
       //testing this 
-      var yslow = new YSlow("landerds.com", ['--info', 'basic']);
+      // var yslow = new YSlow("landerds.com", ['--info', 'basic']);
 
       yslow.run(function(err, results) {
         if (err) {

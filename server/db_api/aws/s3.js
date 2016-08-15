@@ -8,6 +8,8 @@ module.exports = function(app, db) {
   var mkdirp = require('mkdirp');
   var path = require('path');
 
+  var dbCommon = require('../common')(db);
+
   return {
 
     getObject: function(credentials, bucketName, key, callback) {
@@ -639,6 +641,12 @@ module.exports = function(app, db) {
         fullDir = username;
       }
 
+      // console.log("bucketname: " + bucketName + "\n");
+      // console.log("stagingPath: " + stagingPath + "\n");
+      // console.log("username: " + username + "\n");
+      // console.log("directory: " + directory + "\n");
+      // console.log("credentials: " + JSON.stringify(credentials) + "\n");
+
       var s3_client = s3.createClient({
         maxAsyncS3: 20, // this is the default
         s3RetryCount: 0, // this is the default
@@ -718,27 +726,27 @@ module.exports = function(app, db) {
 
     //gets old folder and moves it to the new one...
     backupAndMoveUserFolder: function(oldCredentials, newCredentials, buckets, username, callback) {
+
       if (!buckets.oldBucketName || !buckets.newBucketName) {
         callback(false);
       } else {
         var me = this;
 
-        db.common.createStagingArea(function(stagingPath) {
+        dbCommon.createStagingArea(function(err, stagingPath) {
           // console.log("made staging dir " + stagingPath);
-
-          me.copyDirFromS3ToStaging(stagingPath, oldCredentials, username, buckets.oldBucketName, function(err) {
+          me.copyDirFromS3ToStaging(stagingPath, oldCredentials, username, buckets.oldBucketName, null, function(err) {
             if (err) {
               callback(err);
             } else {
-              // console.log("successfully downloaded dir to staging");
+              app.log("successfully downloaded dir to staging", "debug");
 
               me.copyDirFromStagingToS3(stagingPath, newCredentials, username, buckets.newBucketName, null, function(err) {
                 if (err) {
                   callback(err);
                 } else {
-                  // console.log("successfully uploaded dir from staging");
-                  db.common.deleteStagingArea(stagingPath, function() {
-                    // console.log("successfully deleted staging dir");
+                  app.log("successfully uploaded dir from staging", "debug");
+                  dbCommon.deleteStagingArea(stagingPath, function(err) {
+                    app.log("successfully deleted staging dir", "debug");
                     callback();
                   });
                 }
@@ -766,7 +774,7 @@ module.exports = function(app, db) {
             callback(err);
           } else {
             if (objectExists) {
-              // console.log("backing up..");
+              app.log("backing up..", "debug");
               //back it up and move it
               me.backupAndMoveUserFolder(oldCredentials, newCredentials, buckets, username, function(err) {
                 if (err) {
@@ -809,7 +817,6 @@ module.exports = function(app, db) {
 
           me.backupUserFolderMoveToNewAccountIfNeeded(oldCredentials, newCredentials, username, buckets, function(err) {
             if (err) {
-              console.log("backing up user data error: " + JSON.stringify(err));
               callback(err);
             } else {
               callback(false, buckets.newBucketName);

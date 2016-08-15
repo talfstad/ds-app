@@ -164,7 +164,6 @@ define(["app",
 
         },
 
-
         removeSnippetFromAllLanders: function(attr) {
           var me = this;
           var snippetToRemoveFromLanders = attr.snippet;
@@ -222,6 +221,27 @@ define(["app",
 
         },
 
+
+        //take a landerID and domainID and deploy the domain
+        //to that lander by adding it to the collection. This triggers
+        //a new job to be created, etc.
+        // lander = optional!
+        deployLanderToDomain: function(modelAttributes) {
+          var me = this;
+
+          var landerModel = this.filteredLanderCollection.get(modelAttributes.lander_id);
+          if (!landerModel) return false;
+
+          var deployedDomains = landerModel.get("deployedDomains");
+          var deployedDomainModel = new DeployedDomainModel(modelAttributes);
+
+          deployedDomains.add(deployedDomainModel);
+
+          this.redeployLanders(landerModel);
+
+        },
+
+        //add un added landers (with new key), and redeploy if modified
         redeployLanders: function(landerModel) {
 
           //get list of all deployedDomains first
@@ -230,18 +250,31 @@ define(["app",
 
           //get list of all locations to 
           deployedDomainCollection.each(function(deployedDomain) {
+            //TODO if deployed domain doesnt have an id then add the new key to the job
+            var isNew = false;
+            if (!deployedDomain.get("id")) {
+              isNew = true;
+            }
+
             deployedDomainsJobList.push({
               lander_id: deployedDomain.get("lander_id"),
               domain_id: deployedDomain.get("domain_id"),
-              action: "redeploy",
-              deploy_status: "redeploying"
+              action: "deployLanderToDomain",
+              deploy_status: "deploying",
+              new: isNew
             });
           });
 
           if (deployedDomainsJobList.length > 0) {
 
+            //if modified we're going to be saving so set saving = true
+            //  . this gets set false when the job updateStatus is correct
+            if (landerModel.get("modified")) {
+              landerModel.set("saving", true);
+            }
+
             var redeployJobModel = new JobModel({
-              action: "redeploy",
+              action: "deployLanderToDomain",
               list: deployedDomainsJobList,
               model: landerModel,
               neverAddToUpdater: true
@@ -250,13 +283,25 @@ define(["app",
             var redeployJobAttributes = {
               jobModel: redeployJobModel,
               onSuccess: function(responseJobList) {
+
+                //set modified false since we are saving
+                landerModel.set("modified", false);
+
                 //create job models for each deployed domain and add them!
                 deployedDomainCollection.each(function(deployedDomainModel) {
                   $.each(responseJobList, function(idx, responseJobAttr) {
                     if (deployedDomainModel.get("domain_id") == responseJobAttr.domain_id) {
                       //create new individual job model for
                       var activeJobs = deployedDomainModel.get("activeJobs");
-                      var newRedeployJob = new JobModel(responseJobAttr)
+                      var newRedeployJob = new JobModel(responseJobAttr);
+
+                      //remove active any deploy jobs for this deployed domain
+                      activeJobs.each(function(job) {
+                        if (job.get("action" == "deployLanderToDomain")) {
+                          job.destroy();
+                        }
+                      });
+
                       activeJobs.add(newRedeployJob);
                       //call start for each job 
                       Landerds.trigger("job:start", newRedeployJob);
@@ -594,66 +639,7 @@ define(["app",
           });
         },
 
-        //take a landerID and domainID and deploy the domain
-        //to that lander by adding it to the collection. This triggers
-        //a new job to be created, etc.
-        // lander = optional!
-        deployLanderToDomain: function(modelAttributes) {
-          var me = this;
 
-          modelAttributes.deploy_status = "deploying";
-
-          //any campaign triggered deploy will include a campaign_id
-          var campaign_id = modelAttributes.campaign_id;
-
-          var domainModel = modelAttributes.domain_model;
-          if (!domainModel) {
-            domainModel = this.filteredLanderCollection.get(modelAttributes.lander_id);
-          }
-          if (!domainModel) return false;
-
-          //create active job model to deploy this lander to a domain
-          var jobAttr = {
-            action: "deployLanderToDomain",
-            lander_id: modelAttributes.lander_id,
-            domain_id: modelAttributes.domain_id,
-            campaign_id: campaign_id,
-            deploy_status: "deploying",
-          };
-
-          var deployJobModel = new JobModel(jobAttr);
-
-          var jobStartAttributes = {
-            jobModel: deployJobModel,
-            onSuccess: function(response) {
-              //use the callback here to set deployedDomain's ID
-
-              var deployedDomains = domainModel.get("deployedDomains");
-
-              //search deployedDomains for the domain_id if found use that
-              var existingDeployedDomainModel = null;
-              deployedDomains.each(function(deployedDomain) {
-                if (deployedDomain.get("domain_id") == modelAttributes.domain_id) {
-                  existingDeployedDomainModel = deployedDomain;
-                }
-              });
-
-              if (existingDeployedDomainModel) {
-                var activeJobs = existingDeployedDomainModel.get("activeJobs");
-                activeJobs.add(deployJobModel);
-              } else {
-                modelAttributes.id = response.deployed_domain_id;
-                //create the deployed location model
-                var deployedDomainModel = new DeployedDomainModel(modelAttributes);
-                var activeJobs = deployedDomainModel.get("activeJobs");
-                activeJobs.add(deployJobModel);
-                deployedDomains.add(deployedDomainModel);
-              }
-            }
-          }
-
-          Landerds.trigger("job:start", jobStartAttributes);
-        },
 
 
         //add the lander model to the list

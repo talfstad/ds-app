@@ -20,8 +20,9 @@ module.exports = function(app, passport) {
         if (err) {
           callback(err);
         } else {
+          var deleteStaging = true;
           //rip and add lander both call this to finish the add lander process           
-          db.landers.common.add_lander.addOptimizePushSave(user, stagingPath, stagingDir, landerData, function(err, data) {
+          db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, stagingDir, landerData, function(err, data) {
             if (err) {
               db.log.rip.error(err, user, stagingDir, landerData, function(err) {
                 //callback to user that we logged the error and are going to help figure it out

@@ -126,7 +126,8 @@ define(["app",
         //should default true since deployed_domains is where this model is used
         deploy_status: 'deployed',
         hasActiveCampaigns: false,
-        modified: false
+        modified: false,
+        endpoint_load_times: [],
       }
 
 

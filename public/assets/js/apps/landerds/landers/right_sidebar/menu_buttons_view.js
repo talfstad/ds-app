@@ -41,10 +41,11 @@ define(["app",
           var me = this;
           e.preventDefault();
           if (!this.model.get("deploymentFolderInvalid")) {
-            this.model.set({
-              "deploy_status": "redeploying",
-              "modified": false
-            });
+            
+            // this.model.set({
+            //   "deploy_status": "redeploying"
+            // });
+
             this.updateOriginalValues();
             Landerds.trigger("landers:redeploy", this.model);
           } else {

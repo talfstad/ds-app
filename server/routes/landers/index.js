@@ -91,9 +91,7 @@ module.exports = function(app, passport) {
       } else {
 
         if (no_optimize_on_save) {
-
           res.json(returnModelAttributes);
-
         } else {
           //optimize lander and return new numbers for pagespeed!!
 
@@ -120,8 +118,8 @@ module.exports = function(app, passport) {
                   if (err) {
                     res.json({ error: { err } });
                   } else {
-
-                    db.landers.common.add_lander.addOptimizePushSave(user, stagingPath, modelAttributes.s3_folder_name, modelAttributes, function(err, data) {
+                    var deleteStaging = true;
+                    db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, modelAttributes.s3_folder_name, modelAttributes, function(err, data) {
                       if (err) {
                         res.json({ error: { err } });
                       } else {

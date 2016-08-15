@@ -10,7 +10,7 @@ module.exports = function(app, db) {
 
   return {
 
-    addOptimizePushSave: function(user, localStagingPath, s3_folder_name, landerData, callback) {
+    addOptimizePushSave: function(deleteStaging, user, localStagingPath, s3_folder_name, landerData, callback) {
 
       //make sure all images are decoded from the uri 
       var decodeImagesAndOverwrite = function(callback) {
@@ -139,6 +139,8 @@ module.exports = function(app, db) {
         //6. pagespeed test endpoints (deployed endpoints, original and optimized)
         psi(url, { strategy: 'mobile' }).then(data => {
           callback(false, data.ruleGroups.SPEED.score);
+        }).catch(err => {
+          callback(err);
         });
       };
 
@@ -199,10 +201,14 @@ module.exports = function(app, db) {
             var originalUrl = 'http://' + awsData.aws_root_bucket + '.s3-website-us-west-2.amazonaws.com/' + user.user + '/landers/' + s3_folder_name + '/original/' + filePath;
             var optimizedUrl = 'http://' + awsData.aws_root_bucket + '.s3-website-us-west-2.amazonaws.com/' + user.user + '/landers/' + s3_folder_name + '/optimized/' + filePath;
 
+
+            console.log("gettign pagespeed for: " + originalUrl);
             getPagespeedScore(originalUrl, function(err, originalPagespeed) {
               if (err) {
                 callback(err);
               } else {
+                console.log("gettign optimized pagespeed for: " + optimizedUrl);
+
                 getPagespeedScore(optimizedUrl, function(err, optimizedPagespeed) {
                   if (err) {
                     callback(err)
@@ -212,6 +218,16 @@ module.exports = function(app, db) {
                 });
               }
             });
+          };
+
+          var deleteStagingAreaIfFlag = function(staging_path, callback) {
+            if (deleteStaging) {
+              dbCommon.deleteStagingArea(staging_path, function() {
+                callback(false);
+              });
+            } else {
+              callback(false);
+            }
           };
 
           //before push lander make sure images are decoded
@@ -237,59 +253,64 @@ module.exports = function(app, db) {
                         } else {
 
                           //4. remove local staging
-                          dbCommon.deleteStagingArea("staging/" + s3_folder_name, function() {
+                          deleteStagingAreaIfFlag(localStagingPath, function(err) {
+                            if (err) {
+                              callback(err);
+                            } else {
 
-                            //5. save/update lander into DB, save endpoints into DB (create stored proc for this?)
-                            saveLanderToDb(function(err, isUpdate) {
-                              console.log("11is update: " + isUpdate);
+                              //5. save/update lander into DB, save endpoints into DB (create stored proc for this?)
+                              saveLanderToDb(function(err, isUpdate) {
+                                if (err) {
+                                  callback(err);
+                                } else {
+                                  app.log("11is update: " + isUpdate, "debug");
 
-                              if (err) {
-                                callback(err);
-                              } else {
+                                  //save
+                                  var asyncIndex = 0;
+                                  if (endpoints > 0) {
+                                    for (var i = 0; i < endpoints.length; i++) {
+                                      //strip off the staging part of the path so its web root
 
-                                //save
-                                var asyncIndex = 0;
-                                for (var i = 0; i < endpoints.length; i++) {
-                                  //strip off the staging part of the path so its web root
-
-                                  var urlEndpoints = [];
-                                  //save/update the urlEndpoints in db
-                                  runPageSpeedScores(endpoints[i], function(err, endpoint, originalPagespeed, optimizedPagespeed) {
-                                    if (err) {
-                                      console.log("PAGESPEED ERROR: " + JSON.stringify(err));
-                                      callback(err);
-                                    } else {
-
-                                      console.log("is update: " + isUpdate + " ENDPOINT ADDING: " + JSON.stringify(endpoint));
-
-                                      addUpdateEndpointsToLander(originalPagespeed, optimizedPagespeed, endpoint, isUpdate, function(err, endpoint) {
+                                      var urlEndpoints = [];
+                                      //save/update the urlEndpoints in db
+                                      runPageSpeedScores(endpoints[i], function(err, endpoint, originalPagespeed, optimizedPagespeed) {
                                         if (err) {
-                                      console.log("endpoitns to lander  ERROR: " + JSON.stringify(err));
+                                          console.log("PAGESPEED ERROR: " + JSON.stringify(err));
                                           callback(err);
                                         } else {
-                                          urlEndpoints.push(endpoint);
-                                      console.log("asyncTT: " + asyncIndex + " endpoints.length: " + endpoints.length);
 
-                                          if (++asyncIndex == endpoints.length) {
-                                            //done adding endpoints
-                                            var returnData = {
-                                              id: landerData.id,
-                                              created_on: landerData.created_on,
-                                              s3_folder_name: s3_folder_name,
-                                              url_endpoints_arr: urlEndpoints
-                                            };
+                                          console.log("is update: " + isUpdate + " ENDPOINT ADDING: " + JSON.stringify(endpoint));
 
-                                            callback(false, returnData);
-                                          }
+                                          addUpdateEndpointsToLander(originalPagespeed, optimizedPagespeed, endpoint, isUpdate, function(err, endpoint) {
+                                            if (err) {
+                                              console.log("endpoitns to lander  ERROR: " + JSON.stringify(err));
+                                              callback(err);
+                                            } else {
+                                              urlEndpoints.push(endpoint);
+                                              console.log("asyncTT: " + asyncIndex + " endpoints.length: " + endpoints.length);
 
+                                              if (++asyncIndex == endpoints.length) {
+                                                //done adding endpoints
+                                                var returnData = {
+                                                  id: landerData.id,
+                                                  created_on: landerData.created_on,
+                                                  s3_folder_name: s3_folder_name,
+                                                  url_endpoints_arr: urlEndpoints
+                                                };
+
+                                                callback(false, returnData);
+                                              }
+                                            }
+                                          });
                                         }
                                       });
                                     }
-                                  });
+                                  } else {
+                                    callback(false);
+                                  }
                                 }
-
-                              }
-                            });
+                              });
+                            }
                           });
                         }
                       });

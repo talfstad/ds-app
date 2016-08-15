@@ -56,16 +56,19 @@ module.exports = function(app, db) {
       var getInvalidation = function() {
         cloudfront_client.getInvalidation(params, function(err, data) {
           if (err) {
-            console.log(err, err.stack);
             callback(err);
           } else {
             setTimeout(function() {
+
+              console.log("checking invalidation status: " + data.Invalidation.Status);
+              
               if (data.Invalidation.Status === "Completed") {
                 callback(false);
               } else {
                 getInvalidation();
               }
             }, app.config.cloudfront.invalidationPollDuration);
+            console.log("in wait for invalidation to complete ran this code before first check ran this code")
           }
         });
       }

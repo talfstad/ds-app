@@ -308,8 +308,10 @@ module.exports = function(app, db) {
       });
     },
 
-    addLanderToDeployedLanders: function(user, lander_id, domain_id, callback) {
+    addLanderToDeployedLanders: function(user, landerData, callback) {
       var user_id = user.id;
+      var lander_id = landerData.lander_id;
+      var domain_id = landerData.domain_id;
 
       //insert into deployed_landers
 
@@ -322,6 +324,7 @@ module.exports = function(app, db) {
               console.log(err);
               callback(err);
             } else {
+              landerData.id = docs[0][0]["LAST_INSERT_ID()"];
               // return the ID
               callback(false, docs[0][0]["LAST_INSERT_ID()"]);
             }
@@ -452,7 +455,8 @@ module.exports = function(app, db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT id,action,deploy_status,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", ["undeployLanderFromDomain", "deployLanderToDomain", user_id, deployedDomain.lander_id, deployedDomain.domain_id, true],
+            var arr = ["undeployLanderFromDomain", "deployLanderToDomain", user_id, deployedDomain.lander_id, deployedDomain.domain_id, true];
+            connection.query("SELECT id,action,deploy_status,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", arr,
               function(err, dbActiveJobs) {
                 callback(false, deployedDomain, dbActiveJobs);
               });

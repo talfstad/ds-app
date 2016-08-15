@@ -2,6 +2,82 @@ module.exports = function(app, db) {
 
   return {
 
+    checkIfExternalInterrupt: function(user, job_id, callback) {
+      var user_id = user.id;
+
+      var checkJobExternalInterrupt = function() {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          } else {
+            connection.query("SELECT error, error_code FROM jobs WHERE user_id = ? AND id = ?", [user_id, job_id],
+              function(err, docs) {
+                if (err) {
+                  callback(err);
+                } else {
+                  var jobInfo = docs[0];
+
+                  if (jobInfo.error && jobInfo.error_code == "ExternalInterrupt") {
+                    callback(false, true);
+                  } else {
+                    callback(false, false);
+                  }
+                }
+                connection.release();
+              });
+          }
+        });
+      };
+
+      checkJobExternalInterrupt();
+
+    },
+
+    cancelAnyCurrentRunningDuplicateJobs: function(user, list, callback) {
+      var user_id = user.id;
+
+      var ExternalInterruptJob = function(job) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          } else {
+            connection.query("UPDATE jobs SET error = ?, error_code = ? WHERE user_id = ? AND lander_id = ? AND domain_id = ? AND action = ? AND done = ?", [true, "ExternalInterrupt", user_id, job.lander_id, job.domain_id, job.action, false],
+              function(err, docs) {
+                if (err) {
+                  console.log("ERRR: " + err)
+                  callback(err);
+                } else {
+                  callback(false);
+                }
+                connection.release();
+              });
+          }
+        });
+      };
+
+      if (list.length > 0) {
+        var asyncIndex = 0;
+        for (var i = 0; i < list.length; i++) {
+          console.log("canceling: " + JSON.stringify(list[i]));
+
+          ExternalInterruptJob(list[i], function(err) {
+            if (err) {
+              console.log("ok got err" + list.length);
+
+              callback(err);
+            } else {
+              console.log("ok got here" + list.length);
+              if (++asyncIndex == list.length) {
+                callback(false);
+              }
+            }
+          });
+        }
+      } else {
+        callback(false);
+      }
+    },
+
     //returns all processing jobs for campaign id
     getAllProcessingForCampaign: function(user, campaign_id, callback) {
       var user_id = user.id;
@@ -22,6 +98,25 @@ module.exports = function(app, db) {
         }
       });
 
+    },
+
+    addStagingPathToJob: function(staging_path, job_id, callback) {
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          console.log(err);
+        } else {
+          connection.query("UPDATE jobs set staging_path = ? WHERE id = ?;", [staging_path, job_id],
+            function(err, docs) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false);
+              }
+              connection.release();
+            });
+        }
+      });
     },
 
     //returns all jobs currently processing for user with specific domain and lander ids
@@ -60,8 +155,8 @@ module.exports = function(app, db) {
         if (err) {
           console.log(err);
         } else {
-
-          connection.query("SELECT * FROM jobs WHERE master_job_id = ? AND done = ? AND id = ?", [user_id, false, masterJobId],
+          var arr = [masterJobId, false, user_id];
+          connection.query("SELECT * FROM jobs WHERE master_job_id = ? AND done = ? AND user_id = ?", arr,
             function(err, docs) {
               if (err) {
                 callback(err);

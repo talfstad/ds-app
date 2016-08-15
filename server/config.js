@@ -28,7 +28,7 @@ module.exports = {
       redeployCheckIfMasterReadyRate: 1000 * 5 // 5 seconds
     },
     cloudfront: {
-      invalidationPollDuration: 1000 * 30 // 30 seconds
+      invalidationPollDuration: 1000 * 60 // 30 seconds
     },
     optimize: {
       images: false
