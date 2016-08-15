@@ -1,4 +1,4 @@
-module.exports = function(db) {
+module.exports = function(app, db) {
 
   var uuid = require('uuid');
   var mkdirp = require('mkdirp');
@@ -24,7 +24,7 @@ module.exports = function(db) {
 
     deleteStagingArea: function(stagingPath, callback) {
 
-      console.log('deleting staging area: ' + stagingPath)
+      app.log('deleting staging area: ' + stagingPath, "debug");
       rimraf(stagingPath + "*", function() {
         callback(false);
       });

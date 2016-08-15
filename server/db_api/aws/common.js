@@ -40,6 +40,9 @@ module.exports = function(app, db) {
     },
 
     getLockForS3: function(lander_id, callback) {
+      var date = new Date();
+      var startTime = date.getTime();
+
       console.log("LANDER ID : " + lander_id);
 
       if (!lander_id) {
@@ -91,7 +94,17 @@ module.exports = function(app, db) {
           } else {
             setTimeout(function() {
               app.log("lander_id: " + lander_id + " getting lock for s3: " + data.currently_using_s3_lock, "debug");
-              if (!data.currently_using_s3_lock) {
+
+              //check if we have a timeout
+              var date = new Date();
+              var endTime = date.getTime();
+
+              var timedOut = false;
+              if (app.config.s3.lockTimeout) {
+                timedOut = ((endTime - startTime) > app.config.s3.lockTimeout);
+              }
+
+              if (!data.currently_using_s3_lock || timedOut) {
                 lockDb(function(err) {
                   if (err) {
                     callback(err);

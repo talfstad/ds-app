@@ -147,25 +147,31 @@ define(["app",
 
           var currentEndpoint = this.model.get("urlEndpoints").get(this.model.get("currentPreviewEndpointId"));
 
-          var optimizationErrors = currentEndpoint.get("optimization_errors") || [];
+          //make sure lander has endpoints ..
+          if (currentEndpoint) {
 
-          //format the optimization errors for GUI output
-          var jsError = false,
-            cssError = false;
+            var optimizationErrors = currentEndpoint.get("optimization_errors") || [];
 
-          $.each(optimizationErrors, function(idx, error) {
-            switch (error.type) {
-              case "css":
-                cssError = true;
-                break;
-              case "js":
-                jsError = true;
-                break;
-            }
-          });
+            //format the optimization errors for GUI output
+            var jsError = false,
+              cssError = false;
 
-          //set optimization errors for GUI
-          this.model.set("optimization_errors_gui", { jsError: jsError, cssError: cssError });
+            $.each(optimizationErrors, function(idx, error) {
+              switch (error.type) {
+                case "css":
+                  cssError = true;
+                  break;
+                case "js":
+                  jsError = true;
+                  break;
+              }
+            });
+
+            //set optimization errors for GUI
+            this.model.set("optimization_errors_gui", { jsError: jsError, cssError: cssError });
+          
+          }
+
 
 
         },

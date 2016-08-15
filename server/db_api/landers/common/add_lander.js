@@ -1,16 +1,76 @@
 module.exports = function(app, db) {
 
-  var htmlFileOptimizer = require("../../../optimizer")(app);
+  var htmlFileOptimizer = require("../../../optimizer")(app, db);
   var dbAws = require('../../aws')(app, db);
-  var dbCommon = require('../../common')(db);
+  var dbCommon = require('../../common')(app, db);
   var find = require('find');
   var fs = require('fs');
   var path = require('path');
   var psi = require('psi');
 
+  var dbJobs = require('../../jobs')(app, db);
+
+
+  /*
+
+  add lander takes a staging area and will completely optimize a lander and push it to s3 (for preview)
+
+  this is used for save (1 rest call) and deploy (async job)
+
+
+  for async job you pass a job ID and we dont delete the staging area in here, for syncrounous we always
+  delete the staging area in here.
+
+
+  if this is a job, we check to make sure the job isnt canceled at key places:
+
+    . push to s3
+
+    . within fully optimize at:
+      -before start
+      -optimize images
+      -gzip
+
+  if job canceled we clean up and callback that it was canceled
+
+  */
+
+
+
   return {
 
-    addOptimizePushSave: function(deleteStaging, user, localStagingPath, s3_folder_name, landerData, callback) {
+    addOptimizePushSave: function(deleteStagingOrJobId, user, localStagingPath, s3_folder_name, landerData, callback) {
+      var jobId;
+      //if not bool its a job id
+      if (deleteStagingOrJobId != true && deleteStagingOrJobId != false) {
+        jobId = deleteStagingOrJobId;
+      } else {
+        jobId = false;
+      }
+
+      var deleteStaging;
+      if (deleteStagingOrJobId == true) {
+        deleteStaging = true;
+      } else {
+        deleteStaging = false;
+      }
+
+      var cleanupStagingAndCallbackExternalInterrupt = function(err) {
+        deleteStagingAreaIfFlag(localStagingPath, function() {
+          callback(err);
+        });
+      };
+
+
+      var deleteStagingAreaIfFlag = function(staging_path, callback) {
+        if (deleteStaging) {
+          dbCommon.deleteStagingArea(staging_path, function() {
+            callback(false);
+          });
+        } else {
+          callback(false);
+        }
+      };
 
       //make sure all images are decoded from the uri 
       var decodeImagesAndOverwrite = function(callback) {
@@ -69,23 +129,35 @@ module.exports = function(app, db) {
       //1. createDirectory in s3 for original
       //2. push original to s3
       var pushLanderToS3 = function(directory, awsData, gzipped, callback) {
-        var username = user.user;
-        var fullDirectory = username + directory;
-        var baseBucketName = awsData.aws_root_bucket;
 
-        var credentials = {
-          accessKeyId: awsData.aws_access_key_id,
-          secretAccessKey: awsData.aws_secret_access_key
-        }
-
-        dbAws.s3.copyDirFromStagingToS3(landerData.id, gzipped, localStagingPath, credentials, username, baseBucketName, fullDirectory, function(err) {
-          if (err) {
-            callback(err);
+        dbJobs.checkIfExternalInterrupt(user, jobId, function(err, isInterrupt) {
+          if (err || isInterrupt) {
+            if (isInterrupt) {
+              cleanupStagingAndCallbackExternalInterrupt({ code: "ExternalInterrupt" });
+            } else {
+              callback(err);
+            }
           } else {
-            callback(false);
+
+            var username = user.user;
+            var fullDirectory = username + directory;
+            var baseBucketName = awsData.aws_root_bucket;
+
+            var credentials = {
+              accessKeyId: awsData.aws_access_key_id,
+              secretAccessKey: awsData.aws_secret_access_key
+            }
+
+            //only push to s3 for this if this job is not canceled, if canceled callback error ExternalInterrupt
+            dbAws.s3.copyDirFromStagingToS3(landerData.id, gzipped, localStagingPath, credentials, username, baseBucketName, fullDirectory, function(err) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false);
+              }
+            });
           }
         });
-
       };
 
       var saveLanderToDb = function(callback) {
@@ -211,15 +283,7 @@ module.exports = function(app, db) {
             });
           };
 
-          var deleteStagingAreaIfFlag = function(staging_path, callback) {
-            if (deleteStaging) {
-              dbCommon.deleteStagingArea(staging_path, function() {
-                callback(false);
-              });
-            } else {
-              callback(false);
-            }
-          };
+
 
           //before push lander make sure images are decoded
           decodeImagesAndOverwrite(function(err) {
@@ -233,14 +297,20 @@ module.exports = function(app, db) {
                 } else {
 
                   var directory = "/landers/" + s3_folder_name + "/original/";
+
+                  //get a lock to push the original 
                   pushLanderToS3(directory, awsData, false, function(err) {
                     if (err) {
                       callback(err);
                     } else {
                       //3. optimize the staging directory
-                      htmlFileOptimizer.fullyOptimize(localStagingPath, function(err, endpoints) {
+                      htmlFileOptimizer.fullyOptimize(user, jobId, localStagingPath, function(err, endpoints) {
                         if (err) {
-                          callback(err);
+                          if (err.code == "ExternalInterrupt") {
+                            cleanupStagingAndCallbackExternalInterrupt(err);
+                          } else {
+                            callback(err);
+                          }
                         } else {
                           //4. push optimized to s3
                           var directory = "/landers/" + s3_folder_name + "/optimized/";

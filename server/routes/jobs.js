@@ -13,72 +13,72 @@ module.exports = function(app, passport) {
     var landerData = landerModelAttributes;
     var list = jobModelAttributes.list;
 
-    //if any of these jobs have the same action, domain_id and lander_id then we
-    // update the current ones to error=1 and code = "ExternalInterrupt"
-    db.jobs.cancelAnyCurrentRunningDuplicateJobs(user, list, function(err) {
-      if (err) {
-        res.json(err);
-      } else {
-        var afterRegisterJob = function(registeredJobAttributes) {
-          if (registeredJobAttributes.action === "addNewLander") {
-            //remove the stuff we dont want
-            delete registeredJobAttributes.landerFile;
-            delete registeredJobAttributes.file_id;
-          }
-          //send response
-          res.json(registeredJobAttributes);
+    var afterRegisterJob = function(registeredJobAttributes) {
+      if (registeredJobAttributes.action === "addNewLander") {
+        //remove the stuff we dont want
+        delete registeredJobAttributes.landerFile;
+        delete registeredJobAttributes.file_id;
+      }
+      //send response
+      res.json(registeredJobAttributes);
 
-          WorkerController.startJob(registeredJobAttributes.action, user, registeredJobAttributes);
-        };
-        var registerError = function() {};
-
-        if (jobModelAttributes.action === "deployLanderToDomain") {
+      WorkerController.startJob(registeredJobAttributes.action, user, registeredJobAttributes);
+    };
+    var registerError = function() {};
 
 
-          var addNewLanders = function(callback) {
-            //get the jobs with .new key = true
-            var newLanders = [];
-            for (var i = 0; i < list.length; i++) {
-              if (list[i].new) {
-                newLanders.push(list[i]);
-              }
-            }
+    if (jobModelAttributes.action === "deployLanderToDomain") {
 
-            if (newLanders.length <= 0) {
-              callback(false);
-            } else {
-              var asyncIndex = 0;
-              for (var i = 0; i < newLanders.length; i++) {
-                var newLander = newLanders[i];
-
-                console.log("adding a lander: " + JSON.stringify(newLander));
-
-                db.landers.addLanderToDeployedLanders(user, newLander, function(err, newLanderId) {
-                  if (err) {
-                    res.json({ code: "CouldNotAddToDeployedLandersDb" });
-                  } else {
-                    // newLander.id = newLander; //added by addLanderToDeployedLanders
-                    if (++asyncIndex == newLanders.length) {
-                      callback(false);
-                    }
-                  }
-                });
-              }
-            }
-          };
-
-          //get the list and 
-          addNewLanders(function(err) {
+      db.landers.updateAllLanderData(user, landerModelAttributes, function(err, returnModelAttributes) {
+        if (err) {
+          res.json({ code: "InvalidLanderInputs" });
+        } else {
+          //if any of these jobs have the same action, domain_id and lander_id then we
+          // update the current ones to error=1 and code = "ExternalInterrupt"
+          db.jobs.cancelAnyCurrentRunningDuplicateJobs(user, list, function(err) {
             if (err) {
               res.json(err);
             } else {
-              //register first job and assign as master
-              var firstJobAttributes = list.shift();
 
-              db.landers.updateAllLanderData(user, landerModelAttributes, function(err, returnModelAttributes) {
+              var addNewLanders = function(callback) {
+                //get the jobs with .new key = true
+                var newLanders = [];
+                for (var i = 0; i < list.length; i++) {
+                  if (list[i].new) {
+                    newLanders.push(list[i]);
+                  }
+                }
+
+                if (newLanders.length <= 0) {
+                  callback(false);
+                } else {
+                  var asyncIndex = 0;
+                  for (var i = 0; i < newLanders.length; i++) {
+                    var newLander = newLanders[i];
+
+                    console.log("adding a lander: " + JSON.stringify(newLander));
+
+                    db.landers.addLanderToDeployedLanders(user, newLander, function(err, newLanderId) {
+                      if (err) {
+                        res.json({ code: "CouldNotAddToDeployedLandersDb" });
+                      } else {
+                        // newLander.id = newLander; //added by addLanderToDeployedLanders
+                        if (++asyncIndex == newLanders.length) {
+                          callback(false);
+                        }
+                      }
+                    });
+                  }
+                }
+              };
+
+              //get the list and 
+              addNewLanders(function(err) {
                 if (err) {
                   res.json(err);
                 } else {
+                  //register first job and assign as master
+                  var firstJobAttributes = list.shift();
 
                   db.jobs.registerJob(user, firstJobAttributes, function(registeredMasterJobAttributes) {
                     //start the first job (master job)
@@ -125,19 +125,21 @@ module.exports = function(app, passport) {
                     }
 
                   });
+
                 }
               });
             }
           });
-
-        } else {
-          //TODO: validate job model is valid to begin
-          db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob)
-
         }
-      }
+      });
 
-    });
+
+
+    } else {
+      //TODO: validate job model is valid to begin
+      db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob)
+
+    }
 
 
 

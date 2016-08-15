@@ -105,7 +105,7 @@ module.exports = function(app, db) {
                   console.log("modified, updating lander " + myJobId);
                   //resave the lander to s3 before we can deploy it
                   var deleteStaging = false;
-                  db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, staging_path, s3_folder_name, landerData, function(err, returnData) {
+                  db.landers.common.add_lander.addOptimizePushSave(myJobId, user, staging_path, s3_folder_name, landerData, function(err, returnData) {
                     if (err) {
                       callback(err);
                     } else {

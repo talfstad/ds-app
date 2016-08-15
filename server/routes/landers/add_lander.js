@@ -26,6 +26,7 @@ module.exports = function(app, passport) {
             if (err) {
               callback(err);
             } else {
+              var usingStagingPath = stagingPath;
               //if only 1 folder in unzipped file use the folder as root instead of
               //the original. (this fixes if people put their lander in a folder and compress the folder)
               fs.readdir(stagingPath, function(err, files) {
@@ -33,18 +34,42 @@ module.exports = function(app, passport) {
                   callback(err);
                 } else {
                   if (files.length == 1) {
-                    //set stagingDir to include this file
-                    stagingPath += "/" + files[0];
+                    var dirName = files[0];
+                    var innerDirPath = stagingPath + "/" + dirName;
+
+                    var isDirectory = fs.lstatSync(innerDirPath).isDirectory();
+                    if (isDirectory) {
+
+
+                      //remove spaces from directory #rename it
+                      var newDirName = dirName.replace(/\s+/g, '');
+                      var newDirPath = stagingPath + "/" + newDirName;
+                      //just rename sync since its way easier than callback bs
+                      fs.renameSync(innerDirPath, newDirPath);
+
+                      app.log("using inner directory: " + newDirPath, "debug");
+
+                      //set stagingDir to include this file
+                      usingStagingPath = newDirPath;
+                      usingInnerDirectory = true;
+                    }
                   }
 
-                  var deleteStaging = true;
+                  var deleteStaging = false;
                   //rip and add lander both call this to finish the add lander process           
-                  db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, stagingDir, landerData, function(err, data) {
+                  db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, usingStagingPath, stagingDir, landerData, function(err, data) {
                     if (err) {
-                      console.log('err: ' + err);
                       callback(err);
                     } else {
-                      callback(false, data);
+                      //delete the staging area ourselves since we may have used an inner folder.
+                      //delete the whole staging dir, not just the inner folder
+                      db.common.deleteStagingArea(stagingPath, function(err) {
+                        if (err) {
+                          callback(err);
+                        } else {
+                          callback(false, data);
+                        }
+                      });
                     }
                   });
                 }
@@ -52,7 +77,6 @@ module.exports = function(app, passport) {
             }
           });
         }
-
       });
     }
   };

@@ -3,6 +3,12 @@ module.exports = function(app, db) {
   return {
 
     checkIfExternalInterrupt: function(user, job_id, callback) {
+      app.log("checking for job interrupt: " + job_id + " user: " + user.id, "debug");
+      if (!job_id) {
+        callback(false, false);
+        return;
+      }
+
       var user_id = user.id;
 
       var checkJobExternalInterrupt = function() {
@@ -39,6 +45,11 @@ module.exports = function(app, db) {
     },
 
     cancelAnyCurrentRunningDuplicateJobs: function(user, list, callback) {
+      if(!list){
+        callback(false);
+        return;
+      }
+
       var user_id = user.id;
 
       console.log("canceling these jobs: " + JSON.stringify(list));

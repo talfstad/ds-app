@@ -15,7 +15,7 @@ module.exports = function(app) {
   module.updater = require('./updater')(db);
   module.jobs = require('./jobs')(app, db);
   module.aws = require('./aws')(app, db);
-  module.common = require('./common')(db);
+  module.common = require('./common')(app, db);
   module.log = require('./log')(app, db);
   module.deployed_domain = require('./deployed_domain')(app,db);
   return module;
