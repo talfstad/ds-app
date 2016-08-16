@@ -154,11 +154,12 @@ define(["app",
           this.$el.addClass("alert");
         }
 
-        if (this.model.get("modified") && (this.model.get("deploy_status") != "deploying" && 
-          this.model.get("deploy_status") != "undeploying")) {
-          this.$el.removeClass("success alert warning");
-          this.$el.addClass("warning");
-        }
+        //never show modified in deployed row ! only for right sidebar
+        // if (this.model.get("modified") && (this.model.get("deploy_status") != "deploying" && 
+        //   this.model.get("deploy_status") != "undeploying")) {
+        //   this.$el.removeClass("success alert warning");
+        //   this.$el.addClass("warning");
+        // }
 
         this.trigger("updateParentLayout", this.model);
       }

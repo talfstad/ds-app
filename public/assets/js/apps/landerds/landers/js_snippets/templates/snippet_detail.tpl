@@ -29,25 +29,11 @@
   <div class="control-buttons-container">
     <div class="btn-group">
       <div class="add-snippet-to-page-container">
-        <select class="snippets-endpoint-select select2-single form-control">
-          <% _.each(availableUrlEndpoints, function(endpoint) { %>
-            <option value="<%= endpoint.id %>">
-              <%= endpoint.filename %>
-            </option>
-            <% }) %>
-        </select>
-        <button type="button" style="border-left:none" class="<% if(availableUrlEndpoints.length <= 0) { %>disabled <% } %>add-to-lander mr10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
+
+        <button data-id="<%= availableEndpointId %>" type="button" class="<% if(!availableEndpointId || saving_lander) { %>disabled <% } %> add-to-lander mr10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
           <span class="fa fa-plus pr5"></span>Add to Page
         </button>
       </div>
-      <!-- <div class="btn-group">
-        <button type="button" style="width: 80px" class="<% if(!changed) { %>disabled <% } %> save-snippet-code-button pl10 pt5 pb5 btn btn-default btn-gradient dark">
-          <span class="fa fa-save pr5"></span>Save
-        </button>
-        <button type="button" style="width: 80px" class="pl10 pt5 mr10 pb5 btn btn-danger btn-gradient dark">
-          <span class="fa fa-save pr5"></span>Delete
-        </button>
-      </div> -->
     </div>
   </div>
 </header>

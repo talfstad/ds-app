@@ -16,11 +16,11 @@ module.exports = function(app, db) {
 
       //try saveModified first.
       var modified = attr.saveModified;
-      if (!modified) {
+      if (!attr.modified) {
         modified = attr.modified;
       }
 
-      console.log("saving modified: " + modified);
+      console.log("TT saving modified: " + modified);
 
       //validate inputs
       if (deployment_folder_name) {

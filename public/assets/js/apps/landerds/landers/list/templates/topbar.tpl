@@ -37,6 +37,8 @@
       if(total_modified > 1 || total_modified < 1){
         modifiedLanderText = "Landers"
       }
+
+      total_modified = 0;
     %>
 
       <% if(total_deleting > 0) { %>

@@ -29,7 +29,7 @@ module.exports = function(app, db) {
 
         db.domains.getSharedDomainInfo(domain_id, aws_root_bucket, function(err, domain) {
           if (err) {
-            callback({ code: "CouldNotGetDomainInformation" });
+            callback({ code: "CouldNotGetDomainInformation" }, [myJobId]);
           } else {
 
             var lander = landers[0];
@@ -283,24 +283,24 @@ module.exports = function(app, db) {
 
             deleteOldDeployedS3Dir(function(err) {
               if (err) {
-                callback(err);
+                callback(err, [myJobId]);
               } else {
                 invalidateIfOldDeploymentFolderDifferent(function(err) {
                   if (err) {
-                    callback(err);
+                    callback(err, [myJobId]);
                   } else {
                     console.log(myJobId + " master prepare starting " + master_job_id)
                     masterPrepareLanderStagingArea(function(err, master_staging_path) {
                       if (err) {
-                        callback(err);
+                        callback(err, [myJobId]);
                       } else {
                         waitForMasterCompleteStagingAreaWork(master_staging_path, function(err, master_staging_path) {
                           if (err) {
-                            callback(err);
+                            callback(err, [myJobId]);
                           } else {
                             pushNewLanderToS3AndInvalidate(master_staging_path, function(err) {
                               if (err) {
-                                callback(err);
+                                callback(err, [myJobId]);
                               } else {
                                 app.log(myJobId + " done pushNewLanderToS3AndInvalidate", "debug");
 
@@ -310,14 +310,14 @@ module.exports = function(app, db) {
 
                                     masterWaitForSlavesToFinish(function(err) {
                                       if (err) {
-                                        callback(err);
+                                        callback(err, [myJobId]);
                                       } else {
                                         app.log(myJobId + " done masterWaitForSlavesToFinish", "debug");
 
                                         //-when all slaves finished, delete staging directory
                                         deleteStagingArea(master_staging_path, function(err) {
                                           if (err) {
-                                            callback(err);
+                                            callback(err, [myJobId]);
                                           } else {
                                             app.log(myJobId + " done deleteStagingArea", "debug");
 

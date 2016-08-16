@@ -205,7 +205,7 @@ define(["app",
 
           activeSnippetsView.on("childview:childview:deleteActiveJsSnippet", function(childView, childChildView, active_snippet_id) {
 
-            if (!model.get("saving_snippet")) {
+            if (!model.get("saving_lander")) {
               //1. get the correct urlEndpoint model
               var snippetToDestroy = null;
               var endpointThisIsOn = null;
@@ -222,14 +222,14 @@ define(["app",
                 });
               });
 
-              me.landerModel.set("saving_snippet", true);
+              me.landerModel.set("saving_lander", true);
 
               if (snippetToDestroy) {
                 snippetToDestroy.destroy({
                   success: function(model, response) {
                     
                     me.landerModel.set({
-                      saving_snippet: false,
+                      saving_lander: false,
                       no_optimize_on_save: false
                     });
                     

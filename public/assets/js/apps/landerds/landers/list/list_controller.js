@@ -70,7 +70,6 @@ define(["app",
             if (landerToUpdate) {
               landerToUpdate.set({
                 modified: true,
-                no_optimize_on_save: false,
                 no_optimize_on_save: false
               });
             }
@@ -270,7 +269,11 @@ define(["app",
             //if modified we're going to be saving so set saving = true
             //  . this gets set false when the job updateStatus is correct
             if (landerModel.get("modified")) {
-              landerModel.set({saving_lander: true});
+
+              landerModel.set({
+                saving_lander: true
+              });
+
             }
 
             var redeployJobModel = new JobModel({
@@ -286,7 +289,9 @@ define(["app",
 
                 //redeploy happening so now we're working, not modified
                 //set modified false since we are saving
-                landerModel.set("modified", false);
+                landerModel.set({
+                  modified: false
+                });
 
                 //create job models for each deployed domain and add them!
                 deployedDomainCollection.each(function(deployedDomainModel) {

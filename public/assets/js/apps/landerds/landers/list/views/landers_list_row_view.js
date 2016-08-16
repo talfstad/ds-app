@@ -38,8 +38,7 @@ define(["app",
         },
 
         modelEvents: {
-          "change:deploy_status": "alertDeployStatus",
-          "change:modified": "alertDeployStatus"
+          "change:deploy_status": "alertDeployStatus"
         },
 
         regions: {
@@ -50,30 +49,27 @@ define(["app",
         },
 
         alertDeployStatus: function() {
-          var capitalizeFirstLetter = function(string) {
-            string = string.toLowerCase();
-            return string.charAt(0).toUpperCase() + string.slice(1);
-          }
-
+          
           //show correct one
           var deployStatus = this.model.get("deploy_status");
 
-          this.$el.find(".alert-modified-badge").hide();
+          // this.$el.find(".alert-modified-badge").hide();
+          
           if (deployStatus !== "deployed" && deployStatus !== "not_deployed") {
             this.$el.find(".alert-working-badge").show();
           } else {
             this.$el.find(".alert-working-badge").hide();
           }
 
-          if (this.model.get("modified")) {
-            this.$el.find(".alert-modified-badge").show();
-            this.$el.find(".alert-working-badge").hide();
-          }
+          // if (this.model.get("modified")) {
+          //   this.$el.find(".alert-modified-badge").show();
+          //   this.$el.find(".alert-working-badge").hide();
+          // }
 
 
           if (deployStatus == "deleting") {
             this.$el.find(".alert-working-badge").hide();
-            this.$el.find(".alert-modified-badge").hide();
+            // this.$el.find(".alert-modified-badge").hide();
             this.$el.find(".alert-deleting-badge").show();
           }
         },

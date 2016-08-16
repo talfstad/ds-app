@@ -14,14 +14,14 @@
            </div>
             </span>
           </div>
-          <div class="alert-modified-badge widget-menu domain-campaign-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
+          <!-- <div class="alert-modified-badge widget-menu domain-campaign-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
             <span class="open_sidemenu_r label">
         
           <div class="text-warning">
            <span>Outdated</span>
            </div>
             </span>
-          </div>
+          </div> -->
           <div class="alert-deleting-badge widget-menu domain-campaign-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
             <span class="open_sidemenu_r label">
         

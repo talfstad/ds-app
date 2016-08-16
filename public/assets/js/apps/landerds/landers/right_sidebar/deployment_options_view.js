@@ -59,8 +59,6 @@ define(["app",
 
           var noOptimizeOnSave = this.model.get("no_optimize_on_save");
           var deploymentFolderHasChanged = (this.model.get("deployment_folder_name") != this.model.get("originalValueDeploymentFolderName"));
-          var modified = this.model.get("modified");
-
 
           if (noOptimizeOnSave) {
             if (deploymentFolderHasChanged) {

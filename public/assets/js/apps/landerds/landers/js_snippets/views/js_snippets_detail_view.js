@@ -27,6 +27,7 @@ define(["app",
           "change:name": "render",
           "change:editing": "render",
           "change:showEditInfo": "render",
+          "change:saving_lander": "render",
           "change:availableUrlEndpoints": "render",
           "change:saving": "render",
           "change:changed": "showAlerts",
@@ -95,7 +96,7 @@ define(["app",
         addSnippetToUrlEndpoint: function(e) {
           e.preventDefault();
           //validate we should be able to add it
-          var urlEndpointId = $(".snippets-endpoint-select").val();
+          var urlEndpointId = $(e.currentTarget).attr("data-id");
 
           if (urlEndpointId) {
             this.trigger("addSnippetToUrlEndpoint", {

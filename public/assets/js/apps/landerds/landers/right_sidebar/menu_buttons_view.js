@@ -20,8 +20,7 @@ define(["app",
           "change:deploy_status": "render",
           "change:modified": "render",
           "change:deploymentFolderInvalid": "render",
-          "change:saving_lander": "render",
-          "change:saving_snippet": "render"
+          "change:saving_lander": "render"
         },
 
         updateOriginalValues: function() {
@@ -58,13 +57,12 @@ define(["app",
 
           var saveDeployEnabledGui = false;
 
-          //allow save/deploy if modified AND not saving_lander or saving_snippet AND not invalid deployment folder
+          //allow save/deploy if modified AND not saving_lander AND not invalid deployment folder
           var savingLander = this.model.get("saving_lander");
-          var savingSnippet = this.model.get("saving_snippet");
           var modified = this.model.get("modified");
           var deploymentFolderInvalid = this.model.get("deploymentFolderInvalid");
 
-          if (modified && !deploymentFolderInvalid && !savingSnippet && !savingLander) {
+          if (modified && !deploymentFolderInvalid && !savingLander) {
             saveDeployEnabledGui = true;
           }
 

@@ -130,23 +130,61 @@ define(["app",
               var showingSnippetId = model.get("snippet_id");
 
               var urlEndpointCollection = landerModel.get("urlEndpoints");
-              urlEndpointCollection.each(function(endpoint) {
-                var isAvailable = true;
-                var activeSnippetCollection = endpoint.get("activeSnippets");
 
-                activeSnippetCollection.each(function(snippet) {
-                  if (snippet.get("snippet_id") == showingSnippetId) {
-                    isAvailable = false;
-                  }
-                });
+              var currentShowingEndpoint = urlEndpointCollection.get(landerModel.get("currentPreviewEndpointId"));
 
-                if (isAvailable)
-                  availableUrlEndpoints.push({
-                    id: endpoint.get("id"),
-                    filename: endpoint.get("filename")
-                  });
+              //snippet available for endpoint?
+              var isAvailable = true;
+              var activeSnippetCollection = currentShowingEndpoint.get("activeSnippets");
+              activeSnippetCollection.each(function(snippet) {
+                if (snippet.get("snippet_id") == showingSnippetId) {
+                  isAvailable = false;
+                }
               });
-              model.set("availableUrlEndpoints", availableUrlEndpoints);
+
+              //set initial saving
+              model.set("saving_lander", landerModel.get("saving_lander"));
+              //update if change
+              landerModel.on("change:saving_lander", function(landerModel, val) {
+                model.set("saving_lander", val);
+              });
+
+              if (!currentShowingEndpoint) {
+                //if no endpoint just set saving_lander so we disable it
+                model.set("availableEndpointId", null);
+              } else {
+                if (isAvailable) {
+
+                  model.set("availableEndpointId", currentShowingEndpoint.get("id"));
+                  
+                } else {
+                  model.set("availableEndpointId", null);
+                }
+              }
+
+              
+
+
+              // urlEndpointCollection.each(function(endpoint) {
+              //   var isAvailable = true;
+              //   var activeSnippetCollection = endpoint.get("activeSnippets");
+
+              //   activeSnippetCollection.each(function(snippet) {
+              //     if (snippet.get("snippet_id") == showingSnippetId) {
+              //       isAvailable = false;
+              //     }
+              //   });
+
+              //   if (isAvailable)
+              //     availableUrlEndpoints.push({
+              //       id: endpoint.get("id"),
+              //       filename: endpoint.get("filename")
+              //     });
+              // });
+              // model.set("availableUrlEndpoints", availableUrlEndpoints);
+
+
+
 
 
               //3. show the new detail view with the model that was clicked
@@ -173,14 +211,14 @@ define(["app",
 
                 //set no optimize on save false when add snippet!
                 landerModel.set({
-                  saving_snippet: true
+                  saving_lander: true
                 });
 
                 newActiveSnippetModel.save({}, {
                   success: function(activeSnippetModel, two, three) {
 
                     landerModel.set({
-                      saving_snippet: false,
+                      saving_lander: false,
                       no_optimize_on_save: false
                     });
 

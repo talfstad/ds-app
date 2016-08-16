@@ -12,14 +12,12 @@ define(["app",
 
         modelEvents: {
           'change:modified': 'render',
-          'change:saving_lander': 'render',
-          'change:saving_snippet': 'render'
+          'change:saving_lander': 'render'
         },
 
         display: function() {
           var modified = this.model.get("modified");
           var saving_lander = this.model.get("saving_lander");
-          var saving_snippet = this.model.get("saving_snippet");
 
 
           //always show modified if its modified
@@ -29,13 +27,13 @@ define(["app",
             this.$el.removeClass("alert-warning");
           }
 
-          if (saving_lander || saving_snippet) {
+          if (saving_lander) {
             this.$el.removeClass("alert-warning").addClass("alert-primary");
           } else {
             this.$el.removeClass("alert-primary");
           }
         
-          if (modified || saving_lander || saving_snippet) {
+          if (modified || saving_lander) {
             this.$el.fadeIn();
           } else {
             this.$el.hide();
