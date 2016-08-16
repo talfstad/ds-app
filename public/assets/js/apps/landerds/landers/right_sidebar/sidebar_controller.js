@@ -79,6 +79,7 @@ define(["app",
             model: model
           });
 
+
           sidebarMenuButtonsView.on("save", function() {
             //save optimized, deployment_folder_name, deploy_root
             model.save({}, {
@@ -86,7 +87,8 @@ define(["app",
 
                 model.set({
                   saving_lander: false,
-                  no_optimize_on_save: true
+                  no_optimize_on_save: true,
+                  modified: false
                 });
 
                 var error = dataModel.get("error");

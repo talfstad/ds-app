@@ -305,24 +305,28 @@ module.exports = function(app, db) {
                                 app.log(myJobId + " done pushNewLanderToS3AndInvalidate", "debug");
 
                                 if (!master_job_id) {
-                                  masterWaitForSlavesToFinish(function(err) {
-                                    if (err) {
-                                      callback(err);
-                                    } else {
-                                      app.log(myJobId + " done masterWaitForSlavesToFinish", "debug");
+                                  //if master finish job and still wait around
+                                  db.jobs.finishedJobSuccessfully(user, [myJobId], function() {
 
-                                      //-when all slaves finished, delete staging directory
-                                      deleteStagingArea(master_staging_path, function(err) {
-                                        if (err) {
-                                          callback(err);
-                                        } else {
-                                          app.log(myJobId + " done deleteStagingArea", "debug");
+                                    masterWaitForSlavesToFinish(function(err) {
+                                      if (err) {
+                                        callback(err);
+                                      } else {
+                                        app.log(myJobId + " done masterWaitForSlavesToFinish", "debug");
 
-                                          var finishedJobs = [myJobId];
-                                          callback(false, finishedJobs);
-                                        }
-                                      });
-                                    }
+                                        //-when all slaves finished, delete staging directory
+                                        deleteStagingArea(master_staging_path, function(err) {
+                                          if (err) {
+                                            callback(err);
+                                          } else {
+                                            app.log(myJobId + " done deleteStagingArea", "debug");
+
+                                            var finishedJobs = []; //master already finished his job above
+                                            callback(false, finishedJobs);
+                                          }
+                                        });
+                                      }
+                                    });
                                   });
                                 } else {
                                   //slave just finishes

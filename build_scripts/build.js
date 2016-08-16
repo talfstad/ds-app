@@ -91,7 +91,13 @@ var optimizeCss = function(options, callback) {
             } else {
 
               //fix up the html endpoint file with our new CSS
-              $('<link rel="stylesheet" type="text/css" href="style.css">').appendTo('head');
+              $('<link rel="stylesheet" type="text/css" href="/style.css">').appendTo('head');
+
+
+              // fs.writeFile(fullHtmlFilePath, $.html(), function(err) {
+              //   console.log("wrote index html: " + fullHtmlFilePath);
+              //   callback(false);
+              // });
 
               //now extract out the above the fold css!
               critcialCss.generate({

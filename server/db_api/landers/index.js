@@ -13,7 +13,14 @@ module.exports = function(app, db) {
       var lander_id = attr.id;
       var deploy_root = attr.deploy_root;
       var deployment_folder_name = attr.deployment_folder_name;
-      var modified = attr.modified;
+
+      //try saveModified first.
+      var modified = attr.saveModified;
+      if (!modified) {
+        modified = attr.modified;
+      }
+
+      console.log("saving modified: " + modified);
 
       //validate inputs
       if (deployment_folder_name) {

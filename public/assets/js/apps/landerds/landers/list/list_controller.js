@@ -284,7 +284,9 @@ define(["app",
               jobModel: redeployJobModel,
               onSuccess: function(responseJobList) {
 
+                //redeploy happening so now we're working, not modified
                 //set modified false since we are saving
+                landerModel.set("modified", false);
 
                 //create job models for each deployed domain and add them!
                 deployedDomainCollection.each(function(deployedDomainModel) {

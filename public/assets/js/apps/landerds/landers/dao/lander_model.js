@@ -88,13 +88,17 @@ define(["app",
           //update deploy status view UNLESS we're initializing or deleting. if initializing needs to be changed
           //to not_deployed by the lander job itself because we're adding a new lander. this logic is
           // for when the lander is already added
+
           if (me.get("deploy_status") !== "initializing" &&
             me.get("deploy_status") !== "deleting") {
             var deployStatus = "deployed";
             deployedDomainsCollection.each(function(deployedDomainModel) {
-              if (deployedDomainModel.get("activeJobs").length > 0) {
-                deployStatus = "deploying";
+              var activeJobs = deployedDomainModel.get("activeJobs");
+
+              if (activeJobs.length > 0) {
+                deployStatus = "deploying"; //to make lander show "working"
               }
+
             });
 
             //catch if there are no models, set to not_deployed
@@ -104,11 +108,21 @@ define(["app",
 
             me.set("deploy_status", deployStatus);
           }
-        }
+        };
 
         //whenever deployed domain coll updates deploy_status, update master lander deploy status
-        deployedDomainsCollection.on("add change:deploy_status", function(domainModel) {
+        deployedDomainsCollection.on("add change:deploy_status", function(deployedDomainModel) {
           applyUpdatedDeployStatusToLander();
+          var deployedDomainDeployStatus = deployedDomainModel.get("deploy_status");
+
+          //saving lander is always set true where it begins save
+          if (deployedDomainDeployStatus == "invalidating" ||
+            deployedDomainDeployStatus == "deployed") {
+            me.set({
+              saving_lander: false,
+              no_optimize_on_save: true
+            });
+          }
         });
 
         this.set("deployedDomains", deployedDomainsCollection);
@@ -148,21 +162,42 @@ define(["app",
         //set deploy_status based on our new model
 
         //deployedDomain Jobs
+        var isSaving = false;
         var deployStatus = "not_deployed";
         if (deployedDomainsCollection.length > 0) {
           deployStatus = "deployed";
-          deployedDomainsCollection.each(function(location) {
+          deployedDomainsCollection.each(function(deployedDomain) {
 
-            location.get("activeJobs").each(function(job) {
-              if (job.get("action") === "undeployLanderFromDomain") {
+            deployedDomain.get("activeJobs").each(function(activeJob) {
+
+              if (activeJob.get("action") === "undeployLanderFromDomain") {
                 deployStatus = "undeploying";
-              } else if (job.get("action") === "deployLanderToDomain") {
+              } else if (activeJob.get("action") === "deployLanderToDomain") {
                 deployStatus = "deploying";
+              }
+
+              //check if we're saving
+              if (activeJob.get("action") == "deployLanderToDomain") {
+                isSaving = true; //default if we have a deploy job
+              }
+
+              if (activeJob.get("action") == "deployLanderToDomain" &&
+                (activeJob.get("deploy_status") == "deployed" ||
+                  activeJob.get("deploy_status") == "invalidating")) {
+
+                //we're not saving!
+                isSaving = false;
               }
             });
 
           });
+
+          //set saving
+          me.set("saving_lander", isSaving);
+
         }
+
+
 
         //lander level jobs override deployedDomain jobs
         if (activeJobsCollection.length > 0) {

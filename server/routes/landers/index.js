@@ -82,6 +82,9 @@ module.exports = function(app, passport) {
     var no_optimize_on_save = modelAttributes.no_optimize_on_save;
     var lander_id = modelAttributes.id;
 
+    //update to not modified because we are updating
+    modelAttributes.saveModified = false;
+
     db.landers.updateAllLanderData(user, modelAttributes, function(err, returnModelAttributes) {
       if (err) {
         if (err.code = "InvalidDeploymentFolderInput") {

@@ -45,17 +45,21 @@ module.exports = function(app, db) {
     },
 
     cancelAnyCurrentRunningDuplicateJobs: function(user, list, callback) {
-      if(!list){
+      if (!list) {
         callback(false);
         return;
       }
 
       var user_id = user.id;
 
-      console.log("canceling these jobs: " + JSON.stringify(list));
+      var ExternalInterruptJob = function(job, callback) {
+        if(!job.id){
+          callback(false);
+          return;
+        }
 
+        app.log("trying to cancel job : " + JSON.stringify(list[i]), "debug");
 
-      var ExternalInterruptJob = function(job) {
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
@@ -77,15 +81,10 @@ module.exports = function(app, db) {
       if (list.length > 0) {
         var asyncIndex = 0;
         for (var i = 0; i < list.length; i++) {
-          console.log("canceling: " + JSON.stringify(list[i]));
-
           ExternalInterruptJob(list[i], function(err) {
             if (err) {
-              console.log("ok got err" + list.length);
-
               callback(err);
             } else {
-              console.log("ok got here" + list.length);
               if (++asyncIndex == list.length) {
                 callback(false);
               }

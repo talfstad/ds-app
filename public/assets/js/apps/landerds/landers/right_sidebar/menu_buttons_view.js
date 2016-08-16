@@ -19,7 +19,9 @@ define(["app",
         modelEvents: {
           "change:deploy_status": "render",
           "change:modified": "render",
-          "change:deploymentFolderInvalid": "render"
+          "change:deploymentFolderInvalid": "render",
+          "change:saving_lander": "render",
+          "change:saving_snippet": "render"
         },
 
         updateOriginalValues: function() {
@@ -30,7 +32,6 @@ define(["app",
         save: function() {
           //save if deployment folder is valid
           if (!this.model.get("deploymentFolderInvalid")) {
-            this.model.set("modified", false);
             this.model.set("saving_lander", true);
             this.updateOriginalValues();
             this.trigger("save");
@@ -41,10 +42,10 @@ define(["app",
           var me = this;
           e.preventDefault();
           if (!this.model.get("deploymentFolderInvalid")) {
-            
-            // this.model.set({
-            //   "deploy_status": "redeploying"
-            // });
+
+            this.model.set({
+              saving_lander: true
+            });
 
             this.updateOriginalValues();
             Landerds.trigger("landers:redeploy", this.model);
@@ -53,9 +54,26 @@ define(["app",
           }
         },
 
-        onRender: function(){
+        onBeforeRender: function() {
+
+          var saveDeployEnabledGui = false;
+
+          //allow save/deploy if modified AND not saving_lander or saving_snippet AND not invalid deployment folder
+          var savingLander = this.model.get("saving_lander");
+          var savingSnippet = this.model.get("saving_snippet");
+          var modified = this.model.get("modified");
+          var deploymentFolderInvalid = this.model.get("deploymentFolderInvalid");
+
+          if (modified && !deploymentFolderInvalid && !savingSnippet && !savingLander) {
+            saveDeployEnabledGui = true;
+          }
+
+          this.model.set("saveDeployEnabledGui", saveDeployEnabledGui);
+        },
+
+        onRender: function() {
           this.$el.find(".tool-tip").tooltip();
-          
+
         }
 
       });

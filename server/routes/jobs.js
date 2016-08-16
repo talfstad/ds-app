@@ -9,8 +9,12 @@ module.exports = function(app, passport) {
     var user = req.user;
 
     var jobModelAttributes = req.body;
-    var landerModelAttributes = jobModelAttributes.model;
-    var landerData = landerModelAttributes;
+    
+    var landerData = jobModelAttributes.model;
+
+    //update lander data to false on save here
+    landerData.saveModified = false;
+
     var list = jobModelAttributes.list;
 
     var afterRegisterJob = function(registeredJobAttributes) {
@@ -24,12 +28,13 @@ module.exports = function(app, passport) {
 
       WorkerController.startJob(registeredJobAttributes.action, user, registeredJobAttributes);
     };
+
     var registerError = function() {};
 
 
     if (jobModelAttributes.action === "deployLanderToDomain") {
 
-      db.landers.updateAllLanderData(user, landerModelAttributes, function(err, returnModelAttributes) {
+      db.landers.updateAllLanderData(user, landerData, function(err, returnModelAttributes) {
         if (err) {
           res.json({ code: "InvalidLanderInputs" });
         } else {
@@ -90,42 +95,39 @@ module.exports = function(app, passport) {
                     var masterJobId = firstJobAttributes.id;
 
                     //call register job in for loop with async index
-                    var asyncIndex = 0;
-                    for (var i = 0; i < list.length; i++) {
+                    if (list.length > 0) {
+                      var asyncIndex = 0;
+                      for (var i = 0; i < list.length; i++) {
 
-                      list[i].master_job_id = masterJobId;
+                        list[i].master_job_id = masterJobId;
 
-                      db.jobs.registerJob(user, list[i], function(registeredSlaveJobAttributes) {
+                        db.jobs.registerJob(user, list[i], function(registeredSlaveJobAttributes) {
 
-                        list[asyncIndex].id = registeredSlaveJobAttributes.id;
+                          list[asyncIndex].id = registeredSlaveJobAttributes.id;
 
-                        registeredSlaveJobAttributes.landerData = landerData;
+                          registeredSlaveJobAttributes.landerData = landerData;
 
-                        //start slave job
-                        WorkerController.startJob(registeredSlaveJobAttributes.action, user, registeredSlaveJobAttributes);
+                          //start slave job
+                          WorkerController.startJob(registeredSlaveJobAttributes.action, user, registeredSlaveJobAttributes);
 
-                        if (++asyncIndex == list.length) {
-                          //done, send response
-                          //put first job back on there with its id
-                          var attr = {
-                            modified: false,
-                            id: registeredSlaveJobAttributes.lander_id
-                          };
+                          if (++asyncIndex == list.length) {
+                            //done, send response
+                            //put first job back on there with its id
+                            var attr = {
+                              modified: false,
+                              id: registeredSlaveJobAttributes.lander_id
+                            };
 
-                          //put first job attributes back on list without modifying the list
-                          res.json([firstJobAttributes].concat(list));
-                        }
-                      });
-                    }
-
-                    //if only 1 item return
-                    if (list.length <= 0) {
+                            //put first job attributes back on list without modifying the list
+                            res.json([firstJobAttributes].concat(list));
+                          }
+                        });
+                      }
+                    } else {
                       list.unshift(firstJobAttributes);
                       res.json(list);
                     }
-
                   });
-
                 }
               });
             }

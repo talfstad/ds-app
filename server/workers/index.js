@@ -29,19 +29,22 @@ module.exports = function(app, db) {
               return;
             }
           } else {
-            //set error and be done
-            db.jobs.setErrorAndStop(err.code, jobIdArr[0], function() {
-              console.log("set error and stopped jobs: " + JSON.stringify(jobIdArr));
+            if (jobIdArr.length > 0) {
+              //set error and be done
+              db.jobs.setErrorAndStop(err.code, jobIdArr[0], function() {
+                console.log("set error and stopped jobs: " + JSON.stringify(jobIdArr));
+                return;
+              });
+            }
+          }
+        } else {
+          if (jobIdArr.length > 0) {
+            //finish successfully
+            db.jobs.finishedJobSuccessfully(user, jobIdArr, function() {
+              console.log("finished " + JSON.stringify(jobIdArr));
               return;
             });
           }
-
-        } else {
-          //finish successfully
-          db.jobs.finishedJobSuccessfully(user, jobIdArr, function() {
-            console.log("finished " + JSON.stringify(jobIdArr));
-            return;
-          });
         }
       });
     } catch (e) {

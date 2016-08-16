@@ -2,7 +2,6 @@
 var express = require("express");
 var http = require("http");
 var path = require("path");
-var app = express();
 var hbs = require("hbs");
 var logger = require('morgan');
 var methodOverride = require('method-override');
@@ -18,6 +17,9 @@ var env = 'dev';
 if (process.argv[2] == 'prod') {
    env = process.argv[2];
 }
+
+var app = express();
+
 app.config = config[env];
 
 var logger = require("./utils/debug_log")(app);

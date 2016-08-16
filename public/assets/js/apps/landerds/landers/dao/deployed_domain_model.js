@@ -24,9 +24,11 @@ define(["app",
               if (job.get("action") === "undeployLanderFromDomain" || job.get("action") === "undeployDomainFromLander") {
                 deployStatus = "undeploying";
               }
+
               if (job.get("deploy_status") === "invalidating") {
                 deployStatus = "invalidating";
               }
+              
             });
             me.set("deploy_status", deployStatus);
           } else {
