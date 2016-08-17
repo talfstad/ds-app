@@ -11,7 +11,7 @@ define(["app"], function(Landerds) {
 
       //definitions
       var UpdateCollection = Backbone.Collection.extend({
-        model: Backbone.Model.extend({})
+        // model: Backbone.Model.extend({})
       });
 
       //collection wrapper to save collection at once

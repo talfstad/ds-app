@@ -23,7 +23,21 @@ define(["app",
         //on active jobs initialize check if any of them exist and handle start state
         var activeJobsCollection = this.get("activeJobs");
 
-        activeJobsCollection.on("startState", function() {
+
+        activeJobsCollection.on("startState", function(attr) {
+          var actualAddedJobModel = attr.actualAddedJobModel;
+          var jobModelToReplace = attr.jobModelToReplace;
+
+          //on start remove the created job model and replace with the job model on the updater.
+          //this allows us to have one job model across multiple things. (camps, domains, etc)
+          //no events should fire it should just be quick and dirty ;)
+          //must remove it at the correct index and put the new one in the correct index
+          if (jobModelToReplace) {
+            var index = activeJobsCollection.indexOf(jobModelToReplace);
+            activeJobsCollection.remove(jobModelToReplace, { silent: true })
+            activeJobsCollection.add(actualAddedJobModel, { at: index, silent: true });
+          }
+
           if (activeJobsCollection.length > 0) {
             activeJobsCollection.each(function(jobModel) {
               if (jobModel.get("action") === "addNewLander") {
