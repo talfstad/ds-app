@@ -303,7 +303,10 @@ define(["app",
 
                       //remove active any deploy jobs for this deployed domain
                       activeJobs.each(function(job) {
-                        if (job.get("action" == "deployLanderToDomain")) {
+                        if (job.get("action") == "deployLanderToDomain") {
+                          //remove from updater and destroy job
+                          Landerds.updater.remove(this);
+                          delete job.attributes.id;
                           job.destroy();
                         }
                       });

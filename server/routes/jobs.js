@@ -9,7 +9,7 @@ module.exports = function(app, passport) {
     var user = req.user;
 
     var jobModelAttributes = req.body;
-    
+
     var landerData = jobModelAttributes.model;
 
     //update lander data to false on save here
@@ -119,12 +119,23 @@ module.exports = function(app, passport) {
                             };
 
                             //put first job attributes back on list without modifying the list
-                            res.json([firstJobAttributes].concat(list));
+                            var returnList = [];
+                            var jobsList = [firstJobAttributes].concat(list);
+                            for (var j = 0; j < jobsList.length; j++) {
+                              //no need for landerData to be on the job updater...
+                              delete jobsList[j].landerData;
+                              returnList.push(jobsList[j]);
+                            }
+                            res.json(returnList);
                           }
                         });
                       }
                     } else {
                       list.unshift(firstJobAttributes);
+                      var returnList = [].concat(list);
+                      for (var j = 0; j < returnList.length; j++) {
+                        delete returnList[j].landerData;
+                      }
                       res.json(list);
                     }
                   });

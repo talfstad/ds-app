@@ -22,9 +22,12 @@ module.exports = function(app, db) {
                   callback(err);
                 } else {
                   var jobInfo = docs[0];
-
-                  if (jobInfo.error && jobInfo.error_code == "ExternalInterrupt") {
-                    callback(false, true);
+                  if (jobInfo) {
+                    if (jobInfo.error && jobInfo.error_code == "ExternalInterrupt") {
+                      callback(false, true);
+                    } else {
+                      callback(false, false);
+                    }
                   } else {
                     callback(false, false);
                   }
@@ -53,12 +56,7 @@ module.exports = function(app, db) {
       var user_id = user.id;
 
       var ExternalInterruptJob = function(job, callback) {
-        if (!job.id) {
-          callback(false);
-          return;
-        }
-
-        app.log("trying to cancel job : " + JSON.stringify(list[i]), "debug");
+        app.log("\n\n\n\n11111 heres the job trying to cancel?? : " + JSON.stringify(job) + "\n\n\n", "debug");
 
         db.getConnection(function(err, connection) {
           if (err) {
