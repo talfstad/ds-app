@@ -362,7 +362,7 @@ module.exports = function(app, db) {
             } else {
               landerData.id = docs[0][0]["LAST_INSERT_ID()"];
               // return the ID
-              callback(false, docs[0][0]["LAST_INSERT_ID()"]);
+              callback(false, landerData);
             }
             connection.release();
           });

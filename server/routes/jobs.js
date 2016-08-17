@@ -47,6 +47,7 @@ module.exports = function(app, passport) {
 
               var addNewLanders = function(callback) {
                 //get the jobs with .new key = true
+                var finalNewLandersList = [];
                 var newLanders = [];
                 for (var i = 0; i < list.length; i++) {
                   if (list[i].new) {
@@ -55,21 +56,20 @@ module.exports = function(app, passport) {
                 }
 
                 if (newLanders.length <= 0) {
-                  callback(false);
+                  callback(false, []);
                 } else {
                   var asyncIndex = 0;
                   for (var i = 0; i < newLanders.length; i++) {
                     var newLander = newLanders[i];
 
-                    console.log("adding a lander: " + JSON.stringify(newLander));
-
-                    db.landers.addLanderToDeployedLanders(user, newLander, function(err, newLanderId) {
+                    db.landers.addLanderToDeployedLanders(user, newLander, function(err, newLander) {
                       if (err) {
-                        res.json({ code: "CouldNotAddToDeployedLandersDb" });
+                        callback({ code: "CouldNotAddToDeployedLandersDb" });
                       } else {
+                        finalNewLandersList.push(newLander);
                         // newLander.id = newLander; //added by addLanderToDeployedLanders
                         if (++asyncIndex == newLanders.length) {
-                          callback(false);
+                          callback(false, finalNewLandersList);
                         }
                       }
                     });
@@ -78,10 +78,18 @@ module.exports = function(app, passport) {
               };
 
               //get the list and 
-              addNewLanders(function(err) {
+              addNewLanders(function(err, newLanders) {
                 if (err) {
                   res.json(err);
                 } else {
+console.log("final new landers: " + JSON.stringify(newLanders));
+console.log("is modified? : " + landerData.modified);
+                  //if not modified then we arent redeploying, so just deploy the NEW lander that was added
+                  if (!landerData.modified) {
+                    list = newLanders;
+                  }
+
+
                   //register first job and assign as master
                   var firstJobAttributes = list.shift();
 
