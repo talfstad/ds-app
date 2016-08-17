@@ -21,15 +21,12 @@ module.exports = function(app, db) {
 
           if (addExtraCode == "finishedSavingLander") {
 
-            //get the endpoint_load_times for the lander
-            dbLanders.getEndpointLoadTimesFromLanderIdAndDomainId(user, lander_id, domain_id, function(err, endpoint_load_times) {
+            //get the pagespeed scores for the lander
+            dbLanders.getPagespeedScoresForLander(user, lander_id, domain_id, function(err, pagespeed_scores) {
               if (err) {
                 callback(err);
               } else {
-
-                console.log("\n\nendpoint_load_times: " + JSON.stringify(endpoint_load_times));
-
-                activeJob.extra.endpoint_load_times = endpoint_load_times;
+                activeJob.extra.pagespeed = pagespeed_scores;
                 callback(false, activeJob);
               }
             });

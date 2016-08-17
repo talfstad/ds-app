@@ -12,9 +12,12 @@ define(["app",
         template: PagespeedTpl,
 
         modelEvents: {
-          "change:currentPreviewEndpointId": "render"
+          "change:currentPreviewEndpointId": "render",
+          "changed_pagespeed": "render"
         },
 
+        //TODO Listen for a change of the deployedDomains collection where original_pagespeed or optimzied_pagespeed changed
+        // AND render !
 
         getPageSpeedLink: function(optimized) {
           var folder = 'original';

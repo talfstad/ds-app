@@ -5,10 +5,13 @@ define(["app"],
 
       initialize: function() {
         var me = this;
+
+        //needed to keep the job models deployment status updated, used in
+        //server to figure out if the deployment status has "changed" which
+        //triggers extra data to be added to the return object in some cases
         this.on("updateJobModel", function(jobModelAttributes) {
           me.set("deploy_status", jobModelAttributes.deploy_status);
         });
-
       },
 
       url: "/api/jobs",
@@ -19,7 +22,8 @@ define(["app"],
         "lander_id": "",
         "campaign_id": "",
         "domain_id": "",
-        "lander_url": ""
+        "lander_url": "",
+        "extra": {}
       },
 
     });

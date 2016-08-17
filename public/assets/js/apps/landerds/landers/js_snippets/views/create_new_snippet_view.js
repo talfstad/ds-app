@@ -44,7 +44,7 @@ define(["app",
           //remove all classes
           var jsAlertEl = this.$el.find(".create-snippet-alert");
 
-          jsAlertEl.removeClass("alert-info");
+          jsAlertEl.removeClass("alert-alert");
           jsAlertEl.removeClass("alert-warning");
           jsAlertEl.removeClass("alert-success");
           jsAlertEl.removeClass("alert-danger");
@@ -60,7 +60,7 @@ define(["app",
 
           if (saveSnippet == true) {
             showAlert = true;
-            me.setAlertType("alert-info");
+            me.setAlertType("alert-alert");
             msg = "<span style='position: absolute; top: 12px' class='glyphicon mr5 glyphicon-refresh glyphicon-refresh-animate'></span><span style='padding-left: 20px'> Saving new javascript snippet</span>"
           }  else if (saveSnippet == "error") {
             showAlert = true;

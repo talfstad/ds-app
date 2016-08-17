@@ -172,7 +172,7 @@ define(["app",
           //remove all classes
           var jsAlertEl = this.$el.find(".js-snippet-alert");
 
-          jsAlertEl.removeClass("alert-info");
+          jsAlertEl.removeClass("alert-alert");
           jsAlertEl.removeClass("alert-warning");
           jsAlertEl.removeClass("alert-success");
           jsAlertEl.removeClass("alert-danger");
@@ -217,7 +217,7 @@ define(["app",
             }, 5000);
           } else if (savingCode == true) {
             showAlert = true;
-            me.setAlertType("alert-info");
+            me.setAlertType("alert-alert");
             msg = "<span style='position: absolute; top: 12px' class='glyphicon mr5 glyphicon-refresh glyphicon-refresh-animate'></span><span style='padding-left: 20px'> Saving Snippet Code</span>"
           } else if (savingCode == "finished") {
             showAlert = true;
@@ -232,7 +232,7 @@ define(["app",
             }, 5000);
           } else if (savingEditInfo == true) {
             showAlert = true;
-            me.setAlertType("alert-info");
+            me.setAlertType("alert-alert");
             msg = "<span style='position: absolute; top: 12px' class='glyphicon mr5 glyphicon-refresh glyphicon-refresh-animate'></span><span style='padding-left: 20px'> Saving Snippet Information</span>"
           } else if (savingEditInfo == "finished") {
             showAlert = true;
@@ -243,7 +243,7 @@ define(["app",
             }, 5000);
           } else if (addingToPageVal == true) {
             showAlert = true;
-            me.setAlertType("alert-info");
+            me.setAlertType("alert-alert");
             msg = "<span style='position: absolute; top: 12px' class='glyphicon mr5 glyphicon-refresh glyphicon-refresh-animate'></span><span style='padding-left: 20px'> Adding Snippet to Page</span>"
           } else if (addingToPageVal == "finished") {
             showAlert = true;

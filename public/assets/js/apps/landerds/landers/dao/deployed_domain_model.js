@@ -46,6 +46,32 @@ define(["app",
 
           me.set("deploy_status", jobModelAttributes.deploy_status);
 
+          //check for endpoint_load_times and update them if we have them
+          var pagespeedArr = jobModelAttributes.extra.pagespeed;
+          if (pagespeedArr) {
+            //update the endpoints pagespeed scores !
+            var urlEndpointCollection = me.get("urlEndpoints");
+            //update the urlEndpoints pagespeed scores
+
+            $.each(pagespeedArr, function(idx, item) {
+
+              //get url endpoint
+              urlEndpointCollection.each(function(endpoint) {
+                if (endpoint.get("filename") == item.filename) {
+                  //update this endpoint's pagespeed score
+                  endpoint.set({
+                    original_pagespeed: item.original_pagespeed,
+                    optimized_pagespeed: item.optimized_pagespeed
+                  });
+                }
+              });
+            });
+
+            //trigger a changed_pagespeed
+            me.trigger("changed_pagespeed");
+          }
+
+
         });
 
         activeJobsCollection.on("startState", function(attr) {

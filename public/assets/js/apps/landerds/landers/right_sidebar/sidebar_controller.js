@@ -120,14 +120,10 @@ define(["app",
                         });
                       }
                     });
-
                   });
 
-                  //re-render the pagespeed view
-                  if (!pagespeedView.isDestroyed) {
-                    pagespeedView.render();
-                  }
-
+                  //trigger a changed_pagespeed
+                  model.trigger("changed_pagespeed");
 
 
                   //update the deployment folder name for the deployed domains children links

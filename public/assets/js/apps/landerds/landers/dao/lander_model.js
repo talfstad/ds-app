@@ -125,6 +125,13 @@ define(["app",
           }
         });
 
+
+        //if deployed domain triggers endpoint change then we update the lander
+        //endpoint view by triggering this model event
+        deployedDomainsCollection.on("changed_pagespeed", function() {
+          me.trigger("changed_pagespeed");
+        });
+
         this.set("deployedDomains", deployedDomainsCollection);
 
         var urlEndpointCollection = new UrlEndpointCollection(urlEndpointAttributes);
@@ -151,7 +158,6 @@ define(["app",
           activeCampaignsCollection.deploy_status = deployStatus;
 
         });
-
 
 
         deployedDomainsCollection.on("destroy", function(domainModel) {
