@@ -1,7 +1,15 @@
-define(["app"
-  ],
+define(["app"],
   function(Landerds) {
+
     var JobsModel = Backbone.Model.extend({
+
+      initialize: function() {
+        var me = this;
+        this.on("updateJobModel", function(jobModelAttributes) {
+          me.set("deploy_status", jobModelAttributes.deploy_status);
+        });
+
+      },
 
       url: "/api/jobs",
 
@@ -15,5 +23,6 @@ define(["app"
       },
 
     });
+
     return JobsModel;
   });

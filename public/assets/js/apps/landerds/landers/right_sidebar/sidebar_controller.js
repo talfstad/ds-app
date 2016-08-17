@@ -105,30 +105,29 @@ define(["app",
                 } else {
 
                   //update the endpoints pagespeed scores !
-                  if (!dataModel.get("no_optimize_on_save")) {
-                    var urlEndpointCollection = model.get("urlEndpoints");
-                    //update the urlEndpoints pagespeed scores
-                    var urlEndpointsArr = dataModel.get("url_endpoints_arr");
-                    $.each(urlEndpointsArr, function(idx, item) {
+                  var urlEndpointCollection = model.get("urlEndpoints");
+                  //update the urlEndpoints pagespeed scores
+                  var urlEndpointsArr = dataModel.get("url_endpoints_arr");
+                  $.each(urlEndpointsArr, function(idx, item) {
 
-                      //get url endpoint
-                      urlEndpointCollection.each(function(endpoint) {
-                        if (endpoint.get("filename") == item.filename) {
-                          //update this endpoint's pagespeed score
-                          endpoint.set({
-                            original_pagespeed: item.original_pagespeed,
-                            optimized_pagespeed: item.optimized_pagespeed
-                          });
-                        }
-                      });
-
+                    //get url endpoint
+                    urlEndpointCollection.each(function(endpoint) {
+                      if (endpoint.get("filename") == item.filename) {
+                        //update this endpoint's pagespeed score
+                        endpoint.set({
+                          original_pagespeed: item.original_pagespeed,
+                          optimized_pagespeed: item.optimized_pagespeed
+                        });
+                      }
                     });
 
-                    //re-render the pagespeed view
-                    if (!pagespeedView.isDestroyed) {
-                      pagespeedView.render();
-                    }
+                  });
+
+                  //re-render the pagespeed view
+                  if (!pagespeedView.isDestroyed) {
+                    pagespeedView.render();
                   }
+
 
 
                   //update the deployment folder name for the deployed domains children links
@@ -227,12 +226,12 @@ define(["app",
               if (snippetToDestroy) {
                 snippetToDestroy.destroy({
                   success: function(model, response) {
-                    
+
                     me.landerModel.set({
                       saving_lander: false,
                       no_optimize_on_save: false
                     });
-                    
+
                   }
                 });
               }

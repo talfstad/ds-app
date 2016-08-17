@@ -28,7 +28,7 @@ define(["app",
               if (job.get("deploy_status") === "invalidating") {
                 deployStatus = "invalidating";
               }
-              
+
             });
             me.set("deploy_status", deployStatus);
           } else {
@@ -42,8 +42,10 @@ define(["app",
           setDeployStatusForDomain();
         });
 
-        activeJobsCollection.on("updateDeployStatus", function(deployStatus) {
-          me.set("deploy_status", deployStatus);
+        activeJobsCollection.on("updateJobModel", function(jobModelAttributes) {
+
+          me.set("deploy_status", jobModelAttributes.deploy_status);
+
         });
 
         activeJobsCollection.on("startState", function(attr) {
@@ -70,7 +72,7 @@ define(["app",
           } else if (action == "redeploy") {
             deployStatus = "redeploying";
           }
-          
+
           if (jobDeployStatus == "invalidating") {
             deployStatus = "invalidating";
           }

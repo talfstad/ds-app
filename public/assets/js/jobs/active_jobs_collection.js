@@ -3,10 +3,9 @@ define(["app",
   ],
   function(Landerds, JobsModel) {
 
-    var ActiveJobsCollection = Backbone.Collection.extend({
+    var activeJobsCollection = Backbone.Collection.extend({
       model: JobsModel,
     });
 
-
-    return ActiveJobsCollection;
+    return activeJobsCollection;
   });

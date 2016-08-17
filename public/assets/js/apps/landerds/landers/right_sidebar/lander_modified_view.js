@@ -22,15 +22,15 @@ define(["app",
 
           //always show modified if its modified
           if (modified) {
-            this.$el.removeClass("alert-primary").addClass("alert-warning");
+            this.$el.removeClass("alert-alert").addClass("alert-warning");
           } else {
             this.$el.removeClass("alert-warning");
           }
 
           if (saving_lander) {
-            this.$el.removeClass("alert-warning").addClass("alert-primary");
+            this.$el.removeClass("alert-warning").addClass("alert-alert");
           } else {
-            this.$el.removeClass("alert-primary");
+            this.$el.removeClass("alert-alert");
           }
         
           if (modified || saving_lander) {

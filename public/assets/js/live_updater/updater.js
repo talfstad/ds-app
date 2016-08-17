@@ -41,7 +41,7 @@ define(["app"], function(Landerds) {
               actualJobModel.trigger("finishedState", actualJobModel);
             }
           } else {
-            actualJobModel.trigger("updateDeployStatus", modelAttributes.deploy_status);
+            actualJobModel.trigger("updateJobModel", modelAttributes);
           }
         });
       };

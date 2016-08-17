@@ -42,8 +42,8 @@ define(["app",
           setDeployStatusForDeployedLander();
         });
 
-        activeJobsCollection.on("updateDeployStatus", function(deployStatus) {
-          me.set("deploy_status", deployStatus);
+        activeJobsCollection.on("updateJobModel", function(jobModelAttributes) {
+          me.set("deploy_status", jobModelAttributes.deploy_status);
         });
 
         activeJobsCollection.on("startState", function(attr) {

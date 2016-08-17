@@ -9,43 +9,52 @@ module.exports = function(app, passport) {
 
     var modelsAttributes = req.body;
 
-    var gotActiveJobsCallback = function(activeJobs) {
-      var finishedJobs = [];
+    var gotActiveJobsCallback = function(err, activeJobs) {
+      if (err) {
+        res.json({ code: "CouldNotGetActiveJobs" });
+      } else {
 
-      // console.log("active jobs: " + JSON.stringify(activeJobs));
+        var finishedJobs = [];
 
-      for (var i = 0; i < modelsAttributes.length; i++) {
-        var jobNotFound = true;
-        for (var j = 0; j < activeJobs.length; j++) {
+        for (var i = 0; i < modelsAttributes.length; i++) {
+          var jobNotFound = true;
+          for (var j = 0; j < activeJobs.length; j++) {
 
-          if (modelsAttributes[i].id === activeJobs[j].id) {
-            jobNotFound = false;
-            
-            modelsAttributes[i].deploy_status = activeJobs[j].deploy_status;
-            
-            if (activeJobs[j].done || activeJobs[j].error) {
-              //add to finished, remove from active
-              modelsAttributes[i].error = activeJobs[j].error;
-              modelsAttributes[i].error_code = activeJobs[j].error_code;
-              modelsAttributes[i].done = activeJobs[j].done;
-              finishedJobs.push(modelsAttributes[i]);
+            if (modelsAttributes[i].id === activeJobs[j].id) {
+              jobNotFound = false;
+
+              modelsAttributes[i].deploy_status = activeJobs[j].deploy_status;
+
+              //add extra update stuff for various models
+              if (activeJobs[j].extra) {
+                modelsAttributes[i].extra = activeJobs[j].extra;
+              }
+
+              if (activeJobs[j].done || activeJobs[j].error) {
+                //add to finished, remove from active
+                modelsAttributes[i].error = activeJobs[j].error;
+                modelsAttributes[i].error_code = activeJobs[j].error_code;
+                modelsAttributes[i].done = activeJobs[j].done;
+                finishedJobs.push(modelsAttributes[i]);
+              }
             }
           }
+          if (activeJobs.length <= 0 || jobNotFound) {
+            finishedJobs.push(modelsAttributes[i]);
+          }
         }
-        if (activeJobs.length <= 0 || jobNotFound) {
-          finishedJobs.push(modelsAttributes[i]);
-        }
+
+        db.jobs.finishedProcessing(user, finishedJobs, function() {
+          //join finished with active jobs to create a complete response
+
+
+          res.json(modelsAttributes);
+        });
       }
-
-      db.jobs.finishedProcessing(user, finishedJobs, function() {
-        //join finished with active jobs to create a complete response
-        res.json(modelsAttributes);
-      });
-
     };
 
     //active jobs have processing=true
-    db.updater.getActiveJobs(user, gotActiveJobsCallback);
+    db.updater.getActiveJobs(modelsAttributes, user, gotActiveJobsCallback);
   });
 
   return module;

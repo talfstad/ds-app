@@ -53,7 +53,7 @@ module.exports = function(app, db) {
       var user_id = user.id;
 
       var ExternalInterruptJob = function(job, callback) {
-        if(!job.id){
+        if (!job.id) {
           callback(false);
           return;
         }
@@ -345,7 +345,7 @@ module.exports = function(app, db) {
       });
     },
 
-    finishedProcessing: function(user, finishedJobs, successCallback, errorCallback) {
+    finishedProcessing: function(user, finishedJobs, callback) {
       var user_id = user.id;
 
       if (finishedJobs.length > 0) {
@@ -353,7 +353,6 @@ module.exports = function(app, db) {
         var finishedJobsValues = [false];
 
         var updateSql = "UPDATE jobs SET processing= ? WHERE ";
-
 
         for (var i = 0; i < finishedJobs.length; i++) {
           updateSql = updateSql.concat("id = ?");
@@ -374,17 +373,16 @@ module.exports = function(app, db) {
           }
           connection.query(updateSql, finishedJobsValues, function(err, docs) {
             if (err) {
-              console.log(err);
-              errorCallback("Error finishing processing on job in DB call")
+              callback(err);
             } else {
               //processing key updated above
-              successCallback();
+              callback(false);
             }
             connection.release();
           });
         });
       } else {
-        successCallback();
+        callback(false);
       }
     }
   }

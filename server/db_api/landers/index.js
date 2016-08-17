@@ -6,6 +6,55 @@ module.exports = function(app, db) {
 
     common: require("./common")(app, db), //needs to be like this to access in other classes
 
+
+    getEndpointLoadTimesFromLanderIdAndDomainId: function(user, lander_id, domain_id, callback) {
+      var user_id = user.id;
+
+      var getLoadTimesForDeployedDomain = function(deployed_lander_id, callback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          } else {
+            connection.query("SELECT id,url_endpoint_id,load_time FROM endpoint_load_times WHERE deployed_lander_id = ? AND user_id = ?", [deployed_lander_id, user_id],
+              function(err, dbLoadTimes) {
+                callback(false, dbLoadTimes);
+              });
+          }
+          connection.release();
+        });
+      };
+
+      var getDeployedLanderId = function(callback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          } else {
+            connection.query("SELECT id FROM deployed_landers WHERE lander_id = ? AND domain_id = ? AND user_id = ?", [lander_id, domain_id, user_id],
+              function(err, dbLoadTimes) {
+                callback(false, dbLoadTimes[0]);
+              });
+          }
+          connection.release();
+        });
+      };
+
+      getDeployedLanderId(function(err, deployedLander) {
+        if (err) {
+          callback(err);
+        } else {
+          var deployed_lander_id = deployedLander.id;
+
+          getLoadTimesForDeployedDomain(deployed_lander_id, function(err, endpoint_load_times) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(false, endpoint_load_times);
+            }
+          });
+        }
+      });
+    },
+
     //save optimzations and modified
     updateAllLanderData: function(user, attr, callback) {
 
