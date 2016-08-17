@@ -21,8 +21,20 @@ define(["app",
           "campaignsListRegion": ".campaigns-list-region"
         },
 
+        modelEvents: {
+          "change:saving_lander": "updateEnabledButton"
+        },
+
         events: {
           "click .add-campaign-confirm": "confirmedAddCampaign"
+        },
+
+        updateEnabledButton: function() {
+          if (this.model.get("saving_lander")) {
+            this.$el.find(".add-campaign-confirm").addClass("disabled");
+          } else {
+            this.$el.find(".add-campaign-confirm").removeClass("disabled");
+          }
         },
 
         confirmedAddCampaign: function() {

@@ -220,6 +220,18 @@ define(["app",
 
         },
 
+        saveLander: function(modelAttributes) {
+          // gives redeployLanders an empty list [] which means we're just saving
+          // and it will only save if its modified (handled on the server as well)
+          var me = this;
+
+          var landerModel = this.filteredLanderCollection.get(modelAttributes.id);
+          if (!landerModel) return false;
+
+          this.redeployLanders(landerModel);
+
+        },
+
 
         //take a landerID and domainID and deploy the domain
         //to that lander by adding it to the collection. This triggers
@@ -249,79 +261,110 @@ define(["app",
 
           //get list of all locations to 
           deployedDomainCollection.each(function(deployedDomain) {
-            //TODO if deployed domain doesnt have an id then add the new key to the job
-            var isNew = false;
-            if (!deployedDomain.get("id")) {
-              isNew = true;
-            }
-
-            deployedDomainsJobList.push({
-              lander_id: deployedDomain.get("lander_id"),
-              domain_id: deployedDomain.get("domain_id"),
-              action: "deployLanderToDomain",
-              deploy_status: "deploying",
-              new: isNew
+            //check if deployedDomain is undeploying. if it is ignore it!
+            var isUndeploying = false;
+            var activeJobs = deployedDomain.get("activeJobs");
+            activeJobs.each(function(job) {
+              if (job.get('action') == "undeployLanderFromDomain") {
+                isUndeploying = true;
+              }
             });
+
+            if (!isUndeploying) {
+              var isNew = false;
+              if (!deployedDomain.get("id")) {
+                isNew = true;
+              }
+
+              deployedDomainsJobList.push({
+                lander_id: deployedDomain.get("lander_id"),
+                domain_id: deployedDomain.get("domain_id"),
+                action: "deployLanderToDomain",
+                deploy_status: "deploying",
+                new: isNew
+              });
+            }
           });
 
-          if (deployedDomainsJobList.length > 0) {
+          //NOTE: if deployedDomainsJobList is empty it means we're
+          //  . saving the lander! not deploying it
 
-            //if modified we're going to be saving so set saving = true
-            //  . this gets set false when the job updateStatus is correct
-            if (landerModel.get("modified")) {
 
-              landerModel.set({
-                saving_lander: true
-              });
+          //if modified we're going to be saving so set saving = true
+          //  . this gets set false when the job updateStatus is correct
+          if (landerModel.get("modified")) {
 
-            }
-
-            var redeployJobModel = new JobModel({
-              action: "deployLanderToDomain",
-              list: deployedDomainsJobList,
-              model: landerModel,
-              neverAddToUpdater: true
+            landerModel.set({
+              saving_lander: true
             });
 
-            var redeployJobAttributes = {
-              jobModel: redeployJobModel,
-              onSuccess: function(responseJobList) {
-
-                //redeploy happening so now we're working, not modified
-                //set modified false since we are saving
-                landerModel.set({
-                  modified: false
-                });
-
-                //create job models for each deployed domain and add them!
-                deployedDomainCollection.each(function(deployedDomainModel) {
-                  $.each(responseJobList, function(idx, responseJobAttr) {
-                    if (deployedDomainModel.get("domain_id") == responseJobAttr.domain_id) {
-                      //create new individual job model for
-                      var activeJobs = deployedDomainModel.get("activeJobs");
-                      var newRedeployJob = new JobModel(responseJobAttr);
-
-                      //remove active any deploy jobs for this deployed domain
-                      activeJobs.each(function(job) {
-                        if (job.get("action") == "deployLanderToDomain") {
-                          //remove from updater and destroy job
-                          Landerds.updater.remove(this);
-                          delete job.attributes.id;
-                          job.destroy();
-                        }
-                      });
-
-                      activeJobs.add(newRedeployJob);
-                      //call start for each job 
-                      Landerds.trigger("job:start", newRedeployJob);
-                    }
-                  });
-                });
-              }
-            };
-
-            Landerds.trigger("job:start", redeployJobAttributes);
           }
+
+          var redeployJobModel = new JobModel({
+            action: "deployLanderToDomain",
+            list: deployedDomainsJobList,
+            model: landerModel,
+            neverAddToUpdater: true
+          });
+
+          var redeployJobAttributes = {
+            jobModel: redeployJobModel,
+            onSuccess: function(responseJobList) {
+
+              //redeploy happening so now we're working, not modified
+              //set modified false since we are saving
+              landerModel.set({
+                modified: false
+              });
+
+              //its a save job (lander level if there are no deployed domains (or any that are not undeploying))
+              var isLanderLevelSaveJob = true;
+
+              //create job models for each deployed domain and add them!
+              deployedDomainCollection.each(function(deployedDomainModel) {
+                $.each(responseJobList, function(idx, responseJobAttr) {
+
+                  if (deployedDomainModel.get("domain_id") == responseJobAttr.domain_id) {
+                    //create new individual job model for
+                    var activeJobs = deployedDomainModel.get("activeJobs");
+                    var newRedeployJob = new JobModel(responseJobAttr);
+
+                    //remove active any deploy jobs for this deployed domain
+                    activeJobs.each(function(job) {
+                      if (job.get("action") == "deployLanderToDomain") {
+                        //remove from updater and destroy job
+                        Landerds.updater.remove(this);
+                        delete job.attributes.id;
+                        job.destroy();
+                      }
+                    });
+                    //if adding a deploy job it cant just be a save
+                    isLanderLevelSaveJob = false;
+                    activeJobs.add(newRedeployJob);
+                    //call start for each job 
+                    Landerds.trigger("job:start", newRedeployJob);
+                  }
+                });
+              });
+
+              if (isLanderLevelSaveJob) {
+                if (responseJobList.length != 1) {
+                  //just a quick save.. set saving_lander false be done
+                  landerModel.set("saving_lander", false);
+                } else {
+                  //add this to the lander active jobs
+                  var landerSaveJob = new JobModel(responseJobList[0]);
+
+                  var activeJobs = landerModel.get('activeJobs');
+                  activeJobs.add(landerSaveJob);
+                  Landerds.trigger("job:start", landerSaveJob);
+                }
+              }
+            }
+          };
+
+          Landerds.trigger("job:start", redeployJobAttributes);
+
         },
 
         updateAllActiveSnippetNames: function(savedModel) {

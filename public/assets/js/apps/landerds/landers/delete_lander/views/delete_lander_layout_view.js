@@ -23,6 +23,10 @@ define(["app",
           "click .delete-lander-confirm": "confirmedDeleteLander"
         },
 
+        modelEvents: {
+          "change:saving_lander": "render"
+        },
+        
         confirmedDeleteLander: function() {
 
           Landerds.trigger("landers:list:deleteLander", this.model);

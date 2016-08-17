@@ -162,31 +162,6 @@ define(["app",
                 }
               }
 
-              
-
-
-              // urlEndpointCollection.each(function(endpoint) {
-              //   var isAvailable = true;
-              //   var activeSnippetCollection = endpoint.get("activeSnippets");
-
-              //   activeSnippetCollection.each(function(snippet) {
-              //     if (snippet.get("snippet_id") == showingSnippetId) {
-              //       isAvailable = false;
-              //     }
-              //   });
-
-              //   if (isAvailable)
-              //     availableUrlEndpoints.push({
-              //       id: endpoint.get("id"),
-              //       filename: endpoint.get("filename")
-              //     });
-              // });
-              // model.set("availableUrlEndpoints", availableUrlEndpoints);
-
-
-
-
-
               //3. show the new detail view with the model that was clicked
               var newSnippetDetailView = new JsSnippetDetailView({
                 model: model

@@ -32,12 +32,39 @@ define(["app",
           } else {
             this.$el.removeClass("alert-alert");
           }
-        
+
           if (modified || saving_lander) {
             this.$el.fadeIn();
           } else {
             this.$el.hide();
           }
+        },
+
+        onBeforeRender: function() {
+          var showSaveButtonGui = true,
+            allUndeploying = true;
+          var deployedDomains = this.model.get("deployedDomains");
+          deployedDomains.each(function(deployedDomain) {
+            var activeJobs = deployedDomain.get("activeJobs");
+
+            if (activeJobs.length > 0) {
+              activeJobs.each(function(activeJob) {
+                if (activeJob.get("action") != "undeployLanderFromDomain") {
+                  allUndeploying = false;
+                }
+              });
+            } else {
+              allUndeploying = false;
+            }
+          });
+
+          //if at least one isnt undeploying then show deploy, otherwise show save
+          if (allUndeploying || deployedDomains.length <= 0) {
+            showSaveButtonGui = true;
+          } else {
+            showSaveButtonGui = false;
+          }
+          this.model.set("showSaveButtonGui", showSaveButtonGui);
         },
 
         onRender: function() {

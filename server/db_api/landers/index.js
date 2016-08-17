@@ -617,7 +617,7 @@ module.exports = function(app, db) {
             console.log(err);
           } else {
 
-            connection.query("SELECT id,action,lander_id,deploy_status,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addNewLander", "deleteLander", "ripNewLander", user_id, lander.id, true],
+            connection.query("SELECT id,action,lander_id,deploy_status,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addNewLander", "deleteLander", "ripNewLander", "savingLander", user_id, lander.id, true],
               function(err, dbActiveJobs) {
                 if (err) {
                   callback(err);

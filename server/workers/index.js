@@ -9,6 +9,7 @@ module.exports = function(app, db) {
   module.deleteLander = require('./delete_lander')(app, db);
   module.deleteDomain = require('./delete_domain')(app, db);
   module.deleteCampaign = require('./delete_campaign')(app, db);
+  module.savingLander = require('./saving_lander')(app, db);
 
   module.startJob = function(action, user, attr) {
 
@@ -48,7 +49,7 @@ module.exports = function(app, db) {
         }
       });
     } catch (e) {
-      console.log("job worker method does not exist!!!! must implement it." + action);
+      console.log("job worker method does not exist!!!! must implement it. " + action);
     }
 
   };

@@ -28,6 +28,18 @@ define(["app",
           "click .deploy-confirm": "confirmedToDeploy"
         },
 
+        modelEvents: {
+          "change:saving_lander": "updateEnabledButton"
+        },
+
+        updateEnabledButton: function() {
+          if (this.model.get("saving_lander")) {
+            this.$el.find(".deploy-confirm").addClass("disabled");
+          } else {
+            this.$el.find(".deploy-confirm").removeClass("disabled");
+          }
+        },
+
         confirmedToDeploy: function() {
 
           //notification that deployment may take up to 20 minutes

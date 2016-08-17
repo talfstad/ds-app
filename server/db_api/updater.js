@@ -52,6 +52,9 @@ module.exports = function(app, db) {
 
             addExtraCode = "finishedSavingLander";
             //change from saving to not saving, add the extra things
+          } else if (activeJob.action == "savingLander" && activeJob.deploy_status == "deployed" && oldDeployStatus == "saving") {
+           
+            addExtraCode = "finishedSavingLander";
           }
 
           addExtraToJob(addExtraCode, activeJob, function(err, activeJob) {
@@ -92,7 +95,7 @@ module.exports = function(app, db) {
                     if (err) {
                       callback(err);
                     } else {
-                      
+
                       finalActiveJobs.push(activeJob);
 
                       if (++asyncIndex == activeJobs.length) {

@@ -37,6 +37,9 @@ define(["app",
         redeployLanders: function(model) {
           ListController.redeployLanders(model);
         },
+        saveLander: function(model) {
+          ListController.saveLander(model);
+        },
         removeSnippetFromAllLanders: function(attr) {
           ListController.removeSnippetFromAllLanders(attr);
         },
@@ -213,6 +216,10 @@ define(["app",
       Landerds.on("landers:redeploy", function(model) {
         landersAppAPI.redeployLanders(model);
       });
+      Landerds.on("landers:save", function(model) {
+        landersAppAPI.saveLander(model);
+      });
+
       Landerds.on("landers:showAddNewLanderModal", function() {
         landersAppAPI.showAddNewLanderModal();
       });

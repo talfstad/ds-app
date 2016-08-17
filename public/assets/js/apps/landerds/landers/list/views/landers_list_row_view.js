@@ -55,7 +55,8 @@ define(["app",
 
           // this.$el.find(".alert-modified-badge").hide();
           
-          if (deployStatus !== "deployed" && deployStatus !== "not_deployed") {
+          //handles deployed rows AND lander deploy status
+          if (deployStatus !== "deployed" && deployStatus !== "not_deployed" && deployStatus !== "saving") {
             this.$el.find(".alert-working-badge").show();
           } else {
             this.$el.find(".alert-working-badge").hide();

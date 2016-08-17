@@ -20,7 +20,8 @@ define(["app",
           "change:deploy_status": "render",
           "change:modified": "render",
           "change:deploymentFolderInvalid": "render",
-          "change:saving_lander": "render"
+          "change:saving_lander": "render",
+          "sidebar:renderMenuButtons": "render"
         },
 
         updateOriginalValues: function() {
@@ -28,18 +29,25 @@ define(["app",
           this.model.set("originalValueDeploymentFolderName", this.model.get("deployment_folder_name"));
         },
 
-        save: function() {
-          //save if deployment folder is valid
+        save: function(e) {
+          var me = this;
+          if(e) e.preventDefault();
           if (!this.model.get("deploymentFolderInvalid")) {
-            this.model.set("saving_lander", true);
+
+            this.model.set({
+              saving_lander: true
+            });
+
             this.updateOriginalValues();
-            this.trigger("save");
+            Landerds.trigger("landers:save", this.model);
+          } else {
+            Notification("Invalid Deployment Folder", "Fix deployment folder name", "danger", "stack_top_right");
           }
         },
 
         redeploy: function(e) {
           var me = this;
-          e.preventDefault();
+          if(e) e.preventDefault();
           if (!this.model.get("deploymentFolderInvalid")) {
 
             this.model.set({
@@ -54,6 +62,38 @@ define(["app",
         },
 
         onBeforeRender: function() {
+          //if at least one and it isnt undeploying showSaveButton is false            
+          var showSaveButtonGui = true,
+            allUndeploying = true;
+
+          //show save button if there are no deployed domains OR if they are ALL undeploying
+
+          //all not undeploying = !allUndeploying
+
+          var deployedDomains = this.model.get("deployedDomains");
+          deployedDomains.each(function(deployedDomain) {
+            var activeJobs = deployedDomain.get("activeJobs");
+
+            if (activeJobs.length > 0) {
+              activeJobs.each(function(activeJob) {
+                if (activeJob.get("action") != "undeployLanderFromDomain") {
+                  allUndeploying = false;
+                }
+              });
+            } else {
+              allUndeploying = false;
+            }
+          });
+
+          //if at least one isnt undeploying then show deploy, otherwise show save
+          if (allUndeploying || deployedDomains.length <= 0) {
+            showSaveButtonGui = true;
+          } else {
+            showSaveButtonGui = false;
+          }
+          this.model.set("showSaveButtonGui", showSaveButtonGui);
+
+
 
           var saveDeployEnabledGui = false;
 

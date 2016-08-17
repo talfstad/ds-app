@@ -34,6 +34,8 @@ define(["app",
                 me.set("deploy_status", "initializing");
               } else if (jobModel.get("action") === "deleteLander") {
                 me.set("deploy_status", "deleting");
+              } else if (jobModel.get("action") == "savingLander") {
+                me.set("saving_lander", true);
               } else {
                 me.set("deploy_status", "deploying");
               }
@@ -41,19 +43,55 @@ define(["app",
           }
         });
 
-        activeJobsCollection.on("finishedState", function(jobModel) {
+        activeJobsCollection.on("finishedState", function(jobModel, updaterResponse) {
           var deployStatus = "deployed";
           if (jobModel.get("action") === "addNewLander" ||
             jobModel.get("action") === "ripNewLander") {
             //update lander status to not deployed
             deployStatus = "not_deployed";
+            me.set("deploy_status", deployStatus);
           } else if (jobModel.get("action") === "deleteLander") {
             //destroy the lander model
             delete me.attributes.id;
             me.destroy();
+          } else if (jobModel.get("action") === "savingLander") {
+            me.set("saving_lander", false);
           }
 
-          me.set("deploy_status", deployStatus);
+          //when we finish we have extra data we need to update, and then
+          //trigger an update pagespeed score event
+          //check for pagespeed and update them if we have them
+          if (updaterResponse.extra) {
+            var pagespeedArr = updaterResponse.extra.pagespeed;
+            if (pagespeedArr) {
+
+              //save finished update no_optimize_on_save to false because
+              //no we can quick save again!
+              me.set("no_optimize_on_save", true);
+
+
+              //update the endpoints pagespeed scores !
+              var urlEndpointCollection = me.get("urlEndpoints");
+              //update the urlEndpoints pagespeed scores
+
+              $.each(pagespeedArr, function(idx, item) {
+
+                //get url endpoint
+                urlEndpointCollection.each(function(endpoint) {
+                  if (endpoint.get("filename") == item.filename) {
+                    //update this endpoint's pagespeed score
+                    endpoint.set({
+                      original_pagespeed: item.original_pagespeed,
+                      optimized_pagespeed: item.optimized_pagespeed
+                    });
+                  }
+                });
+              });
+
+              //trigger a changed_pagespeed
+              me.trigger("changed_pagespeed");
+            }
+          }
 
           delete jobModel.attributes.id;
           jobModel.destroy();
@@ -147,7 +185,6 @@ define(["app",
         this.set("activeCampaigns", activeCampaignsCollection);
 
         activeCampaignsCollection.add(activeCampaignAttributes);
-
 
         //when lander changes its deploy status update the topbar totals
         this.on("change:deploy_status", function() {

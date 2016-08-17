@@ -46,7 +46,7 @@ define(["app",
 
           me.set("deploy_status", jobModelAttributes.deploy_status);
 
-          //check for endpoint_load_times and update them if we have them
+          //check for pagespeed and update them if we have them
           var pagespeedArr = jobModelAttributes.extra.pagespeed;
           if (pagespeedArr) {
             //update the endpoints pagespeed scores !

@@ -82,71 +82,93 @@ module.exports = function(app, passport) {
                 if (err) {
                   res.json(err);
                 } else {
-console.log("final new landers: " + JSON.stringify(newLanders));
-console.log("is modified? : " + landerData.modified);
                   //if not modified then we arent redeploying, so just deploy the NEW lander that was added
-                  if (!landerData.modified) {
+                  if (!landerData.modified && newLanders.length > 0) {
                     list = newLanders;
                   }
 
+                  //if list is empty just save the lander
+                  if (list.length > 0) {
+                    //register first job and assign as master
+                    var firstJobAttributes = list.shift();
 
-                  //register first job and assign as master
-                  var firstJobAttributes = list.shift();
+                    db.jobs.registerJob(user, firstJobAttributes, function(registeredMasterJobAttributes) {
+                      //start the first job (master job)
+                      registeredMasterJobAttributes.landerData = landerData;
 
-                  db.jobs.registerJob(user, firstJobAttributes, function(registeredMasterJobAttributes) {
-                    //start the first job (master job)
-                    registeredMasterJobAttributes.landerData = landerData;
+                      WorkerController.startJob(registeredMasterJobAttributes.action, user, registeredMasterJobAttributes);
 
-                    WorkerController.startJob(registeredMasterJobAttributes.action, user, registeredMasterJobAttributes);
+                      firstJobAttributes.id = registeredMasterJobAttributes.id;
+                      var masterJobId = firstJobAttributes.id;
 
-                    firstJobAttributes.id = registeredMasterJobAttributes.id;
-                    var masterJobId = firstJobAttributes.id;
+                      //call register job in for loop with async index
+                      if (list.length > 0) {
+                        var asyncIndex = 0;
+                        for (var i = 0; i < list.length; i++) {
 
-                    //call register job in for loop with async index
-                    if (list.length > 0) {
-                      var asyncIndex = 0;
-                      for (var i = 0; i < list.length; i++) {
+                          list[i].master_job_id = masterJobId;
 
-                        list[i].master_job_id = masterJobId;
+                          db.jobs.registerJob(user, list[i], function(registeredSlaveJobAttributes) {
 
-                        db.jobs.registerJob(user, list[i], function(registeredSlaveJobAttributes) {
+                            list[asyncIndex].id = registeredSlaveJobAttributes.id;
 
-                          list[asyncIndex].id = registeredSlaveJobAttributes.id;
+                            registeredSlaveJobAttributes.landerData = landerData;
 
-                          registeredSlaveJobAttributes.landerData = landerData;
+                            //start slave job
+                            WorkerController.startJob(registeredSlaveJobAttributes.action, user, registeredSlaveJobAttributes);
 
-                          //start slave job
-                          WorkerController.startJob(registeredSlaveJobAttributes.action, user, registeredSlaveJobAttributes);
+                            if (++asyncIndex == list.length) {
+                              //done, send response
+                              //put first job back on there with its id
+                              var attr = {
+                                modified: false,
+                                id: registeredSlaveJobAttributes.lander_id
+                              };
 
-                          if (++asyncIndex == list.length) {
-                            //done, send response
-                            //put first job back on there with its id
-                            var attr = {
-                              modified: false,
-                              id: registeredSlaveJobAttributes.lander_id
-                            };
-
-                            //put first job attributes back on list without modifying the list
-                            var returnList = [];
-                            var jobsList = [firstJobAttributes].concat(list);
-                            for (var j = 0; j < jobsList.length; j++) {
-                              //no need for landerData to be on the job updater...
-                              delete jobsList[j].landerData;
-                              returnList.push(jobsList[j]);
+                              //put first job attributes back on list without modifying the list
+                              var returnList = [];
+                              var jobsList = [firstJobAttributes].concat(list);
+                              for (var j = 0; j < jobsList.length; j++) {
+                                //no need for landerData to be on the job updater...
+                                delete jobsList[j].landerData;
+                                returnList.push(jobsList[j]);
+                              }
+                              res.json(returnList);
                             }
-                            res.json(returnList);
-                          }
-                        });
+                          });
+                        }
+                      } else {
+                        list.unshift(firstJobAttributes);
+                        var returnList = [].concat(list);
+                        for (var j = 0; j < returnList.length; j++) {
+                          delete returnList[j].landerData;
+                        }
+                        res.json(list);
                       }
+                    });
+                  } else {
+                    //list is empty so that means we need to just save the lander
+                    //and return! TODO (create save lander job, fire it)
+                    console.log("\n\n\n\n NO OPTIMIZE FOR SAVE ?? : T : " + landerData.no_optimize_on_save);
+
+                    if (!landerData.no_optimize_on_save) {
+                      //action: saveLander
+                      var saveLanderJobAttributes = {
+                        lander_id: landerData.id,
+                        action: "savingLander",
+                        deploy_status: "saving"
+                      };
+
+                      db.jobs.registerJob(user, saveLanderJobAttributes, function(registeredJobAttributes) {
+                        res.json([registeredJobAttributes]);
+                        WorkerController.startJob(registeredJobAttributes.action, user, {job: registeredJobAttributes, lander: landerData});
+                      });
+
                     } else {
-                      list.unshift(firstJobAttributes);
-                      var returnList = [].concat(list);
-                      for (var j = 0; j < returnList.length; j++) {
-                        delete returnList[j].landerData;
-                      }
-                      res.json(list);
+                      //just a light save, no optimization needed. no job added to optimize
+                      res.json([]);
                     }
-                  });
+                  }
                 }
               });
             }
