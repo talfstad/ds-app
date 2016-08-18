@@ -63,23 +63,24 @@ module.exports = function(app, db) {
             dbJobsApi.checkIfExternalInterrupt(user, job_id, function(err, isInterrupt) {
               if (err || isInterrupt) {
                 if (isInterrupt) {
+
                   var err = {
                     code: "ExternalInterrupt",
                   };
                   callback(err);
                 } else {
+
                   callback({ code: "CouldNotWaitForInvalidationComplete" });
                 }
               } else {
                 setTimeout(function() {
-                  console.log("checking invalidation status: " + data.Invalidation.Status);
+                  app.log("checking invalidation status: " + data.Invalidation.Status, "debug");
                   if (data.Invalidation.Status === "Completed") {
                     callback(false);
                   } else {
                     getInvalidation();
                   }
                 }, app.config.cloudfront.invalidationPollDuration);
-                console.log("in wait for invalidation to complete ran this code before first check ran this code")
               }
             });
           }

@@ -101,7 +101,6 @@ module.exports = function(app, db) {
                             }
                             callback(err, [myJobId]);
                           } else {
-
                             //delete the deployed lander
                             db.deployed_domain.removeFromDeployedLanders(user, lander_id, domain_id, function(err) {
                               if (err) {

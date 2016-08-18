@@ -11,6 +11,7 @@ module.exports = function(app, db) {
 
 
       var addExtraToJob = function(addExtraCode, activeJob, callback) {
+
         if (!addExtraCode) {
           callback(false, activeJob);
         } else {
@@ -65,22 +66,24 @@ module.exports = function(app, db) {
               }
             }
           }
+
+          addExtraToJob(addExtraCode, activeJob, function(err, activeJob) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(false, activeJob);
+            }
+          });
+
         }
 
-        addExtraToJob(addExtraCode, activeJob, function(err, activeJob) {
-          if (err) {
-            callback(err);
-          } else {
-            callback(false, activeJob);
-          }
-        });
       };
 
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("SELECT * FROM jobs WHERE processing = ? AND user_id = ?", [true, user.id], function(err, activeJobs) {
+          connection.query("SELECT * FROM jobs WHERE processing = ? AND user_id = ?", [true, user.id], function(err, activeJobsArr) {
             if (err) {
               callback(err);
             } else {
@@ -89,25 +92,25 @@ module.exports = function(app, db) {
               //if changed, get the extra attributes to return and put them on the model
               var asyncIndex = 0;
               var finalActiveJobs = [];
-              if (activeJobs.length > 0) {
-                for (var i = 0; i < activeJobs.length; i++) {
+              if (activeJobsArr.length > 0) {
+                for (var i = 0; i < activeJobsArr.length; i++) {
                   var oldDeployStatus = false;
                   for (var j = 0; j < updaterJobsAttributes.length; j++) {
-                    if (activeJobs[i].id == updaterJobsAttributes[j].id) {
-                      if (activeJobs[i].deploy_status != updaterJobsAttributes[j].deploy_status) {
+                    if (activeJobsArr[i].id == updaterJobsAttributes[j].id) {
+                      if (activeJobsArr[i].deploy_status != updaterJobsAttributes[j].deploy_status) {
                         oldDeployStatus = updaterJobsAttributes[j].deploy_status;
                       }
                     }
                   }
 
-                  getExtraForJob(oldDeployStatus, activeJobs[i], function(err, activeJob) {
+                  getExtraForJob(oldDeployStatus, activeJobsArr[i], function(err, activeJob) {
                     if (err) {
                       callback(err);
                     } else {
 
                       finalActiveJobs.push(activeJob);
 
-                      if (++asyncIndex == activeJobs.length) {
+                      if (++asyncIndex == activeJobsArr.length) {
 
                         callback(false, finalActiveJobs);
 

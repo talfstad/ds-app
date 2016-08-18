@@ -39,6 +39,7 @@ module.exports = function(app, passport) {
               }
             }
           }
+
           if (activeJobs.length <= 0 || jobNotFound) {
             finishedJobs.push(modelsAttributes[i]);
           }
