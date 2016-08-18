@@ -150,6 +150,7 @@ define(["app",
           deployStatus === "invalidating_delete" ||
           deployStatus === "invalidating" ||
           deployStatus === "redeploying" ||
+          deployStatus === "undeploy_invalidating" ||
           deployStatus === "optimizing") {
           this.$el.addClass("alert");
         }

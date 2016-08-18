@@ -52,8 +52,10 @@ define(["app",
             this.model.set("deploy_status_gui", "<strong>DEPLOYING</strong>");
           } else if (deployStatus === "undeploying") {
             this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong>");
+          } else if (deployStatus === "undeploy_invalidating") {
+            this.model.set("deploy_status_gui", "<strong>UNDEPLOYING EDGE LOCATIONS</strong>");
           } else if (deployStatus === "invalidating") {
-            this.model.set("deploy_status_gui", "<strong>PUSHING TO EDGE LOCATIONS</strong>");
+            this.model.set("deploy_status_gui", "<strong>DEPLOYING EDGE LOCATIONS</strong>");
           } else if (deployStatus === "invalidating_delete") {
             this.model.set("deploy_status_gui", "<strong>REMOVING FROM EDGE LOCATIONS</strong>");
           } else if (deployStatus === "optimizing") {

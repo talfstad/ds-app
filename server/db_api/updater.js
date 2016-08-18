@@ -46,27 +46,34 @@ module.exports = function(app, db) {
           //or deploying to deployed
           var addExtraCode = false;
 
-          if (activeJob.action == "deployLanderToDomain" &&
-            (activeJob.deploy_status == "invalidating" || activeJob.deploy_status == "deployed") &&
-            oldDeployStatus == "deploying") {
-
-            addExtraCode = "finishedSavingLander";
-            //change from saving to not saving, add the extra things
-          } else if (activeJob.action == "savingLander" && activeJob.deploy_status == "deployed" && oldDeployStatus == "saving") {
-           
-            addExtraCode = "finishedSavingLander";
-          }
-
-          addExtraToJob(addExtraCode, activeJob, function(err, activeJob) {
-            if (err) {
-              callback(err);
-            } else {
-              callback(false, activeJob);
+          if (activeJob.action == "deployLanderToDomain") {
+            if (activeJob.deploy_status == "invalidating" || activeJob.deploy_status == "deployed") {
+              if (oldDeployStatus == "deploying" && !activeJob.master_job_id) {
+                if (oldDeployStatus != activeJob.deploy_status) {
+                  addExtraCode = "finishedSavingLander";
+                }
+              }
             }
-          });
 
+            //change from saving to not saving, add the extra things
+          } else if (activeJob.action == "savingLander") {
+            if (activeJob.deploy_status == "deployed" && oldDeployStatus == "saving") {
+              if (!activeJob.master_job_id) {
+                if (oldDeployStatus != activeJob.deploy_status) {
+                  addExtraCode = "finishedSavingLander";
+                }
+              }
+            }
+          }
         }
 
+        addExtraToJob(addExtraCode, activeJob, function(err, activeJob) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(false, activeJob);
+          }
+        });
       };
 
       db.getConnection(function(err, connection) {
@@ -86,8 +93,10 @@ module.exports = function(app, db) {
                 for (var i = 0; i < activeJobs.length; i++) {
                   var oldDeployStatus = false;
                   for (var j = 0; j < updaterJobsAttributes.length; j++) {
-                    if (activeJobs[i].deploy_status != updaterJobsAttributes[j].deploy_status) {
-                      oldDeployStatus = updaterJobsAttributes[j].deploy_status;
+                    if (activeJobs[i].id == updaterJobsAttributes[j].id) {
+                      if (activeJobs[i].deploy_status != updaterJobsAttributes[j].deploy_status) {
+                        oldDeployStatus = updaterJobsAttributes[j].deploy_status;
+                      }
                     }
                   }
 

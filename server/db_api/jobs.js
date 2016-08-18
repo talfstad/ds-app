@@ -64,7 +64,7 @@ module.exports = function(app, db) {
         var arr = [];
         if (job.action == "undeployLanderFromDomain") {
           //also include deployLanderToDomain jobs if we're undeploying
-          query = "UPDATE jobs SET error = ?, error_code = ? WHERE user_id = ? AND lander_id = ? AND domain_id = ? AND action = ? OR action = ? AND done = ?";
+          query = "UPDATE jobs SET error = ?, error_code = ? WHERE user_id = ? AND lander_id = ? AND domain_id = ? AND (action = ? OR action = ?) AND done = ?";
           arr = [true, "ExternalInterrupt", user_id, job.lander_id, job.domain_id, "undeployLanderFromDomain", "deployLanderToDomain", false];
         } else {
           query = "UPDATE jobs SET error = ?, error_code = ? WHERE user_id = ? AND lander_id = ? AND domain_id = ? AND action = ? AND done = ?";

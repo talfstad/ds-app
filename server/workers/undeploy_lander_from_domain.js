@@ -49,7 +49,7 @@ module.exports = function(app, db) {
 
             var deleteOldDeployedS3Dir = function(callback) {
               console.log("trying to delete path: " + folderPathToDelete);
-              
+
               db.aws.s3.deleteDir(credentials, aws_root_bucket, folderPathToDelete, function(err) {
                 if (err) {
                   callback({ code: "CouldNotDeleteS3Folder" });
@@ -89,26 +89,32 @@ module.exports = function(app, db) {
                   if (err) {
                     callback(err, [myJobId]);
                   } else {
-                    db.aws.cloudfront.waitForInvalidationComplete(user, myJobId, credentials, cloudfront_id, invalidation_id, function(err) {
+                    db.jobs.updateDeployStatus(user, myJobId, "undeploy_invalidating", function(err) {
                       if (err) {
-                        if (err.code == "ExternalInterrupt") {
-                          app.log("external interrupt55 T!! " + myJobId, "debug");
-                          err.staging_path = staging_path;
-                        }
                         callback(err, [myJobId]);
                       } else {
-
-                        //delete the deployed lander
-                        db.deployed_domain.removeFromDeployedLanders(user, lander_id, domain_id, function(err) {
+                        db.aws.cloudfront.waitForInvalidationComplete(user, myJobId, credentials, cloudfront_id, invalidation_id, function(err) {
                           if (err) {
+                            if (err.code == "ExternalInterrupt") {
+                              app.log("external interrupt55 T!! " + myJobId, "debug");
+                              err.staging_path = staging_path;
+                            }
                             callback(err, [myJobId]);
                           } else {
-                            db.jobs.updateDeployStatus(user, myJobId, "deployed", function(err) {
+
+                            //delete the deployed lander
+                            db.deployed_domain.removeFromDeployedLanders(user, lander_id, domain_id, function(err) {
                               if (err) {
                                 callback(err, [myJobId]);
                               } else {
-                                console.log("FINISHED ! saving lander job !");
-                                callback(false, [myJobId]);
+                                db.jobs.updateDeployStatus(user, myJobId, "deployed", function(err) {
+                                  if (err) {
+                                    callback(err, [myJobId]);
+                                  } else {
+                                    console.log("FINISHED ! saving lander job !");
+                                    callback(false, [myJobId]);
+                                  }
+                                });
                               }
                             });
                           }

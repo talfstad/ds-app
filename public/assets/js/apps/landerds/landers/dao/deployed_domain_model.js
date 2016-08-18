@@ -30,6 +30,8 @@ define(["app",
               } else if (job.get("deploy_status") == "deploying") {
                 deployStatus = "deploying";
                 return false;
+              } else if (job.get("deploy_status") == "undeploy_invalidating"){
+                deployStatus = "undeploy_invalidating";
               }
             });
             me.set("deploy_status", deployStatus);
@@ -93,18 +95,7 @@ define(["app",
           var action = actualAddedJobModel.get("action");
           var jobDeployStatus = actualAddedJobModel.get("deploy_status");
 
-          if (action === "undeployLanderFromDomain" || action === "undeployDomainFromLander") {
-            deployStatus = "undeploying";
-          } else if (action === "deployLanderToDomain") {
-            deployStatus = "deploying";
-          } else if (action == "redeploy") {
-            deployStatus = "redeploying";
-          }
-
-          if (jobDeployStatus == "invalidating") {
-            deployStatus = "invalidating";
-          }
-
+          deployStatus = jobDeployStatus
 
           me.set("deploy_status", deployStatus);
 

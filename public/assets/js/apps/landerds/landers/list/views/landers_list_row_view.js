@@ -66,12 +66,6 @@ define(["app",
             this.$el.find(".alert-working-badge").hide();
           }
 
-          // if (this.model.get("modified")) {
-          //   this.$el.find(".alert-modified-badge").show();
-          //   this.$el.find(".alert-working-badge").hide();
-          // }
-
-
           if (deployStatus == "deleting") {
             this.$el.find(".alert-working-badge").hide();
             // this.$el.find(".alert-modified-badge").hide();
