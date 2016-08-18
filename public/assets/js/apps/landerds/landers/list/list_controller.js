@@ -525,6 +525,7 @@ define(["app",
                   });
 
                   //handles changes, use css its way faster
+                  landerView.model.off("change:currentPreviewEndpointId");
                   landerView.model.on("change:currentPreviewEndpointId", function(one, previewId, three) {
                     Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerView.model);
                   });
@@ -538,6 +539,7 @@ define(["app",
                     collection: activeCampaignsCollection
                   });
 
+                  activeCampaignsCollection.off("showUndeployDomainFromCampaignDialog");
                   activeCampaignsCollection.on("showUndeployDomainFromCampaignDialog", function(campaignModel) {
                     var attr = {
                       campaign_model: campaignModel,
@@ -572,6 +574,7 @@ define(["app",
                     collection: deployedDomainsCollection
                   });
 
+                  deployedDomainsCollection.off("showRemoveDomain");
                   deployedDomainsCollection.on("showRemoveDomain", function(domainModel) {
                     var attr = {
                       lander_model: landerView.model,
@@ -584,7 +587,6 @@ define(["app",
                   deployedDomainsView.on("childview:selectCampaignTab", function(one, two, three) {
                     landerView.$el.find("a[href=#campaigns-tab-id-" + landerView.model.get("id") + "]").tab('show')
                   });
-
 
                   deployedDomainsView.on("childview:updateParentLayout", function(childView, options) {
                     //update the campaign count for lander
@@ -599,6 +601,7 @@ define(["app",
                   });
 
                   //update view information on model change
+                  landerView.model.off("change:deploy_status");
                   landerView.model.on("change:deploy_status", function() {
                     Landerds.trigger("landers:updateTopbarTotals");
 
@@ -623,23 +626,7 @@ define(["app",
                     }
                   });
 
-                  landerView.model.on("change:modified", function() {
-                    // Landerds.trigger("landers:updateTopbarTotals");
-
-                    // if (this.get("modified")) {
-                    //   //set all deployed domains to modified as well. modified is
-                    //   //as a whole lander, never individual deployed domains are modified
-                    //   deployedDomainsCollection.each(function(deployedDomain) {
-                    //     deployedDomain.set("modified", true);
-                    //   });
-                    // } else {
-                    //   deployedDomainsCollection.each(function(deployedDomain) {
-                    //     deployedDomain.set("modified", false);
-                    //   });
-                    // }
-                  });
-
-
+                  
                   landerView.deploy_status_region.show(domainTabHandleView);
                   landerView.campaign_tab_handle_region.show(campaignTabHandleView);
                   landerView.deployed_domains_region.show(deployedDomainsView);
@@ -690,8 +677,6 @@ define(["app",
 
           });
         },
-
-
 
 
         //add the lander model to the list

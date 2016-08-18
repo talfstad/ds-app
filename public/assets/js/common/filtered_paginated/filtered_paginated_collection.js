@@ -218,9 +218,7 @@ define(["app",
             totalLanders++;
             var deployStatus = model.get("deploy_status");
             var modifiedAttr = model.get("modified");
-            if (modifiedAttr) {
-              modified++;
-            } else {
+            
               if (deployStatus === "not_deployed") {
                 notDeployedTotal++;
               } else if (deployStatus === "deploying") {
@@ -232,7 +230,7 @@ define(["app",
               } else if (deployStatus === "deleting") {
                 deleting++;
               }
-            }
+          
           });
           filtered.state.gui.set("total_not_deployed", notDeployedTotal);
           filtered.state.gui.set('total_undeploying', undeployingTotal);

@@ -85,7 +85,6 @@ define(["app",
 
         showRemoveDomain: function(e) {
           e.preventDefault();
-          e.stopPropagation();
 
           this.model.trigger("showRemoveDomain", this.model);
         }
