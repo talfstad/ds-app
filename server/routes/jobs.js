@@ -17,6 +17,9 @@ module.exports = function(app, passport) {
 
     var list = jobModelAttributes.list;
 
+
+    console.log("LIST ! T : " + JSON.stringify(list) + "\n\n\n");
+
     var afterRegisterJob = function(registeredJobAttributes) {
       if (registeredJobAttributes.action === "addNewLander") {
         //remove the stuff we dont want
@@ -38,13 +41,14 @@ module.exports = function(app, passport) {
         if (err) {
           res.json({ code: "InvalidLanderInputs" });
         } else {
+    console.log("LIST ! T 1: " + JSON.stringify(list) + "\n\n\n");
+
           //if any of these jobs have the same action, domain_id and lander_id then we
           // update the current ones to error=1 and code = "ExternalInterrupt"
           db.jobs.cancelAnyCurrentRunningDuplicateJobs(user, list, function(err) {
             if (err) {
               res.json(err);
             } else {
-
               var addNewLanders = function(callback) {
                 //get the jobs with .new key = true
                 var finalNewLandersList = [];
@@ -91,15 +95,22 @@ module.exports = function(app, passport) {
                   if (list.length > 0) {
                     //register first job and assign as master
                     var firstJobAttributes = list.shift();
+                    var finalList = [];
+
+                    console.log("first job attr: " + JSON.stringify(firstJobAttributes));
+
 
                     db.jobs.registerJob(user, firstJobAttributes, function(registeredMasterJobAttributes) {
+
+                      console.log("first registered master attr: " + JSON.stringify(registeredMasterJobAttributes));
+                      
                       //start the first job (master job)
                       registeredMasterJobAttributes.landerData = landerData;
 
                       WorkerController.startJob(registeredMasterJobAttributes.action, user, registeredMasterJobAttributes);
 
-                      firstJobAttributes.id = registeredMasterJobAttributes.id;
-                      var masterJobId = firstJobAttributes.id;
+                      finalList.push(registeredMasterJobAttributes);
+                      var masterJobId = registeredMasterJobAttributes.id;
 
                       //call register job in for loop with async index
                       if (list.length > 0) {
@@ -109,47 +120,33 @@ module.exports = function(app, passport) {
                           list[i].master_job_id = masterJobId;
 
                           db.jobs.registerJob(user, list[i], function(registeredSlaveJobAttributes) {
-
-                            list[asyncIndex].id = registeredSlaveJobAttributes.id;
+                      console.log("slave  attr: " + JSON.stringify(registeredSlaveJobAttributes));
 
                             registeredSlaveJobAttributes.landerData = landerData;
+                            finalList.push(registeredSlaveJobAttributes);
 
                             //start slave job
                             WorkerController.startJob(registeredSlaveJobAttributes.action, user, registeredSlaveJobAttributes);
 
                             if (++asyncIndex == list.length) {
-                              //done, send response
-                              //put first job back on there with its id
-                              var attr = {
-                                modified: false,
-                                id: registeredSlaveJobAttributes.lander_id
-                              };
 
                               //put first job attributes back on list without modifying the list
-                              var returnList = [];
-                              var jobsList = [firstJobAttributes].concat(list);
-                              for (var j = 0; j < jobsList.length; j++) {
+                              for (var j = 0; j < finalList.length; j++) {
                                 //no need for landerData to be on the job updater...
-                                delete jobsList[j].landerData;
-                                returnList.push(jobsList[j]);
+                                delete finalList[j].landerData;
                               }
-                              res.json(returnList);
+                              res.json(finalList);
                             }
                           });
                         }
                       } else {
-                        list.unshift(firstJobAttributes);
-                        var returnList = [].concat(list);
-                        for (var j = 0; j < returnList.length; j++) {
-                          delete returnList[j].landerData;
+                        for (var j = 0; j < finalList.length; j++) {
+                          delete finalList[j].landerData;
                         }
-                        res.json(list);
+                        res.json(finalList);
                       }
                     });
                   } else {
-                    //list is empty so that means we need to just save the lander
-                    //and return! TODO (create save lander job, fire it)
-                    console.log("\n\n\n\n NO OPTIMIZE FOR SAVE ?? : T : " + landerData.no_optimize_on_save);
 
                     if (!landerData.no_optimize_on_save) {
                       //action: saveLander
@@ -161,7 +158,7 @@ module.exports = function(app, passport) {
 
                       db.jobs.registerJob(user, saveLanderJobAttributes, function(registeredJobAttributes) {
                         res.json([registeredJobAttributes]);
-                        WorkerController.startJob(registeredJobAttributes.action, user, {job: registeredJobAttributes, lander: landerData});
+                        WorkerController.startJob(registeredJobAttributes.action, user, { job: registeredJobAttributes, lander: landerData });
                       });
 
                     } else {
@@ -178,13 +175,68 @@ module.exports = function(app, passport) {
 
 
 
+    } else if (jobModelAttributes.action === "undeployLanderFromDomain") {
+
+
+
+      //if any of these jobs have the same action or deployLanderToDomain, domain_id and lander_id then we
+      // update the current ones to error=1 and code = "ExternalInterrupt"
+      db.jobs.cancelAnyCurrentRunningDuplicateJobs(user, list, function(err) {
+        if (err) {
+          res.json(err);
+        } else {
+
+          //register first job and assign as master
+          var firstJobAttributes = list.shift();
+          var finalList = [];
+
+          db.jobs.registerJob(user, firstJobAttributes, function(registeredMasterJobAttributes) {
+            //start the first job (master job)
+            registeredMasterJobAttributes.landerData = landerData;
+
+            WorkerController.startJob(registeredMasterJobAttributes.action, user, { job: registeredMasterJobAttributes, lander: landerData });
+
+            finalList.push(registeredMasterJobAttributes);
+            var masterJobId = registeredMasterJobAttributes.id;
+
+            //call register job in for loop with async index
+            if (list.length > 0) {
+              var asyncIndex = 0;
+              for (var i = 0; i < list.length; i++) {
+
+                list[i].master_job_id = masterJobId;
+
+                db.jobs.registerJob(user, list[i], function(registeredSlaveJobAttributes) {
+
+                  registeredSlaveJobAttributes.landerData = landerData;
+                  finalList.push(registeredSlaveJobAttributes);
+
+                  //start slave job
+                  WorkerController.startJob(registeredSlaveJobAttributes.action, user, { job: registeredSlaveJobAttributes, lander: landerData });
+
+                  if (++asyncIndex == list.length) {
+                    //put first job attributes back on list without modifying the list
+                    for (var j = 0; j < finalList.length; j++) {
+                      //no need for landerData to be on the job updater...
+                      delete finalList[j].landerData;
+                    }
+                    res.json(finalList);
+                  }
+                });
+              }
+            } else {
+              for (var j = 0; j < finalList.length; j++) {
+                delete finalList[j].landerData;
+              }
+              res.json(finalList);
+            }
+          });
+        }
+      });
+
     } else {
-      //TODO: validate job model is valid to begin
       db.jobs.registerJob(user, jobModelAttributes, afterRegisterJob)
-
     }
-
-
 
   });
 

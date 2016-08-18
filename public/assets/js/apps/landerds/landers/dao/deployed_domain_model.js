@@ -19,16 +19,18 @@ define(["app",
         //set initial deploy status
         var setDeployStatusForDomain = function() {
           if (activeJobsCollection.length > 0) {
-            var deployStatus = "deploying";
+            var deployStatus = "deployed";
             activeJobsCollection.each(function(job) {
-              if (job.get("action") === "undeployLanderFromDomain" || job.get("action") === "undeployDomainFromLander") {
-                deployStatus = "undeploying";
-              }
-
               if (job.get("deploy_status") === "invalidating") {
                 deployStatus = "invalidating";
+                return false;
+              } else if (job.get("deploy_status") === "undeploying") {
+                deployStatus = "undeploying";
+                return false;
+              } else if (job.get("deploy_status") == "deploying") {
+                deployStatus = "deploying";
+                return false;
               }
-
             });
             me.set("deploy_status", deployStatus);
           } else {
@@ -114,26 +116,15 @@ define(["app",
           if (jobModel.get("action") === "undeployDomainFromLander" ||
             jobModel.get("action") === "undeployLanderFromDomain" ||
             jobModel.get("alternate_action") === "undeployDomainFromLander") {
+            
+            Landerds.updater.remove(jobModel);
 
-            //hack to get it to not send DELETE XHR
             delete jobModel.attributes.id;
             jobModel.destroy();
 
-            //destroy only if we dont have any other jobs for this
-            //1. if we have a deploy to do
-            var moreJobsToDo = false;
-            if (activeJobsCollection.length > 0) {
-              moreJobsToDo = true;
-            }
+            Landerds.trigger("list:removeDeployedDomainModelFromCollection", me);
 
-            setDeployStatusForDomain();
-
-            if (!moreJobsToDo) {
-              //triggers destroy to the server to get rid of this lander from campaign
-              me.destroy();
-            }
           } else {
-
             //finished with this job so destroy the jobModel
             //hack to get it to not send DELETE XHR
             delete jobModel.attributes.id;

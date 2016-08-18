@@ -22,23 +22,15 @@ define(["app",
 
           //on add save the camp to db
           removeDomainLayout.on("removeDomainConfirm", function() {
+            var domain_id = deployedDomainModel.get("domain_id");
 
-            var deployedDomainModelActiveJobs = deployedDomainModel.get("activeJobs");
-            
-            //create undeploy job for domain and add it to the domain and the lander model
-            var jobAttributes = {
-              action: "undeployLanderFromDomain",
-              lander_id: landerModel.get("lander_id") || landerModel.get("id"),
-              domain_id: deployedDomainModel.get("domain_id") || deployedDomainModel.get("id"),
-              deploy_status: "undeploying"
+            var undeployAttr = {
+              lander_id: landerModel.get("id"),
+              undeployDomainIdsArr: [domain_id]
             };
 
-            var jobModel = new JobModel(jobAttributes);
-
-            deployedDomainModelActiveJobs.add(jobModel);
-
-            Landerds.trigger("job:start", jobModel);
-
+            Landerds.trigger("landers:undeployLanderFromDomains", undeployAttr);
+            
           });
         }
       }

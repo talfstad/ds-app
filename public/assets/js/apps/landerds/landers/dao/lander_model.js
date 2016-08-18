@@ -107,6 +107,7 @@ define(["app",
             }
           }
 
+          Landerds.updater.remove(jobModel);
           delete jobModel.attributes.id;
           jobModel.destroy();
 
@@ -155,7 +156,7 @@ define(["app",
 
             //catch if there are no models, set to not_deployed
             if (deployedDomainsCollection.length <= 0) {
-              deployStatus = "not_deployed"
+              deployStatus = "deployed"
             }
 
             me.set("deploy_status", deployStatus);
@@ -176,7 +177,6 @@ define(["app",
             });
           }
         });
-
 
         //if deployed domain triggers endpoint change then we update the lander
         //endpoint view by triggering this model event

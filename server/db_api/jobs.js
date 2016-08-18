@@ -53,19 +53,31 @@ module.exports = function(app, db) {
         return;
       }
 
+      //if undeploy job, cancel deploy jobs as well
+
       var user_id = user.id;
 
       var ExternalInterruptJob = function(job, callback) {
         app.log("\n\n\n\n11111 heres the job trying to cancel?? : " + JSON.stringify(job) + "\n\n\n", "debug");
 
+        var query = "";
+        var arr = [];
+        if (job.action == "undeployLanderFromDomain") {
+          //also include deployLanderToDomain jobs if we're undeploying
+          query = "UPDATE jobs SET error = ?, error_code = ? WHERE user_id = ? AND lander_id = ? AND domain_id = ? AND action = ? OR action = ? AND done = ?";
+          arr = [true, "ExternalInterrupt", user_id, job.lander_id, job.domain_id, "undeployLanderFromDomain", "deployLanderToDomain", false];
+        } else {
+          query = "UPDATE jobs SET error = ?, error_code = ? WHERE user_id = ? AND lander_id = ? AND domain_id = ? AND action = ? AND done = ?";
+          arr = [true, "ExternalInterrupt", user_id, job.lander_id, job.domain_id, job.action, false];
+        }
+
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
           } else {
-            connection.query("UPDATE jobs SET error = ?, error_code = ? WHERE user_id = ? AND lander_id = ? AND domain_id = ? AND action = ? AND done = ?", [true, "ExternalInterrupt", user_id, job.lander_id, job.domain_id, job.action, false],
+            connection.query(query, arr,
               function(err, docs) {
                 if (err) {
-                  console.log("ERRR: " + err)
                   callback(err);
                 } else {
                   callback(false);

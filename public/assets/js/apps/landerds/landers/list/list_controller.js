@@ -28,6 +28,17 @@ define(["app",
 
         filteredLanderCollection: null,
 
+        removeDeployedDomainModelFromCollection: function(deployedDomainToRemove) {
+          var lander_id = deployedDomainToRemove.get("lander_id");
+          var landerModel = this.filteredLanderCollection.get(lander_id);
+          if (!landerModel) {
+            return;
+          }
+
+          var deployedDomains = landerModel.get("deployedDomains");
+          deployedDomains.remove(deployedDomainToRemove);
+        },
+
         updateAffectedLanderIdsRemoveActiveSnippets: function(affectedUrlEndpoints) {
           var me = this;
 
@@ -229,6 +240,76 @@ define(["app",
           if (!landerModel) return false;
 
           this.redeployLanders(landerModel);
+
+        },
+
+        undeployLanderFromDomains: function(undeployAttr) {
+          var me = this;
+
+          var lander_id = undeployAttr.lander_id;
+          var undeployDomainIdsArr = undeployAttr.undeployDomainIdsArr;
+
+          var landerModel = this.filteredLanderCollection.get(lander_id);
+          if (!landerModel) return false;
+
+          var deployedDomainCollection = landerModel.get("deployedDomains");
+          var deployedDomainsJobList = [];
+
+          //find domain in deployed domains and create undeploy job for it
+          $.each(undeployDomainIdsArr, function(idx, domainToUndeployId) {
+
+            deployedDomainCollection.each(function(deployedDomain) {
+
+              if (domainToUndeployId == deployedDomain.get("domain_id")) {
+                deployedDomainsJobList.push({
+                  lander_id: lander_id,
+                  domain_id: domainToUndeployId,
+                  action: "undeployLanderFromDomain",
+                  deploy_status: "undeploying"
+                });
+              }
+            });
+          });
+
+          var undeployJobModel = new JobModel({
+            action: "undeployLanderFromDomain",
+            list: deployedDomainsJobList,
+            model: landerModel,
+            neverAddToUpdater: true
+          });
+
+          var undeployJobAttributes = {
+            jobModel: undeployJobModel,
+            onSuccess: function(responseJobList) {
+
+              //create job models for each deployed domain and add them!
+              deployedDomainCollection.each(function(deployedDomainModel) {
+                $.each(responseJobList, function(idx, responseJobAttr) {
+
+                  if (deployedDomainModel.get("domain_id") == responseJobAttr.domain_id) {
+                    //create new individual job model for
+                    var activeJobs = deployedDomainModel.get("activeJobs");
+                    var newUndeployJob = new JobModel(responseJobAttr);
+
+                    //remove active any deploy jobs for this deployed domain
+                    activeJobs.each(function(job) {
+                      if (job.get("action") == "deployLanderToDomain") {
+                        //remove from updater and destroy job
+                        Landerds.updater.remove(this);
+                        delete job.attributes.id;
+                        job.destroy();
+                      }
+                    });
+                    activeJobs.add(newUndeployJob);
+                    //call start for each job 
+                    Landerds.trigger("job:start", newUndeployJob);
+                  }
+                });
+              });
+            }
+          };
+
+          Landerds.trigger("job:start", undeployJobAttributes);
 
         },
 
@@ -600,33 +681,7 @@ define(["app",
                     landerView.reAlignTableHeader();
                   });
 
-                  //update view information on model change
-                  landerView.model.off("change:deploy_status");
-                  landerView.model.on("change:deploy_status", function() {
-                    Landerds.trigger("landers:updateTopbarTotals");
-
-                    //if not deployed make sure that the deployed
-                    if (this.get("deploy_status") == "not_deployed") {
-                      deployedDomainsCollection.isInitializing = false;
-                    }
-
-                    // render if is showing AND EMPTY else dont (this logic meant for initializing state)
-                    if (deployedDomainsView.isRendered && deployedDomainsCollection.length <= 0) {
-                      deployedDomainsView.render();
-                    }
-                    if (activeCampaignsView.isRendered && activeCampaignsCollection.length <= 0) {
-                      activeCampaignsView.render();
-                    }
-
-                    //if deleting then trigger delete state on landerView
-                    if (landerView.isRendered && this.get("deploy_status") === "deleting") {
-                      landerView.disableAccordionPermanently();
-                      //close sidebar
-                      Landerds.trigger('landers:closesidebar');
-                    }
-                  });
-
-                  
+                
                   landerView.deploy_status_region.show(domainTabHandleView);
                   landerView.campaign_tab_handle_region.show(campaignTabHandleView);
                   landerView.deployed_domains_region.show(deployedDomainsView);

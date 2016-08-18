@@ -25,6 +25,7 @@ define(["app"], function(Landerds) {
       //instantiate
       this.updateCollection = new UpdateCollection();
       var updateCollectionBulkSaveModelWrapper = new UpdateCollectionBulkSaveModelWrapper();
+      updateCollectionBulkSaveModelWrapper.set("models", this.updateCollection);
 
       //callbacks
       var removeIfFinishedProcessing = function(model, modelData, other) {
@@ -71,28 +72,6 @@ define(["app"], function(Landerds) {
     //finished in the finishedState function
     add: function(model) {
 
-      var hasConflict = false;
-
-      this.updateCollection.each(function(job) {
-        if (model.get("action") == "undeployLanderFromDomain") {
-          //add only if no job with domain & lander ids already active
-          if (job.get("action") == "deployLanderToDomain" &&
-            job.get("domain_id") == model.get("domain_id") &&
-            job.get("lander_id") == model.get("lander_id")) {
-            hasConflict = true;
-          }
-        } else if (model.get("action") == "deployLanderToDomain") {
-          //add only if no job with domain & lander ids already active
-          if (job.get("action") == "undeployLanderFromDomain" &&
-            job.get("domain_id") == model.get("domain_id") &&
-            job.get("lander_id") == model.get("lander_id")) {
-            hasConflict = true;
-          }
-        }
-      });
-
-      if (!hasConflict) {
-
         //send the model thats in the updateCollection first to startState. startState
         //will replace the activeJobModel it made with the one already in the updater
         var modelAlreadyInUpdater = this.updateCollection.get(model.get('id'));
@@ -117,9 +96,6 @@ define(["app"], function(Landerds) {
           this.pollNotStarted = false;
           this.poll();
         }
-
-      }
-
 
     },
 
