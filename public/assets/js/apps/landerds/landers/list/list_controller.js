@@ -329,6 +329,10 @@ define(["app",
 
           deployedDomains.add(deployedDomainModel);
 
+          //set to deploying to start
+          deployedDomainModel.set("deploy_status", "deploying");
+
+
           this.redeployLanders(landerModel);
 
         },
@@ -406,6 +410,11 @@ define(["app",
                 $.each(responseJobList, function(idx, responseJobAttr) {
 
                   if (deployedDomainModel.get("domain_id") == responseJobAttr.domain_id) {
+                    //set the ID for the deployed domain row if it's new
+                    if (responseJobAttr.new) {
+                      deployedDomainModel.set("id", responseJobAttr.id);
+                    }
+
                     //create new individual job model for
                     var activeJobs = deployedDomainModel.get("activeJobs");
                     var newRedeployJob = new JobModel(responseJobAttr);
@@ -642,14 +651,8 @@ define(["app",
                   deployedDomainsCollection.urlEndpoints = landerView.model.get("urlEndpoints");
 
                   var landerViewDeploymentFolderName = landerView.model.get("deployment_folder_name");
-                  deployedDomainsCollection.deployment_folder_name = landerViewDeploymentFolderName
+                  deployedDomainsCollection.deployment_folder_name = landerViewDeploymentFolderName;
 
-
-                  //if this lander is initializing set the collection level variable to be picked up
-                  //by collections childviewoptions
-                  if (landerView.model.get("deploy_status") == "initializing") {
-                    deployedDomainsCollection.isInitializing = true;
-                  }
 
                   var deployedDomainsView = new DeployedDomainsView({
                     collection: deployedDomainsCollection
@@ -681,7 +684,7 @@ define(["app",
                     landerView.reAlignTableHeader();
                   });
 
-                
+
                   landerView.deploy_status_region.show(domainTabHandleView);
                   landerView.campaign_tab_handle_region.show(campaignTabHandleView);
                   landerView.deployed_domains_region.show(deployedDomainsView);

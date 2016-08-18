@@ -49,8 +49,8 @@
               <div class="row" style="margin-left: 0px; margin-right: 0px;">
                 <div style="display: block" class="clearfix deployed-landers-header-container">
                   <span style="width: 20px">#</span>
-                  <span class="table-name-header" style="margin-left: 15px">Deployed Domains</span>
-                  <span class="deployed-landers-header deployed-domain-links-header">Domain Links</span>
+                  <span class="table-name-header" style="margin-left: 15px">Deployed Domain</span>
+                  <span class="deployed-landers-header deployed-domain-links-header">Domain Link</span>
                   <span class="deployed-landers-header " style="margin-left: 315px">YSlow Load Time</span>
                 </div>
                 <div style="float: right;" class="deploy-to-new-domain-region clearfix">
@@ -70,8 +70,7 @@
               <div class="row" style="margin-left: 0px; margin-right: 0px;">
                 <div style="margin-left: 5px; font-weight: 600; padding-top: 10px; float: left;" class="clearfix">
                 <span style="width: 20px">#</span>
-                <span style="margin-left: 15px">Campaigns</span>
-                <span style="margin-left: 25px">Domains on Campaign</span>
+                <span style="margin-left: 15px">Campaign</span>
               </div>
                 <div style="float: right;" class="add-to-new-campaign-region clearfix">
                   

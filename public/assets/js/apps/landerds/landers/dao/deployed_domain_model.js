@@ -1,54 +1,26 @@
 define(["app",
-    "assets/js/jobs/jobs_base_gui_model",
-    "assets/js/apps/landerds/landers/dao/active_campaign_collection",
-    "assets/js/jobs/jobs_app"
+    "assets/js/apps/landerds/base_classes/deployed_rows/models/deployed_row_base_model"
   ],
-  function(Landerds, JobsGuiBaseModel, ActiveCampaignCollection) {
-    var deployedDomainModel = JobsGuiBaseModel.extend({
+  function(Landerds, DeployedRowBaseModel) {
+    var deployedDomainModel = DeployedRowBaseModel.extend({
 
-      url: '/api/deployed_domain',
+      urlRoot: '/api/deployed_domain',
 
       initialize: function() {
         var me = this;
         //call base class init
-        JobsGuiBaseModel.prototype.initialize.apply(this);
+        DeployedRowBaseModel.prototype.initialize.apply(this);
 
         //when job is destroyed must look to see if there are any more
         var activeJobsCollection = this.get("activeJobs");
 
-        //set initial deploy status
-        var setDeployStatusForDomain = function() {
-          if (activeJobsCollection.length > 0) {
-            var deployStatus = "deployed";
-            activeJobsCollection.each(function(job) {
-              if (job.get("deploy_status") === "invalidating") {
-                deployStatus = "invalidating";
-                return false;
-              } else if (job.get("deploy_status") === "undeploying") {
-                deployStatus = "undeploying";
-                return false;
-              } else if (job.get("deploy_status") == "deploying") {
-                deployStatus = "deploying";
-                return false;
-              } else if (job.get("deploy_status") == "undeploy_invalidating"){
-                deployStatus = "undeploy_invalidating";
-              }
-            });
-            me.set("deploy_status", deployStatus);
-          } else {
-            me.set("deploy_status", "deployed");
-          }
-        };
-
-        setDeployStatusForDomain();
-
         activeJobsCollection.on("add remove", function() {
-          setDeployStatusForDomain();
+          me.setDeployStatus();
         });
 
         activeJobsCollection.on("updateJobModel", function(jobModelAttributes) {
 
-          me.set("deploy_status", jobModelAttributes.deploy_status);
+          me.updateBaseJobModel(jobModelAttributes);
 
           //check for pagespeed and update them if we have them
           var pagespeedArr = jobModelAttributes.extra.pagespeed;
@@ -74,40 +46,19 @@ define(["app",
             //trigger a changed_pagespeed
             me.trigger("changed_pagespeed");
           }
-
-
         });
 
         activeJobsCollection.on("startState", function(attr) {
-          var actualAddedJobModel = attr.actualAddedJobModel;
-          var jobModelToReplace = attr.jobModelToReplace;
-
-          //on start remove the created job model and replace with the job model on the updater.
-          //this allows us to have one job model across multiple things. (camps, domains, etc)
-          //no events should fire it should just be quick and dirty ;)
-          //must remove it at the correct index and put the new one in the correct index
-          if (jobModelToReplace) {
-            var index = activeJobsCollection.indexOf(jobModelToReplace);
-            activeJobsCollection.remove(jobModelToReplace, { silent: true })
-            activeJobsCollection.add(actualAddedJobModel, { at: index, silent: true });
-          }
-
-          var action = actualAddedJobModel.get("action");
-          var jobDeployStatus = actualAddedJobModel.get("deploy_status");
-
-          deployStatus = jobDeployStatus
-
-          me.set("deploy_status", deployStatus);
-
-
+          me.setBaseModelStartState(attr);
         });
 
         activeJobsCollection.on("finishedState", function(jobModel) {
+          me.baseModelFinishState(jobModel);
 
           if (jobModel.get("action") === "undeployDomainFromLander" ||
             jobModel.get("action") === "undeployLanderFromDomain" ||
             jobModel.get("alternate_action") === "undeployDomainFromLander") {
-            
+
             Landerds.updater.remove(jobModel);
 
             delete jobModel.attributes.id;
@@ -124,7 +75,6 @@ define(["app",
 
           //trigger to start the next job on the list
           Landerds.trigger("job:startNext", activeJobsCollection);
-
         });
 
         this.startActiveJobs();

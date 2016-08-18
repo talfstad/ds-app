@@ -82,7 +82,7 @@ define(["app",
         },
 
         onRender: function() {
-          this.baseClassOnRender();
+          DeployedRowBaseView.prototype.onRender.apply(this);
         },
 
         showRemoveDomain: function(e) {

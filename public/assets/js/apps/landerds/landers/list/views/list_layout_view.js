@@ -100,7 +100,6 @@ define(["app",
           });
 
 
-
           // Prevents a dropdown menu from closing when
           // a btn-group nav menu it contains is clicked
           $('.dropdown-menu').click(function(e) {
@@ -121,7 +120,6 @@ define(["app",
             me.trigger("landers:sort");
             $(this).dropdown("toggle");
           });
-
 
           $("body").removeClass("external-page");
           var Body = $("body");

@@ -64,14 +64,15 @@
 
           <% } %>
 
-
-         
-
         <% } else { %>
         
-        <span style="font-size: 13px">
+        <span style="font-size: 13px; margin-right: 10px; line-height: 28px">
           <%= deploy_status_gui %>
         </span>
+
+        <a class="goto-edit-domain" href="#">
+          <span class="fa fa-edit"></span>
+        </a>
 
         <% } %>
 

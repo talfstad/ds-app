@@ -1,8 +1,9 @@
 define(["app",
-    "assets/js/common/notification"
+    "assets/js/common/notification",
+    "assets/js/apps/landerds/base_classes/deployed_rows/views/row_base_view"
   ],
-  function(Landerds, Notification) {
-    var DeployedDomainsBaseView = Marionette.ItemView.extend({
+  function(Landerds, Notification, RowBaseView) {
+    var DeployedDomainsBaseView = RowBaseView.extend({
 
       updateLoadTime: function(e) {
         if (e) e.preventDefault();
@@ -14,10 +15,6 @@ define(["app",
       selectCampaignTab: function(e) {
         e.preventDefault();
         this.trigger("selectCampaignTab");
-      },
-
-      onDestroy: function() {
-        this.trigger("updateParentLayout", this.model);
       },
 
       updateLoadTimeDisplay: function(url_endpoint_id) {
@@ -134,35 +131,17 @@ define(["app",
         return false;
       },
 
-      baseClassOnRender: function() {
+      onRender: function() {
         this.$el.find(".lander-links-select").select2();
 
         var currentShowingEndpointId = this.$el.find(".lander-links-select option:first").val();
-        this.updateLoadTimeDisplay(currentShowingEndpointId);
 
-
-        var deployStatus = this.model.get("deploy_status");
-        this.$el.removeClass("success alert warning");
-        if (deployStatus === "deployed") {
-          this.$el.addClass("success");
-        } else if (deployStatus === "deploying" ||
-          deployStatus === "undeploying" ||
-          deployStatus === "invalidating_delete" ||
-          deployStatus === "invalidating" ||
-          deployStatus === "redeploying" ||
-          deployStatus === "undeploy_invalidating" ||
-          deployStatus === "optimizing") {
-          this.$el.addClass("alert");
+        if (currentShowingEndpointId) {
+          this.updateLoadTimeDisplay(currentShowingEndpointId);
         }
 
-        //never show modified in deployed row ! only for right sidebar
-        // if (this.model.get("modified") && (this.model.get("deploy_status") != "deploying" && 
-        //   this.model.get("deploy_status") != "undeploying")) {
-        //   this.$el.removeClass("success alert warning");
-        //   this.$el.addClass("warning");
-        // }
+        RowBaseView.prototype.onRender.apply(this);
 
-        this.trigger("updateParentLayout", this.model);
       }
 
     });

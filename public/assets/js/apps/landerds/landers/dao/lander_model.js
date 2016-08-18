@@ -145,17 +145,20 @@ define(["app",
           if (me.get("deploy_status") !== "initializing" &&
             me.get("deploy_status") !== "deleting") {
             var deployStatus = "deployed";
-            deployedDomainsCollection.each(function(deployedDomainModel) {
-              var activeJobs = deployedDomainModel.get("activeJobs");
+            if (deployedDomainsCollection.length > 0) {
+              deployedDomainsCollection.each(function(deployedDomainModel) {
+                var activeJobs = deployedDomainModel.get("activeJobs");
 
-              if (activeJobs.length > 0) {
-                deployStatus = "deploying"; //to make lander show "working"
-              }
+                if (activeJobs.length > 0) {
+                  deployStatus = "deploying"; //to make lander show "working"
+                } else if (deployedDomainModel.get("deploy_status") == "deploying") {
+                  deployStatus = "deploying"; //to make lander show "working"
+                } else if (deployedDomainModel.get("deploy_status") == "undeploying") {
+                  deployStatus = "deploying"; //to make lander show "working"
+                }
 
-            });
-
-            //catch if there are no models, set to not_deployed
-            if (deployedDomainsCollection.length <= 0) {
+              });
+            } else {
               deployStatus = "deployed"
             }
 
