@@ -18,8 +18,6 @@ module.exports = function(app, passport) {
     var list = jobModelAttributes.list;
 
 
-    console.log("LIST ! T : " + JSON.stringify(list) + "\n\n\n");
-
     var afterRegisterJob = function(registeredJobAttributes) {
       if (registeredJobAttributes.action === "addNewLander") {
         //remove the stuff we dont want
@@ -41,8 +39,6 @@ module.exports = function(app, passport) {
         if (err) {
           res.json({ code: "InvalidLanderInputs" });
         } else {
-    console.log("LIST ! T 1: " + JSON.stringify(list) + "\n\n\n");
-
           //if any of these jobs have the same action, domain_id and lander_id then we
           // update the current ones to error=1 and code = "ExternalInterrupt"
           db.jobs.cancelAnyCurrentRunningDuplicateJobs(user, list, function(err) {
@@ -97,13 +93,9 @@ module.exports = function(app, passport) {
                     var firstJobAttributes = list.shift();
                     var finalList = [];
 
-                    console.log("first job attr: " + JSON.stringify(firstJobAttributes));
-
 
                     db.jobs.registerJob(user, firstJobAttributes, function(registeredMasterJobAttributes) {
 
-                      console.log("first registered master attr: " + JSON.stringify(registeredMasterJobAttributes));
-                      
                       //start the first job (master job)
                       registeredMasterJobAttributes.landerData = landerData;
 
@@ -120,7 +112,6 @@ module.exports = function(app, passport) {
                           list[i].master_job_id = masterJobId;
 
                           db.jobs.registerJob(user, list[i], function(registeredSlaveJobAttributes) {
-                      console.log("slave  attr: " + JSON.stringify(registeredSlaveJobAttributes));
 
                             registeredSlaveJobAttributes.landerData = landerData;
                             finalList.push(registeredSlaveJobAttributes);

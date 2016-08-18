@@ -31,7 +31,7 @@ module.exports = function(app, db) {
             } else {
               connection.query("REPLACE INTO endpoint_load_times(user_id, url_endpoint_id, deployed_lander_id, load_time) VALUES(?,?,?,?);", [user_id, url_endpoint_id, deployed_lander_id, load_time],
                 function(err, docs) {
-                  
+
                   var returnObj = {
                     url_endpoint_id: url_endpoint_id
                   }
@@ -49,6 +49,25 @@ module.exports = function(app, db) {
           });
         }
       });
-    }
+    },
+
+    removeFromDeployedLanders: function(user, lander_id, domain_id, callback) {
+      var user_id = user.id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          callback(err);
+        } else {
+          connection.query("DELETE FROM deployed_landers WHERE user_id = ? AND lander_id = ? AND domain_id = ?", [user_id, lander_id, domain_id], function(err, docs) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(false);
+            }
+            connection.release();
+          });
+        }
+      });
+    },
   }
 };

@@ -127,9 +127,11 @@ module.exports = function(app, db) {
 
       var deleteDirAction = s3_client.deleteDir(params);
       deleteDirAction.on("error", function(err) {
+        console.log("ERROR deleting dir from s3");
         callback(err);
       });
       deleteDirAction.on("end", function() {
+        console.log("DELETED DIR : " + bucketName + " : dir : " + dirPath);
         callback();
       });
 

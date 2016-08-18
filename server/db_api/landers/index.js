@@ -370,24 +370,24 @@ module.exports = function(app, db) {
       });
     },
 
-    undeployLanderFromDomain: function(user, lander_id, domain_id, successCallback) {
-      var user_id = user.id;
+    // undeployLanderFromDomain: function(user, lander_id, domain_id, successCallback) {
+    //   var user_id = user.id;
 
-      db.getConnection(function(err, connection) {
-        if (err) {
-          console.log(err);
-        } else {
-          connection.query("DELETE FROM deployed_landers WHERE user_id = ? AND lander_id = ? AND domain_id = ?", [user_id, lander_id, domain_id], function(err, docs) {
-            if (err) {
-              console.log(err);
-            } else {
-              successCallback();
-            }
-            connection.release();
-          });
-        }
-      });
-    },
+    //   db.getConnection(function(err, connection) {
+    //     if (err) {
+    //       console.log(err);
+    //     } else {
+    //       connection.query("DELETE FROM deployed_landers WHERE user_id = ? AND lander_id = ? AND domain_id = ?", [user_id, lander_id, domain_id], function(err, docs) {
+    //         if (err) {
+    //           console.log(err);
+    //         } else {
+    //           successCallback();
+    //         }
+    //         connection.release();
+    //       });
+    //     }
+    //   });
+    // },
 
     getAll: function(user, successCallback, landersToGetArr) {
 
