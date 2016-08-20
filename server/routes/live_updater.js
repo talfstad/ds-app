@@ -17,11 +17,11 @@ module.exports = function(app, passport) {
         var finishedJobs = [];
 
         for (var i = 0; i < modelsAttributes.length; i++) {
-          var jobNotFound = true;
+          var jobFound = false;
           for (var j = 0; j < activeJobs.length; j++) {
 
             if (modelsAttributes[i].id === activeJobs[j].id) {
-              jobNotFound = false;
+              jobFound = true;
 
               modelsAttributes[i].deploy_status = activeJobs[j].deploy_status;
 
@@ -40,7 +40,7 @@ module.exports = function(app, passport) {
             }
           }
 
-          if (activeJobs.length <= 0 || jobNotFound) {
+          if (activeJobs.length <= 0 || !jobFound) {
             finishedJobs.push(modelsAttributes[i]);
           }
         }

@@ -1,9 +1,10 @@
-module.exports = function(db) {
+module.exports = function(app, db) {
 
-  var dbLanders = require('./landers')(db);
 
-  return {
+  var dbLanders = require('./landers')(app, db);
+  var baseDeployedLander = require('./base_classes/base_deployed_lander')(app, db);
 
+  var module = _.extend(baseDeployedLander, {
 
     updateCampaignName: function(user, campaignAttributes, callback) {
 
@@ -48,7 +49,6 @@ module.exports = function(db) {
             } else {
               //don't send back deployedLanders or deployedDomains because it will overwrite the collections
               delete newCampaignAttributes.deployedLanders;
-              delete newCampaignAttributes.deployedDomains;
               delete newCampaignAttributes.activeJobs;
 
               newCampaignAttributes.created_on = docs[1][0]["created_on"];
@@ -134,36 +134,8 @@ module.exports = function(db) {
             if (err) {
               callback(err);
             } else {
-              modelAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
-
-              var deployedLanders = docs[1];
-
-              delete modelAttributes.activeJobs;
-              delete modelAttributes.deployedDomains;
-              delete modelAttributes.deployedLanders;
-
-              //get current lander data by id
-              if (deployedLanders.length > 0) {
-
-                dbLanders.getAll(user, function(err, deployedLandersArr) {
-                  if (err) {
-                    callback(err);
-                  } else {
-                    //add the current lander data and return!
-                    modelAttributes.deployedLanders = deployedLandersArr
-                    callback(false, modelAttributes);
-                  }
-
-                }, deployedLanders);
-
-              } else {
-
-                modelAttributes.deployedLanders = []
-
-                callback(false, modelAttributes);
-
-              }
-
+              var active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
+              callback(false, active_campaign_id);
             }
 
             //release connection
@@ -184,12 +156,8 @@ module.exports = function(db) {
             if (err) {
               callback(err);
             } else {
-              modelAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
-              modelAttributes.currentDomains = docs[1];
-
-              delete modelAttributes.activeJobs;
-
-              callback(false, modelAttributes);
+              var active_campaign_id = docs[0][0]["LAST_INSERT_ID()"];
+              callback(false, active_campaign_id);
             }
 
             //release connection
@@ -249,37 +217,21 @@ module.exports = function(db) {
         });
       };
 
-      var getDeployedDomainsForCampaign = function(campaign, callback) {
+      var getDomainsForCampaign = function(campaign, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
             callback(err);
+          } else {
+            connection.query("SELECT a.id AS domain_id,a.domain from domains a JOIN campaigns_with_domains b ON a.id=b.domain_id WHERE b.user_id = ? AND b.campaign_id = ?", [user_id, campaign.id],
+              function(err, dbDomains) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false, dbDomains);
+                }
+                connection.release();
+              });
           }
-          connection.query("SELECT a.id AS domain_id,b.campaign_id,a.domain,b.id from domains a JOIN campaigns_with_domains b ON a.id=b.domain_id WHERE (a.user_id = ? AND b.campaign_id = ?)", [user_id, campaign.id],
-            function(err, dbDeployedDomains) {
-              if (err) {
-                callback(err);
-              } else {
-                var idx = 0;
-                for (var i = 0; i < dbDeployedDomains.length; i++) {
-                  getActiveJobsForDeployedDomain(dbDeployedDomains[i], campaign, function(err, activeJobs) {
-                    if (err) {
-                      callback(err);
-                    } else {
-                      var deployedLander = dbDeployedDomains[idx];
-                      deployedLander.activeJobs = activeJobs;
-
-                      if (++idx == dbDeployedDomains.length) {
-                        callback(false, dbDeployedDomains);
-                      }
-                    }
-                  });
-                }
-                if (dbDeployedDomains.length <= 0) {
-                  callback(false, []);
-                }
-              }
-              connection.release();
-            });
         });
       };
 
@@ -289,22 +241,23 @@ module.exports = function(db) {
         db.getConnection(function(err, connection) {
           if (err) {
             callback(err);
-          }
-          connection.query("SELECT id,action,processing,deploy_status,done,error,lander_id,domain_id,campaign_id,created_on FROM jobs WHERE action = ? AND user_id = ? AND campaign_id = ? AND processing = ? AND (done IS NULL OR done = ?)", ["deleteCampaign", user_id, campaign.id, true, 0],
-            function(err, dbActiveJobs) {
-              if (err) {
-                callback(err);
-                console.log(err);
-              } else {
-                if (dbActiveJobs <= 0) {
-                  callback(false, []);
+          } else {
+            connection.query("SELECT id,action,processing,deploy_status,done,error,lander_id,domain_id,campaign_id,created_on FROM jobs WHERE action = ? AND user_id = ? AND campaign_id = ? AND processing = ? AND (done IS NULL OR done = ?)", ["deleteCampaign", user_id, campaign.id, true, 0],
+              function(err, dbActiveJobs) {
+                if (err) {
+                  callback(err);
+                  console.log(err);
                 } else {
-                  callback(false, dbActiveJobs);
+                  if (dbActiveJobs <= 0) {
+                    callback(false, []);
+                  } else {
+                    callback(false, dbActiveJobs);
+                  }
                 }
-              }
 
-              connection.release();
-            });
+                connection.release();
+              });
+          }
         });
       };
 
@@ -377,7 +330,7 @@ module.exports = function(db) {
               } else {
                 var idx = 0;
                 for (var i = 0; i < dbLandersOnCampaign.length; i++) {
-                  getExtraNestedForDeployedLander(dbLandersOnCampaign[i], campaign, function(err) {
+                  module.getExtraNestedForDeployedLander(user, dbLandersOnCampaign[i], campaign, function(err) {
                     if (err) {
                       callback(err);
                     } else {
@@ -403,23 +356,13 @@ module.exports = function(db) {
             callback(err);
           } else {
             campaign.deployedLanders = landers;
-            getDeployedDomainsForCampaign(campaign, function(err, domains) {
+            getDomainsForCampaign(campaign, function(err, dbDomains) {
               if (err) {
                 callback(err);
               } else {
-                campaign.deployedDomains = domains;
-
-                getActiveJobsForCampaign(campaign, function(err, activeJobs) {
-                  if (err) {
-                    callback(err);
-                  } else {
-                    campaign.activeJobs = activeJobs;
-                    callback(false);
-                  }
-                });
-
+                campaign.domains = dbDomains;
+                callback(false);
               }
-
             });
           }
 
@@ -437,20 +380,19 @@ module.exports = function(db) {
                 callback(err);
               } else {
                 var idx = 0;
-                for (var i = 0; i < dbCampaigns.length; i++) {
-                  getExtraNestedForCampaign(dbCampaigns[i], function(err) {
-                    if (err) {
-                      callback(err);
-                    } else {
-                      if (++idx == dbCampaigns.length) {
-                        callback(false, dbCampaigns);
+                if (dbCampaigns.length > 0) {
+                  for (var i = 0; i < dbCampaigns.length; i++) {
+                    getExtraNestedForCampaign(dbCampaigns[i], function(err) {
+                      if (err) {
+                        callback(err);
+                      } else {
+                        if (++idx == dbCampaigns.length) {
+                          callback(false, dbCampaigns);
+                        }
                       }
-                    }
-
-
-                  });
-                }
-                if (dbCampaigns.length <= 0) {
+                    });
+                  }
+                } else {
                   callback(false, []);
                 }
               }
@@ -472,6 +414,7 @@ module.exports = function(db) {
 
     }
 
-  }
+  });
 
+  return module;
 };

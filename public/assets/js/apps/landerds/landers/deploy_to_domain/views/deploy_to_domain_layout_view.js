@@ -66,13 +66,13 @@ define(["app",
         },
 
         startDeployingToNewDomain: function(domainId, domain) {
-          var attrs = {
+          var domainToDeployAttr = {
               domain: domain,
               domain_id: domainId,
               lander_id: this.model.get("id")
             }
             // triggers add row to deployed domains and starts job 
-          Landerds.trigger("landers:deployLanderToDomain", attrs);
+          Landerds.trigger("landers:deployLandersToDomain", [domainToDeployAttr]);
         },
 
         onRender: function() {

@@ -40,6 +40,7 @@ define(["app"], function(Landerds) {
               actualJobModel.trigger("errorState", actualJobModel);
             } else {
               actualJobModel.trigger("finishedState", actualJobModel, modelAttributes);
+              me.updateCollection.remove(actualJobModel);
             }
           } else {
             actualJobModel.trigger("updateJobModel", modelAttributes);
@@ -55,7 +56,7 @@ define(["app"], function(Landerds) {
           updateCollectionBulkSaveModelWrapper.save({}, {
             success: function(model, modelData, other) {
               removeIfFinishedProcessing(model, modelData, other);
-              if (me.updateCollection.length >= 1) {
+              if (me.updateCollection.length > 0) {
                 me.poll();
               } else {
                 me.pollNotStarted = true;
@@ -72,30 +73,21 @@ define(["app"], function(Landerds) {
     //finished in the finishedState function
     add: function(model) {
 
-        //send the model thats in the updateCollection first to startState. startState
-        //will replace the activeJobModel it made with the one already in the updater
-        var modelAlreadyInUpdater = this.updateCollection.get(model.get('id'));
-        if (modelAlreadyInUpdater) {
-          var attr = {
-            jobModelToReplace: model,
-            actualAddedJobModel: modelAlreadyInUpdater
-          }
-          model.trigger("startState", attr);
-        } else {
-          this.updateCollection.add(model);
-          var attr = {
-            actualAddedJobModel: model
-          }
-          model.trigger("startState", attr);
-        }
+      this.updateCollection.add(model);
+
+      var attr = {
+        actualAddedJobModel: model
+      };
+
+      model.trigger("startState", attr);
 
 
-        //start polling if first one.
-        //function is self perpetuating so no need to call it for more than 1 model
-        if (this.pollNotStarted) {
-          this.pollNotStarted = false;
-          this.poll();
-        }
+      //start polling if first one.
+      //function is self perpetuating so no need to call it for more than 1 model
+      if (this.pollNotStarted) {
+        this.pollNotStarted = false;
+        this.poll();
+      }
 
     },
 

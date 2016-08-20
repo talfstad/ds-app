@@ -25,18 +25,6 @@ define(["app",
 
 
         activeJobsCollection.on("startState", function(attr) {
-          var actualAddedJobModel = attr.actualAddedJobModel;
-          var jobModelToReplace = attr.jobModelToReplace;
-
-          //on start remove the created job model and replace with the job model on the updater.
-          //this allows us to have one job model across multiple things. (camps, domains, etc)
-          //no events should fire it should just be quick and dirty ;)
-          //must remove it at the correct index and put the new one in the correct index
-          if (jobModelToReplace) {
-            var index = activeJobsCollection.indexOf(jobModelToReplace);
-            activeJobsCollection.remove(jobModelToReplace, { silent: true })
-            activeJobsCollection.add(actualAddedJobModel, { at: index, silent: true });
-          }
 
           if (activeJobsCollection.length > 0) {
             activeJobsCollection.each(function(jobModel) {
@@ -107,7 +95,6 @@ define(["app",
             }
           }
 
-          Landerds.updater.remove(jobModel);
           delete jobModel.attributes.id;
           jobModel.destroy();
 
@@ -166,6 +153,7 @@ define(["app",
           }
         };
 
+
         //whenever deployed domain coll updates deploy_status, update master lander deploy status
         deployedDomainsCollection.on("add change:deploy_status", function(deployedDomainModel) {
           applyUpdatedDeployStatusToLander();
@@ -192,16 +180,11 @@ define(["app",
         var urlEndpointCollection = new UrlEndpointCollection(urlEndpointAttributes);
         this.set("urlEndpoints", urlEndpointCollection);
 
-        var activeCampaignsCollection = new ActiveCampaignCollection();
+        var activeCampaignCollection = new ActiveCampaignCollection();
+        this.set("activeCampaigns", activeCampaignCollection);
+        activeCampaignCollection.add(activeCampaignAttributes);
 
-        // when adding models to the active campaign collection, make sure that each
-        // campaigns current domains is in deployedDomains. if not then trigger a deploy on
-        // 
-        var deployedDomainsCollection = this.get("deployedDomains");
 
-        this.set("activeCampaigns", activeCampaignsCollection);
-
-        activeCampaignsCollection.add(activeCampaignAttributes);
 
         //when lander changes its deploy status update the topbar totals
         this.on("change:deploy_status", function() {
@@ -209,14 +192,55 @@ define(["app",
 
           var deployStatus = this.get("deploy_status");
           deployedDomainsCollection.deploy_status = deployStatus;
-          activeCampaignsCollection.deploy_status = deployStatus;
+          activeCampaignCollection.deploy_status = deployStatus;
 
+        });
+
+
+        var addJobsToActiveCampaigns = function() {
+          deployedDomainsCollection.each(function(deployedDomain) {
+
+            var activeJobCollection = deployedDomain.get("activeJobs");
+
+            //if job has campaign_id also add it to the active campaign
+            if (activeJobCollection.length > 0) {
+
+              activeJobCollection.each(function(activeJob) {
+
+                activeCampaignCollection.each(function(activeCampaign) {
+                  var isOnCampaign = false;
+                  var domains = activeCampaign.get("domains");
+                  $.each(domains, function(idx, domain) {
+                    if (domain.domain_id == activeJob.get("domain_id")) {
+                      isOnCampaign = true;
+                    }
+                  });
+
+                  if (isOnCampaign) {
+                    activeCampaignActiveJobs = activeCampaign.get("activeJobs");
+                    activeCampaignActiveJobs.add(activeJob);
+                  }
+                });
+              });
+
+            }
+
+          });
+        };
+
+        addJobsToActiveCampaigns();
+
+
+        activeCampaignCollection.on("add destroy", function(activeCampaignModel) {
+          deployedDomainsCollection.trigger("activeCampaignsChanged");
         });
 
 
         deployedDomainsCollection.on("destroy", function(domainModel) {
           applyUpdatedDeployStatusToLander();
         });
+
+
 
 
         //set deploy_status based on our new model

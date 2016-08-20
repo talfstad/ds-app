@@ -2,7 +2,9 @@ module.exports = function(app, db) {
 
   var dbAws = require("../aws")(app, db);
 
-  return {
+  var baseActiveCampaign = require('../base_classes/base_active_campaign')(app, db);
+
+  var module = _.extend(baseActiveCampaign, {
 
     common: require("./common")(app, db), //needs to be like this to access in other classes
 
@@ -370,88 +372,9 @@ module.exports = function(app, db) {
       });
     },
 
-    // undeployLanderFromDomain: function(user, lander_id, domain_id, successCallback) {
-    //   var user_id = user.id;
-
-    //   db.getConnection(function(err, connection) {
-    //     if (err) {
-    //       console.log(err);
-    //     } else {
-    //       connection.query("DELETE FROM deployed_landers WHERE user_id = ? AND lander_id = ? AND domain_id = ?", [user_id, lander_id, domain_id], function(err, docs) {
-    //         if (err) {
-    //           console.log(err);
-    //         } else {
-    //           successCallback();
-    //         }
-    //         connection.release();
-    //       });
-    //     }
-    //   });
-    // },
-
     getAll: function(user, successCallback, landersToGetArr) {
 
       var user_id = user.id;
-
-      var getAllDeployedDomainsForCampaign = function(campaign, callback) {
-        db.getConnection(function(err, connection) {
-          if (err) {
-            console.log(err);
-          } else {
-            connection.query("SELECT a.domain_id,b.domain FROM campaigns_with_domains a JOIN domains b ON a.domain_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.campaign_id],
-              function(err, dbDomainIdsForCampaign) {
-                if (err) {
-                  callback(err)
-                } else {
-                  callback(false, dbDomainIdsForCampaign);
-                }
-                connection.release();
-              });
-          }
-        });
-      };
-
-      var getActiveJobsForActiveCampaign = function(activeCampaign, lander, callback) {
-        var campaign_id = activeCampaign.campaign_id || activeCampaign.id;
-        var lander_id = lander.id;
-        //get all jobs attached to lander and make sure only select those. list is:
-        db.getConnection(function(err, connection) {
-          if (err) {
-            console.log(err);
-          } else {
-            connection.query("SELECT id,action,deploy_status,processing,lander_id,domain_id,campaign_id,done,error,created_on FROM jobs WHERE (user_id = ? AND campaign_id = ? AND lander_id = ? AND processing = ? AND (done IS NULL OR done = ?))", [user_id, campaign_id, lander_id, true, 0],
-              function(err, dbActiveJobs) {
-                if (err) {
-                  callback(err);
-                } else {
-                  callback(false, dbActiveJobs);
-                  connection.release();
-                }
-
-              });
-          }
-        });
-      };
-
-      getExtraNestedForActiveCampaign = function(activeCampaign, lander, callback) {
-        getAllDeployedDomainsForCampaign(activeCampaign, function(err, deployedDomains) {
-          if (err) {
-            callback(err);
-          } else {
-
-            activeCampaign.deployedDomains = deployedDomains;
-
-            getActiveJobsForActiveCampaign(activeCampaign, lander, function(err, activeJobs) {
-              if (err) {
-                callback(err);
-              } else {
-                activeCampaign.activeJobs = activeJobs;
-                callback(false);
-              }
-            });
-          }
-        });
-      };
 
       var getActiveCampaignsForLander = function(lander, callback) {
         db.getConnection(function(err, connection) {
@@ -466,7 +389,7 @@ module.exports = function(app, db) {
               } else {
                 var idx = 0;
                 for (var i = 0; i < dbActiveCampaigns.length; i++) {
-                  getExtraNestedForActiveCampaign(dbActiveCampaigns[i], lander, function(err) {
+                  module.getExtraNestedForActiveCampaign(user, dbActiveCampaigns[i], lander, function(err) {
                     if (err) {
                       callback(err);
                     } else {
@@ -758,6 +681,8 @@ module.exports = function(app, db) {
       }
 
     }
-  }
+  });
+
+  return module;
 
 };

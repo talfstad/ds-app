@@ -66,19 +66,25 @@ define(["app",
 
           var activeCampaignCollection = this.model.get("activeCampaignCollection");
 
-          activeCampaignCollection.each(function(campaign) {
+          var hasActiveCampaigns = false;
+          if (activeCampaignCollection.length > 0) {
+            activeCampaignCollection.each(function(campaign) {
 
-            var deployedDomains = campaign.get('deployedDomains');
+              var campaignDomains = campaign.get('domains');
 
-            var domainId = me.model.get("domain_id");
+              var domainId = me.model.get("domain_id");
 
-            if (deployedDomains.find(function(m) {
-                var id = m.domain_id || m.id;
-                return id == domainId
-              })) {
-              me.model.set("hasActiveCampaigns", true);
-            }
-          });
+              if (campaignDomains.find(function(m) {
+                  var id = m.domain_id || m.id;
+                  return id == domainId;
+                })) {
+                hasActiveCampaigns = true;
+              }
+            });
+          }
+
+          me.model.set("hasActiveCampaigns", hasActiveCampaigns);
+        
         },
 
         onRender: function() {

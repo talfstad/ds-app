@@ -451,7 +451,6 @@ tr.warning input[type=select] {
     text-align: right !important;
 }
 
-
 .deployed-domains-region .alert {
     border: none !important;
 }
@@ -478,4 +477,9 @@ tr.warning input[type=select] {
 
 .file-caption {
     padding-bottom: 29px;
+}
+
+
+.campaign-name-row {
+    border: none !important;
 }

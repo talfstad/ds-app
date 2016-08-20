@@ -7,10 +7,10 @@ module.exports = function(app) {
   var db = mysql.createPool(app.config.dbConnectionInfo);
 
 
-  module.users = require('./users')(db);
+  module.users = require('./users')(app, db);
   module.landers = require('./landers')(app, db);
-  module.campaigns = require('./campaigns')(db);
-  module.domains = require('./domains')(db);
+  module.campaigns = require('./campaigns')(app, db);
+  module.domains = require('./domains')(app, db);
   module.js_snippets = require('./js_snippets')(app, db);
   module.updater = require('./updater')(app, db);
   module.jobs = require('./jobs')(app, db);

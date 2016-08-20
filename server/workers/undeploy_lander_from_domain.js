@@ -97,7 +97,6 @@ module.exports = function(app, db) {
                           if (err) {
                             if (err.code == "ExternalInterrupt") {
                               app.log("external interrupt55 T!! " + myJobId, "debug");
-                              err.staging_path = staging_path;
                             }
                             callback(err, [myJobId]);
                           } else {

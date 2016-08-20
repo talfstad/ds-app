@@ -62,30 +62,31 @@ module.exports = function(app, db) {
 
         var query = "";
         var arr = [];
-        if (job.action == "undeployLanderFromDomain") {
+        if (job.action == "undeployLanderFromDomain" || job.action == "deployLanderToDomain") {
           //also include deployLanderToDomain jobs if we're undeploying
-          query = "UPDATE jobs SET error = ?, error_code = ? WHERE user_id = ? AND lander_id = ? AND domain_id = ? AND (action = ? OR action = ?) AND done = ?";
-          arr = [true, "ExternalInterrupt", user_id, job.lander_id, job.domain_id, "undeployLanderFromDomain", "deployLanderToDomain", false];
+          query = "UPDATE jobs SET error = ?, error_code = ?, processing = ? WHERE user_id = ? AND lander_id = ? AND domain_id = ? AND (action = ? OR action = ?) AND done = ?";
+          arr = [true, "ExternalInterrupt", false, user_id, job.lander_id, job.domain_id, "undeployLanderFromDomain", "deployLanderToDomain", false];
+
+          db.getConnection(function(err, connection) {
+            if (err) {
+              console.log(err);
+            } else {
+              connection.query(query, arr,
+                function(err, docs) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    callback(false);
+                  }
+                  connection.release();
+                });
+            }
+          });
+
         } else {
-          query = "UPDATE jobs SET error = ?, error_code = ? WHERE user_id = ? AND lander_id = ? AND domain_id = ? AND action = ? AND done = ?";
-          arr = [true, "ExternalInterrupt", user_id, job.lander_id, job.domain_id, job.action, false];
+          callback(false);
         }
 
-        db.getConnection(function(err, connection) {
-          if (err) {
-            console.log(err);
-          } else {
-            connection.query(query, arr,
-              function(err, docs) {
-                if (err) {
-                  callback(err);
-                } else {
-                  callback(false);
-                }
-                connection.release();
-              });
-          }
-        });
       };
 
       if (list.length > 0) {

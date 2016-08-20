@@ -1,7 +1,8 @@
-module.exports = function(db) {
+module.exports = function(app, db) {
 
+  var baseDeployedLander = require('./base_classes/base_deployed_lander')(app, db);
 
-  return {
+  var module = _.extend(baseDeployedLander, {
 
     //remove domain from all campaigns that have it
     removeActiveCampaignsForDomain: function(user, domain_id, callback) {
@@ -235,86 +236,6 @@ module.exports = function(db) {
         });
       };
 
-      var getActiveJobsForLander = function(lander, callback) {
-        var lander_id = lander.lander_id || lander.id;
-        var domain_id = lander.domain_id;
-
-        //get all jobs attached to lander and make sure only select those. list is:
-        db.getConnection(function(err, connection) {
-          if (err) {
-            console.log(err);
-            callback(err);
-          } else {
-            connection.query("SELECT id,action,processing,deploy_status,lander_id,domain_id,campaign_id,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?))", ["addNewLander", "deleteLander", "ripNewLander", "deployLanderToDomain", "undeployLanderFromDomain", user_id, lander_id, domain_id, true, 0],
-              function(err, dbActiveJobs) {
-                callback(false, dbActiveJobs);
-                connection.release();
-              });
-          }
-        });
-      };
-
-      var getEndpointsForLander = function(lander, callback) {
-        db.getConnection(function(err, connection) {
-          if (err) {
-            callback(err);
-          } else {
-            connection.query("SELECT id,filename,lander_id from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.lander_id],
-              function(err, dbUrlEndpoints) {
-                if (dbUrlEndpoints.length <= 0) {
-                  callback(false, []);
-                } else {
-                  callback(false, dbUrlEndpoints);
-                }
-                connection.release();
-              });
-          }
-        });
-      };
-
-      var getLoadTimesForDeployedLander = function(lander, callback) {
-        var deployed_lander_id = lander.id;
-
-
-        db.getConnection(function(err, connection) {
-          if (err) {
-            callback(err);
-          } else {
-            connection.query("SELECT id,url_endpoint_id,load_time FROM endpoint_load_times WHERE deployed_lander_id = ? AND user_id = ?", [deployed_lander_id, user_id],
-              function(err, dbLoadTimes) {
-                callback(false, dbLoadTimes);
-              });
-          }
-          connection.release();
-        });
-      };
-
-      var getExtraNestedForLander = function(lander, domain, callback) {
-        getEndpointsForLander(lander, function(err, endpoints) {
-          if (err) {
-            callback(err);
-          } else {
-            lander.urlEndpoints = endpoints;
-
-            getActiveJobsForLander(lander, function(err, activeJobs) {
-              if (err) {
-                callback(err);
-              } else {
-                lander.activeJobs = activeJobs;
-
-                getLoadTimesForDeployedLander(lander, function(err, loadTimes) {
-                  if (err) {
-                    callback(err);
-                  } else {
-                    lander.endpoint_load_times = loadTimes;
-                    callback(false);
-                  }
-                });
-              }
-            });
-          }
-        });
-      };
 
       var getDeployedLandersForDomain = function(domain, callback) {
         db.getConnection(function(err, connection) {
@@ -328,7 +249,7 @@ module.exports = function(db) {
                 } else {
                   var idx = 0;
                   for (var i = 0; i < dbDeployedLanders.length; i++) {
-                    getExtraNestedForLander(dbDeployedLanders[i], domain, function() {
+                    module.getExtraNestedForDeployedLander(user, dbDeployedLanders[i], domain, function() {
                       if (++idx == dbDeployedLanders.length) {
                         callback(false, dbDeployedLanders);
                       }
@@ -523,5 +444,8 @@ module.exports = function(db) {
         }
       });
     }
-  }
+  });
+
+  return module;
+
 };

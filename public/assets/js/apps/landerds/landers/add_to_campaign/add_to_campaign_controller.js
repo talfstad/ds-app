@@ -19,38 +19,44 @@ define(["app",
 
           Landerds.rootRegion.currentView.modalRegion.show(addCampaignToLanderLayout);
 
-          addCampaignToLanderLayout.on("addCampaignToLander", function(campaignAttributes) {
+          addCampaignToLanderLayout.on("addCampaignToLander", function(campaignModel) {
 
-            //taking a campaign model and making it an active campaign model
-            campaignAttributes.campaign_id = campaignAttributes.id;
-            campaignAttributes.lander_id = landerModel.get("id");
+            //create an add the active campaign model to the lander
+            var lander_id = landerModel.get("id");
+            var domains = campaignModel.get("domains");
 
-            //callback
-            var addedDomainToCampaignSuccessCallback = function(activeCampaignModel) {
-
-              //save this lander to landers_with_campaigns
-              var deployCampaignToDomainAttrs = {
-                active_campaign_model: activeCampaignModel,
-                lander_model: landerModel
-              };
-
-              // triggers add row to deployed domains and starts job 
-              Landerds.trigger("landers:deployCampaignLandersToDomain", deployCampaignToDomainAttrs);
-
-            };
-            var addedDomainToCampaignErrorCallback = function(err, two, three) {
-
-            };
-
-            //add the campaign to the domain first, on success close dialog
-            var activeCampaignModel = new ActiveCampaignModel(campaignAttributes);
-            activeCampaignModel.unset("id");
-
-            // create the model for activeCampaign model. make sure it saves to
-            activeCampaignModel.save({}, {
-              success: addedDomainToCampaignSuccessCallback,
-              error: addedDomainToCampaignErrorCallback
+            var newActiveCampaignModel = new ActiveCampaignModel({
+              domains: domains,
+              campaign_id: campaignModel.get("id"),
+              name: campaignModel.get("name"),
+              lander_id: lander_id,
+              action: "lander"
             });
+
+            var activeCampaignCollection = landerModel.get("activeCampaigns");
+            activeCampaignCollection.add(newActiveCampaignModel);
+
+            var domainListToDeploy = [];
+
+            if (domains.length > 0) {
+              
+              $.each(domains, function(idx, domain) {
+                domainListToDeploy.push({
+                  domain: domain.domain,
+                  domain_id: domain.domain_id,
+                  lander_id: lander_id
+                });
+              });
+            } else {
+              //push on a dummy object with key to say "dont try to add any domains before calling redeploy"
+              domainListToDeploy.push({
+                lander_id: lander_id,
+                noDomainsToAdd: true
+              });
+            }
+
+            Landerds.trigger("landers:deployLandersToDomain", domainListToDeploy);
+
           });
 
           //show loading

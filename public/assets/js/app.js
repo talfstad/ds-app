@@ -64,11 +64,6 @@ define(["marionette"],
                 return jqXHR.setRequestHeader('X-CSRF-Token', token);
               }
             });
-
-
-            //START LIVE UPDATER
-            Landerds.updater.initialize();
-
           }
         });
     });

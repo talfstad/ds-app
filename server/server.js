@@ -1,3 +1,7 @@
+//GLOBALS
+_ = require('underscore');
+
+
 //module dependencies
 var express = require("express");
 var http = require("http");

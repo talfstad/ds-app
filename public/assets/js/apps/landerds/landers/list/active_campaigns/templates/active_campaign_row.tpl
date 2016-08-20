@@ -1,5 +1,5 @@
 <td><%= viewIndex %></td>
-<td class="table-lander-name" style="white-space: nowrap; max-width: 305px; min-width: 145px">
+<td class="table-lander-name deployed-row-td" style="white-space: nowrap; max-width: 305px; min-width: 145px">
       <span><%= name %></span>
 </td>
 
@@ -11,7 +11,7 @@
         <a class="goto-edit-campaign mr10" href="#">
           <span class="fa fa-edit"></span>
         </a>
-
+        
         <a class="undeploy" data-domainId="df" data-domainName="fd" href="#">
           <span class="remove-campaign fa fa-trash-o"></span>
         </a>

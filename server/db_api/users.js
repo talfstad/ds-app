@@ -1,4 +1,4 @@
-module.exports = function(db) {
+module.exports = function(app, db) {
 
   var uuid = require('uuid');
   var bcrypt = require("bcrypt-nodejs");

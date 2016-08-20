@@ -12,6 +12,7 @@ define(["app"],
         this.on("updateJobModel", function(jobModelAttributes) {
           me.set("deploy_status", jobModelAttributes.deploy_status);
         });
+
       },
 
       url: "/api/jobs",
@@ -23,7 +24,8 @@ define(["app"],
         "campaign_id": "",
         "domain_id": "",
         "lander_url": "",
-        "extra": {}
+        "extra": {},
+        "no_action_on_finish": false
       },
 
     });

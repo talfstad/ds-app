@@ -12,13 +12,13 @@ define(["app",
         DeployedRowBaseModel.prototype.initialize.apply(this);
 
         //when job is destroyed must look to see if there are any more
-        var activeJobsCollection = this.get("activeJobs");
+        var activeJobCollection = this.get("activeJobs");
 
-        activeJobsCollection.on("add remove", function() {
+        activeJobCollection.on("add remove", function() {
           me.setDeployStatus();
         });
 
-        activeJobsCollection.on("updateJobModel", function(jobModelAttributes) {
+        activeJobCollection.on("updateJobModel", function(jobModelAttributes) {
 
           me.updateBaseJobModel(jobModelAttributes);
 
@@ -48,23 +48,25 @@ define(["app",
           }
         });
 
-        activeJobsCollection.on("startState", function(attr) {
+        activeJobCollection.on("startState", function(attr) {
           me.setBaseModelStartState(attr);
         });
 
-        activeJobsCollection.on("finishedState", function(jobModel) {
+        activeJobCollection.on("finishedState", function(jobModel) {
           me.baseModelFinishState(jobModel);
 
           if (jobModel.get("action") === "undeployDomainFromLander" ||
             jobModel.get("action") === "undeployLanderFromDomain" ||
             jobModel.get("alternate_action") === "undeployDomainFromLander") {
 
-            Landerds.updater.remove(jobModel);
-
             delete jobModel.attributes.id;
             jobModel.destroy();
 
-            Landerds.trigger("list:removeDeployedDomainModelFromCollection", me);
+            //if canceled is set then its a hard cancel for undeploy dont remove the deployed domain model
+            //because we're adding another job model right after this cancel
+            if (!jobModel.get("canceled")) {
+              Landerds.trigger("list:removeDeployedDomainModelFromCollection", me);
+            }
 
           } else {
             //finished with this job so destroy the jobModel
@@ -74,7 +76,7 @@ define(["app",
           }
 
           //trigger to start the next job on the list
-          Landerds.trigger("job:startNext", activeJobsCollection);
+          Landerds.trigger("job:startNext", activeJobCollection);
         });
 
         this.startActiveJobs();
