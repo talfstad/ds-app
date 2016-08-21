@@ -122,7 +122,7 @@ define(["app",
           SidemenuController.closeSidebar();
         },
         addLander: function(landerModel) {
-          ListController.addLander(landerModel);
+          ListController.addRow(landerModel);
         },
         deployCampaignLandersToDomain: function(attr) {
           ListController.deployCampaignLandersToDomain(attr);

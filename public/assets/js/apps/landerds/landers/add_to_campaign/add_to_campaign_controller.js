@@ -39,7 +39,7 @@ define(["app",
             var domainListToDeploy = [];
 
             if (domains.length > 0) {
-              
+
               $.each(domains, function(idx, domain) {
                 domainListToDeploy.push({
                   domain: domain.domain,
@@ -55,7 +55,10 @@ define(["app",
               });
             }
 
-            Landerds.trigger("landers:deployLandersToDomain", domainListToDeploy);
+            Landerds.trigger("landers:deployLandersToDomain", {
+              landerModel: landerModel,
+              domainListToDeploy: domainListToDeploy
+            });
 
           });
 

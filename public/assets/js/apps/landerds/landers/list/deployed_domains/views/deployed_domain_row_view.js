@@ -35,34 +35,8 @@ define(["app",
 
         onBeforeRender: function() {
           var me = this;
-
-          urlEndpoints = this.model.get("urlEndpoints");
-          var urlEndpointsJSON;
-          if (urlEndpoints) {
-            urlEndpointsJSON = urlEndpoints.toJSON();
-          } else {
-            urlEndpointsJSON = [];
-          }
-          this.model.set("urlEndpointsJSON", urlEndpointsJSON);
-
-          var deployStatus = this.model.get("deploy_status");
-          if (deployStatus === "deployed") {
-            this.model.set("deploy_status_gui", "");
-          } else if (deployStatus === "deploying") {
-            this.model.set("deploy_status_gui", "<strong>DEPLOYING</strong>");
-          } else if (deployStatus === "undeploying") {
-            this.model.set("deploy_status_gui", "<strong>UNDEPLOYING</strong>");
-          } else if (deployStatus === "undeploy_invalidating") {
-            this.model.set("deploy_status_gui", "<strong>UNDEPLOYING EDGE LOCATIONS</strong>");
-          } else if (deployStatus === "invalidating") {
-            this.model.set("deploy_status_gui", "<strong>DEPLOYING EDGE LOCATIONS</strong>");
-          } else if (deployStatus === "invalidating_delete") {
-            this.model.set("deploy_status_gui", "<strong>REMOVING FROM EDGE LOCATIONS</strong>");
-          } else if (deployStatus === "optimizing") {
-            this.model.set("deploy_status_gui", "<strong>OPTIMIZING</strong>");
-          } else if (deployStatus === "redeploying") {
-            this.model.set("deploy_status_gui", "<strong>REDEPLOYING</strong>");
-          }
+          
+          DeployedRowBaseView.prototype.onBeforeRender.apply(this);
 
           var activeCampaignCollection = this.model.get("activeCampaignCollection");
 
@@ -84,7 +58,6 @@ define(["app",
           }
 
           me.model.set("hasActiveCampaigns", hasActiveCampaigns);
-        
         },
 
         onRender: function() {

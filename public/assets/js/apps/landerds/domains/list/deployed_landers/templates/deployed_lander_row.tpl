@@ -13,7 +13,7 @@
 
       <select style="width: 300px" class="ml15 lander-links-select form-control select2-single">
         
-        <% _.each(urlEndpoints, function(endpoint) { %>
+        <% _.each(urlEndpointsJSON, function(endpoint) { %>
         
         <option data-filename="<%= endpoint.filename %>" value="<%= endpoint.id %>"><%= endpoint.filename %></option>
 

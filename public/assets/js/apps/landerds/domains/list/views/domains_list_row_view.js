@@ -8,7 +8,7 @@ define(["app",
     "assets/js/apps/landerds/domains/list/views/campaign_tab_handle_view",
     "assets/js/apps/landerds/domains/list/active_campaigns/views/active_campaigns_collection_view",
     "assets/js/common/notification",
-    "assets/js/apps/landerds/base_classes/list_rows/views/list_rows_base_view",
+    "assets/js/apps/landerds/base_classes/list/views/list_rows_base_view",
     "bootstrap",
     "jstz"
   ],

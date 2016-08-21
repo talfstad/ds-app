@@ -253,7 +253,6 @@ define(["app",
               //on reset we're always going to want to close the sidebar
               //this is important so we dont get weird states
               Landerds.trigger('campaigns:closesidebar');
-              Landerds.trigger('campaigns:closesidebar');
 
               var filteredCollection = this;
 

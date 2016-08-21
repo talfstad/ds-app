@@ -42,7 +42,7 @@ define(["app",
         },
 
         addDomain: function(domainModel) {
-          ListController.addDomain(domainModel);
+          ListController.addRow(domainModel);
         },
 
         deleteDomain: function(model) {

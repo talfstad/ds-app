@@ -4,7 +4,7 @@ define(["app",
   function(Landerds, DeployedRowBaseModel) {
     var deployedDomainModel = DeployedRowBaseModel.extend({
 
-      urlRoot: '/api/deployed_domain',
+      url: '/api/deployed_domain',
 
       initialize: function() {
         var me = this;
@@ -91,7 +91,7 @@ define(["app",
         deploy_status: 'deployed',
         hasActiveCampaigns: false,
         modified: false,
-        endpoint_load_times: [],
+        endpoint_load_times: []
       }
 
 

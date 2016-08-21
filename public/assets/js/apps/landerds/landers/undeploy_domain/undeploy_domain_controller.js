@@ -25,7 +25,7 @@ define(["app",
             var domain_id = deployedDomainModel.get("domain_id");
 
             var undeployAttr = {
-              lander_id: landerModel.get("id"),
+              landerModel: landerModel,
               undeployDomainIdsArr: [domain_id]
             };
 

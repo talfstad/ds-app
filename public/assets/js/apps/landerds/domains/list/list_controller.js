@@ -15,183 +15,27 @@ define(["app",
     "assets/js/jobs/jobs_model",
     "assets/js/apps/landerds/domains/dao/active_campaign_model",
     "assets/js/common/notification",
+    "assets/js/apps/landerds/base_classes/list/list_controller_base",
     "assets/js/apps/help/help_app",
     "assets/js/apps/landerds/domains/list/views/list_layout_view"
   ],
   function(Landerds, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
     PaginatedButtonView, TopbarView, LoadingView, LanderTabHandleView, CampaignTabHandleView,
     DeployedLandersView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLanderModel,
-    JobModel, ActiveCampaignModel, Notification) {
+    JobModel, ActiveCampaignModel, Notification, BaseListController) {
     Landerds.module("DomainsApp.Domains.List", function(List, Landerds, Backbone, Marionette, $, _) {
 
-      List.Controller = {
+      List.Controller = _.extend({ //BaseListController
 
-        filteredDomainCollection: null,
-
-        deployCampaignLandersToDomain: function(attr) {
-
-          var activeCampaignModel = attr.active_campaign_model;
-          var domainModel = attr.domain_model;
-
-          if (!domainModel) {
-            return false;
-          }
-
-          var activeCampaigns = domainModel.get("activeCampaigns");
-
-          var campaign_id = activeCampaignModel.get("campaign_id");
-
-          var activeCampaignModelActiveJobs = activeCampaignModel.get("activeJobs");
-
-          var campaignLandersArr = activeCampaignModel.get("deployedLanders");
-
-          var currentDeployedLanderCollection = domainModel.get("deployedLanders");
-          var landersToDeploy = [];
-
-          //loop current landers, see if its deployed, if not deploy
-          $.each(campaignLandersArr, function(idx, campaignLander) {
-
-            var landerIsDeployed = false;
-
-            currentDeployedLanderCollection.each(function(deployedLanderModel) {
-              deployedLanderModelId = deployedLanderModel.get("lander_id") || deployedLanderModel.get("id")
-              if (campaignLander.id == deployedLanderModelId) {
-                deployedLanderModel.set("hasActiveCampaigns", true);
-                landerIsDeployed = true;
-              }
-            });
-
-            if (!landerIsDeployed) {
-              var newDeployedLanderModel = new DeployedLanderModel(campaignLander);
-              newDeployedLanderModel.set("lander_id", newDeployedLanderModel.get("id"));
-              newDeployedLanderModel.unset("id");
-              newDeployedLanderModel.set("hasActiveCampaigns", true);
-              landersToDeploy.push(newDeployedLanderModel);
-            }
-          });
-
-          //add the campaign to the list
-          var domainModelActiveCampaignCollection = domainModel.get("activeCampaigns");
-          domainModelActiveCampaignCollection.add(activeCampaignModel);
-
-          if (landersToDeploy.length > 0) {
-
-            //notification that deployment may take up to 20 minutes
-            if (landersToDeploy.length > 1) {
-              Notification("Deploying Landing Pages", "May take up to 20 minutes", "success", "stack_top_right");
-            } else {
-              Notification("Deploying Landing Page", "May take up to 20 minutes", "success", "stack_top_right");
-            }
-
-            activeCampaignModel.set("deploy_status", "deploying");
-
-            $.each(landersToDeploy, function(idx, deployedLanderModelToDeploy) {
-
-              var deployedLanderModelToDeployActiveJobs = deployedLanderModelToDeploy.get("activeJobs");
-
-              //create deploy job for domain and add it to the domain and the lander model
-              var jobAttributes = {
-                action: "deployLanderToDomain",
-                lander_id: deployedLanderModelToDeploy.get("lander_id") || deployedLanderModelToDeploy.get("id"),
-                domain_id: domainModel.get("id") || domainModel.get("domain_id"),
-                campaign_id: campaign_id,
-                deploy_status: "deploying"
-              };
-              var jobModel = new JobModel(jobAttributes);
-
-              deployedLanderModelToDeployActiveJobs.add(jobModel);
-              activeCampaignModelActiveJobs.add(jobModel);
-
-              //add deployed lander model to the list controller
-              var domainModelDeployedLanderCollection = domainModel.get("deployedLanders");
-              domainModelDeployedLanderCollection.add(deployedLanderModelToDeploy);
-
-              Landerds.trigger("job:start", jobModel);
-
-            });
-          }
-
-        },
-
-        //create new deploy job for lander attach it to domain
-        deployNewLander: function(modelAttributes) {
-          //we're deploying!
-          var landerAttributes = modelAttributes.landerAttributes;
-
-          //domainModel NEEDS to be passed by any models calling deployNewLander because it's
-          //during creation time before filteredDomainCollection is created
-          var domainModel = modelAttributes.domain_model;
-          var campaignModel = modelAttributes.campaign_model;
-          //need lander model
-          if (!landerAttributes) {
-            return false;
-          }
-
-          landerAttributes.deploy_status = "deploying";
-
-
-          //any campaign triggered deploy will include a campaign_id
-          var campaign_id;
-          if (campaignModel) {
-            campaign_id = campaignModel.get("campaign_id") || campaignModel.get("id");
-          }
-
-
-          //create active job model to deploy this lander to a domain
-          var jobAttributes = {
-            action: "deployLanderToDomain",
-            lander_id: landerAttributes.lander_id || landerAttributes.id,
-            domain_id: modelAttributes.domain_id,
-            campaign_id: campaign_id,
-            deploy_status: "deploying"
-          };
-
-          //create job and add to models activeJobs
-          var jobModel = new JobModel(jobAttributes);
-
-          if (!domainModel) {
-            var domainModel = this.filteredDomainCollection.get(modelAttributes.domain_id);
-          }
-
-          if (!domainModel) return false;
-
-          //show undeploying/deploying for campaign
-          if (campaignModel) {
-            var campaignActiveJobs = campaignModel.get("activeJobs");
-            campaignActiveJobs.add(jobModel);
-          }
-
-          //check if this domain_id is already there, if it is instead of adding a new domain_model
-          //just add this job to it
-
-          var deployedLanders = domainModel.get("deployedLanders");
-
-          //search deployedlanders for the domain_id if found use that. this is for if you add campaign before
-          //some landers are done dpeloying
-          var existingLanderModel = null;
-          deployedLanders.each(function(deployedLander) {
-            if (deployedLander.get("lander_id") == landerAttributes.id) {
-              existingLanderModel = deployedLander;
-            }
-          });
-
-          if (existingLanderModel) {
-            var activeJobs = existingLanderModel.get("activeJobs");
-            activeJobs.add(jobModel);
-          } else {
-            //create the deployed lander model
-            var landerModel = new DeployedLanderModel(landerAttributes);
-            var activeJobs = landerModel.get("activeJobs");
-            activeJobs.add(jobModel);
-            deployedLanders.add(landerModel);
-          }
-
-          //set new lander to deploying by default
-          Landerds.trigger("job:start", jobModel);
-
+        initialize: function() {
+          this.BaseClassInitialize();
         },
 
         showDomains: function(domain_id_to_goto_and_expand) {
+          //init the controller
+          this.initialize();
+
+
           //make layout for landers
           var me = this;
           var domainsListLayout = new List.Layout();
@@ -229,7 +73,7 @@ define(["app",
 
           $.when(deferredLandersCollection).done(function(landersCollection) {
 
-            me.filteredDomainCollection = FilteredPaginatedCollection({
+            me.filteredCollection = FilteredPaginatedCollection({
               collection: landersCollection,
               paginated: true,
               filterFunction: function(filterCriterion) {
@@ -244,7 +88,7 @@ define(["app",
 
             //make landers view and display data
             var domainsListView = new ListView({
-              collection: me.filteredDomainCollection
+              collection: me.filteredCollection
             });
 
             domainsListView.on("childview:showAwsTutorial", function() {
@@ -252,7 +96,7 @@ define(["app",
             });
 
             domainsListLayout.on("domains:filterList", function(filterVal) {
-              me.filteredDomainCollection.filter(filterVal);
+              me.filteredCollection.filter(filterVal);
             });
 
             domainsListLayout.on("domains:sort", function() {
@@ -260,19 +104,19 @@ define(["app",
             });
 
             domainsListLayout.on("domains:changepagesize", function(pageSize) {
-              me.filteredDomainCollection.setPageSize(pageSize);
+              me.filteredCollection.setPageSize(pageSize);
             });
 
             domainsListLayout.on("toggleInfo", function() {
-              if (me.filteredDomainCollection) {
+              if (me.filteredCollection) {
                 var toggle = this.toggleHelpInfo();
 
                 if (toggle) {
                   //show empty view
-                  me.filteredDomainCollection.showEmpty(true);
+                  me.filteredCollection.showEmpty(true);
                 } else {
                   //show landersListView
-                  me.filteredDomainCollection.showEmpty(false);
+                  me.filteredCollection.showEmpty(false);
                 }
               }
             });
@@ -283,16 +127,14 @@ define(["app",
 
             //this is the pagination pages totals and lander count totals view
             var topbarView = new TopbarView({
-              model: me.filteredDomainCollection.state.gui
+              model: me.filteredCollection.state.gui
             });
 
-            me.filteredDomainCollection.on("reset", function(collection) {
+            me.filteredCollection.on("reset", function(collection) {
 
               //on reset we're always going to want to close the sidebar
               //this is important so we dont get weird states
               Landerds.trigger('domains:closesidebar');
-              Landerds.trigger('landers:closesidebar');
-              Landerds.trigger('campaigns:closesidebar');
 
               var filteredCollection = this;
 
@@ -316,6 +158,7 @@ define(["app",
                     collection: activeCampaignsCollection
                   });
 
+                  activeCampaignsCollection.off("showUndeployDomainFromCampaignDialog");
                   activeCampaignsCollection.on("showUndeployDomainFromCampaignDialog", function(campaignModel) {
                     var attr = {
                       campaign_model: campaignModel,
@@ -332,6 +175,7 @@ define(["app",
                   });
 
                   var deployedLandersCollection = domainView.model.get("deployedLanders");
+
                   //set the domain for child views
                   deployedLandersCollection.domain = domainView.model.get("domain");
                   deployedLandersCollection.domain_id = domainView.model.get("id");
@@ -339,6 +183,11 @@ define(["app",
 
                   var deployedLandersView = new DeployedLandersView({
                     collection: deployedLandersCollection
+                  });
+
+                  //when campaign link selected go to camp tab (this is from deployed domains campaign name link)
+                  deployedLandersView.on("childview:selectCampaignTab", function(one, two, three) {
+                    domainView.$el.find("a[href=#campaigns-tab-id-" + domainView.model.get("id") + "]").tab('show')
                   });
 
                   deployedLandersView.on("childview:updateParentLayout", function(childView, options) {
@@ -349,40 +198,9 @@ define(["app",
                     domainView.reAlignTableHeader();
                   });
 
-                  //when campaign link selected go to camp tab (this is from deployed domains campaign name link)
-                  deployedLandersView.on("childview:selectCampaignTab", function(one, two, three) {
-                    domainView.$el.find("a[href=#campaigns-tab-id-" + domainView.model.get("id") + "]").tab('show')
-                  });
 
                   landerTabHandleView.on("reAlignHeader", function() {
                     domainView.reAlignTableHeader();
-                  });
-
-
-                  //update view information on model change
-                  domainView.model.on("change:deploy_status", function() {
-                    Landerds.trigger("domains:updateTopbarTotals");
-
-                    //if not deployed make sure that the deployed
-                    if (this.get("deploy_status") == "not_deployed") {
-                      deployedLandersCollection.isInitializing = false;
-                    }
-
-                    // render if is showing AND EMPTY else dont (this logic meant for initializing state)
-                    if (deployedLandersView.isRendered && deployedLandersCollection.length <= 0) {
-                      deployedLandersView.render();
-                    }
-                    if (activeCampaignsView.isRendered && activeCampaignsCollection.length <= 0) {
-                      activeCampaignsView.render();
-                    }
-
-                    //if deleting then trigger delete state on domainView
-                    if (domainView.isRendered && this.get("deploy_status") === "deleting") {
-                      domainView.disableAccordionPermanently();
-                      //close sidebar
-                      Landerds.trigger('domains:closesidebar');
-
-                    }
                   });
 
                   domainView.lander_tab_handle_region.show(landerTabHandleView);
@@ -398,22 +216,22 @@ define(["app",
 
 
             var paginatedButtonView = new PaginatedButtonView({
-              model: me.filteredDomainCollection.state.gui
+              model: me.filteredCollection.state.gui
             });
             paginatedButtonView.on("firstPage", function(page) {
-              me.filteredDomainCollection.getFirstPage();
+              me.filteredCollection.getFirstPage();
             });
             paginatedButtonView.on("previousPage", function(page) {
-              me.filteredDomainCollection.getPreviousPage();
+              me.filteredCollection.getPreviousPage();
             });
             paginatedButtonView.on("nextPage", function(page) {
-              me.filteredDomainCollection.getNextPage();
+              me.filteredCollection.getNextPage();
             });
             paginatedButtonView.on("lastPage", function(page) {
-              me.filteredDomainCollection.getLastPage();
+              me.filteredCollection.getLastPage();
             });
             paginatedButtonView.on("gotoPage", function(page) {
-              me.filteredDomainCollection.gotoPage(page);
+              me.filteredCollection.gotoPage(page);
             });
 
             if (domainsListLayout.isRendered) {
@@ -422,40 +240,131 @@ define(["app",
             }
 
             var filterVal = $(".lander-search").val() || "";
-            if (me.filteredDomainCollection.length > 0) {
-              me.filteredDomainCollection.filter(filterVal);
+            if (me.filteredCollection.length > 0) {
+              me.filteredCollection.filter(filterVal);
             }
 
             if (domain_id_to_goto_and_expand) {
-              var domainModelToExpand = me.filteredDomainCollection.original.get(domain_id_to_goto_and_expand)
+              var domainModelToExpand = me.filteredCollection.original.get(domain_id_to_goto_and_expand)
               if (domainModelToExpand) {
-                me.expandAndShowDomain(domainModelToExpand);
+                me.expandAndShowRow(domainModelToExpand);
               }
             }
           });
         },
 
-        //add the lander model to the list
-        addDomain: function(domainModel) {
-          Landerds.trigger('domains:closesidebar');
-          this.filteredDomainCollection.add(domainModel);
-          //1. goto page with new lander on it
-          this.expandAndShowDomain(domainModel);
+
+        deployNewLander: function(attr) {
+          this.baseClassDeployLandersToDomain(attr);
+          this.redeployLanders(attr.landerModel);
         },
 
-        expandAndShowDomain: function(domainModel) {
-          if (this.filteredDomainCollection) {
-            //1. show the page with this model
-            this.filteredDomainCollection.showPageWithModel(domainModel);
-            //2. expand new lander row item
-            domainModel.trigger("view:expand");
-          }
+        redeployLanders: function(landerModel) {
+          
+          //for domains on callback we need to add the id to the deployed row, 
+          //but for each redeploy job response we need to find the deployed lander in the domains
+          //list and add the job to that deployed lander
+
+
+          var onAfterRedeployCallback = function(responseJobList) {
+
+            var activeCampaignsCollection = landerModel.get("activeCampaigns");
+            var deployedDomainCollection = landerModel.get("deployedDomains");
+
+            //redeploy happening so now we're working, not modified
+            //set modified false since we are saving
+            landerModel.set({
+              modified: false
+            });
+
+            //its a save job (lander level if there are no deployed domains (or any that are not undeploying))
+            var deployedAtLeastOne = false;
+
+            //set the active_campaign_id if we have one. MUST do this outside of the 
+            //add job loop incase there are not any landers to deploy
+            $.each(responseJobList, function(idx, responseJobAttr) {
+              if (responseJobAttr.active_campaign_id) {
+                activeCampaignsCollection.each(function(activeCampaign) {
+                  if (!activeCampaign.get("id")) {
+                    activeCampaign.set("id", responseJobAttr.active_campaign_id);
+                  }
+                });
+              }
+            });
+
+            //create job models for each deployed domain and add them!
+            deployedDomainCollection.each(function(deployedDomainModel) {
+              $.each(responseJobList, function(idx, responseJobAttr) {
+
+                if (deployedDomainModel.get("domain_id") == responseJobAttr.domain_id) {
+
+                  //set the ID for the deployed domain row if it's new
+                  if (responseJobAttr.new && responseJobAttr.deployed_row_id) {
+                    deployedDomainModel.set("id", responseJobAttr.deployed_row_id);
+                  }
+
+                  //create new individual job model for
+                  var activeJobs = deployedDomainModel.get("activeJobs");
+                  var newDeployJob = new JobModel(responseJobAttr);
+
+                  //remove active any deploy or undeploy jobs for this deployed domain
+                  activeJobs.each(function(job) {
+                    if (job.get("action") == "deployLanderToDomain" ||
+                      job.get("action") == "undeployLanderFromDomain") {
+                      //remove from updater and destroy job
+                      job.set("canceled", true);
+                      Landerds.updater.remove(this);
+                      delete job.attributes.id;
+                      job.destroy();
+                    }
+                  });
+                  //if adding a deploy job it cant just be a save
+                  deployedAtLeastOne = true;
+                  activeJobs.add(newDeployJob);
+
+                  //also add the job to any active campaigns that have this domain_id
+                  activeCampaignsCollection.each(function(activeCampaign) {
+                    var domains = activeCampaign.get("domains");
+                    $.each(domains, function(idx, domain) {
+                      if (domain.domain_id == newDeployJob.get("domain_id")) {
+                        var activeCampaignActiveJobs = activeCampaign.get("activeJobs");
+                        activeCampaignActiveJobs.add(newDeployJob);
+                      }
+                    });
+                  });
+
+                  //call start for each job 
+                  Landerds.trigger("job:start", newDeployJob);
+                }
+              });
+            });
+
+            if (!deployedAtLeastOne) {
+              if (responseJobList.length != 1) {
+                //just a quick save.. set saving_lander false be done
+                landerModel.set("saving_lander", false);
+              } else {
+                responseJobAttr = responseJobList[0];
+                if (responseJobAttr.action == "savingLander") {
+                  //add this to the lander active jobs
+                  var landerSaveJob = new JobModel(responseJobAttr);
+
+                  var activeJobs = landerModel.get('activeJobs');
+                  activeJobs.add(landerSaveJob);
+                  Landerds.trigger("job:start", landerSaveJob);
+                }
+              }
+            }
+          };
+
+          this.baseClassRedeployLanders(landerModel, onAfterRedeployCallback);
+
         },
 
         //remove the domain from the landers list by starting a delete job!
         deleteDomain: function(model) {
           var domain_id = model.get("id");
-          var domainModel = this.filteredDomainCollection.get(domain_id);
+          var domainModel = this.filteredCollection.get(domain_id);
 
           var jobAttributes = {
             action: "deleteDomain",
@@ -468,14 +377,8 @@ define(["app",
           activeJobCollection.add(jobModel);
           Landerds.trigger("job:start", jobModel);
 
-        },
-
-        updateTopbarTotals: function() {
-          if (this.filteredDomainCollection) {
-            this.filteredDomainCollection.updateTotals();
-          }
         }
-      }
+      }, BaseListController);
     });
 
     return Landerds.DomainsApp.Domains.List.Controller;

@@ -8,6 +8,7 @@ define(["app",
   function(Landerds, JobsGuiBaseModel, DomainCollection, UrlEndpointCollection,
     DeployedDomainsCollection, ActiveCampaignCollection) {
     var LanderModel = JobsGuiBaseModel.extend({
+      
       urlRoot: "/api/landers",
 
 

@@ -8,8 +8,6 @@ define(["app",
 
       DeployNewLander.Layout = Marionette.LayoutView.extend({
 
-        // id: "undeploy-lander-modal",
-
         className: "modal fade",
 
         attributes: {
@@ -47,49 +45,21 @@ define(["app",
           } else {
             var landerId = selectedRow.attr("data-lander-id");
             var lander = this.getRegion("landersListRegion").currentView.datatablesCollection.get(landerId)
-            this.startDeployingNewLander(lander);
+            this.trigger("startDeployingNewLander", lander);
             //add a row to the deployed domains thats deploying and trigger a start on the deployToDomain job
             this.$el.modal("hide");
           }
         },
 
-        startDeployingNewLander: function(lander) {
-          var attrs = {
-              landerAttributes: lander.attributes,
-              domain_id: this.model.get("id"),
-            };
-            // triggers add row to deployed domains and starts job 
-          Landerds.trigger("domains:deployNewLander", attrs);
-        },
 
         onRender: function() {
-          var me = this;
-
-          this.$el.off('show.bs.modal');
-          this.$el.off('shown.bs.modal');
-
-          this.$el.on('show.bs.modal', function(e) {
-
-
-          });
-
-          this.$el.on('shown.bs.modal', function(e) {
-
-
-          });
-
           this.$el.modal('show');
-
         },
 
         onClose: function() {
           this.$el.modal('hide');
-        },
-
-        onDomRefresh: function() {
-
-
         }
+
       });
 
     });

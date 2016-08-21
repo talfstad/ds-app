@@ -66,42 +66,25 @@ define(["app",
         },
 
         startDeployingToNewDomain: function(domainId, domain) {
-          var domainToDeployAttr = {
-              domain: domain,
-              domain_id: domainId,
-              lander_id: this.model.get("id")
-            }
-            // triggers add row to deployed domains and starts job 
-          Landerds.trigger("landers:deployLandersToDomain", [domainToDeployAttr]);
+          var domainListToDeploy = [{
+            domain: domain,
+            domain_id: domainId,
+            lander_id: this.model.get("id")
+          }];
+
+          // triggers add row to deployed domains and starts job 
+          Landerds.trigger("landers:deployLandersToDomain", {
+            landerModel: this.model,
+            domainListToDeploy: domainListToDeploy
+          });
         },
 
         onRender: function() {
-          var me = this;
-
-          this.$el.off('show.bs.modal');
-          this.$el.off('shown.bs.modal');
-
-          this.$el.on('show.bs.modal', function(e) {
-
-
-          });
-
-          this.$el.on('shown.bs.modal', function(e) {
-
-
-          });
-
           this.$el.modal('show');
-
         },
 
         onClose: function() {
           this.$el.modal('hide');
-        },
-
-        onDomRefresh: function() {
-
-
         }
       });
 

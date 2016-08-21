@@ -115,8 +115,10 @@ module.exports = function(app, passport) {
                       if (err) {
                         callback({ code: "CouldNotAddToDeployedLandersDb" });
                       } else {
+
+                        newLander.deployed_row_id = newLander.id;
+
                         finalNewLandersList.push(newLander);
-                        // newLander.id = newLander; //added by addLanderToDeployedLanders
                         if (++asyncIndex == newLanders.length) {
                           callback(false, finalNewLandersList);
                         }
@@ -136,6 +138,8 @@ module.exports = function(app, passport) {
                     if (err) {
                       res.json(err);
                     } else {
+
+
                       //if not modified then we arent redeploying, so just deploy the NEW lander that was added
                       if (!landerData.modified && newLanders.length > 0) {
                         list = newLanders;
@@ -146,7 +150,6 @@ module.exports = function(app, passport) {
                         //register first job and assign as master
                         var firstJobAttributes = list.shift();
                         var finalList = [];
-
 
                         db.jobs.registerJob(user, firstJobAttributes, function(registeredMasterJobAttributes) {
 
@@ -181,6 +184,7 @@ module.exports = function(app, passport) {
                                     //no need for landerData to be on the job updater...
                                     delete finalList[j].landerData;
                                   }
+                                  
                                   res.json(finalList);
                                 }
                               });
@@ -215,16 +219,8 @@ module.exports = function(app, passport) {
                       }
                     }
                   });
-
-
-
-
                 }
               });
-
-
-
-
             }
           });
         }
