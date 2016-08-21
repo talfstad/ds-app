@@ -60,7 +60,8 @@ define(["app",
               "domain_id": domainModel.get("id"),
               "urlEndpoints": urlEndpoints,
               "activeJobs": [],
-              "endpoint_load_times": []
+              "endpoint_load_times": [],
+              "deploy_status": "deploying" //set to deploying because we know we're deploying it
             };
 
             //add the row to deployed landers

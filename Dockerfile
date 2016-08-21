@@ -27,7 +27,7 @@ RUN sudo apt-get install -y gifsicle #gifsicle
 RUN sudo apt-get install -y pngcrush #pngcrush
 
 #Install java >= 1.5 for yuicompressor
-RUN sudo apt-get install -y default-jre
+#RUN sudo apt-get install -y default-jre
 
 # use changes to package.json to force Docker not to use the cache
 # when we change our application's nodejs dependencies:
@@ -43,4 +43,4 @@ WORKDIR /opt/app/server
 #start the app
 EXPOSE 3000
 
-CMD [ "node", "./server.js", "prod"]
+CMD ["node", "./server.js"]

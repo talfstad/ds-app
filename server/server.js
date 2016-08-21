@@ -16,9 +16,10 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var methodOverride = require('method-override');
 var config = require("./config");
+
 //config
-var env = 'dev';
-if (process.argv[2] == 'prod') {
+var env = 'prod';
+if (process.argv[2] == 'dev') {
    env = process.argv[2];
 }
 
@@ -28,6 +29,9 @@ app.config = config[env];
 
 var logger = require("./utils/debug_log")(app);
 app.log = logger;
+
+app.log("ATTENTION: running in dev mode", "debug");
+
 
 var db = require("./db_api")(app);
 

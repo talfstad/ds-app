@@ -69,7 +69,7 @@
 
         <% } else { %>
         
-        <span style="font-size: 13px">
+        <span style="font-size: 13px; line-height: 28px">
           <%= deploy_status_gui %>
         </span>
 
