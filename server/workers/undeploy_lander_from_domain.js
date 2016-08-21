@@ -2,14 +2,11 @@ module.exports = function(app, db) {
 
   var module = {};
 
-  var waitForOtherJobsToFinish = require("./common/wait_for_other_jobs_to_finish")(app, db);
-
   //must call statNextJobCallback when success/fail happens
   //this triggers the next job to fire
   //not concurrent
   module.undeployLanderFromDomain = function(user, attr, callback) {
     var user_id = user.id;
-
 
     var job = attr.job;
 
@@ -96,7 +93,7 @@ module.exports = function(app, db) {
                         db.aws.cloudfront.waitForInvalidationComplete(user, myJobId, credentials, cloudfront_id, invalidation_id, function(err) {
                           if (err) {
                             if (err.code == "ExternalInterrupt") {
-                              app.log("external interrupt55 T!! " + myJobId, "debug");
+                              app.log("external interrupt undeploy lander T!! " + myJobId, "debug");
                             }
                             callback(err, [myJobId]);
                           } else {
@@ -109,7 +106,7 @@ module.exports = function(app, db) {
                                   if (err) {
                                     callback(err, [myJobId]);
                                   } else {
-                                    console.log("FINISHED ! saving lander job !");
+                                    app.log("FINISHED ! saving lander job !", "debug");
                                     callback(false, [myJobId]);
                                   }
                                 });

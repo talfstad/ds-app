@@ -69,9 +69,8 @@ define(["app",
 
         showUndeployLander: function(e) {
           e.preventDefault();
-          e.stopPropagation();
-
-          Landerds.trigger("domains:showUndeployLander", this.model);
+          
+          this.trigger("undeployLander", this.model);
         }
       });
     });

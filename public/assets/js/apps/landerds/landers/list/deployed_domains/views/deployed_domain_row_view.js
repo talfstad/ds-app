@@ -67,7 +67,7 @@ define(["app",
         showRemoveDomain: function(e) {
           e.preventDefault();
 
-          this.model.trigger("showRemoveDomain", this.model);
+          this.trigger("showRemoveDomain", this.model);
         }
       });
     });

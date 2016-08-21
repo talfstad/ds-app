@@ -19,46 +19,35 @@ define(["app",
 
         template: UndeployLayoutTemplate,
 
-        regions: {
-
-        },
-
         events: {
           "click .undeploy-confirm": "confirmedToUndeploy"
         },
 
+        initialize: function() {
+          this.landerModel = this.options.lander_model;
+          this.domainModel = this.options.domain_model;
+        },
+
+        templateHelpers: function() {
+          return {
+            lander_name: this.landerModel.get("name"),
+            domain_name: this.domainModel.get("domain")
+          }
+        },
+        
+
         confirmedToUndeploy: function() {
-          this.trigger("undeployLanderFromDomain", this.model);      
+          this.trigger("undeployLanderConfirm", this.model);      
         },
 
         onRender: function() {
-          var me = this;
-
-          this.$el.off('show.bs.modal');
-          this.$el.off('shown.bs.modal');
-
-          this.$el.on('show.bs.modal', function(e){
-          
-           
-          });
-
-          this.$el.on('shown.bs.modal', function(e) {
-
-
-          });
-
           this.$el.modal('show');
-
         },
 
         onClose: function() {
           this.$el.modal('hide');
-        },
-
-        onDomRefresh: function() {
-
-
         }
+        
       });
 
     });

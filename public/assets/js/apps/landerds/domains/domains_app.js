@@ -27,9 +27,19 @@ define(["app",
             Landerds.trigger("header:active", "domains");
           });
         },
+
+        removeDeployedLanderModelFromCollection: function(model) {
+          ListController.removeDeployedLanderModelFromCollection(model);
+        },
+
+        undeployLandersFromDomain: function(attr) {
+          ListController.undeployLandersFromDomain(attr);
+        },
+
         showAddNewDomainModal: function(model) {
           AddNewDomainController.showAddNewDomainModal(model);
         },
+        
         showDeleteDomainModal: function(model) {
           DeleteDomainController.showDeleteDomainModal(model);
         },
@@ -121,12 +131,20 @@ define(["app",
         domainsAppAPI.deployNewLander(attr);
       });
 
+      Landerds.on("domains:removeDeployedLanderModelFromCollection", function(model) {
+        domainsAppAPI.removeDeployedLanderModelFromCollection(model);
+      });
+
       Landerds.on("domains:showUndeployLander", function(model) {
         domainsAppAPI.showUndeployLander(model);
       });
 
       Landerds.on("domains:showAddNewCampaign", function(model) {
         domainsAppAPI.showAddNewCampaign(model);
+      });
+
+      Landerds.on("domains:undeployLandersFromDomain", function(attr) {
+        domainsAppAPI.undeployLandersFromDomain(attr);
       });
 
       Landerds.on("domains:deployCampaignLandersToDomain", function(attr) {

@@ -184,7 +184,7 @@ module.exports = function(app, passport) {
                                     //no need for landerData to be on the job updater...
                                     delete finalList[j].landerData;
                                   }
-                                  
+
                                   res.json(finalList);
                                 }
                               });
@@ -227,7 +227,6 @@ module.exports = function(app, passport) {
       });
 
 
-
     } else if (jobModelAttributes.action === "undeployLanderFromDomain") {
 
 
@@ -245,9 +244,8 @@ module.exports = function(app, passport) {
 
           db.jobs.registerJob(user, firstJobAttributes, function(registeredMasterJobAttributes) {
             //start the first job (master job)
-            registeredMasterJobAttributes.landerData = landerData;
 
-            WorkerController.startJob(registeredMasterJobAttributes.action, user, { job: registeredMasterJobAttributes, lander: landerData });
+            WorkerController.startJob(registeredMasterJobAttributes.action, user, { job: registeredMasterJobAttributes });
 
             finalList.push(registeredMasterJobAttributes);
             var masterJobId = registeredMasterJobAttributes.id;
@@ -261,26 +259,17 @@ module.exports = function(app, passport) {
 
                 db.jobs.registerJob(user, list[i], function(registeredSlaveJobAttributes) {
 
-                  registeredSlaveJobAttributes.landerData = landerData;
                   finalList.push(registeredSlaveJobAttributes);
 
                   //start slave job
-                  WorkerController.startJob(registeredSlaveJobAttributes.action, user, { job: registeredSlaveJobAttributes, lander: landerData });
+                  WorkerController.startJob(registeredSlaveJobAttributes.action, user, { job: registeredSlaveJobAttributes });
 
                   if (++asyncIndex == list.length) {
-                    //put first job attributes back on list without modifying the list
-                    for (var j = 0; j < finalList.length; j++) {
-                      //no need for landerData to be on the job updater...
-                      delete finalList[j].landerData;
-                    }
                     res.json(finalList);
                   }
                 });
               }
             } else {
-              for (var j = 0; j < finalList.length; j++) {
-                delete finalList[j].landerData;
-              }
               res.json(finalList);
             }
           });

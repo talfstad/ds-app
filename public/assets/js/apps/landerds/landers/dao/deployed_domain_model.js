@@ -65,7 +65,7 @@ define(["app",
             //if canceled is set then its a hard cancel for undeploy dont remove the deployed domain model
             //because we're adding another job model right after this cancel
             if (!jobModel.get("canceled")) {
-              Landerds.trigger("list:removeDeployedDomainModelFromCollection", me);
+              Landerds.trigger("landers:removeDeployedDomainModelFromCollection", me);
             }
 
           } else {

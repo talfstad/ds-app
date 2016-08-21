@@ -129,7 +129,7 @@ define(["app",
         }
       };
 
-      Landerds.on("list:removeDeployedDomainModelFromCollection", function(model) {
+      Landerds.on("landers:removeDeployedDomainModelFromCollection", function(model) {
         landersAppAPI.removeDeployedDomainModelFromCollection(model);
       });
 

@@ -212,8 +212,7 @@ define(["app",
                     collection: deployedDomainsCollection
                   });
 
-                  deployedDomainsCollection.off("showRemoveDomain");
-                  deployedDomainsCollection.on("showRemoveDomain", function(domainModel) {
+                  deployedDomainsView.on("childview:showRemoveDomain", function(childView, domainModel) {
                     var attr = {
                       lander_model: landerView.model,
                       domain_model: domainModel
@@ -289,6 +288,75 @@ define(["app",
           });
         },
 
+        undeployLanderFromDomains: function(undeployAttr) {
+          var me = this;
+
+          var landerModel = undeployAttr.landerModel;
+          var undeployDomainIdsArr = undeployAttr.undeployDomainIdsArr;
+
+          var lander_id = landerModel.get("id");
+
+          var deployedDomainCollection = landerModel.get("deployedDomains");
+          var deployedDomainsJobList = [];
+
+          //find domain in deployed domains and create undeploy job for it
+          $.each(undeployDomainIdsArr, function(idx, domainToUndeployId) {
+
+            deployedDomainCollection.each(function(deployedDomain) {
+
+              if (domainToUndeployId == deployedDomain.get("domain_id")) {
+                deployedDomainsJobList.push({
+                  lander_id: lander_id,
+                  domain_id: domainToUndeployId,
+                  action: "undeployLanderFromDomain",
+                  deploy_status: "undeploying"
+                });
+              }
+            });
+          });
+
+          var undeployJobModel = new JobModel({
+            action: "undeployLanderFromDomain",
+            list: deployedDomainsJobList,
+            model: landerModel,
+            neverAddToUpdater: true
+          });
+
+          var undeployJobAttributes = {
+            jobModel: undeployJobModel,
+            onSuccess: function(responseJobList) {
+
+              //create job models for each deployed domain and add them!
+              deployedDomainCollection.each(function(deployedDomainModel) {
+                $.each(responseJobList, function(idx, responseJobAttr) {
+
+                  if (deployedDomainModel.get("domain_id") == responseJobAttr.domain_id) {
+                    //create new individual job model for
+                    var activeJobs = deployedDomainModel.get("activeJobs");
+                    var newUndeployJob = new JobModel(responseJobAttr);
+
+                    //remove active any deploy jobs for this deployed domain
+                    activeJobs.each(function(job) {
+                      if (job.get("action") == "deployLanderToDomain") {
+                        //remove from updater and destroy job
+                        Landerds.updater.remove(this);
+                        delete job.attributes.id;
+                        job.destroy();
+                      }
+                    });
+                    activeJobs.add(newUndeployJob);
+                    //call start for each job 
+                    Landerds.trigger("job:start", newUndeployJob);
+                  }
+                });
+              });
+            }
+          };
+
+          Landerds.trigger("job:start", undeployJobAttributes);
+
+        },
+
         deployLandersToDomain: function(attr) {
           this.baseClassDeployLandersToDomain(attr);
           this.redeployLanders(attr.landerModel);
@@ -297,7 +365,7 @@ define(["app",
         redeployLanders: function(landerModel) {
 
           var onAfterRedeployCallback = function(responseJobList) {
-            
+
             var activeCampaignsCollection = landerModel.get("activeCampaigns");
             var deployedDomainCollection = landerModel.get("deployedDomains");
 
@@ -393,11 +461,8 @@ define(["app",
 
         removeDeployedDomainModelFromCollection: function(deployedDomainToRemove) {
           var lander_id = deployedDomainToRemove.get("lander_id");
-          var landerModel = this.filteredCollection.get(lander_id);
-          if (!landerModel) {
-            return;
-          }
-
+          var landerModel = this.filteredCollection.original.get(lander_id);
+          
           var deployedDomains = landerModel.get("deployedDomains");
           deployedDomains.remove(deployedDomainToRemove);
         },

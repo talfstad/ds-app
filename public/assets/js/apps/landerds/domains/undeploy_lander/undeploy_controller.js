@@ -7,31 +7,30 @@ define(["app",
 
       Undeploy.Controller = {
 
-        showUndeployLander: function(model) {
+        showUndeployLander: function(attr) {
+
+          var domainModel = attr.domainModel;
+          var deployedLanderModel = attr.deployedLanderModel;
 
           var undeployLanderLayout = new UndeployLayoutView({
-            model: model
+            domain_model: domainModel,
+            lander_model: deployedLanderModel
           });
+
           undeployLanderLayout.render();
 
           Landerds.rootRegion.currentView.modalRegion.show(undeployLanderLayout);
 
 
-          undeployLanderLayout.on("undeployLanderFromDomain", function(model) {
+          undeployLanderLayout.on("undeployLanderConfirm", function() {
+            var lander_id = deployedLanderModel.get("lander_id");
 
-            var jobAttributes = {
-              action: "undeployLanderFromDomain",
-              lander_id: model.get("lander_id") || model.get("id"),
-              domain_id: model.get("domain_id"),
-              deploy_status: "undeploying"
-            }
+            var undeployAttr = {
+              domainModel: domainModel,
+              undeployLanderIdsArr: [lander_id]
+            };
 
-            //create job and add to models activeJobs
-            var jobModel = new JobModel(jobAttributes);
-            var activeJobsCollection = this.model.get("activeJobs");
-            activeJobsCollection.add(jobModel);
-
-            Landerds.trigger("job:start", jobModel);
+            Landerds.trigger("domains:undeployLandersFromDomain", undeployAttr);
 
           });
 

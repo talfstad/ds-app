@@ -185,6 +185,15 @@ define(["app",
                     collection: deployedLandersCollection
                   });
 
+                  deployedLandersView.on("childview:undeployLander", function(childView, landerModel) {
+                    var attr = {
+                      deployedLanderModel: landerModel,
+                      domainModel: domainView.model
+                    };
+
+                    Landerds.trigger("domains:showUndeployLander", attr);
+                  });
+
                   //when campaign link selected go to camp tab (this is from deployed domains campaign name link)
                   deployedLandersView.on("childview:selectCampaignTab", function(one, two, three) {
                     domainView.$el.find("a[href=#campaigns-tab-id-" + domainView.model.get("id") + "]").tab('show')
@@ -251,6 +260,82 @@ define(["app",
               }
             }
           });
+        },
+
+        removeDeployedLanderModelFromCollection: function(deployedLanderModelToRemove) {
+          var domain_id = deployedLanderModelToRemove.get("domain_id");
+          var domainModel = this.filteredCollection.original.get(domain_id);
+
+          var deployedLanderCollection = domainModel.get("deployedLanders");
+          deployedLanderCollection.remove(deployedLanderModelToRemove);
+        },
+
+        undeployLandersFromDomain: function(attr) {
+          var domainModel = attr.domainModel;
+          var undeployLanderIdsArr = attr.undeployLanderIdsArr;
+
+          var domain_id = domainModel.get("id");
+
+          var deployedLanderCollection = domainModel.get("deployedLanders");
+          var deployedLanderJobList = [];
+
+          $.each(undeployLanderIdsArr, function(idx, landerToUndeployId) {
+
+            deployedLanderCollection.each(function(deployedLanderModel) {
+              if (landerToUndeployId == deployedLanderModel.get("lander_id")) {
+
+                deployedLanderJobList.push({
+                  lander_id: landerToUndeployId,
+                  domain_id: domain_id,
+                  action: "undeployLanderFromDomain",
+                  deploy_status: "undeploying"
+                });
+              }
+            });
+          });
+
+          var undeployJobModel = new JobModel({
+            action: "undeployLanderFromDomain",
+            list: deployedLanderJobList,
+            model: {}, //just an empty object (is required at minimum)
+            neverAddToUpdater: true
+          });
+
+          var undeployJobAttributes = {
+            jobModel: undeployJobModel,
+            onSuccess: function(responseJobList) {
+
+              //create job models for each deployed domain and add them!
+              deployedLanderCollection.each(function(deployedLanderModel) {
+                $.each(responseJobList, function(idx, responseJobAttr) {
+
+                  if (deployedLanderModel.get("lander_id") == responseJobAttr.lander_id) {
+                    //create new individual job model for
+                    var activeJobs = deployedLanderModel.get("activeJobs");
+                    var newUndeployJob = new JobModel(responseJobAttr);
+
+                    //remove active any deploy jobs for this deployed domain
+                    activeJobs.each(function(job) {
+                      if (job.get("action") == "deployLanderToDomain" ||
+                        job.get("action") == "undeployLanderFromDomain") {
+                        //remove from updater and destroy job
+                        job.set("canceled", true);
+                        Landerds.updater.remove(this);
+                        delete job.attributes.id;
+                        job.destroy();
+                      }
+                    });
+                    activeJobs.add(newUndeployJob);
+                    //call start for each job 
+                    Landerds.trigger("job:start", newUndeployJob);
+                  }
+                });
+              });
+            }
+          };
+
+          Landerds.trigger("job:start", undeployJobAttributes);
+
         },
 
 

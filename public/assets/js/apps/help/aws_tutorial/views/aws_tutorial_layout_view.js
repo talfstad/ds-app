@@ -82,7 +82,7 @@ define(["app",
             adminForm.removeClass("has-error");
 
             var infoAlert = this.$el.find(".aws-info-alert");
-            infoAlert.html("Good News: We've already got these keys stored for you. <a class='alert-link' href='#'>How do I get new AWS keys?</a>");
+            infoAlert.html("Good News: We've already got these keys stored for you.");
             infoAlert.fadeIn();
           }
         },
@@ -104,7 +104,7 @@ define(["app",
             var adminForm = this.$el.find(".admin-form");
             adminForm.addClass("has-error");
             var errorAlert = this.$el.find(".aws-error-alert");
-            errorAlert.html("The keys you entered didn't work. Please try to enter them again. <a class='alert-link' href='#'>How do I get new AWS keys?</a>");
+            errorAlert.html("The keys you entered didn't work. Please wait a couple minutes and enter them again.");
             errorAlert.fadeIn();
             
           }
