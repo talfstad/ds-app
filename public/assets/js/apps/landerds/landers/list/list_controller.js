@@ -85,6 +85,11 @@ define(["app",
               }
             });
 
+            //when lander is deleted successfully show a notification
+            me.filteredCollection.original.on("destroy", function(model) {
+              Notification("", "Successfully Deleted " + model.get("name"), "success", "stack_top_right");
+            });
+
             //make landers view and display data
             var landersListView = new ListView({
               collection: me.filteredCollection
@@ -462,7 +467,7 @@ define(["app",
         removeDeployedDomainModelFromCollection: function(deployedDomainToRemove) {
           var lander_id = deployedDomainToRemove.get("lander_id");
           var landerModel = this.filteredCollection.original.get(lander_id);
-          
+
           var deployedDomains = landerModel.get("deployedDomains");
           deployedDomains.remove(deployedDomainToRemove);
         },
@@ -615,23 +620,39 @@ define(["app",
 
         deleteLander: function(model) {
           var lander_id = model.get("id");
-          var landerModel = this.filteredCollection.get(lander_id);
+          var landerModel = this.filteredCollection.original.get(lander_id);
 
-          //model is a clone not 'the' model in filtered collection
-          // var filteredCollectionLanderModel = this.filteredCollection.get(model.get("id"));
-          // filteredCollectionLanderModel.set("deploy_status", "deleting");
-
-          var jobAttributes = {
+          var deleteJobList = [{
             action: "deleteLander",
             lander_id: landerModel.get("id"),
             deploy_status: "deleting"
+          }];
+
+          var deleteJobModel = new JobModel({
+            action: "deleteLander",
+            list: deleteJobList,
+            model: landerModel,
+            neverAddToUpdater: true
+          });
+
+          var deleteJobAttributes = {
+            jobModel: deleteJobModel,
+            onSuccess: function(responseJobList) {
+
+              if (responseJobList.length > 0) {
+                var deleteLanderAttr = responseJobList[0];
+
+                var jobModel = new JobModel(deleteLanderAttr);
+
+                var activeJobCollection = landerModel.get("activeJobs");
+                activeJobCollection.add(jobModel);
+
+                Landerds.trigger("job:start", jobModel);
+              }
+            }
           };
 
-          var jobModel = new JobModel(jobAttributes);
-
-          var activeJobCollection = landerModel.get("activeJobs");
-          activeJobCollection.add(jobModel);
-          Landerds.trigger("job:start", jobModel);
+          Landerds.trigger("job:start", deleteJobAttributes);
 
         }
 

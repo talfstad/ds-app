@@ -8,27 +8,87 @@ define(["app",
   function(Landerds, JobsGuiBaseModel, DomainCollection, UrlEndpointCollection,
     DeployedDomainsCollection, ActiveCampaignCollection) {
     var LanderModel = JobsGuiBaseModel.extend({
-      
+
       urlRoot: "/api/landers",
 
 
-      //init has 3 steps.
-      //1. initialize the activeJobs collection in parent class
-      //2. now do stuff for this specific type
-      //3. start the jobs from the parent class
       initialize: function() {
+        var me = this;
+
+        this.set("originalValueOptimized", this.get("optimized"));
+        this.set("originalValueDeploymentFolderName", this.get("deployment_folder_name"));
+        this.set("originalValueDeployRoot", this.get("deploy_root"));
+        this.set("originalActiveSnippets", this.get("activeSnippets"));
+
+        var activeCampaignAttributes = this.get("activeCampaigns");
+        var urlEndpointAttributes = this.get("urlEndpoints");
+        var deployedDomainAttributes = this.get("deployedDomains");
+
+        var deployedDomainsCollection = new DeployedDomainsCollection(deployedDomainAttributes);
+        //extra things it needs
+        deployedDomainsCollection.urlEndpoints = urlEndpointAttributes;
+        deployedDomainsCollection.landerName = this.get("name");
+
+        //whenever deployed domain coll updates deploy_status, update master lander deploy status
+        deployedDomainsCollection.on("add change:deploy_status", function(deployedDomainModel) {
+          me.setDeployStatus();
+          var deployedDomainDeployStatus = deployedDomainModel.get("deploy_status");
+
+          //saving lander is always set true where it begins save
+          if (deployedDomainDeployStatus == "invalidating" ||
+            deployedDomainDeployStatus == "deployed") {
+            me.set({
+              saving_lander: false,
+              no_optimize_on_save: true
+            });
+          }
+        });
+
+        //if deployed domain triggers endpoint change then we update the lander
+        //endpoint view by triggering this model event
+        deployedDomainsCollection.on("changed_pagespeed", function() {
+          me.trigger("changed_pagespeed");
+        });
+
+        this.set("deployedDomains", deployedDomainsCollection);
+
+        var urlEndpointCollection = new UrlEndpointCollection(urlEndpointAttributes);
+        this.set("urlEndpoints", urlEndpointCollection);
+
+        var activeCampaignCollection = new ActiveCampaignCollection();
+        this.set("activeCampaigns", activeCampaignCollection);
+        activeCampaignCollection.add(activeCampaignAttributes);
+
+
+
+        //when lander changes its deploy status update the topbar totals
+        this.on("change:deploy_status", function() {
+          Landerds.trigger("landers:updateTopbarTotals");
+
+          var deployStatus = this.get("deploy_status");
+          deployedDomainsCollection.deploy_status = deployStatus;
+          activeCampaignCollection.deploy_status = deployStatus;
+
+        });
+
+
+        // - init the jobs now that the model is built
+
         JobsGuiBaseModel.prototype.initialize.apply(this);
 
         var me = this;
 
         //on active jobs initialize check if any of them exist and handle start state
-        var activeJobsCollection = this.get("activeJobs");
+        var activeJobCollection = this.get("activeJobs");
 
+        activeJobCollection.on("add remove", function() {
+          me.setDeployStatus();
+        });
 
-        activeJobsCollection.on("startState", function(attr) {
+        activeJobCollection.on("startState", function(attr) {
 
-          if (activeJobsCollection.length > 0) {
-            activeJobsCollection.each(function(jobModel) {
+          if (activeJobCollection.length > 0) {
+            activeJobCollection.each(function(jobModel) {
               if (jobModel.get("action") === "addNewLander") {
                 //adding new lander so we're still initializing...
                 me.set("deploy_status", "initializing");
@@ -46,7 +106,7 @@ define(["app",
           }
         });
 
-        activeJobsCollection.on("finishedState", function(jobModel, updaterResponse) {
+        activeJobCollection.on("finishedState", function(jobModel, updaterResponse) {
           var deployStatus = "deployed";
           if (jobModel.get("action") === "addNewLander" ||
             jobModel.get("action") === "ripNewLander") {
@@ -57,6 +117,7 @@ define(["app",
             //destroy the lander model
             delete me.attributes.id;
             me.destroy();
+
           } else if (jobModel.get("action") === "savingLander") {
             me.set("saving_lander", false);
           }
@@ -100,103 +161,11 @@ define(["app",
           jobModel.destroy();
 
           //trigger to start the next job on the list
-          Landerds.trigger("job:startNext", activeJobsCollection);
+          Landerds.trigger("job:startNext", activeJobCollection);
 
         });
 
         this.startActiveJobs();
-
-        ////////
-
-        //1. build deployedDomains collection
-        //2. build urlendpoint collection
-
-        this.set("originalValueOptimized", this.get("optimized"));
-        this.set("originalValueDeploymentFolderName", this.get("deployment_folder_name"));
-        this.set("originalValueDeployRoot", this.get("deploy_root"));
-        this.set("originalActiveSnippets", this.get("activeSnippets"));
-
-        var activeCampaignAttributes = this.get("activeCampaigns");
-        var urlEndpointAttributes = this.get("urlEndpoints");
-        var deployedDomainAttributes = this.get("deployedDomains");
-
-        var deployedDomainsCollection = new DeployedDomainsCollection(deployedDomainAttributes);
-        //extra things it needs
-        deployedDomainsCollection.urlEndpoints = urlEndpointAttributes;
-        deployedDomainsCollection.landerName = this.get("name");
-
-        var applyUpdatedDeployStatusToLander = function() {
-          //update deploy status view UNLESS we're initializing or deleting. if initializing needs to be changed
-          //to not_deployed by the lander job itself because we're adding a new lander. this logic is
-          // for when the lander is already added
-
-          if (me.get("deploy_status") !== "initializing" &&
-            me.get("deploy_status") !== "deleting") {
-            var deployStatus = "deployed";
-            if (deployedDomainsCollection.length > 0) {
-              deployedDomainsCollection.each(function(deployedDomainModel) {
-                var activeJobs = deployedDomainModel.get("activeJobs");
-
-                if (activeJobs.length > 0) {
-                  deployStatus = "deploying"; //to make lander show "working"
-                } else if (deployedDomainModel.get("deploy_status") == "deploying") {
-                  deployStatus = "deploying"; //to make lander show "working"
-                } else if (deployedDomainModel.get("deploy_status") == "undeploying") {
-                  deployStatus = "deploying"; //to make lander show "working"
-                }
-
-              });
-            } else {
-              deployStatus = "deployed"
-            }
-
-            me.set("deploy_status", deployStatus);
-          }
-        };
-
-
-        //whenever deployed domain coll updates deploy_status, update master lander deploy status
-        deployedDomainsCollection.on("add change:deploy_status", function(deployedDomainModel) {
-          applyUpdatedDeployStatusToLander();
-          var deployedDomainDeployStatus = deployedDomainModel.get("deploy_status");
-
-          //saving lander is always set true where it begins save
-          if (deployedDomainDeployStatus == "invalidating" ||
-            deployedDomainDeployStatus == "deployed") {
-            me.set({
-              saving_lander: false,
-              no_optimize_on_save: true
-            });
-          }
-        });
-
-        //if deployed domain triggers endpoint change then we update the lander
-        //endpoint view by triggering this model event
-        deployedDomainsCollection.on("changed_pagespeed", function() {
-          me.trigger("changed_pagespeed");
-        });
-
-        this.set("deployedDomains", deployedDomainsCollection);
-
-        var urlEndpointCollection = new UrlEndpointCollection(urlEndpointAttributes);
-        this.set("urlEndpoints", urlEndpointCollection);
-
-        var activeCampaignCollection = new ActiveCampaignCollection();
-        this.set("activeCampaigns", activeCampaignCollection);
-        activeCampaignCollection.add(activeCampaignAttributes);
-
-
-
-        //when lander changes its deploy status update the topbar totals
-        this.on("change:deploy_status", function() {
-          Landerds.trigger("landers:updateTopbarTotals");
-
-          var deployStatus = this.get("deploy_status");
-          deployedDomainsCollection.deploy_status = deployStatus;
-          activeCampaignCollection.deploy_status = deployStatus;
-
-        });
-
 
         var addJobsToActiveCampaigns = function() {
           deployedDomainsCollection.each(function(deployedDomain) {
@@ -238,20 +207,25 @@ define(["app",
 
 
         deployedDomainsCollection.on("destroy", function(domainModel) {
-          applyUpdatedDeployStatusToLander();
+          me.setDeployStatus();
         });
 
+        this.setDeployStatus();
+      },
 
-
+      setDeployStatus: function() {
+        var me = this;
 
         //set deploy_status based on our new model
+        var deployedDomainCollection = this.get("deployedDomains");
+        var activeJobCollection = this.get("activeJobs");
 
         //deployedDomain Jobs
         var isSaving = false;
         var deployStatus = "not_deployed";
-        if (deployedDomainsCollection.length > 0) {
+        if (deployedDomainCollection.length > 0) {
           deployStatus = "deployed";
-          deployedDomainsCollection.each(function(deployedDomain) {
+          deployedDomainCollection.each(function(deployedDomain) {
 
             deployedDomain.get("activeJobs").each(function(activeJob) {
 
@@ -282,12 +256,10 @@ define(["app",
 
         }
 
-
-
         //lander level jobs override deployedDomain jobs
-        if (activeJobsCollection.length > 0) {
-          activeJobsCollection.each(function(job) {
-            if (job.get("action") === "deletingLander") {
+        if (activeJobCollection.length > 0) {
+          activeJobCollection.each(function(job) {
+            if (job.get("action") === "deleteLander") {
               deployStatus = "deleting";
             } else if (job.get("action") === "addNewLander") {
               deployStatus = "initializing";
@@ -296,13 +268,8 @@ define(["app",
             }
           });
         }
-        this.set("deploy_status", deployStatus);
 
-        if (this.get("modified")) {
-          deployedDomainsCollection.each(function(location) {
-            location.set("modified", true);
-          });
-        }
+        me.set("deploy_status", deployStatus);
 
       },
 

@@ -30,10 +30,10 @@
         deployingDomainsText = "Domains"
       }
 
-      var totalWorkingLander = "Lander"
+      var totalWorkingDomain = "Domain"
       var total_working = parseInt(total_undeploying) + parseInt(total_deploying)
       if(total_working > 1 || total_working < 1) {
-        totalWorkingLander = "Landers"
+        totalWorkingDomain = "Domains"
       }
 
   if(total_deleting > 0) { %>
@@ -46,7 +46,7 @@
 
       <% if(total_working > 0) { %>
       <div>
-        <span class="badge-alert badge"><%= total_working %></span> <%= totalWorkingLander %> Working
+        <span class="badge-alert badge"><%= total_working %></span> <%= totalWorkingDomain %> Working
       </div>
        <% } %>
 

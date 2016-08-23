@@ -42,9 +42,38 @@ module.exports = function(app, db) {
 
     },
 
-    //TODO
-    cancelDeployJobsForLander: function(lander_id, callback) {
-      callback(false);
+    cancelAnyCurrentRunningJobsOnLander: function(user, lander_id, callback) {
+      var user_id = user.id;
+      
+      var externalInterruptAllJobsWithLanderId = function(callback) {
+        
+        app.log("\n\n\n\nCanceling all jobs with lander_id : " + lander_id, "debug");
+
+        var query = "";
+        var arr = [];
+          //also include deployLanderToDomain jobs if we're undeploying
+          query = "UPDATE jobs SET error = ?, error_code = ?, processing = ? WHERE user_id = ? AND lander_id = ? AND done = ?";
+          arr = [true, "ExternalInterrupt", false, user_id, lander_id, false];
+
+          db.getConnection(function(err, connection) {
+            if (err) {
+              console.log(err);
+            } else {
+              connection.query(query, arr,
+                function(err, docs) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    callback(false);
+                  }
+                  connection.release();
+                });
+            }
+          });
+      };
+
+      externalInterruptAllJobsWithLanderId(callback);
+
     },
 
     cancelAnyCurrentRunningDuplicateJobs: function(user, list, callback) {

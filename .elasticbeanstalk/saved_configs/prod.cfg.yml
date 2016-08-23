@@ -14,6 +14,11 @@ OptionSettings:
     ConnectionDrainingEnabled: true
     ConnectionDrainingTimeout: '3600'
     ConnectionSettingIdleTimeout: '3600'
+  aws:elb:healthcheck:
+    HealthyThreshold: 3
+    Interval: 15
+    Timeout: 10
+    UnhealthyThreshold: 10
   aws:elb:loadbalancer:
     ManagedSecurityGroup: sg-d83bf4be
     SecurityGroups: sg-d83bf4be
@@ -27,6 +32,8 @@ OptionSettings:
   aws:elasticbeanstalk:healthreporting:system:
     AWSEBHealthdGroupId: d3c98381-f798-4dc3-9a63-1a37a0978e97
     SystemType: enhanced
+  aws:elasticbeanstalk:application:
+    Application Healthcheck URL: '/api/login'
   aws:ec2:vpc:
     Subnets: subnet-aa2c34cf
     VPCId: vpc-976f7af2
@@ -37,10 +44,10 @@ OptionSettings:
     SecurityGroups: sg-383bf45e
     RootVolumeSize: '10'
     IamInstanceProfile: aws-elasticbeanstalk-ec2-role
-    InstanceType: m1.small
+    InstanceType: m4.large
     EC2KeyName: BuildcaveKeyPair
   aws:autoscaling:asg:
-    MinSize: '1'
+    MinSize: '4'
     MaxSize: '4'
   aws:autoscaling:updatepolicy:rollingupdate:
     RollingUpdateType: Health

@@ -102,14 +102,8 @@ module.exports = function(app, db) {
                               if (err) {
                                 callback(err, [myJobId]);
                               } else {
-                                db.jobs.updateDeployStatus(user, myJobId, "deployed", function(err) {
-                                  if (err) {
-                                    callback(err, [myJobId]);
-                                  } else {
-                                    app.log("FINISHED ! saving lander job !", "debug");
-                                    callback(false, [myJobId]);
-                                  }
-                                });
+                                app.log("FINISHED ! saving lander job !", "debug");
+                                callback(false, [myJobId]);
                               }
                             });
                           }

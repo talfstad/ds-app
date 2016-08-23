@@ -100,8 +100,12 @@ define(["app",
           $("#landers-collection .collapse").collapse("hide");
 
           this.$el.find(".campaign-tab-handle-region").off();
+          this.$el.find(".campaign-tab-handle-region a").attr("data-toggle","");
+
           this.$el.find(".accordion-toggle").off();
-          this.$el.find(".deploy-status-region").off()
+          this.$el.find(".deploy-status-region").off();
+          this.$el.find(".deploy-status-region a").attr("data-toggle", "");
+
           this.$el.off();
           this.$el.find(".nav.panel-tabs").off();
 
