@@ -8,6 +8,27 @@ module.exports = function(app, db) {
 
     common: require("./common")(app, db), //needs to be like this to access in other classes
 
+
+    getAllDomainsLanderIsDeployedOn: function(user, lander_id, callback) {
+      var user_id = user.id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          callback(err);
+        } else {
+          connection.query("SELECT domain,cloudfront_id FROM domains a JOIN deployed_landers b ON a.id=b.domain_id WHERE b.user_id = ? AND b.lander_id = ?", [user_id, lander_id],
+            function(err, dbDomains) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, dbDomains);
+              }
+            });
+        }
+        connection.release();
+      });
+    },
+
     getPagespeedScoresForLander: function(user, lander_id, domain_id, callback) {
       //return an array of objects like this:
       // {filename:"",optimized_pagespeed:"",original_pagespeed:""}
@@ -240,22 +261,19 @@ module.exports = function(app, db) {
       });
     },
 
-    deleteLander: function(user_id, lander_id, successCallback, errorCallback) {
-
+    deleteLander: function(user, lander_id, callback) {
+      var user_id = user.id;
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
         } else {
           connection.query("DELETE FROM landers WHERE user_id = ? AND id = ?", [user_id, lander_id], function(err, docs) {
-
             if (err) {
-              console.log(err);
-              errorCallback();
+              callback(err);
             } else {
-              successCallback();
+              callback(false);
             }
             connection.release();
-
           });
         }
       });
