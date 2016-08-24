@@ -227,28 +227,38 @@ define(["app",
           deployStatus = "deployed";
           deployedDomainCollection.each(function(deployedDomain) {
 
-            deployedDomain.get("activeJobs").each(function(activeJob) {
+            //handles for when we dont have the job added yet (for on save)
+            if (deployedDomain.get("deploy_status") == "deploying" ||
+              deployedDomain.get("deploy_status") == "undeploying") {
 
-              if (activeJob.get("action") === "undeployLanderFromDomain") {
-                deployStatus = "undeploying";
-              } else if (activeJob.get("action") === "deployLanderToDomain") {
-                deployStatus = "deploying";
-              }
+              //if any are deploying/undeploying thats the wrap
+              deployStatus = deployedDomain.get("deploy_status");
+              return true;
+            
+            } else {
 
-              //check if we're saving
-              if (activeJob.get("action") == "deployLanderToDomain") {
-                isSaving = true; //default if we have a deploy job
-              }
+              deployedDomain.get("activeJobs").each(function(activeJob) {
 
-              if (activeJob.get("action") == "deployLanderToDomain" &&
-                (activeJob.get("deploy_status") == "deployed" ||
-                  activeJob.get("deploy_status") == "invalidating")) {
+                if (activeJob.get("action") === "undeployLanderFromDomain") {
+                  deployStatus = "undeploying";
+                } else if (activeJob.get("action") === "deployLanderToDomain") {
+                  deployStatus = "deploying";
+                }
 
-                //we're not saving!
-                isSaving = false;
-              }
-            });
+                //check if we're saving
+                if (activeJob.get("action") == "deployLanderToDomain") {
+                  isSaving = true; //default if we have a deploy job
+                }
 
+                if (activeJob.get("action") == "deployLanderToDomain" &&
+                  (activeJob.get("deploy_status") == "deployed" ||
+                    activeJob.get("deploy_status") == "invalidating")) {
+
+                  //we're not saving!
+                  isSaving = false;
+                }
+              });
+            }
           });
 
           //set saving

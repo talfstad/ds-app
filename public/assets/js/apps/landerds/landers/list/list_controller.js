@@ -149,28 +149,7 @@ define(["app",
                 me.childExpandedId = null;
               }
             });
-
-
-
-            me.filteredCollection.original.on("change:modified", function(landerModel) {
-
-              Landerds.trigger("landers:updateTopbarTotals");
-
-              var deployedDomainsCollection = landerModel.get("deployedDomains");
-
-              if (this.get("modified")) {
-                //set all deployed domains to modified as well. modified is
-                //as a whole lander, never individual deployed domains are modified
-                deployedDomainsCollection.each(function(deployedDomain) {
-                  deployedDomain.set("modified", true);
-                });
-              } else {
-                deployedDomainsCollection.each(function(deployedDomain) {
-                  deployedDomain.set("modified", false);
-                });
-              }
-
-            });
+            
 
             me.filteredCollection.on("reset", function(collection) {
 

@@ -342,9 +342,9 @@ module.exports = function(app, db) {
 
       if (finishedJobs.length > 0) {
         //build sql command
-        var finishedJobsValues = [true];
+        var finishedJobsValues = [false, true];
 
-        var updateSql = "UPDATE jobs SET done = ? WHERE ";
+        var updateSql = "UPDATE jobs SET processing = ?, done = ? WHERE ";
 
 
         for (var i = 0; i < finishedJobs.length; i++) {

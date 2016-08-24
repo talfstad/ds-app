@@ -18,13 +18,6 @@ define(["app",
     Landerds.module("DomainsApp.Domains.List", function(List, Landerds, Backbone, Marionette, $, _) {
       List.childView = ListRowsBaseView.extend({
 
-        initialize: function() {
-          var me = this;
-          this.listenTo(this.model, "view:expand", function() {
-            me.expandAccordion();
-          });
-        },
-
         className: "bs-component accordion-group",
 
         template: LandersListItemTpl,
@@ -50,6 +43,13 @@ define(["app",
           'add_to_new_campaign_region': '.add-to-new-campaign-region'
         },
 
+        initialize: function() {
+          var me = this;
+          this.listenTo(this.model, "view:expand", function() {
+            me.expandAccordion();
+          });
+        },
+
         alertDeployStatus: function() {
           //show correct one
           var deployStatus = this.model.get("deploy_status");
@@ -68,7 +68,7 @@ define(["app",
             this.$el.find(".alert-working-badge").hide();
             this.$el.find(".alert-deleting-badge").show();
           }
-          
+
         },
 
         showAddToCampaign: function() {
@@ -101,7 +101,7 @@ define(["app",
           this.$el.find(".campaign-tab-handle-region").off();
           this.$el.find(".accordion-toggle").off();
           this.$el.find(".lander-tab-handle-region").off();
-          
+
           this.$el.find(".campaign-status-tab-handle").removeAttr("data-toggle");
 
           this.$el.off();
@@ -157,7 +157,7 @@ define(["app",
 
             this.$el.on('hide.bs.collapse', function(e) {
               me.trigger('childCollapsed');
-              
+
               //hide the header so it can fade in on next open
               // $(".deployed-landers-header-container").hide();
 
@@ -175,7 +175,7 @@ define(["app",
 
             this.$el.on('show.bs.collapse', function(e) {
               me.trigger('childExpanded');
-              
+
               me.reAlignTableHeader();
 
               //collapse ALL others so we get an accordian effect !IMPORTANT for design

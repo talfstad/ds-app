@@ -145,17 +145,25 @@ define(["app",
         if (deployedLanderCollection.length > 0) {
           deployStatus = "deployed";
           deployedLanderCollection.each(function(deployedLander) {
+            //handles for when we dont have the job added yet (for on save)
+            if (deployedLander.get("deploy_status") == "deploying" ||
+              deployedLander.get("deploy_status") == "undeploying") {
 
-            deployedLander.get("activeJobs").each(function(activeJob) {
+              //if any are deploying/undeploying thats the wrap
+              deployStatus = deployedLander.get("deploy_status");
+              return true;
 
-              if (activeJob.get("action") === "undeployLanderFromDomain") {
-                deployStatus = "undeploying";
-              } else if (activeJob.get("action") === "deployLanderToDomain") {
-                deployStatus = "deploying";
-              }
-            });
+            } else {
+              deployedLander.get("activeJobs").each(function(activeJob) {
+
+                if (activeJob.get("action") === "undeployLanderFromDomain") {
+                  deployStatus = "undeploying";
+                } else if (activeJob.get("action") === "deployLanderToDomain") {
+                  deployStatus = "deploying";
+                }
+              });
+            }
           });
-
         }
 
         //domain level jobs override deployedLander jobs

@@ -257,14 +257,6 @@ module.exports = function(app, db) {
 
     disableCloudfrontDistribution: function(credentials, distributionId, callback) {
       var me = this;
-      //timeout if not completed within 40 minutes
-      var minutesToWait = 40;
-      var timeout = 1000 * 60 * minutesToWait; //1000ms = 1 s * 60 = 1 minute * 40 = 40 minutes
-
-      //poll every minute
-      var pollRate = 1000 * 60 // 1 minute
-
-      var elapsedTime = 0; //in milliseconds
 
       //set keys before every action
       AWS.config.update({
@@ -308,58 +300,47 @@ module.exports = function(app, db) {
                 callback(err);
               } else {
 
-                //now that its disabling wait for it to disable and then delete it.
-                var interval = setInterval(function() {
-                  //increase the elapsed time
-                  elapsedTime += pollRate;
-                  //if timeout has happened clear interval and return error
-                  if (elapsedTime > timeout) {
-                    clearInterval(interval);
-                    var error = {
-                      code: "disableCloudfrontDistributionTimeout",
-                      msg: "Disabling Distribution has taken more than " + minutesToWait + " minutes"
-                    }
-                    console.log("Error: timeout on disable CF");
-                    callback(error);
-                  } else {
+                var getDistributionDisabled = function() {
 
-                    //check to see if it's done disabling
-                    //1. get config for it
-                    me.getDistribution(credentials, distributionId, function(err, data) {
-                      app.log("got distribution: T " + err, "debug");
-                      if (err) {
-                        callback(err);
-                      } else {
+                  me.getDistribution(credentials, distributionId, function(err, data) {
+                    if (err) {
+                      callback(err);
+                    } else {
+                      setTimeout(function() {
+
+                        app.log("got distribution: " + distributionId, "debug");
+
                         var distribution = data.Distribution;
                         var enabled = data.DistributionConfig.Enabled;
 
                         //quit if its enabled, something really weird/bad happened
                         if (enabled) {
-                          clearInterval(interval);
                           var error = {
                             code: "DistributionNotDisabled",
                             msg: "Somehow your distribution was re-enabled even though we just disabled it."
                           }
-                          console.log("Error: distribution wasn't disabled so we're stopping");
+                          app.log("Error: distribution wasn't disabled so we're stopping", "debug");
                           callback(error);
                         } else {
                           //it's disabled so check status!
                           //2. check the config status = "Deployed" if is then we're good
                           if (distribution.Status === "Deployed") {
-                            console.log("successfully disabled cloudfront distribution")
-                              //successfully disabled, lets clear it
-                            clearInterval(interval);
+                            app.log("successfully disabled cloudfront distribution", "debug")
                             callback(false, etag);
+                          } else {
+                            getDistributionDisabled();
                           }
                         }
-                      }
-                    });
-                  }
-                }, pollRate);
+
+                      }, app.config.cloudfront.invalidationPollDuration);
+                    }
+                  });
+                };
+
+                getDistributionDisabled();
               }
             });
           }
-
 
         }
       });
@@ -381,7 +362,7 @@ module.exports = function(app, db) {
         if (err) {
           callback(err);
         } else {
-          console.log("disabled distro");
+          app.log("disabled distro", "debug");
           //now delete the CF distribution
           var params = {
             Id: distributionId,
@@ -396,11 +377,7 @@ module.exports = function(app, db) {
             }
           });
         }
-
-
       });
-
     }
-
   }
 }

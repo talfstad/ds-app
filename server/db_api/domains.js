@@ -4,6 +4,67 @@ module.exports = function(app, db) {
 
   var module = _.extend(baseDeployedLander, {
 
+
+    getAllLandersDeployedOnDomain: function(user, domain_id, callback) {
+      var user_id = user.id;
+
+      var getTheLanders = function(callback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          } else {
+            connection.query("SELECT * FROM landers a JOIN deployed_landers b ON a.id = b.lander_id WHERE b.lander_id = a.id AND b.domain_id = ? AND a.user_id = ?", [domain_id, user_id],
+              function(err, dbLanders) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false, dbLanders);
+                }
+              });
+          }
+          connection.release();
+        });
+      };
+
+      getTheLanders(function(err, dbLanders) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(false, dbLanders);
+        }
+      });
+    },
+
+    deleteFromCampaignsWithDomains: function(user, domain_id, callback) {
+      var user_id = user.id;
+
+      var removeDomainFromCampaigns = function(callback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          } else {
+            connection.query("DELETE FROM campaigns_with_domains WHERE domain_id = ? AND user_id = ?", [domain_id, user_id],
+              function(err, docs) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false);
+                }
+              });
+          }
+          connection.release();
+        });
+      };
+
+      removeDomainFromCampaigns(function(err) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(false);
+        }
+      });
+    },
+
     //remove domain from all campaigns that have it
     removeActiveCampaignsForDomain: function(user, domain_id, callback) {
       var user_id = user.id;
