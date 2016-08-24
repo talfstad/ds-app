@@ -69,7 +69,6 @@ module.exports = function(app, db) {
                   };
                   callback(err);
                 } else {
-
                   callback({ code: "CouldNotWaitForInvalidationComplete" });
                 }
               } else {
@@ -258,7 +257,7 @@ module.exports = function(app, db) {
 
     disableCloudfrontDistribution: function(credentials, distributionId, callback) {
       var me = this;
-      //timeout if not completed within 20 minutes
+      //timeout if not completed within 40 minutes
       var minutesToWait = 40;
       var timeout = 1000 * 60 * minutesToWait; //1000ms = 1 s * 60 = 1 minute * 40 = 40 minutes
 

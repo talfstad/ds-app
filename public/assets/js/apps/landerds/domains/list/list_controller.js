@@ -89,6 +89,11 @@ define(["app",
               }
             });
 
+            //when lander is deleted successfully show a notification
+            me.filteredCollection.original.on("destroy", function(model) {
+              Notification("", "Successfully Deleted " + model.get("domain"), "success", "stack_top_right");
+            });
+
             //make landers view and display data
             var domainsListView = new ListView({
               collection: me.filteredCollection
@@ -448,20 +453,47 @@ define(["app",
         //remove the domain from the landers list by starting a delete job!
         deleteDomain: function(model) {
           var domain_id = model.get("id");
-          var domainModel = this.filteredCollection.get(domain_id);
+          var domainModel = this.filteredCollection.original.get(domain_id);
 
-          var jobAttributes = {
+          var deleteJobList = [{
             action: "deleteDomain",
             domain_id: domainModel.get("id"),
             deploy_status: "deleting"
-          }
-          var jobModel = new JobModel(jobAttributes);
+          }];
 
-          var activeJobCollection = domainModel.get("activeJobs");
-          activeJobCollection.add(jobModel);
-          Landerds.trigger("job:start", jobModel);
+          var deleteJobModel = new JobModel({
+            action: "deleteDomain",
+            list: deleteJobList,
+            model: null,
+            neverAddToUpdater: true
+          });
+
+          var deleteJobAttributes = {
+            jobModel: deleteJobModel,
+            onSuccess: function(responseJobList) {
+
+              if (responseJobList.length > 0) {
+                var deleteDomainAttr = responseJobList[0];
+
+                var jobModel = new JobModel(deleteDomainAttr);
+
+                var activeJobCollection = domainModel.get("activeJobs");
+                activeJobCollection.add(jobModel);
+
+                Landerds.trigger("job:start", jobModel);
+              }
+            }
+          };
+
+          Landerds.trigger("job:start", deleteJobAttributes);
 
         }
+
+
+
+
+
+
       }, BaseListController);
     });
 

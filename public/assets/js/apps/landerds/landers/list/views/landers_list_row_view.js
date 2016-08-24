@@ -52,13 +52,6 @@ define(["app",
           //show correct one
           var deployStatus = this.model.get("deploy_status");
 
-
-          if (deployStatus == "deleting") {
-            this.disableAccordionPermanently();
-            Landerds.trigger('landers:closesidebar');
-          }
-          // this.$el.find(".alert-modified-badge").hide();
-
           //handles deployed rows AND lander deploy status
           if (deployStatus !== "deployed" && deployStatus !== "not_deployed" && deployStatus !== "saving") {
             this.$el.find(".alert-working-badge").show();
@@ -67,8 +60,10 @@ define(["app",
           }
 
           if (deployStatus == "deleting") {
+            this.disableAccordionPermanently();
+            Landerds.trigger('landers:closesidebar');
+
             this.$el.find(".alert-working-badge").hide();
-            // this.$el.find(".alert-modified-badge").hide();
             this.$el.find(".alert-deleting-badge").show();
           }
         },

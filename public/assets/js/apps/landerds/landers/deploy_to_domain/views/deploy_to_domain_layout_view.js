@@ -41,22 +41,22 @@ define(["app",
         },
 
         confirmedToDeploy: function() {
-
-          //notification that deployment may take up to 20 minutes
-          Notification("Deploying Landing Page", "May take up to 20 minutes", "success", "stack_top_right");
+          var me = this;
 
           //show error if no domain selected or if more than 1 is somehow selected
-          var selectedRow = $("#domains-list-datatable").find("tr.primary");
+          var selectedRow = me.$el.find("#domains-list-datatable").find("tr.primary");
           if (selectedRow.length <= 0 || selectedRow.length > 1) {
-            $(".alert").addClass("alert-danger").removeClass("alert-primary");
-            var currentHtml = $(".alert span").html();
-            $(".alert span").html("<i class='fa fa-exclamation pr10'></i><strong>Warning:</strong> You must select a domain first.");
+            this.$el.find(".alert").addClass("alert-danger").removeClass("alert-primary");
+            var currentHtml = this.$el.find(".alert span").html();
+            this.$el.find(".alert span").html("<i class='fa fa-exclamation pr10'></i><strong>Warning:</strong> You must select a domain first.");
             setTimeout(function() {
-              $(".alert").removeClass("alert-danger").addClass("alert-primary");
-              $(".alert span").html(currentHtml);
+              me.$el.find(".alert").removeClass("alert-danger").addClass("alert-primary");
+              me.$el.find(".alert span").html(currentHtml);
             }, 3000);
 
           } else {
+            Notification("Deploying Landing Page", "May take up to 20 minutes", "success", "stack_top_right");
+
             var domainId = selectedRow.attr("data-domain-id");
             var domain = selectedRow.text();
             this.startDeployingToNewDomain(domainId, domain);

@@ -27,22 +27,23 @@ define(["app",
         },
 
         confirmedToDeploy: function() {
-
-          //notification that deployment may take up to 20 minutes
-          Notification("Deploying Landing Page", "May take up to 20 minutes", "success", "stack_top_right");
-
+          var me = this;
+         
           //show error if no domain selected or if more than 1 is somehow selected
-          var selectedRow = $("#landers-list-datatable").find("tr.primary");
+          var selectedRow = me.$el.find("#landers-list-datatable").find("tr.primary");
           if (selectedRow.length <= 0 || selectedRow.length > 1) {
-            $(".alert").addClass("alert-danger").removeClass("alert-primary");
-            var currentHtml = $(".alert span").html();
-            $(".alert span").html("<i class='fa fa-exclamation pr10'></i><strong>Warning:</strong> You must select a domain first.");
+            me.$el.find(".alert").addClass("alert-danger").removeClass("alert-primary");
+            var currentHtml = me.$el.find(".alert span").html();
+            me.$el.find(".alert span").html("<i class='fa fa-exclamation pr10'></i><strong>Warning:</strong> You must select a domain first.");
             setTimeout(function() {
-              $(".alert").removeClass("alert-danger").addClass("alert-primary");
-              $(".alert span").html(currentHtml);
+              me.$el.find(".alert").removeClass("alert-danger").addClass("alert-primary");
+              me.$el.find(".alert span").html(currentHtml);
             }, 3000);
 
           } else {
+             //notification that deployment may take up to 20 minutes
+            Notification("Deploying Landing Page", "May take up to 20 minutes", "success", "stack_top_right");
+
             var landerId = selectedRow.attr("data-lander-id");
             var lander = this.getRegion("landersListRegion").currentView.datatablesCollection.get(landerId)
             this.trigger("startDeployingNewLander", lander);

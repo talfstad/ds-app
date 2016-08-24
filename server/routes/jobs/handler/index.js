@@ -9,6 +9,8 @@ module.exports = function(app, db) {
   module.undeployLanderFromDomain = require('./undeploy_lander_from_domain')(app, db);
 
   module.deleteLander = require('./delete_lander')(app, db);
+  
+  module.deleteDomain = require('./delete_domain')(app, db);
 
 return module;
 

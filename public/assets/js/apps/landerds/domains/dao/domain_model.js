@@ -12,16 +12,41 @@ define(["app",
       //2. now do stuff for this specific type
       //3. start the jobs from the parent class
       initialize: function() {
-        JobsGuiBaseModel.prototype.initialize.apply(this);
-
         var me = this;
 
-        //on active jobs initialize check if any of them exist and handle start state
-        var activeJobsCollection = this.get("activeJobs");
+        var activeCampaignAttributes = this.get("activeCampaigns");
+        var deployedLandersAttributes = this.get("deployedLanders");
 
-        activeJobsCollection.on("startState", function() {
-          if (activeJobsCollection.length > 0) {
-            activeJobsCollection.each(function(jobModel) {
+        var deployedLanderCollection = new DeployedLanderCollection(deployedLandersAttributes);
+
+        this.set("deployedLanders", deployedLanderCollection);
+
+        var activeCampaignCollection = new ActiveCampaignCollection();
+
+        //whenever deployed domain coll updates deploy_status, update master lander deploy status
+        deployedLanderCollection.on("add change:deploy_status", function(domainModel) {
+          me.setDeployStatus();
+        });
+
+        this.set("activeCampaigns", activeCampaignCollection);
+        activeCampaignCollection.add(activeCampaignAttributes);
+
+
+
+        //now that the domain model is built, init job collection and start jobs
+        JobsGuiBaseModel.prototype.initialize.apply(this);
+
+
+        //on active jobs initialize check if any of them exist and handle start state
+        var activeJobCollection = this.get("activeJobs");
+
+        activeJobCollection.on("add remove", function() {
+          me.setDeployStatus();
+        });
+
+        activeJobCollection.on("startState", function() {
+          if (activeJobCollection.length > 0) {
+            activeJobCollection.each(function(jobModel) {
               if (jobModel.get("action") === "deleteDomain") {
                 //adding we're deleting so lets set that deploy_status
                 me.set("deploy_status", "deleting");
@@ -30,10 +55,8 @@ define(["app",
           }
         });
 
-        activeJobsCollection.on("finishedState", function(jobModel) {
-          var deployStatus = "deployed";
+        activeJobCollection.on("finishedState", function(jobModel) {
           if (jobModel.get("action") === "deleteDomain") {
-            me.trigger("notifySuccessDeleteDomain");
             //destroy the domain model
             delete me.attributes.id;
             me.destroy();
@@ -43,14 +66,13 @@ define(["app",
           delete jobModel.attributes.id;
           jobModel.destroy();
 
-          me.set("deploy_status", deployStatus);
 
           //trigger to start the next job on the list
-          Landerds.trigger("job:startNext", activeJobsCollection);
+          Landerds.trigger("job:startNext", activeJobCollection);
 
         });
 
-        activeJobsCollection.on("errorState", function(jobModel) {
+        activeJobCollection.on("errorState", function(jobModel) {
           //change deploy status back to deployed
           me.set("deploy_status", "deployed");
 
@@ -63,81 +85,93 @@ define(["app",
         });
 
         this.startActiveJobs();
-        ////////////////////////////end job init///////////////////////
 
-        //1. build deployedLanders collection - TODO
-        var activeCampaignAttributes = this.get("activeCampaigns");
-        var deployedLandersAttributes = this.get("deployedLanders");
+        var addJobsToActiveCampaigns = function() {
+          deployedLanderCollection.each(function(deployedLander) {
 
-        var deployedLandersCollection = new DeployedLanderCollection(deployedLandersAttributes);
+            var activeJobCollection = deployedLander.get("activeJobs");
 
-        this.set("deployedLanders", deployedLandersCollection);
+            //if job has campaign_id also add it to the active campaign
+            if (activeJobCollection.length > 0) {
 
-        var activeCampaignsCollection = new ActiveCampaignCollection();
+              activeJobCollection.each(function(activeJob) {
 
-        var applyUpdatedDeployStatusToLander = function() {
-          //update deploy status view UNLESS we're initializing or deleting. if initializing needs to be changed
-          //to not_deployed by the lander job itself because we're adding a new lander. this logic is
-          // for when the lander is already added
-          if (me.get("deploy_status") !== "initializing" &&
-            me.get("deploy_status") !== "deleting") {
-            var deployStatus = "deployed";
-            deployedLandersCollection.each(function(deployedLanderModel) {
-              if (deployedLanderModel.get("activeJobs").length > 0) {
-                deployStatus = "deploying";
-              }
-            });
+                activeCampaignCollection.each(function(activeCampaign) {
+                  var isOnCampaign = false;
+                  var domains = activeCampaign.get("domains");
+                  $.each(domains, function(idx, domain) {
+                    if (domain.domain_id == activeJob.get("domain_id")) {
+                      isOnCampaign = true;
+                    }
+                  });
 
-            //catch if there are no models, set to not_deployed
-            if (deployedLandersCollection.length <= 0) {
-              deployStatus = "not_deployed"
+                  if (isOnCampaign) {
+                    activeCampaignActiveJobs = activeCampaign.get("activeJobs");
+                    activeCampaignActiveJobs.add(activeJob);
+                  }
+                });
+              });
+
             }
 
-            me.set("deploy_status", deployStatus);
-          }
-        }
+          });
+        };
 
-        //whenever deployed domain coll updates deploy_status, update master lander deploy status
-        deployedLandersCollection.on("add change:deploy_status", function(domainModel) {
-          applyUpdatedDeployStatusToLander();
+        addJobsToActiveCampaigns();
+
+        activeCampaignCollection.on("add destroy", function(activeCampaignModel) {
+          deployedLanderCollection.trigger("activeCampaignsChanged");
         });
 
-        this.set("activeCampaigns", activeCampaignsCollection);
-        activeCampaignsCollection.add(activeCampaignAttributes);
+
+        deployedLanderCollection.on("destroy", function(domainModel) {
+          me.setDeployStatus();
+        });
+
+        this.setDeployStatus();
+
+      },
 
 
-        // applyUpdatedDeployStatusToLander();
+      setDeployStatus: function() {
+        var me = this;
 
+        //set deploy_status based on our new model
+        var deployedLanderCollection = this.get("deployedLanders");
+        var activeJobCollection = this.get("activeJobs");
 
-        //deployedDomain Jobs
+        //deployedLander Jobs
         var deployStatus = "not_deployed";
-        if (deployedLandersCollection.length > 0) {
+        if (deployedLanderCollection.length > 0) {
           deployStatus = "deployed";
-          deployedLandersCollection.each(function(location) {
+          deployedLanderCollection.each(function(deployedLander) {
 
-            location.get("activeJobs").each(function(job) {
-              if (job.get("action") === "undeployLanderFromDomain") {
+            deployedLander.get("activeJobs").each(function(activeJob) {
+
+              if (activeJob.get("action") === "undeployLanderFromDomain") {
                 deployStatus = "undeploying";
-              } else if (job.get("action") === "deployLanderToDomain") {
+              } else if (activeJob.get("action") === "deployLanderToDomain") {
                 deployStatus = "deploying";
               }
             });
-
           });
+
         }
 
-        //lander level jobs override deployedDomain jobs
-        if (activeJobsCollection.length > 0) {
-          activeJobsCollection.each(function(job) {
-            if (job.get("action") === "deletingDomain") {
+        //domain level jobs override deployedLander jobs
+        if (activeJobCollection.length > 0) {
+          activeJobCollection.each(function(job) {
+            if (job.get("action") === "deleteDomain") {
               deployStatus = "deleting";
+            } else if (job.get("action") === "newDomain") {
+              deployStatus = "initializing";
             }
           });
         }
-        
-        this.set("deploy_status", deployStatus);
 
+        me.set("deploy_status", deployStatus);
       },
+
 
       defaults: {
         name: "",

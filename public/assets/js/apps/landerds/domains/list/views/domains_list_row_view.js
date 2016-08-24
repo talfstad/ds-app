@@ -37,7 +37,6 @@ define(["app",
         },
 
         modelEvents: {
-          "notifySuccessDeleteDomain": "notifySuccessDeleteDomain",
           "notifyErrorDeleteDomain": "notifyErrorDeleteDomain",
           "change:deploy_status": "alertDeployStatus"
         },
@@ -52,13 +51,9 @@ define(["app",
         },
 
         alertDeployStatus: function() {
-          var capitalizeFirstLetter = function(string) {
-            string = string.toLowerCase();
-            return string.charAt(0).toUpperCase() + string.slice(1);
-          }
-
           //show correct one
           var deployStatus = this.model.get("deploy_status");
+
           if (deployStatus !== "deployed" && deployStatus !== "not_deployed") {
             this.$el.find(".alert-working-badge").show();
           } else {
@@ -66,8 +61,11 @@ define(["app",
           }
 
           if (deployStatus == "deleting") {
+
+            this.disableAccordionPermanently();
+            Landerds.trigger('domains:closesidebar');
+
             this.$el.find(".alert-working-badge").hide();
-            this.$el.find(".alert-modified-badge").hide();
             this.$el.find(".alert-deleting-badge").show();
           }
           
@@ -86,10 +84,6 @@ define(["app",
 
         expandAccordion: function() {
           this.$el.find("a:first").click();
-        },
-
-        notifySuccessDeleteDomain: function() {
-          Notification(this.model.get("domain"), "Successfully Deleted", "success", "stack_top_right");
         },
 
         notifyErrorDeleteDomain: function(errorMsg) {
