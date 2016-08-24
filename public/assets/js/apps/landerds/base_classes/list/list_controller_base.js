@@ -7,6 +7,8 @@ define(["app",
 
     var BaseListController = {
 
+      childExpandedId: null,
+
       filteredCollection: null,
 
       BaseClassInitialize: function() {
@@ -31,15 +33,16 @@ define(["app",
         this.expandAndShowRow(model);
       },
 
+
+      //if the model is not on the current page then                 
       expandAndShowRow: function(model) {
         if (this.filteredCollection) {
-          //1. show the page with this model
+
           this.filteredCollection.showPageWithModel(model);
-          //2. expand new lander row item
+
           model.trigger("view:expand");
         }
       },
-
 
       //handles add campaigns deploy as well so must take empty list
       //needs to be able to take empty list, or more
@@ -137,7 +140,7 @@ define(["app",
             //if not modified and no addActiveCampaign model we just want to add
             //the NEW deployed domains
             if (!addActiveCampaignModel) {
-              if(!deployedDomain.get("id")) {
+              if (!deployedDomain.get("id")) {
                 addDeployedDomain = true;
               }
             }

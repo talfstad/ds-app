@@ -16,7 +16,7 @@ module.exports = function(app, db) {
         if (err) {
           callback(err);
         } else {
-          connection.query("SELECT domain,cloudfront_id FROM domains a JOIN deployed_landers b ON a.id=b.domain_id WHERE b.user_id = ? AND b.lander_id = ?", [user_id, lander_id],
+          connection.query("SELECT a.domain, b.domain_id, a.cloudfront_id FROM domains a JOIN deployed_landers b ON a.id=b.domain_id WHERE b.user_id = ? AND b.lander_id = ?", [user_id, lander_id],
             function(err, dbDomains) {
               if (err) {
                 callback(err);
@@ -27,6 +27,37 @@ module.exports = function(app, db) {
         }
         connection.release();
       });
+    },
+
+    deleteFromLandersWithCampaigns: function(user, lander_id, callback) {
+      var user_id = user.id;
+
+      var removeLanderFromCampaigns = function(callback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          } else {
+            connection.query("DELETE FROM landers_with_campaigns WHERE lander_id = ? AND user_id = ?", [lander_id, user_id],
+              function(err, docs) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false);
+                }
+              });
+          }
+          connection.release();
+        });
+      };
+
+      removeLanderFromCampaigns(function(err) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(false);
+        }
+      });
+
     },
 
     getPagespeedScoresForLander: function(user, lander_id, domain_id, callback) {

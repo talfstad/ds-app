@@ -21,9 +21,7 @@ define(["app",
         },
 
         onRenderCollection: function() {
-          // this.attachHtml = function(collectionView, childView, index) {
-          //   collectionView.$el.prepend(childView.el);
-          // }
+          
         },
 
         triggerSort: function() {
@@ -89,79 +87,6 @@ define(["app",
             me.collection.sortFiltered();
           } else if (sortKey === "deployed") {
             me.collection.comparator = function(a, b) {
-
-              //DEPLOYING
-              //deployed == true, deploying == true
-
-              //DEPLOYED
-              //deployed == true, deploying == false
-
-              //NOT DEPLOYED
-              //deployed == false, deploying == false
-
-              var aDeployed = a.get("deployed");
-              var aDeploying = a.get("deploying");
-              var bDeployed = b.get("deployed");
-              var bDeploying = a.get("deploying");
-
-
-
-              // var aIsDeployed = false;
-              // var aIsDeploying = false;
-              // var bIsDeployed = false;
-              // var bIsDeploying = false;
-
-
-              // if(aDeploying && aDeploying) {
-              //   aIsDeploying = true;
-              // }
-              // if(aDeployed && !aDeploying) {
-              //   aIsDeployed = true;
-              // }
-              // if(bDeploying && bDeploying) {
-              //   bIsDeploying = true;
-              // }
-              // if(bDeployed && !bDeploying) {
-              //   bIsDeployed = true;
-              // }
-
-              // if(aIsDeployed && bIsDeployed) return 0;
-              // if(aIsDeploying && bIsDeploying) return 0;
-              // if(!aIsDeployed && !bIsDeploying) return 0;
-
-              // if(aIsDeployed) {
-              //   if(sortOrder === 'asc') {
-              //     return -1;
-              //   } else {
-              //     return 1;
-              //   }
-              // }
-
-              // if(bIsDeployed) {
-              //   if(sortOrder === 'asc') {
-              //     return 1;
-              //   } else {
-              //     return -1;
-              //   }
-              // }
-
-              // if(aIsDeploying) {
-              //   if(sortOrder === 'asc') {
-              //     return -1;
-              //   } else {
-              //     return 1;
-              //   }
-              // }
-
-              // if(bIsDeploying) {
-              //   if(sortOrder === 'asc') {
-              //     return 1;
-              //   } else {
-              //     return -1;
-              //   }
-              // }
-
-              // return 0;
 
             };
             me.collection.sortFiltered();

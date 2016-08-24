@@ -32,9 +32,12 @@ define(["app",
         },
 
         showDomains: function(domain_id_to_goto_and_expand) {
+          if (domain_id_to_goto_and_expand) {
+            this.childExpandedId = domain_id_to_goto_and_expand;
+          }
+
           //init the controller
           this.initialize();
-
 
           //make layout for landers
           var me = this;
@@ -115,7 +118,7 @@ define(["app",
                   //show empty view
                   me.filteredCollection.showEmpty(true);
                 } else {
-                  //show landersListView
+                  //show domainsListView
                   me.filteredCollection.showEmpty(false);
                 }
               }
@@ -128,6 +131,18 @@ define(["app",
             //this is the pagination pages totals and lander count totals view
             var topbarView = new TopbarView({
               model: me.filteredCollection.state.gui
+            });
+
+            //on child expanded save for re-open on reset
+            domainsListView.on("childview:childExpanded", function(childView, data) {
+              me.childExpandedId = childView.model.get("id");
+            });
+            //on child collapse if is current expanded then reset to null
+            domainsListView.on("childview:childCollapsed", function(childView, data) {
+              var childCollapsedModel = childView.model;
+              if (me.childExpandedId == childCollapsedModel.get("id")) {
+                me.childExpandedId = null;
+              }
             });
 
             me.filteredCollection.on("reset", function(collection) {
@@ -220,7 +235,15 @@ define(["app",
               }
 
               //set topbar totals on reset
-              Landerds.trigger("domains:updateTopbarTotals")
+              Landerds.trigger("domains:updateTopbarTotals");
+
+              if (me.childExpandedId) {
+                //only expand it if its in the current filtered collection
+                var modelToExpand = me.filteredCollection.get(me.childExpandedId);
+                if (modelToExpand) {
+                  modelToExpand.trigger("view:expand");
+                }
+              }
             });
 
 
@@ -253,12 +276,13 @@ define(["app",
               me.filteredCollection.filter(filterVal);
             }
 
-            if (domain_id_to_goto_and_expand) {
-              var domainModelToExpand = me.filteredCollection.original.get(domain_id_to_goto_and_expand)
-              if (domainModelToExpand) {
-                me.expandAndShowRow(domainModelToExpand);
+            if (me.childExpandedId) {
+              var modelToExpand = me.filteredCollection.original.get(me.childExpandedId)
+              if (modelToExpand) {
+                me.expandAndShowRow(modelToExpand);
               }
             }
+
           });
         },
 

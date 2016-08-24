@@ -158,6 +158,8 @@ define(["app",
             });
 
             this.$el.on('hide.bs.collapse', function(e) {
+              
+              me.trigger('childCollapsed');
 
               //close right sidebar if closing all domain accordions
               if ($(e.currentTarget).find("a[data-currently-hovering='true']").length > 0) {
@@ -173,6 +175,8 @@ define(["app",
             this.$el.on('show.bs.collapse', function(e) {
 
               me.reAlignTableHeader();
+
+              me.trigger('childExpanded');
 
               //collapse ALL others so we get an accordian effect !IMPORTANT for design
               $("#landers-collection .collapse").collapse("hide");

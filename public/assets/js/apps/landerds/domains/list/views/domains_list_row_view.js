@@ -162,7 +162,8 @@ define(["app",
             });
 
             this.$el.on('hide.bs.collapse', function(e) {
-
+              me.trigger('childCollapsed');
+              
               //hide the header so it can fade in on next open
               // $(".deployed-landers-header-container").hide();
 
@@ -179,7 +180,8 @@ define(["app",
             });
 
             this.$el.on('show.bs.collapse', function(e) {
-
+              me.trigger('childExpanded');
+              
               me.reAlignTableHeader();
 
               //collapse ALL others so we get an accordian effect !IMPORTANT for design

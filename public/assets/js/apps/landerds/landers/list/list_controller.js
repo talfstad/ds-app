@@ -32,6 +32,10 @@ define(["app",
 
         showLanders: function(lander_id_to_goto_and_expand) {
 
+          if (lander_id_to_goto_and_expand) {
+            this.childExpandedId = lander_id_to_goto_and_expand;
+          }
+
           //init the controller
           this.initialize();
 
@@ -133,6 +137,20 @@ define(["app",
             var topbarView = new TopbarView({
               model: me.filteredCollection.state.gui
             });
+
+            //on child expanded save for re-open on reset
+            landersListView.on("childview:childExpanded", function(childView, data) {
+              me.childExpandedId = childView.model.get("id");
+            });
+            //on child collapse if is current expanded then reset to null
+            landersListView.on("childview:childCollapsed", function(childView, data) {
+              var childCollapsedModel = childView.model;
+              if (me.childExpandedId == childCollapsedModel.get("id")) {
+                me.childExpandedId = null;
+              }
+            });
+
+
 
             me.filteredCollection.original.on("change:modified", function(landerModel) {
 
@@ -252,6 +270,14 @@ define(["app",
 
               //set topbar totals on reset
               Landerds.trigger("landers:updateTopbarTotals")
+
+              if (me.childExpandedId) {
+                //only expand it if its in the current filtered collection
+                var modelToExpand = me.filteredCollection.get(me.childExpandedId);
+                if (modelToExpand) {
+                  modelToExpand.trigger("view:expand");
+                }
+              }
             });
 
 
@@ -284,10 +310,10 @@ define(["app",
               me.filteredCollection.filter(filterVal);
             }
 
-            if (lander_id_to_goto_and_expand) {
-              var landerModelToExpand = me.filteredCollection.original.get(lander_id_to_goto_and_expand)
-              if (landerModelToExpand) {
-                me.expandAndShowRow(landerModelToExpand);
+            if (me.childExpandedId) {
+              var modelToExpand = me.filteredCollection.original.get(me.childExpandedId)
+              if (modelToExpand) {
+                me.expandAndShowRow(modelToExpand);
               }
             }
           });

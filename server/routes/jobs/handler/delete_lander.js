@@ -14,13 +14,13 @@ module.exports = function(app, db) {
         callback(err);
       } else {
 
-        //register the job
+        //register the delete job
         db.jobs.registerJob(user, job, function(registeredJobAttributes) {
 
           //start the job
           WorkerController.startJob(registeredJobAttributes.action, user, registeredJobAttributes);
 
-          callback(false, [job]);
+          callback(false, [registeredJobAttributes]);
         });
       }
     });
