@@ -76,7 +76,7 @@ module.exports = function(app, db) {
                             cloudfront_id: deployedDomain.cloudfront_id,
                             deploy_status: "undeploying"
                           };
-                          db.jobs.registerJob(user, job, function(registeredUndeployJob) {
+                          db.jobs.registerJob(user, job, function(err, registeredUndeployJob) {
 
                             undeployJobs.push(registeredUndeployJob);
 

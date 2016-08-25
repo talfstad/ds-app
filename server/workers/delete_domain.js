@@ -40,7 +40,7 @@ module.exports = function(app, db) {
                     deploy_status: "undeploying"
                   };
 
-                  db.jobs.registerJob(user, job, function(registeredUndeployJob) {
+                  db.jobs.registerJob(user, job, function(err, registeredUndeployJob) {
 
                     undeployJobs.push(registeredUndeployJob);
 
@@ -61,54 +61,59 @@ module.exports = function(app, db) {
               } else {
                 app.log("registered undeploy jobs for delete domain", "debug");
 
-                db.domains.getDomain(user, domain_id, function(err, domain) {
+                db.domains.getSharedDomainInfo(domain_id, aws_root_bucket, function(err, domain) {
                   if (err) {
                     callback(err, [myJobId]);
                   } else {
+
                     var hostedZoneId = domain.hosted_zone_id;
                     var domainName = domain.domain;
                     var cloudfront_id = domain.cloudfront_id;
 
                     //  . delete the hosted zone for the domain
                     db.aws.route53.deleteHostedZone(credentials, hostedZoneId, function(err) {
-                      if (err) {
-                        callback(err, [myJobId]);
-                      } else {
 
-                        app.log("deleted hosted zone for delete domain", "debug");
+                      app.log("deleted hosted zone for delete domain", "debug");
 
-                        //delete the s3_folder_folder_name
-                        var deleteDomainsS3Folder = function(callback) {
-                          var folderPathToDelete = "domains/" + domainName + "/";
+                      //delete the s3_folder_folder_name
+                      var deleteDomainsS3Folder = function(callback) {
+                        var folderPathToDelete = "domains/" + domainName + "/";
 
-                          app.log("Delete DOMAIN job : -- : trying to delete path: " + folderPathToDelete, "debug");
+                        app.log("Delete DOMAIN job : -- : trying to delete path: " + folderPathToDelete, "debug");
 
-                          db.aws.s3.deleteDir(credentials, aws_root_bucket, folderPathToDelete, function(err) {
-                            if (err) {
-                              callback({ code: "CouldNotDeleteS3Folder" });
-                            } else {
-                              callback(false);
-                            }
-                          });
-                        };
-
-                        deleteDomainsS3Folder(function(err) {
+                        db.aws.s3.deleteDir(credentials, aws_root_bucket, folderPathToDelete, function(err) {
                           if (err) {
-                            callback(err, [myJobId]);
+                            callback({ code: "CouldNotDeleteS3Folder" });
                           } else {
-                            app.log("deleted domain s3 folder for delete domain", "debug");
+                            callback(false);
+                          }
+                        });
+                      };
 
-                            db.aws.cloudfront.deleteDistribution(credentials, cloudfront_id, function(err) {
-                              if (err) {
-                                callback(err, [myJobId]);
-                              } else {
+                      deleteDomainsS3Folder(function(err) {
+                        if (err) {
+                          callback(err, [myJobId]);
+                        } else {
+                          app.log("deleted domain s3 folder for delete domain", "debug");
+
+                          db.jobs.updateDeployStatusForJobs(user, undeployJobs, "undeploy_invalidating", function(err) {
+                            if (err) {
+                              callback(err, [myJobId]);
+                            } else {
+                              db.aws.cloudfront.deleteDistribution(credentials, cloudfront_id, function(err) {
+
                                 app.log("deleted CF distro for delete domain " + cloudfront_id, "debug");
 
                                 db.domains.deleteDomain(user, domain_id, function(err) {
                                   if (err) {
                                     callback(err, [myJobId]);
                                   } else {
-                                    db.jobs.finishedJobSuccessfully(user, undeployJobs, function(err) {
+                                    var undeployJobIds = [];
+                                    _.each(undeployJobs, function(undeployJob) {
+                                      undeployJobIds.push(undeployJob.id);
+                                    });
+
+                                    db.jobs.finishedJobSuccessfully(user, undeployJobIds, function(err) {
                                       if (err) {
                                         callback(err, [myJobId]);
                                       } else {
@@ -117,12 +122,13 @@ module.exports = function(app, db) {
                                     });
                                   }
                                 });
-                                
-                              }
-                            });
-                          }
-                        });
-                      }
+                              });
+                            }
+                          });
+
+                        }
+                      });
+
                     });
                   }
                 });

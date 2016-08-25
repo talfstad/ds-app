@@ -15,7 +15,7 @@ module.exports = function(app, db) {
       } else {
 
         //register the delete job
-        db.jobs.registerJob(user, job, function(registeredJobAttributes) {
+        db.jobs.registerJob(user, job, function(err, registeredJobAttributes) {
 
           //start the job
           WorkerController.startJob(registeredJobAttributes.action, user, registeredJobAttributes);

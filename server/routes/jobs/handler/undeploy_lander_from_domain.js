@@ -17,7 +17,7 @@ module.exports = function(app, db) {
         var firstJobAttributes = list.shift();
         var finalList = [];
 
-        db.jobs.registerJob(user, firstJobAttributes, function(registeredMasterJobAttributes) {
+        db.jobs.registerJob(user, firstJobAttributes, function(err, registeredMasterJobAttributes) {
           //start the first job (master job)
 
           WorkerController.startJob(registeredMasterJobAttributes.action, user, { job: registeredMasterJobAttributes });
@@ -32,7 +32,7 @@ module.exports = function(app, db) {
 
               list[i].master_job_id = masterJobId;
 
-              db.jobs.registerJob(user, list[i], function(registeredSlaveJobAttributes) {
+              db.jobs.registerJob(user, list[i], function(err, registeredSlaveJobAttributes) {
 
                 finalList.push(registeredSlaveJobAttributes);
 

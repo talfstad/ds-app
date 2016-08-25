@@ -128,7 +128,7 @@ module.exports = function(app, db) {
                       var firstJobAttributes = list.shift();
                       var finalList = [];
 
-                      db.jobs.registerJob(user, firstJobAttributes, function(registeredMasterJobAttributes) {
+                      db.jobs.registerJob(user, firstJobAttributes, function(err, registeredMasterJobAttributes) {
 
                         //start the first job (master job)
                         registeredMasterJobAttributes.landerData = landerData;
@@ -146,7 +146,7 @@ module.exports = function(app, db) {
 
                             list[i].master_job_id = masterJobId;
 
-                            db.jobs.registerJob(user, list[i], function(registeredSlaveJobAttributes) {
+                            db.jobs.registerJob(user, list[i], function(err, registeredSlaveJobAttributes) {
 
                               registeredSlaveJobAttributes.landerData = landerData;
                               finalList.push(registeredSlaveJobAttributes);
@@ -184,7 +184,7 @@ module.exports = function(app, db) {
                           active_campaign_id: active_campaign_id
                         };
 
-                        db.jobs.registerJob(user, saveLanderJobAttributes, function(registeredJobAttributes) {
+                        db.jobs.registerJob(user, saveLanderJobAttributes, function(err, registeredJobAttributes) {
                           callback(false, [registeredJobAttributes]);
                           WorkerController.startJob(registeredJobAttributes.action, user, { job: registeredJobAttributes, lander: landerData });
                         });

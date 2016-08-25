@@ -14,7 +14,7 @@ module.exports = function(app, db) {
       var checkJobExternalInterrupt = function() {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
           } else {
             connection.query("SELECT error, error_code FROM jobs WHERE user_id = ? AND id = ?", [user_id, job_id],
               function(err, docs) {
@@ -57,7 +57,7 @@ module.exports = function(app, db) {
 
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
           } else {
             connection.query(query, arr,
               function(err, docs) {
@@ -90,7 +90,7 @@ module.exports = function(app, db) {
 
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
           } else {
             connection.query(query, arr,
               function(err, docs) {
@@ -131,7 +131,7 @@ module.exports = function(app, db) {
 
           db.getConnection(function(err, connection) {
             if (err) {
-              console.log(err);
+              callback(err);
             } else {
               connection.query(query, arr,
                 function(err, docs) {
@@ -175,7 +175,7 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
           connection.query("SELECT * FROM jobs WHERE user_id = ? AND campaign_id = ? AND action <> ? AND processing = ? AND (done IS NULL OR done = ?);", [user_id, campaign_id, "deleteCampaign", 1, 0],
             function(err, docs) {
@@ -195,7 +195,7 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
           connection.query("UPDATE jobs set staging_path = ? WHERE id = ?;", [staging_path, job_id],
             function(err, docs) {
@@ -211,7 +211,7 @@ module.exports = function(app, db) {
     },
 
     //returns all jobs currently processing for user with specific domain and lander ids
-    getAllProcessingForLanderDomain: function(user, attr, successCallback) {
+    getAllProcessingForLanderDomain: function(user, attr, callback) {
       var user_id = user.id;
       var lander_id = attr.lander_id;
       var domain_id = attr.domain_id;
@@ -219,17 +219,17 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
 
           connection.query("SELECT * FROM jobs WHERE user_id = ? AND domain_id = ? AND lander_id = ? AND processing = ? AND (done IS NULL OR done = ?)", [user_id, domain_id, lander_id, true, 0],
 
             function(err, docs) {
               if (err) {
-                console.log(err);
+                callback(err);
               } else {
 
-                successCallback(docs);
+                callback(false, docs);
 
               }
               connection.release();
@@ -244,7 +244,7 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
           var arr = [masterJobId, false, user_id];
           connection.query("SELECT * FROM jobs WHERE master_job_id = ? AND done = ? AND user_id = ?", arr,
@@ -266,7 +266,7 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
 
           connection.query("SELECT * FROM jobs WHERE user_id = ? AND id = ?", [user_id, id],
@@ -283,7 +283,7 @@ module.exports = function(app, db) {
 
     },
 
-    getAllNotDoneForLanderDomain: function(user, attr, successCallback) {
+    getAllNotDoneForLanderDomain: function(user, attr, callback) {
       var user_id = user.id;
       var lander_id = attr.lander_id;
       var domain_id = attr.domain_id;
@@ -291,18 +291,16 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
 
           connection.query("SELECT * FROM jobs WHERE user_id = ? AND domain_id = ? AND lander_id = ? AND (done IS NULL OR done = ?)", [user_id, domain_id, lander_id, 0],
 
             function(err, docs) {
               if (err) {
-                console.log(err);
+                callback(err);
               } else {
-
-                successCallback(docs);
-
+                callback(false, docs);
               }
               connection.release();
             });
@@ -311,7 +309,7 @@ module.exports = function(app, db) {
 
     },
 
-    registerJob: function(user, modelAttributes, successCallback, errorCallback) {
+    registerJob: function(user, modelAttributes, callback) {
       var user_id = user.id;
 
       //set processing true to start processing on response
@@ -319,17 +317,16 @@ module.exports = function(app, db) {
       //param order: working_node_id, action, alternate_action, processing, lander_id, domain_id, campaign_id, user_id
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
           connection.query("CALL register_job(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [modelAttributes.deploy_status, app.config.id, modelAttributes.action, modelAttributes.alternate_action, true, modelAttributes.lander_id, modelAttributes.domain_id, modelAttributes.campaign_id, user_id, modelAttributes.master_job_id],
             function(err, docs) {
               if (err) {
-                console.log(err);
-                errorCallback("Error registering new job in DB call");
+                callback(err);
               } else {
                 modelAttributes.created_on = docs[1][0]["created_on"];
                 modelAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
-                successCallback(modelAttributes);
+                callback(false, modelAttributes);
               }
               connection.release();
             });
@@ -337,7 +334,7 @@ module.exports = function(app, db) {
       });
     },
 
-    finishedJobSuccessfully: function(user, finishedJobs, successCallback, errorCallback) {
+    finishedJobSuccessfully: function(user, finishedJobs, callback) {
       var user_id = user.id;
 
       if (finishedJobs.length > 0) {
@@ -363,21 +360,21 @@ module.exports = function(app, db) {
 
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
+          } else {
+            connection.query(updateSql, finishedJobsValues, function(err, docs) {
+              if (err) {
+                callback(err);
+              } else {
+                //processing key updated above
+                callback();
+              }
+            });
           }
-          connection.query(updateSql, finishedJobsValues, function(err, docs) {
-            if (err) {
-              console.log(err);
-              errorCallback("Error finishing processing on job in DB call")
-            } else {
-              //processing key updated above
-              successCallback();
-            }
-            connection.release();
-          });
+          connection.release();
         });
       } else {
-        successCallback();
+        callback();
       }
     },
 
@@ -400,10 +397,30 @@ module.exports = function(app, db) {
       });
     },
 
+
+    updateDeployStatusForJobs: function(user, jobs, deployStatus, callback) {
+      var user_id = user.id;
+      var me = this;
+
+      if (jobs.length > 0) {
+        var asyncIndex = 0;
+        _.each(jobs, function(job) {
+          me.updateDeployStatus(user, job.id, deployStatus, function(err) {
+            if (++asyncIndex == jobs.length) {
+              callback(false);
+            }
+          });
+        });
+      } else {
+        callback(false);
+      }
+
+    },
+
     setErrorAndStop: function(code, errorJobId, callback) {
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         }
         connection.query("UPDATE jobs SET error = ?, error_code = ? WHERE id = ?", [true, code, errorJobId], function(err, docs) {
           if (err) {
@@ -442,7 +459,7 @@ module.exports = function(app, db) {
 
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
           }
           connection.query(updateSql, finishedJobsValues, function(err, docs) {
             if (err) {

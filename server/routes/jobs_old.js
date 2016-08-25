@@ -144,7 +144,7 @@ module.exports = function(app, passport) {
                           var firstJobAttributes = list.shift();
                           var finalList = [];
 
-                          db.jobs.registerJob(user, firstJobAttributes, function(registeredMasterJobAttributes) {
+                          db.jobs.registerJob(user, firstJobAttributes, function(err, registeredMasterJobAttributes) {
 
                             //start the first job (master job)
                             registeredMasterJobAttributes.landerData = landerData;
@@ -162,7 +162,7 @@ module.exports = function(app, passport) {
 
                                 list[i].master_job_id = masterJobId;
 
-                                db.jobs.registerJob(user, list[i], function(registeredSlaveJobAttributes) {
+                                db.jobs.registerJob(user, list[i], function(err, registeredSlaveJobAttributes) {
 
                                   registeredSlaveJobAttributes.landerData = landerData;
                                   finalList.push(registeredSlaveJobAttributes);
@@ -200,7 +200,7 @@ module.exports = function(app, passport) {
                               active_campaign_id: active_campaign_id
                             };
 
-                            db.jobs.registerJob(user, saveLanderJobAttributes, function(registeredJobAttributes) {
+                            db.jobs.registerJob(user, saveLanderJobAttributes, function(err, registeredJobAttributes) {
                               res.json([registeredJobAttributes]);
                               WorkerController.startJob(registeredJobAttributes.action, user, { job: registeredJobAttributes, lander: landerData });
                             });
@@ -235,7 +235,7 @@ module.exports = function(app, passport) {
             var firstJobAttributes = list.shift();
             var finalList = [];
 
-            db.jobs.registerJob(user, firstJobAttributes, function(registeredMasterJobAttributes) {
+            db.jobs.registerJob(user, firstJobAttributes, function(err, registeredMasterJobAttributes) {
               //start the first job (master job)
 
               WorkerController.startJob(registeredMasterJobAttributes.action, user, { job: registeredMasterJobAttributes });
@@ -250,7 +250,7 @@ module.exports = function(app, passport) {
 
                   list[i].master_job_id = masterJobId;
 
-                  db.jobs.registerJob(user, list[i], function(registeredSlaveJobAttributes) {
+                  db.jobs.registerJob(user, list[i], function(err, registeredSlaveJobAttributes) {
 
                     finalList.push(registeredSlaveJobAttributes);
 
@@ -271,7 +271,7 @@ module.exports = function(app, passport) {
 
       } else {
 
-        db.jobs.registerJob(user, jobModelAttributes, function(registeredJobAttributes) {
+        db.jobs.registerJob(user, jobModelAttributes, function(err, registeredJobAttributes) {
           if (registeredJobAttributes.action === "addNewLander") {
             //remove the stuff we dont want
             delete registeredJobAttributes.landerFile;

@@ -170,7 +170,8 @@ module.exports = function(app, db) {
     },
 
     getSharedDomainInfo: function(domain_id, aws_root_bucket, callback) {
-      console.log("domain_id: " + domain_id + " aws_root_bucket: " + aws_root_bucket)
+      app.log("domain_id: " + domain_id + " aws_root_bucket: " + aws_root_bucket, "debug");
+      
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
