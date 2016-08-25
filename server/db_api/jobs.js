@@ -379,13 +379,12 @@ module.exports = function(app, db) {
     },
 
     updateDeployStatus: function(user, jobId, deployStatus, callback) {
-      var user_id = user.id;
 
       db.getConnection(function(err, connection) {
         if (err) {
           callback(err);
         } else {
-          connection.query("UPDATE jobs SET deploy_status = ? WHERE id = ? AND user_id = ?", [deployStatus, jobId, user_id], function(err, docs) {
+          connection.query("UPDATE jobs SET deploy_status = ? WHERE id = ?", [deployStatus, jobId], function(err, docs) {
             if (err) {
               callback(err);
             } else {

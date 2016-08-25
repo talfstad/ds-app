@@ -64,8 +64,11 @@ module.exports = function(app, db) {
 
     } else if (action == "deleteLander") {
 
+      doneValidating();
 
 
+    } else {
+      doneValidating();
     }
 
 

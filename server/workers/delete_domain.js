@@ -20,7 +20,6 @@ module.exports = function(app, db) {
       if (err) {
         callback(err, [myJobId]);
       } else {
-        console.log("got here1")
         db.domains.getAllLandersDeployedOnSharedDomain(aws_root_bucket, domain_id, function(err, dbLanders) {
           if (err) {
             callback(err, [myJobId]);
@@ -33,16 +32,17 @@ module.exports = function(app, db) {
               //(will all be worked by this job and finished by this job)
               if (dbLanders.length > 0) {
                 var asyncIndex = 0;
-                _.each(dbLanders, function(deployedLander) {
+                _.each(dbLanders, function(lander) {
+
                   var job = {
-                    lander_id: deployedLander.lander_id,
+                    lander_id: lander.id,
                     domain_id: domain_id,
                     action: "undeployLanderFromDomain",
                     deploy_status: "undeploying"
                   };
 
-                  var dbLanderUser = {id: deployedLander.user_id};
-                  app.log("db lander user: " + deployedLander.id);
+                  var dbLanderUser = {id: lander.user_id};
+                  app.log("db lander user: " + dbLanderUser.id, "debug");
                   
                   db.jobs.registerJob(dbLanderUser, job, function(err, registeredUndeployJob) {
 
