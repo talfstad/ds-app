@@ -16,11 +16,12 @@ module.exports = function(app, db) {
 
     var undeployJobs = [];
 
-    db.domains.deleteFromCampaignsWithDomains(user, domain_id, function(err) {
+    db.domains.deleteFromCampaignsWithSharedDomains(domain_id, function(err) {
       if (err) {
         callback(err, [myJobId]);
       } else {
-        db.domains.getAllLandersDeployedOnDomain(user, domain_id, function(err, dbLanders) {
+        console.log("got here1")
+        db.domains.getAllLandersDeployedOnSharedDomain(aws_root_bucket, domain_id, function(err, dbLanders) {
           if (err) {
             callback(err, [myJobId]);
           } else {
@@ -40,7 +41,10 @@ module.exports = function(app, db) {
                     deploy_status: "undeploying"
                   };
 
-                  db.jobs.registerJob(user, job, function(err, registeredUndeployJob) {
+                  var dbLanderUser = {id: deployedLander.user_id};
+                  app.log("db lander user: " + deployedLander.id);
+                  
+                  db.jobs.registerJob(dbLanderUser, job, function(err, registeredUndeployJob) {
 
                     undeployJobs.push(registeredUndeployJob);
 
@@ -104,7 +108,7 @@ module.exports = function(app, db) {
 
                                 app.log("deleted CF distro for delete domain " + cloudfront_id, "debug");
 
-                                db.domains.deleteDomain(user, domain_id, function(err) {
+                                db.domains.deleteSharedDomain(aws_root_bucket, domain_id, function(err) {
                                   if (err) {
                                     callback(err, [myJobId]);
                                   } else {

@@ -38,7 +38,7 @@ define(["app",
           
           DeployedRowBaseView.prototype.onBeforeRender.apply(this);
 
-          var activeCampaignCollection = this.model.get("activeCampaignCollection");
+          var activeCampaignCollection = this.model.get("activeCampaigns");
 
           var hasActiveCampaigns = false;
           if (activeCampaignCollection.length > 0) {

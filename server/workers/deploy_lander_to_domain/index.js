@@ -211,16 +211,14 @@ module.exports = function(app, db) {
                     } else {
                       //- create invalidation for this deployment
                       var invalidationPath = "/" + deployment_folder_name + "/*";
-                      console.log("invalidation path: " + invalidationPath);
+                      app.log("invalidation path: " + invalidationPath, "debug");
                       db.aws.cloudfront.createInvalidation(credentials, cloudfront_id, invalidationPath, function(err, invalidationData) {
                         if (err) {
-                          console.log(err);
                           callback({ code: "CouldNotCreateInvalidation" });
                         } else {
-                          console.log("invalidationData: " + JSON.stringify(invalidationData));
+                          app.log("invalidationData: " + JSON.stringify(invalidationData), "debug");
 
-                          var invalidation_id = invalidationData.Invalidation.Id;
-                          console.log("invalidation id: " + invalidation_id);
+                          var invalidation_id = invalidationData.Invalidation.Id;                          
                           db.jobs.updateDeployStatus(user, myJobId, "invalidating", function(err) {
                             if (err) {
                               callback({ code: "CouldNotUpdateDeployStatus" });

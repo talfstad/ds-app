@@ -8,7 +8,7 @@ module.exports = function(app, db) {
     getActiveJobs: function(updaterJobsAttributes, user, callback) {
 
       var user_id = user.id;
-
+      var aws_root_bucket = user.aws_root_bucket;
 
       var addExtraToJob = function(addExtraCode, activeJob, callback) {
 
@@ -83,45 +83,55 @@ module.exports = function(app, db) {
         if (err) {
           console.log(err);
         } else {
-          connection.query("SELECT * FROM jobs WHERE processing = ? AND user_id = ?", [true, user.id], function(err, activeJobsArr) {
+          connection.query("SELECT * FROM jobs WHERE processing = ? AND user_id = ?", [true, user.id], function(err, userActiveJobsArr) {
             if (err) {
               callback(err);
             } else {
+              //get shared domain level jobs (not deploys undeploys)
+              connection.query("SELECT a.* FROM jobs a JOIN domains b ON a.domain_id = b.id WHERE a.processing = ? AND a.action = ? AND b.aws_root_bucket = ?", [true, "deleteDomain", aws_root_bucket], function(err, activeSharedJobsArr) {
+                if (err) {
+                  callback(err);
+                } else {
 
-              //loop new active jobs to detect if job has changed (deploy_status is different on new db selection)
-              //if changed, get the extra attributes to return and put them on the model
-              var asyncIndex = 0;
-              var finalActiveJobs = [];
-              if (activeJobsArr.length > 0) {
-                for (var i = 0; i < activeJobsArr.length; i++) {
-                  var oldDeployStatus = false;
-                  for (var j = 0; j < updaterJobsAttributes.length; j++) {
-                    if (activeJobsArr[i].id == updaterJobsAttributes[j].id) {
-                      if (activeJobsArr[i].deploy_status != updaterJobsAttributes[j].deploy_status) {
-                        oldDeployStatus = updaterJobsAttributes[j].deploy_status;
+                  var activeJobsArr = userActiveJobsArr.concat(activeSharedJobsArr);
+
+                  //loop new active jobs to detect if job has changed (deploy_status is different on new db selection)
+                  //if changed, get the extra attributes to return and put them on the model
+                  var asyncIndex = 0;
+                  var finalActiveJobs = [];
+                  if (activeJobsArr.length > 0) {
+                    for (var i = 0; i < activeJobsArr.length; i++) {
+                      var oldDeployStatus = false;
+                      for (var j = 0; j < updaterJobsAttributes.length; j++) {
+                        if (activeJobsArr[i].id == updaterJobsAttributes[j].id) {
+                          if (activeJobsArr[i].deploy_status != updaterJobsAttributes[j].deploy_status) {
+                            oldDeployStatus = updaterJobsAttributes[j].deploy_status;
+                          }
+                        }
                       }
+
+                      getExtraForJob(oldDeployStatus, activeJobsArr[i], function(err, activeJob) {
+                        if (err) {
+                          callback(err);
+                        } else {
+
+                          finalActiveJobs.push(activeJob);
+
+                          if (++asyncIndex == activeJobsArr.length) {
+
+                            callback(false, finalActiveJobs);
+
+                          }
+
+                        }
+                      });
                     }
+                  } else {
+                    callback(false, []);
                   }
 
-                  getExtraForJob(oldDeployStatus, activeJobsArr[i], function(err, activeJob) {
-                    if (err) {
-                      callback(err);
-                    } else {
-
-                      finalActiveJobs.push(activeJob);
-
-                      if (++asyncIndex == activeJobsArr.length) {
-
-                        callback(false, finalActiveJobs);
-
-                      }
-
-                    }
-                  });
                 }
-              } else {
-                callback(false, []);
-              }
+              });
 
             }
             connection.release();

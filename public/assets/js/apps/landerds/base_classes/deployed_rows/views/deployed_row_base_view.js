@@ -133,12 +133,11 @@ define(["app",
 
       onBeforeRender: function() {
         urlEndpoints = this.model.get("urlEndpoints");
-        var urlEndpointsJSON;
+        var urlEndpointsJSON = [];
         if (urlEndpoints) {
           urlEndpointsJSON = urlEndpoints.toJSON();
-        } else {
-          urlEndpointsJSON = [];
         }
+        
         this.model.set("urlEndpointsJSON", urlEndpointsJSON);
 
         var deployStatus = this.model.get("deploy_status");
@@ -159,7 +158,7 @@ define(["app",
         } else if (deployStatus === "redeploying") {
           this.model.set("deploy_status_gui", "<strong>REDEPLOYING</strong>");
         }
- 
+
       },
 
       onRender: function() {

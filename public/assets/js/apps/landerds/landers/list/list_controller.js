@@ -203,7 +203,7 @@ define(["app",
 
                   var deployedDomainsCollection = landerView.model.get("deployedDomains");
 
-                  deployedDomainsCollection.activeCampaignCollection = activeCampaignsCollection;
+                  deployedDomainsCollection.activeCampaigns = activeCampaignsCollection;
                   deployedDomainsCollection.urlEndpoints = landerView.model.get("urlEndpoints");
 
                   var landerViewDeploymentFolderName = landerView.model.get("deployment_folder_name");

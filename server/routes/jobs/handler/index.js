@@ -2,7 +2,7 @@ module.exports = function(app, db) {
 
   var module = {};
 
-  module.validate = require('../validate')(app, db);
+  module.validate = require('./validate')(app, db);
 
   module.deployLanderToDomain = require('./deploy_lander_to_domain')(app, db);
 

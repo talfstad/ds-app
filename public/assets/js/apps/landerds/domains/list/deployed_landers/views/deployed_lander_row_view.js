@@ -46,21 +46,26 @@ define(["app",
 
           DeployedRowBaseView.prototype.onBeforeRender.apply(this);
 
-          var activeCampaignCollection = this.model.get("activeCampaignCollection");
+          var activeCampaignCollection = this.model.get("activeCampaigns");
 
-          activeCampaignCollection.each(function(campaign) {
+          var hasActiveCampaigns = false;
+          // if (activeCampaignCollection.length > 0) {
+          //   activeCampaignCollection.each(function(campaign) {
 
-            var deployedLanders = campaign.get('deployedLanders');
+          //     var campaignLanders = campaign.get('landers');
 
-            var landerId = me.model.get("lander_id");
+          //     var landerId = me.model.get("lander_id");
 
-            if (deployedLanders.find(function(m) {
-                var id = m.lander_id || m.id;
-                return id == landerId
-              })) {
-              me.model.set("hasActiveCampaigns", true);
-            }
-          });
+          //     if (campaignLanders.find(function(m) {
+          //         var id = m.lander_id || m.id;
+          //         return id == landerId;
+          //       })) {
+          //       hasActiveCampaigns = true;
+          //     }
+          //   });
+          // }
+
+          me.model.set("hasActiveCampaigns", hasActiveCampaigns);
         },
         
         onRender: function() {

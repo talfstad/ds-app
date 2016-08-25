@@ -13,7 +13,7 @@ module.exports = function(app, passport) {
     var jobModelAttributes = req.body;
 
     //validate job domain_id and lander_id
-    handler.validate.allJobs(jobModelAttributes, function(err) {
+    handler.validate.allJobs(user, jobModelAttributes, function(err) {
       if (err) {
         json.res(err);
       } else {

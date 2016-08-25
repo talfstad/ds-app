@@ -47,7 +47,7 @@ OptionSettings:
     InstanceType: m4.large
     EC2KeyName: BuildcaveKeyPair
   aws:autoscaling:asg:
-    MinSize: '4'
+    MinSize: '2'
     MaxSize: '4'
   aws:autoscaling:updatepolicy:rollingupdate:
     RollingUpdateType: Health

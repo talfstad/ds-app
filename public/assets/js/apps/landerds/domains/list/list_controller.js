@@ -199,7 +199,7 @@ define(["app",
                   //set the domain for child views
                   deployedLandersCollection.domain = domainView.model.get("domain");
                   deployedLandersCollection.domain_id = domainView.model.get("id");
-                  deployedLandersCollection.activeCampaignCollection = activeCampaignsCollection;
+                  deployedLandersCollection.activeCampaigns = activeCampaignsCollection;
 
                   var deployedLandersView = new DeployedLandersView({
                     collection: deployedLandersCollection

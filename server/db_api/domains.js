@@ -4,6 +4,69 @@ module.exports = function(app, db) {
 
   var module = _.extend(baseDeployedLander, {
 
+    getAllLandersDeployedOnSharedDomain: function(aws_root_bucket, domain_id, callback) {
+
+      var getTheLanders = function(callback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          } else {
+            connection.query("SELECT a.* FROM landers a JOIN deployed_landers b ON a.id = b.lander_id JOIN domains c ON b.domain_id = c.id WHERE b.domain_id = ? AND c.aws_root_bucket = ?", [domain_id, aws_root_bucket],
+              function(err, dbLanders) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false, dbLanders);
+                }
+              });
+          }
+          connection.release();
+        });
+      };
+
+      getTheLanders(function(err, dbLanders) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(false, dbLanders);
+        }
+      });
+    },
+
+    isDuplicateDeleteDomainJob: function(domain_id, callback) {
+
+      var duplicateJobTest = function(callback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          } else {
+            console.log("domain id: " + domain_id);
+
+            connection.query("SELECT * FROM jobs WHERE domain_id = ? AND processing = ? AND action = ?", [domain_id, true, "deleteDomain"],
+              function(err, dbDuplicates) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false, dbDuplicates);
+                }
+              });
+          }
+          connection.release();
+        });
+      };
+
+      duplicateJobTest(function(err, dbDuplicates) {
+        if (err) {
+          callback(err);
+        } else {
+          if (dbDuplicates.length > 0) {
+            callback(false, true);
+          } else {
+            callback(false, false);
+          }
+        }
+      });
+    },
 
     getAllLandersDeployedOnDomain: function(user, domain_id, callback) {
       var user_id = user.id;
@@ -31,6 +94,35 @@ module.exports = function(app, db) {
           callback(err);
         } else {
           callback(false, dbLanders);
+        }
+      });
+    },
+
+    deleteFromCampaignsWithSharedDomains: function(domain_id, callback) {
+
+      var removeDomainFromCampaigns = function(callback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          } else {
+            connection.query("DELETE FROM campaigns_with_domains WHERE domain_id = ?", [domain_id],
+              function(err, docs) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false);
+                }
+              });
+          }
+          connection.release();
+        });
+      };
+
+      removeDomainFromCampaigns(function(err) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(false);
         }
       });
     },
@@ -171,7 +263,7 @@ module.exports = function(app, db) {
 
     getSharedDomainInfo: function(domain_id, aws_root_bucket, callback) {
       app.log("domain_id: " + domain_id + " aws_root_bucket: " + aws_root_bucket, "debug");
-      
+
       db.getConnection(function(err, connection) {
         if (err) {
           console.log(err);
@@ -277,11 +369,13 @@ module.exports = function(app, db) {
       var getActiveJobsForDomain = function(domain, callback) {
         //get all jobs attached to domain and make sure only select those. list is:
         // 1. deleteDomain
+        var aws_root_bucket = domain.aws_root_bucket;
+
         db.getConnection(function(err, connection) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT id,action,processing,deploy_status,lander_id,domain_id,campaign_id,done,error,created_on FROM jobs WHERE action = ? AND user_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?)", ["deleteDomain", user_id, domain.id, true, 0],
+            connection.query("SELECT a.id,a.action,a.processing,a.deploy_status,a.lander_id,a.domain_id,a.campaign_id,a.done,a.error,a.created_on FROM jobs a JOIN domains b ON a.domain_id = b.id WHERE a.action = ? AND b.aws_root_bucket = ? AND a.domain_id = ? AND a.processing = ? AND (a.done IS NULL OR a.done = ?)", ["deleteDomain", aws_root_bucket, domain.id, true, false],
               function(err, dbActiveJobs) {
                 if (err) {
                   callback(err);
@@ -361,7 +455,7 @@ module.exports = function(app, db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT id,domain,nameservers,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM domains WHERE aws_root_bucket = ?", [rootBucket], function(err, dbdomains) {
+          connection.query("SELECT id,domain,nameservers,aws_root_bucket,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM domains WHERE aws_root_bucket = ?", [rootBucket], function(err, dbdomains) {
             if (err) {
               callback(err);
             } else {
@@ -412,6 +506,28 @@ module.exports = function(app, db) {
             function(err, docs) {
               if (err) {
                 callback(err);
+              } else {
+                callback(false, docs);
+              }
+              connection.release();
+            });
+        }
+      });
+
+    },
+
+    deleteSharedDomain: function(aws_root_bucket, domain_id, callback) {
+      //update model stuff into domains where id= model.id
+      db.getConnection(function(err, connection) {
+        if (err) {
+          callback(err);
+        } else {
+          connection.query("DELETE FROM domains WHERE aws_root_bucket = ? AND id = ?", [aws_root_bucket, domain_id],
+            function(err, docs) {
+              if (err) {
+                callback({
+                  code: "Error deleting domain from db."
+                });
               } else {
                 callback(false, docs);
               }
