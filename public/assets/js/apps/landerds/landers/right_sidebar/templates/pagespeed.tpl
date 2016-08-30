@@ -25,7 +25,7 @@
 <% }  else { %>
 
 <div style="width: 250px; height: 50px; margin: 25px 30px 0">
-<p>No Current Endpoint Selected</p>
+<p>No Endpoint Selected</p>
 </div>
 
 <% } %>

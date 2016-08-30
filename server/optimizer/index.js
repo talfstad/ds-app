@@ -392,10 +392,29 @@ module.exports = function(app, db) {
 
               readSrcFile(src, link, function(err, link, fileData) {
                 //returns fileData only if there was a src attribute
+                var inlinedJs;
+
                 if (fileData) {
-                  $(tag).text(fileData);
+                  inlinedJs = fileData;
                   $(tag).removeAttr("src"); //remove src attr since we're inlining
+                } else {
+                  inlinedJs = $(tag).text();
                 }
+
+                console.log("\n\n\n\ninlined JS: " + inlinedJs + "\n\n\n\n");
+
+                //now compress:
+                var compressedJs = {};
+                try {
+                  compressedJs = UglifyJS.minify(inlinedJs, { fromString: true });
+                } catch (e) {
+                  //use the regular
+                  compressedJs.code = inlinedJs;
+                }
+
+                console.log("\n\n\n\compressed JS: " + JSON.stringify(compressedJs.code) + "\n\n\n\n");
+
+                $(tag).text(compressedJs.code);
 
                 if (++asyncIndex == scriptTags.length) {
                   callback(false);
@@ -411,7 +430,7 @@ module.exports = function(app, db) {
         inlineAllScripts(function(err) {
           fs.writeFile(htmlFilePath, $.html(), function(err) {
             if (err) {
-                callback({ code: "CouldNotWriteFinishedOptimizedFile", err: err });
+              callback({ code: "CouldNotWriteFinishedOptimizedFile", err: err });
             } else {
               callback(false);
             }
