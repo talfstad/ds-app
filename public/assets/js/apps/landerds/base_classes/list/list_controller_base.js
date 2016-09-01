@@ -22,6 +22,7 @@ define(["app",
         }
       },
 
+
       //add the lander model to the list
       addRow: function(model) {
         Landerds.trigger('landers:closesidebar');
@@ -41,6 +42,12 @@ define(["app",
           this.filteredCollection.showPageWithModel(model);
 
           model.trigger("view:expand");
+        }
+      },
+
+      showRow: function(model) {
+        if (this.filteredCollection) {
+          this.filteredCollection.showPageWithModel(model);
         }
       },
 

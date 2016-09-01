@@ -81,6 +81,11 @@ define(["app",
         //on active jobs initialize check if any of them exist and handle start state
         var activeJobCollection = this.get("activeJobs");
 
+        //this is for lander level jobs !
+        activeJobCollection.on("updateJobModel", function(jobModelAttributes) {
+          me.setDeployStatus();
+        });
+
         activeJobCollection.on("add remove", function() {
           me.setDeployStatus();
         });
@@ -89,12 +94,8 @@ define(["app",
 
           if (activeJobCollection.length > 0) {
             activeJobCollection.each(function(jobModel) {
-              if (jobModel.get("action") === "addNewLander") {
-                //adding new lander so we're still initializing...
-                me.set("deploy_status", "initializing");
-
-              } else if (jobModel.get("action") === "ripNewLander") {
-                me.set("deploy_status", "initializing");
+              if (jobModel.get("action") === "ripLander") {
+                me.set("deploy_status", jobModel.get("deploy_status"));
               } else if (jobModel.get("action") === "deleteLander") {
                 me.set("deploy_status", "deleting");
               } else if (jobModel.get("action") == "savingLander") {
@@ -108,11 +109,17 @@ define(["app",
 
         activeJobCollection.on("finishedState", function(jobModel, updaterResponse) {
           var deployStatus = "deployed";
-          if (jobModel.get("action") === "addNewLander" ||
-            jobModel.get("action") === "ripNewLander") {
+          if (jobModel.get("action") === "ripLander") {
+
+            if (updaterResponse.extra) {
+
+
+            }
+
             //update lander status to not deployed
-            deployStatus = "not_deployed";
-            me.set("deploy_status", deployStatus);
+            me.set("deploy_status", "not_deployed");
+            me.trigger("landerFinishAdded", me); //for gui to know its time to update
+
           } else if (jobModel.get("action") === "deleteLander") {
             //destroy the lander model
             delete me.attributes.id;
@@ -234,7 +241,7 @@ define(["app",
               //if any are deploying/undeploying thats the wrap
               deployStatus = deployedDomain.get("deploy_status");
               return true;
-            
+
             } else {
 
               deployedDomain.get("activeJobs").each(function(activeJob) {
@@ -271,10 +278,10 @@ define(["app",
           activeJobCollection.each(function(job) {
             if (job.get("action") === "deleteLander") {
               deployStatus = "deleting";
-            } else if (job.get("action") === "addNewLander") {
-              deployStatus = "initializing";
-            } else if (job.get("action") === "ripNewLander") {
-              deployStatus = "initializing";
+            } else if (job.get("action") === "addLander") {
+              deployStatus = job.get("deploy_status");
+            } else if (job.get("action") === "ripLander") {
+              deployStatus = job.get("deploy_status");
             }
           });
         }
@@ -297,6 +304,7 @@ define(["app",
         deploymentFolderInvalid: false,
         //gui update attributes
         deploy_status: 'not_deployed',
+        deploy_status_gui: 'Working',
         totalNumJsSnippets: 0,
         deployment_folder_name: "",
         modified: false,

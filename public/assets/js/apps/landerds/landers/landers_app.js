@@ -121,8 +121,8 @@ define(["app",
         closeSidebar: function() {
           SidemenuController.closeSidebar();
         },
-        addLander: function(landerModel) {
-          ListController.addRow(landerModel);
+        createLanderFromJobAddToCollection: function(landerModel) {
+          ListController.createLanderFromJobAddToCollection(landerModel);
         },
         deployCampaignLandersToDomain: function(attr) {
           ListController.deployCampaignLandersToDomain(attr);
@@ -236,8 +236,8 @@ define(["app",
         landersAppAPI.showAddNewLanderModal();
       });
 
-      Landerds.on("landers:list:addLander", function(landerModel) {
-        landersAppAPI.addLander(landerModel);
+      Landerds.on("landers:list:createLanderFromJobAddToCollection", function(jobModel) {
+        landersAppAPI.createLanderFromJobAddToCollection(jobModel);
       });
 
       Landerds.on("landers:updateTopbarTotals", function(landerModel) {

@@ -401,8 +401,6 @@ module.exports = function(app, db) {
                   inlinedJs = $(tag).text();
                 }
 
-                console.log("\n\n\n\ninlined JS: " + inlinedJs + "\n\n\n\n");
-
                 //now compress:
                 var compressedJs = {};
                 try {
@@ -411,8 +409,6 @@ module.exports = function(app, db) {
                   //use the regular
                   compressedJs.code = inlinedJs;
                 }
-
-                console.log("\n\n\n\compressed JS: " + JSON.stringify(compressedJs.code) + "\n\n\n\n");
 
                 $(tag).text(compressedJs.code);
 

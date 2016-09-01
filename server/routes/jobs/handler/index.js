@@ -12,6 +12,8 @@ module.exports = function(app, db) {
   
   module.deleteDomain = require('./delete_domain')(app, db);
 
+  module.ripLander = require('./rip_lander')(app, db);
+
 return module;
 
 }

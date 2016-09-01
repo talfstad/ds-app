@@ -38,7 +38,8 @@ define(["app",
         },
 
         modelEvents: {
-          "change:deploy_status": "alertDeployStatus"
+          "change:deploy_status": "alertDeployStatus",
+          "landerFinishAdded": "renderAndShowThisViewsPage"
         },
 
         regions: {
@@ -48,9 +49,18 @@ define(["app",
           'active_campaigns_region': '.active-campaigns-region'
         },
 
+        //if this is called it means view is rendered so call for a show page
+        //thing which will render the collection again and show the page again
+        renderAndShowThisViewsPage: function() {
+          this.trigger("renderAndShowThisViewsPage");
+        },
+
         alertDeployStatus: function() {
           //show correct one
           var deployStatus = this.model.get("deploy_status");
+          var rootDeployStatus = deployStatus.split(":")[0];
+
+          deploy_status_gui = "Working";
 
           //handles deployed rows AND lander deploy status
           if (deployStatus !== "deployed" && deployStatus !== "not_deployed" && deployStatus !== "saving") {
@@ -60,12 +70,30 @@ define(["app",
           }
 
           if (deployStatus == "deleting") {
-            this.disableAccordionPermanently();
-            Landerds.trigger('landers:closesidebar');
-
             this.$el.find(".alert-working-badge").hide();
             this.$el.find(".alert-deleting-badge").show();
           }
+
+
+          //rip deploy status'
+          if (rootDeployStatus == "initializing") {
+
+            if (deployStatus == "initializing:rip") {
+              //change the gui working from working to something else
+              deploy_status_gui = "Rip Initializing";
+            } else if (deployStatus == "initializing:rip_optimizing") {
+              deploy_status_gui = "Rip Optimizing";
+            } else if (deployStatus == "initializing:rip_finishing") {
+              deploy_status_gui = "Rip Finishing";
+            }
+          }
+
+
+
+          this.model.set("deploy_status_gui", deploy_status_gui);
+
+          //update the text without a render
+          this.$el.find(".deploy-status-gui").text(deploy_status_gui);
         },
 
         showDeployLanderToDomain: function() {
@@ -95,7 +123,7 @@ define(["app",
           $("#landers-collection .collapse").collapse("hide");
 
           this.$el.find(".campaign-tab-handle-region").off();
-          this.$el.find(".campaign-tab-handle-region a").attr("data-toggle","");
+          this.$el.find(".campaign-tab-handle-region a").attr("data-toggle", "");
 
           this.$el.find(".accordion-toggle").off();
           this.$el.find(".deploy-status-region").off();
@@ -128,7 +156,10 @@ define(["app",
           this.reAlignTableHeader();
 
           //if deleting need to show delet state (which is disabling the whole thing)
-          if (this.model.get("deploy_status") === "deleting") {
+
+          var deployStatus = this.model.get("deploy_status");
+          var rootDeployStatus = deployStatus.split(":")[0];
+          if (rootDeployStatus === "deleting" || rootDeployStatus == "initializing") {
             this.disableAccordionPermanently();
           } else {
 
@@ -153,7 +184,7 @@ define(["app",
             });
 
             this.$el.on('hide.bs.collapse', function(e) {
-              
+
               me.trigger('childCollapsed');
 
               //close right sidebar if closing all domain accordions

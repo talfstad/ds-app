@@ -12,6 +12,7 @@ define(["app",
     "assets/js/apps/landerds/domains/dao/domain_collection",
     "assets/js/apps/landerds/landers/list/active_campaigns/views/active_campaigns_collection_view",
     "assets/js/jobs/jobs_model",
+    "assets/js/apps/landerds/landers/dao/lander_model",
     "assets/js/apps/landerds/landers/dao/active_campaign_model",
     "assets/js/common/notification",
     "assets/js/apps/landerds/base_classes/list/list_controller_base",
@@ -21,7 +22,7 @@ define(["app",
   function(Landerds, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
     PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView,
     DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView,
-    JobModel, ActiveCampaignModel, Notification, BaseListController) {
+    JobModel, LanderModel, ActiveCampaignModel, Notification, BaseListController) {
     Landerds.module("LandersApp.Landers.List", function(List, Landerds, Backbone, Marionette, $, _) {
 
       List.Controller = _.extend({ //BaseListController
@@ -91,7 +92,11 @@ define(["app",
 
             //when lander is deleted successfully show a notification
             me.filteredCollection.original.on("destroy", function(model) {
-              Notification("", "Successfully Deleted " + model.get("name"), "success", "stack_top_right");
+              Notification("", "Deleted " + model.get("name"), "success", "stack_top_right");
+            });
+
+            me.filteredCollection.original.on("landerFinishAdded", function(model) {
+              Notification("", "Added " + model.get("name"), "success", "stack_top_right");
             });
 
             //make landers view and display data
@@ -149,7 +154,7 @@ define(["app",
                 me.childExpandedId = null;
               }
             });
-            
+
 
             me.filteredCollection.on("reset", function(collection) {
 
@@ -168,6 +173,10 @@ define(["app",
 
                   var campaignTabHandleView = new CampaignTabHandleView({
                     model: landerView.model
+                  });
+
+                  landerView.on("renderAndShowThisViewsPage", function() {
+                    me.showRow(landerView.model);
                   });
 
                   //handles changes, use css its way faster
@@ -613,6 +622,27 @@ define(["app",
               });
             });
           }
+        },
+
+        createLanderFromJobAddToCollection: function(jobModel) {
+          //create a new lander model add to collection 
+
+          //create new lander model, add to collection, add job model to it
+
+          var newLanderModel = new LanderModel({
+            id: jobModel.get("lander_id"),
+            name: jobModel.get("name"),
+            created_on: jobModel.get("lander_created_on")
+          });
+
+          var activeJobs = newLanderModel.get("activeJobs");
+          activeJobs.add(jobModel);
+
+          this.filteredCollection.add(newLanderModel);
+
+          Landerds.trigger("job:start", jobModel);
+
+          this.showRow(newLanderModel);
         },
 
         addNewDuplicatedLander: function(landerModel) {

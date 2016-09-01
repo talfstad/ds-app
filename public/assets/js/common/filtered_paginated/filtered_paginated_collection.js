@@ -216,7 +216,11 @@ define(["app",
           //loop through all landers to count the totals
           original.each(function(model) {
             totalLanders++;
-            var deployStatus = model.get("deploy_status");
+            //return everything up to the first colon
+
+            //parent deploy status is before colon
+            var deployStatus = model.get("deploy_status").split(":")[0];
+
             var modifiedAttr = model.get("modified");
             
               if (deployStatus === "not_deployed") {
@@ -226,7 +230,8 @@ define(["app",
               } else if (deployStatus === "undeploying") {
                 undeployingTotal++;
               } else if (deployStatus === "initializing") {
-                initializing++;
+                //deploying total all this does is triggers the working in topbar
+                deployingTotal++;
               } else if (deployStatus === "deleting") {
                 deleting++;
               }

@@ -10,7 +10,8 @@ module.exports = function(app, db) {
   module.deleteDomain = require('./delete_domain')(app, db);
   module.deleteCampaign = require('./delete_campaign')(app, db);
   module.savingLander = require('./saving_lander')(app, db);
-
+  module.ripLander = require('./rip_lander')(app, db);
+  
   module.startJob = function(action, user, attr) {
 
     try {

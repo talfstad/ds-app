@@ -369,25 +369,32 @@ module.exports = function(app, db) {
                 //TODO loop url endpoints and save them here
                 //for each endpoint call insert into urlEndpoints here and do a idx counter to determine when to callback
                 landerData.id = docs[0][0]["LAST_INSERT_ID()"];
+
+                console.log("CREATED ON FORMATTED? : " + JSON.stringify(docs[1][0]));
+
                 landerData.created_on = docs[1][0].created_on;
 
-                var endpointsIdx = 0;
-                for (var i = 0; i < urlEndpoints.length; i++) {
-                  var filename = urlEndpoints[i].filename;
+                if (urlEndpoints.length > 0) {
+                  var endpointsIdx = 0;
+                  for (var i = 0; i < urlEndpoints.length; i++) {
+                    var filename = urlEndpoints[i].filename;
 
-                  connection.query("INSERT INTO url_endpoints(filename, user_id, lander_id) VALUES (?, ?, ?)", [filename, user_id, landerData.id],
-                    function(err, endpointDocs) {
-                      if (err) {
-                        callback(err);
-                      } else {
-                        endpointsIdx++;
+                    connection.query("INSERT INTO url_endpoints(filename, user_id, lander_id) VALUES (?, ?, ?)", [filename, user_id, landerData.id],
+                      function(err, endpointDocs) {
+                        if (err) {
+                          callback(err);
+                        } else {
+                          endpointsIdx++;
 
-                        if (endpointsIdx == urlEndpoints.length) {
-                          callback(false);
+                          if (endpointsIdx == urlEndpoints.length) {
+                            callback(false);
+                          }
                         }
-                      }
-                      connection.release();
-                    });
+                        connection.release();
+                      });
+                  }
+                } else {
+                  callback(false);
                 }
               }
             });
@@ -490,7 +497,7 @@ module.exports = function(app, db) {
         });
       };
 
-      var getdeployedDomainsForLander = function(lander, callback) {
+      var getDeployedDomainsForLander = function(lander, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
@@ -589,7 +596,7 @@ module.exports = function(app, db) {
             console.log(err);
           } else {
 
-            connection.query("SELECT id,action,lander_id,deploy_status,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addNewLander", "deleteLander", "ripNewLander", "savingLander", user_id, lander.id, true],
+            connection.query("SELECT id,action,lander_id,deploy_status,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addLander", "deleteLander", "ripLander", "savingLander", user_id, lander.id, true],
               function(err, dbActiveJobs) {
                 if (err) {
                   callback(err);
@@ -609,7 +616,7 @@ module.exports = function(app, db) {
 
           lander.urlEndpoints = endpoints;
 
-          getdeployedDomainsForLander(lander, function(err, deployedDomains) {
+          getDeployedDomainsForLander(lander, function(err, deployedDomains) {
             if (err) {
               callback(err);
             } else {
