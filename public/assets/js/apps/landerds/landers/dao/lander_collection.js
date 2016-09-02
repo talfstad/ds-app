@@ -24,7 +24,14 @@ define(["app",
 
               return id == landerId
             })) {
-            items.add(lander);
+            var shouldAdd = false;
+            //now we need to check if it has an active ripLander or newLander
+            //or deleteLander job aka ANY lander level jobs
+            var activeJobs = lander.get("activeJobs");
+            
+            if (activeJobs.length <= 0) {
+              items.add(lander);
+            }
           }
 
         });

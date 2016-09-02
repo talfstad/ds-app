@@ -84,7 +84,6 @@ module.exports = function(app, db) {
             }
           } else if (activeJob.action == "ripLander") {
             var baseOldDeployStatus = oldDeployStatus.split(':')[0];
-            console.log("base old deploy status: " + baseOldDeployStatus + " " + activeJob.deploy_status);
             if (activeJob.deploy_status == "not_deployed" && baseOldDeployStatus == "initializing") {
               if (oldDeployStatus != activeJob.deploy_status) {
                 addExtraCode = "finishedRipLander";
