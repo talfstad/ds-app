@@ -92,6 +92,26 @@ module.exports = function(app, db) {
       });
     },
 
+    addS3FolderDeploymentFolderToLander: function(user, lander_id, s3_folder_name, callback) {
+      var user_id = user.id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          callback(err);
+        } else {
+          connection.query("UPDATE landers SET deployment_folder_name = ?, s3_folder_name = ? WHERE user_id = ? AND id = ?", [s3_folder_name, s3_folder_name, user_id, lander_id],
+            function(err, docs) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false);
+              }
+              connection.release();
+            });
+        }
+      });
+    },
+
     //save optimzations and modified
     updateAllLanderData: function(user, attr, callback) {
 
@@ -369,8 +389,6 @@ module.exports = function(app, db) {
                 //TODO loop url endpoints and save them here
                 //for each endpoint call insert into urlEndpoints here and do a idx counter to determine when to callback
                 landerData.id = docs[0][0]["LAST_INSERT_ID()"];
-
-                console.log("CREATED ON FORMATTED? : " + JSON.stringify(docs[1][0]));
 
                 landerData.created_on = docs[1][0].created_on;
 

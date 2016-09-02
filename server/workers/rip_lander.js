@@ -2,64 +2,149 @@ module.exports = function(app, db) {
 
   var module = {};
 
+  var uuid = require("uuid");
+  var scraper = require('website-scraper');
+
   module.ripLander = function(user, attr, callback) {
-    // var job = attr.job;
-    // var landerData = attr.lander;
+    var me = this;
+    var myJobId = attr.id;
+    var lander_id = attr.lander_id;
+    var url = attr.lander_url;
 
-    // var myJobId = job.id;
-    // var lander_id = job.lander_id;
+    var landerData = {
+      id: lander_id,
+      name: attr.name,
+      lander_url: url,
+      deploy_status: attr.deploy_status,
+      created_on: attr.lander_created_on
+    };
 
-    console.log("\n\n\nHERE ARE YOUR data: " + JSON.stringify(attr) + "\n\n\n");
+    var cleanupAndError = function(err) {
+      //delete the lander we were working on
+      db.landers.deleteLander(user, lander_id, function(deleteLanderErr) {
+        if (deleteLanderErr) {
+          callback(deleteLanderErr, [myJobId])
+        } else {
+          callback(err, [myJobId]);
+        }
+      });
+    };
 
-    //optimize lander and return new numbers for pagespeed!!
+    module.scrape(landerData, function(err, stagingPath, stagingDir, urlEndpoint) {
+      if (err) {
+        cleanupAndError(err);
+      } else {
+        db.jobs.updateDeployStatus(user, myJobId, 'initializing:rip_optimizing', function(err) {
+          if (err) {
+            cleanupAndError(err);
+          } else {
 
-    //create staging dir
-    // db.common.createStagingArea(function(err, stagingPath, stagingDir) {
+            app.log("staging: " + stagingDir + " " + stagingPath, "debug");
 
-    //   db.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
-    //     if (err) {
-    //       callback(err, [myJobId]);
-    //     } else {
+            db.landers.addS3FolderDeploymentFolderToLander(user, lander_id, stagingDir, function(err) {
+              if (err) {
+                cleanupAndError(err);
+              } else {
+                var deleteStaging = true;
+                //rip and add lander both call this to finish the add lander process           
+                db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, stagingDir, landerData, function(err, data) {
+                  if (err) {
+                    db.log.rip.error(err, user, stagingDir, landerData, function(err) {
+                      //callback to user that we logged the error and are going to help figure it out
+                      cleanupAndError(err);
+                    });
+                  } else {
+                    db.jobs.updateDeployStatus(user, myJobId, 'not_deployed', function(err) {
+                      if (err) {
+                        cleanupAndError(err);
+                      } else {
+                        callback(false, [myJobId]);
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  };
 
-    //       var username = user.user;
-    //       var baseBucketName = awsData.aws_root_bucket;
+  module.scrape = function(landerData, callback) {
 
-    //       var directory = "landers/" + landerData.s3_folder_name + "/original";
+    var url = landerData.lander_url;
 
-    //       var credentials = {
-    //         accessKeyId: awsData.aws_access_key_id,
-    //         secretAccessKey: awsData.aws_secret_access_key
-    //       }
+    //create a staging area
+    var stagingDir = uuid.v4();
+    var stagingPath = "staging/" + stagingDir;
 
-    //       //copy the data down from the old s3, then push it to the new
-    //       db.aws.s3.copyDirFromS3ToStaging(lander_id, stagingPath, credentials, username, baseBucketName, directory, function(err) {
-    //         if (err) {
-    //           callback(err, [myJobId]);
-    //         } else {
-    //           var deleteStaging = false;
-    //           db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, landerData.s3_folder_name, landerData, function(err, data) {
-    //             if (err) {
-    //               callback(err, [myJobId]);
-    //             } else {
-    //               db.jobs.updateDeployStatus(user, myJobId, "deployed", function(err) {
-    //                 if (err) {
-    //                   callback(err, [myJobId]);
-    //                 } else {
-    //                   console.log("FINISHED ! saving lander job !");
-    //                   callback(false, [myJobId]);
-    //                 }
-    //               });
-    //             }
-    //           });
-    //         }
-    //       });
-    //     }
-    //   });
+    //scrape lander into staging area
+    var options = {
+      urls: [url],
+      sources: [{
+        selector: 'img',
+        attr: 'src'
+      }, {
+        selector: 'input',
+        attr: 'src'
+      }, {
+        selector: 'object',
+        attr: 'data'
+      }, {
+        selector: 'embed',
+        attr: 'src'
+      }, {
+        selector: 'video',
+        attr: 'src'
+      }, {
+        selector: 'source',
+        attr: 'src'
+      }, {
+        selector: 'param[name="movie"]',
+        attr: 'value'
+      }, {
+        selector: 'script',
+        attr: 'src'
+      }, {
+        selector: 'link[rel="stylesheet"]',
+        attr: 'href'
+      }, {
+        selector: 'link[rel*="icon"]',
+        attr: 'href'
+      }],
+      subdirectories: [{
+        directory: 'images',
+        extensions: ['.png', '.jpg', '.jpeg', '.gif']
+      }, {
+        directory: 'js',
+        extensions: ['.js']
+      }, {
+        directory: 'videos',
+        extensions: ['.mp4']
+      }, {
+        directory: 'css',
+        extensions: ['.css']
+      }, {
+        directory: 'fonts',
+        extensions: ['.ttf', '.woff', '.eot', '.svg']
+      }],
+      directory: stagingPath,
+      request: {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 4 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19'
+        }
+      }
+    }
 
-    // });
-
+    scraper.scrape(options).then(function(result) {
+      var urlEndpoint = { filename: result[0].filename };
+      callback(false, stagingPath, stagingDir, urlEndpoint);
+    }).catch(function(err) {
+      callback(err);
+    });
   };
 
   return module.ripLander;
 
-}
+};

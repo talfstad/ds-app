@@ -111,9 +111,14 @@ define(["app",
           var deployStatus = "deployed";
           if (jobModel.get("action") === "ripLander") {
 
-            if (updaterResponse.extra) {
+            if (updaterResponse.extra.new_lander) {
+              var newLanderData = updaterResponse.extra.new_lander;
 
+              me.set("s3_folder_name", newLanderData.s3_folder_name);
+              me.set("deployment_folder_name", newLanderData.s3_folder_name);
 
+              var urlEndpoints = me.get("urlEndpoints");
+              urlEndpoints.add(newLanderData.urlEndpoints);
             }
 
             //update lander status to not deployed
@@ -307,6 +312,7 @@ define(["app",
         deploy_status_gui: 'Working',
         totalNumJsSnippets: 0,
         deployment_folder_name: "",
+        s3_folder_name: "",
         modified: false,
         deployed_domains_count: 0,
         active_campaigns_count: 0,

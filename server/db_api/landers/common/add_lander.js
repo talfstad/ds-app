@@ -161,6 +161,7 @@ module.exports = function(app, db) {
       };
 
       var saveLanderToDb = function(callback) {
+        var user_id = user.id;
 
         //weird thing where landerData.id is a string on add lander but not on rip lander
         if (landerData.id == "null") {
@@ -169,9 +170,29 @@ module.exports = function(app, db) {
 
         if (landerData.id) {
           //update lander, but optimization only updates urlEndpoints
-          callback(false, true);
+          //if we have endpoints its an update, otherwise its not
+          db.getConnection(function(err, connection) {
+            if (err) {
+              callback(err);
+            } else {
+              connection.query("SELECT id FROM url_endpoints WHERE lander_id = ? AND user_id = ?", [landerData.id, user_id], function(err, docs) {
+                if (err) {
+                  callback(err);
+                } else {
+                  //if we have endpoints then its an update! otherwise its not an update
+                  if (docs.length > 0) {
+                    app.log("have endpoints so this IS and update!", "debug");
+                    callback(false, true);
+                  } else {
+                    app.log("have NO endpoints so this IS NOT and update!", "debug");
+                    callback(false, false);
+                  }
+                }
+                connection.release();
+              });
+            }
+          });
         } else {
-          var user_id = user.id;
           var modelAttributes = {};
 
           //param order: working_node_id, action, alternate_action, processing, lander_id, domain_id, campaign_id, user_id
@@ -218,6 +239,7 @@ module.exports = function(app, db) {
           optimized_pagespeed: optimizedPagespeed,
           optimization_errors: endpoint.optimizationErrors
         };
+
         var user_id = user.id;
 
         db.getConnection(function(err, connection) {
@@ -265,12 +287,12 @@ module.exports = function(app, db) {
             var optimizedUrl = 'http://' + awsData.aws_root_bucket + '.s3-website-us-west-2.amazonaws.com/' + user.user + '/landers/' + s3_folder_name + '/optimized/' + filePath;
 
 
-            console.log("gettign pagespeed for: " + originalUrl);
+            console.log("getting pagespeed for: " + originalUrl);
             getPagespeedScore(originalUrl, function(err, originalPagespeed) {
               if (err) {
                 callback(err);
               } else {
-                console.log("gettign optimized pagespeed for: " + optimizedUrl);
+                console.log("getting optimized pagespeed for: " + optimizedUrl);
 
                 getPagespeedScore(optimizedUrl, function(err, optimizedPagespeed) {
                   if (err) {
@@ -314,6 +336,7 @@ module.exports = function(app, db) {
                         } else {
                           //4. push optimized to s3
                           var directory = "/landers/" + s3_folder_name + "/optimized/";
+
                           pushLanderToS3(directory, awsData, true, function(err) {
                             if (err) {
                               callback(err);
@@ -324,7 +347,6 @@ module.exports = function(app, db) {
                                 if (err) {
                                   callback(err);
                                 } else {
-                                  app.log("11is update: " + isUpdate, "debug");
 
                                   //save
                                   var asyncIndex = 0;
@@ -336,19 +358,18 @@ module.exports = function(app, db) {
                                       //save/update the urlEndpoints in db
                                       runPageSpeedScores(endpoints[i], function(err, endpoint, originalPagespeed, optimizedPagespeed) {
                                         if (err) {
-                                          console.log("PAGESPEED ERROR: " + JSON.stringify(err));
+                                          app.log("PAGESPEED ERROR: " + JSON.stringify(err), "debug");
                                           callback(err);
                                         } else {
 
-                                          console.log("is update: " + isUpdate + " ENDPOINT ADDING: " + JSON.stringify(endpoint));
+                                          app.log("is update: " + isUpdate + " ENDPOINT ADDING: " + JSON.stringify(endpoint), "debug");
 
                                           addUpdateEndpointsToLander(originalPagespeed, optimizedPagespeed, endpoint, isUpdate, function(err, endpoint) {
                                             if (err) {
-                                              console.log("endpoitns to lander  ERROR: " + JSON.stringify(err));
+                                              app.log("endpoitns to lander  ERROR: " + JSON.stringify(err), "debug");
                                               callback(err);
                                             } else {
                                               urlEndpoints.push(endpoint);
-                                              console.log("asyncTT: " + asyncIndex + " endpoints.length: " + endpoints.length);
 
                                               if (++asyncIndex == endpoints.length) {
                                                 //done adding endpoints

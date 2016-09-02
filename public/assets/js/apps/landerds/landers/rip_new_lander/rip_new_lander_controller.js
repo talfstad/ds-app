@@ -23,7 +23,6 @@ define(["app",
 
             ripModel.set("alertLoading", true);
 
-
             ripModel.save({}, {
               success: function(registeredJobModel, responseObj) {
 
@@ -41,52 +40,7 @@ define(["app",
                 }
               }
             });
-
-
-            //create new job and save that with ripLander as action
-
-
-            //save the job, callback has the landermodel id in it, we add that to the landermodel
-            //add the job to landermodel then we add the lander model to the collection
-
-            //pass the job model to the list controller, it will create the landermodel add it and attach the job
-
-
-
-
-            // landerModel.save({}, {
-            //   success: function(savedLanderModel) {
-            //     var error = savedLanderModel.get("error");
-            //     if (error) {
-
-            //       landerModel.set({
-            //         alertInvalidInputs: true,
-            //         alertLoading: false
-            //       });
-
-            //       savedLanderModel.unset("error");
-            //     } else {
-            //       //add the new url endpoints
-
-            //       // TODO this gets done on job switch deploy_status loads final data
-            //       // var endpointsArr = savedLanderModel.get("url_endpoints_arr");
-            //       // landerModel.get("urlEndpoints").add(endpointsArr);
-            //       // landerModel.set({
-            //       //   deployment_folder_name: savedLanderModel.get("s3_folder_name"),
-            //       //   alertLoading: false
-            //       // });
-
-            //       ripNewLanderLayout.closeModal();
-
-            //       Landerds.trigger("landers:list:addLander", landerModel);
-
-            //     }
-            //   }
-            // });
-
-
           });
-
 
           ripNewLanderLayout.render();
 

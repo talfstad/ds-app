@@ -1,12 +1,8 @@
 module.exports = function(app, passport) {
 
-  var Puid = require('puid');
   var db = require("../../db_api")(app);
 
-  var mkdirp = require("mkdirp");
-  var rimraf = require("rimraf");
   var uuid = require("uuid");
-
   var scraper = require('website-scraper');
 
   var module = {

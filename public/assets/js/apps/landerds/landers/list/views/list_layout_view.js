@@ -40,7 +40,7 @@ define(["app",
           return this.toggle;
         },
 
-        triggerToggleHelpInfo: function(e){
+        triggerToggleHelpInfo: function(e) {
           if (e) e.preventDefault();
 
           this.trigger("toggleInfo", this.toggle);
@@ -48,8 +48,8 @@ define(["app",
 
         showRipNewLander: function(e) {
           e.preventDefault();
-          
-          if(this.toggle){
+
+          if (this.toggle) {
             this.toggleHelpInfo();
           }
 
@@ -59,7 +59,7 @@ define(["app",
         showAddNewLander: function(e) {
           e.preventDefault();
 
-          if(this.toggle){
+          if (this.toggle) {
             this.toggleHelpInfo();
           }
 
@@ -75,15 +75,7 @@ define(["app",
           var me = this;
 
 
-          $('input[type=radio][name=pages-radio]').change(function(e) {
-            e.preventDefault();
-            //pages changed update the button text
-            var newPageSize = $(e.currentTarget).val();
-            me.$el.find("button.rows-per-page span.rows-per-page-number").text(newPageSize);
-            //call to change pagelength in collection
-            me.trigger("landers:changepagesize", newPageSize); //TODO
-            $(this).dropdown("toggle");
-          });
+
 
           var updateSortbyButtonText = function() {
             var sortbyname = me.$el.find("input[name=sort-radio]:checked").attr("data-sortby-name");
@@ -102,13 +94,12 @@ define(["app",
 
           // Prevents a dropdown menu from closing when
           // a btn-group nav menu it contains is clicked
-          $('.dropdown-menu').click(function(e) {
-            e.stopPropagation();
-          });
+          // $('.dropdown-menu').click(function(e) {
+
+          // });
 
           $('.dropdown-menu .btn-group-nav a').on('click', function(e) {
             e.preventDefault();
-            e.stopPropagation();
 
             // Remove active class from btn-group > btns and toggle tab content
             $(this).siblings('a').removeClass('active').end().addClass('active');
@@ -142,6 +133,22 @@ define(["app",
           }
 
           $(".navbar-search input").typeWatch(typeWatchoptions);
+
+        },
+
+        onRender: function() {
+          var me = this;
+
+          this.$el.find('input[type=radio][name=pages-radio]').change(function(e) {
+            e.preventDefault();
+            //pages changed update the button text
+            var newPageSize = $(e.currentTarget).val();
+            me.$el.find("button.rows-per-page span.rows-per-page-number").text(newPageSize);
+            //call to change page length in collection
+            me.trigger("landers:changepagesize", newPageSize);
+          });
+
+
 
         }
       });

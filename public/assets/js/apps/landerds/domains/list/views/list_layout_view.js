@@ -63,7 +63,7 @@ define(["app",
             var newPageSize = $(e.currentTarget).val();
             me.$el.find("button.rows-per-page span.rows-per-page-number").text(newPageSize);
             //call to change pagelength in collection
-            me.trigger("domains:changepagesize", newPageSize); //TODO
+            me.trigger("domains:changepagesize", newPageSize);
           });
 
           var updateSortbyButtonText = function() {

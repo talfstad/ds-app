@@ -28,6 +28,8 @@ module.exports = function(app, db) {
           //register the rip job
           db.jobs.registerJob(user, jobModelAttributes, function(err, registeredJobAttributes) {
 
+            app.log("REGISTERED JOB: " + JSON.stringify(registeredJobAttributes), "debug");
+
             //start the job
             WorkerController.startJob(registeredJobAttributes.action, user, registeredJobAttributes);
 
