@@ -18,17 +18,22 @@ module.exports = function(app, passport) {
         json.res(err);
       } else {
 
+
         //trigger handler based on action
         try {
           var action = jobModelAttributes.action;
-          
+
           app.log("register and starting job action: " + action, "debug");
+
+          if (action == "addLander") {
+            jobModelAttributes.files = req.files;
+          }
 
           handler[action](user, jobModelAttributes, function(err, returnData) {
             if (err) {
               res.json(err);
             } else {
-              if(!returnData) returnData = {};
+              if (!returnData) returnData = {};
               res.json(returnData);
             }
           });

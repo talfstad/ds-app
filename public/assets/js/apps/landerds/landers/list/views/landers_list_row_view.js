@@ -75,7 +75,7 @@ define(["app",
           }
 
 
-          //rip deploy status'
+          //rip and add deploy status'
           if (rootDeployStatus == "initializing") {
 
             if (deployStatus == "initializing:rip") {
@@ -86,6 +86,17 @@ define(["app",
             } else if (deployStatus == "initializing:rip_finishing") {
               deploy_status_gui = "Rip Finishing";
             }
+
+
+            if (deployStatus == "initializing:add") {
+              //change the gui working from working to something else
+              deploy_status_gui = "Lander Initializing";
+            } else if (deployStatus == "initializing:add_optimizing") {
+              deploy_status_gui = "Lander Optimizing";
+            } else if (deployStatus == "initializing:add_finishing") {
+              deploy_status_gui = "Lander Finishing";
+            }
+
           }
 
 

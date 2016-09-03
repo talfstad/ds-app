@@ -36,7 +36,7 @@ module.exports = function(app, db) {
                 callback(false, activeJob);
               }
             });
-          } else if (addExtraCode == "finishedRipLander") {
+          } else if (addExtraCode == "finishedAddLander") {
 
             dbLanders.getAll(user, function(err, landers) {
               if (err) {
@@ -82,11 +82,11 @@ module.exports = function(app, db) {
                 }
               }
             }
-          } else if (activeJob.action == "ripLander") {
+          } else if (activeJob.action == "ripLander" || activeJob.action == "addLander") {
             var baseOldDeployStatus = oldDeployStatus.split(':')[0];
             if (activeJob.deploy_status == "not_deployed" && baseOldDeployStatus == "initializing") {
               if (oldDeployStatus != activeJob.deploy_status) {
-                addExtraCode = "finishedRipLander";
+                addExtraCode = "finishedAddLander";
               }
             }
           }
@@ -144,7 +144,7 @@ module.exports = function(app, db) {
                     if (err) {
                       callback(err);
                     } else {
-
+                      
                       finalActiveJobs.push(activeJob);
 
                       if (++asyncIndex == activeJobsArr.length) {

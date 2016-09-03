@@ -1,9 +1,8 @@
 define(["app",
     "assets/js/apps/landerds/landers/rip_new_lander/views/rip_new_lander_layout_view",
-    "assets/js/apps/landerds/landers/dao/lander_model",
     "assets/js/jobs/jobs_model",
   ],
-  function(Landerds, RipNewLanderLayoutView, LanderModel, JobModel) {
+  function(Landerds, RipNewLanderLayoutView, JobModel) {
     Landerds.module("LandersApp.Landers.RipNewLander", function(RipNewLander, Landerds, Backbone, Marionette, $, _) {
 
       RipNewLander.Controller = {

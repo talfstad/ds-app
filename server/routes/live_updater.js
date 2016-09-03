@@ -18,39 +18,34 @@ module.exports = function(app, passport) {
 
         for (var i = 0; i < modelsAttributes.length; i++) {
           var jobFound = false;
-          for (var j = 0; j < activeJobs.length; j++) {
+          if (activeJobs.length > 0) {
 
-            if (modelsAttributes[i].id === activeJobs[j].id) {
-              jobFound = true;
+            for (var j = 0; j < activeJobs.length; j++) {
 
-              modelsAttributes[i].deploy_status = activeJobs[j].deploy_status;
+              if (modelsAttributes[i].id === activeJobs[j].id) {
+                jobFound = true;
 
-              //add extra update stuff for various models
-              if (activeJobs[j].extra) {
-                modelsAttributes[i].extra = activeJobs[j].extra;
-              }
+                modelsAttributes[i].deploy_status = activeJobs[j].deploy_status;
 
-              if (activeJobs[j].done || activeJobs[j].error) {
-                //add to finished, remove from active
-                modelsAttributes[i].error = activeJobs[j].error;
-                modelsAttributes[i].error_code = activeJobs[j].error_code;
-                modelsAttributes[i].done = activeJobs[j].done;
-                finishedJobs.push(modelsAttributes[i]);
+                //add extra update stuff for various models
+                if (activeJobs[j].extra) {
+                  modelsAttributes[i].extra = activeJobs[j].extra;
+                }
+
+                if (activeJobs[j].done || activeJobs[j].error) {
+                  modelsAttributes[i].error = activeJobs[j].error;
+                  modelsAttributes[i].error_code = activeJobs[j].error_code;
+                  modelsAttributes[i].done = activeJobs[j].done;
+                }
+                modelsAttributes[i].processing = activeJobs[j].processing;
               }
             }
-          }
-
-          if (activeJobs.length <= 0 || !jobFound) {
-            finishedJobs.push(modelsAttributes[i]);
+          } else {
+            modelsAttributes[i].processing = false;
           }
         }
 
-        db.jobs.finishedProcessing(user, finishedJobs, function() {
-          //join finished with active jobs to create a complete response
-
-
-          res.json(modelsAttributes);
-        });
+        res.json(modelsAttributes);
       }
     };
 

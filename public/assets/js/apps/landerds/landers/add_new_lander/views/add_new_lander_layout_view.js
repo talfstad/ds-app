@@ -46,6 +46,10 @@ define(["app",
           }
         },
 
+        startUpload: function() {
+          this.$el.find("#new-lander-file").fileinput("upload");
+        },
+
         confirmedAddNewLander: function(e) {
 
           var me = this;
@@ -57,7 +61,7 @@ define(["app",
             var newLanderData = Backbone.Syphon.serialize(this);
 
             //on successful upload callback this function
-            $("#new-lander-file").on('fileuploaded', function(e, data, previewId, index) {
+            this.$el.find("#new-lander-file").on('fileuploaded', function(e, data, previewId, index) {
               me.trigger("fileUploadComplete", data);
             });
 
@@ -73,7 +77,8 @@ define(["app",
               this.model.set("alertLoading", true);
 
               //trigger upload. server adds the lander to db, registers active job, and starts job
-              $("#new-lander-file").fileinput("upload");
+              me.trigger("addLanderConfirmed");
+
 
             } else {
               var alert = this.$el.find(".new-lander-info-alert");
@@ -102,6 +107,9 @@ define(["app",
         onRender: function() {
           var me = this;
 
+          //upload URL is the models URL
+          var uploadUrl = this.model.url;
+
           this.$el.find("#new-lander-file").fileinput({
             showUpload: false,
             uploadAsync: true,
@@ -117,7 +125,7 @@ define(["app",
             layoutTemplates: {
               actionUpload: '' // get rid of initial upload button action in preview
             },
-            uploadUrl: "/api/landers",
+            uploadUrl: uploadUrl,
             maxFileCount: 1
           });
 

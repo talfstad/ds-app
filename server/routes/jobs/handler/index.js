@@ -14,6 +14,8 @@ module.exports = function(app, db) {
 
   module.ripLander = require('./rip_lander')(app, db);
 
+  module.addLander = require('./add_lander')(app, db);
+
 return module;
 
 }

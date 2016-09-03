@@ -100,6 +100,8 @@ define(["app",
                 me.set("deploy_status", "deleting");
               } else if (jobModel.get("action") == "savingLander") {
                 me.set("saving_lander", true);
+              } else if(jobModel.get("action") == "addLander") {
+                me.set("deploy_status", jobModel.get("deploy_status"));
               } else {
                 me.set("deploy_status", "deploying");
               }
@@ -109,7 +111,7 @@ define(["app",
 
         activeJobCollection.on("finishedState", function(jobModel, updaterResponse) {
           var deployStatus = "deployed";
-          if (jobModel.get("action") === "ripLander") {
+          if (jobModel.get("action") === "ripLander" || jobModel.get("action") === "addLander") {
 
             if (updaterResponse.extra.new_lander) {
               var newLanderData = updaterResponse.extra.new_lander;
