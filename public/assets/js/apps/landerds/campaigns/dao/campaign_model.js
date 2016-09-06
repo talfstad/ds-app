@@ -211,7 +211,7 @@ define(["app",
         name: "",
         created_on: "",
         deployedLanders: [],
-        deployedDomains: [],
+        domains: [],
         deploy_status: "deployed",
         deployed_domains_count: 0,
         deployed_landers_count: 0

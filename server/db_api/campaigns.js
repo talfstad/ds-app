@@ -323,7 +323,7 @@ module.exports = function(app, db) {
           if (err) {
             console.log(err);
           }
-          connection.query("SELECT a.id, b.id AS lander_id, a.campaign_id, b.name FROM landers_with_campaigns a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.id],
+          connection.query("SELECT a.id, b.id AS lander_id, b.modified, a.campaign_id, b.name FROM landers_with_campaigns a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.id],
             function(err, dbLandersOnCampaign) {
               if (err) {
                 callback(err);

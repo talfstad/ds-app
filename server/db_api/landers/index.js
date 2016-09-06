@@ -126,8 +126,6 @@ module.exports = function(app, db) {
         modified = attr.modified;
       }
 
-      console.log("TT saving modified: " + modified);
-
       //validate inputs
       if (deployment_folder_name) {
         if (!deployment_folder_name.match(/^[a-z0-9\-]+$/i)) {

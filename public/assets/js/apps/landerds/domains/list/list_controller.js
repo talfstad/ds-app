@@ -12,6 +12,7 @@ define(["app",
     "assets/js/apps/landerds/domains/dao/domain_collection",
     "assets/js/apps/landerds/domains/list/active_campaigns/views/active_campaigns_collection_view",
     "assets/js/apps/landerds/domains/dao/deployed_lander_model",
+    "assets/js/apps/landerds/landers/dao/deployed_domain_collection",
     "assets/js/jobs/jobs_model",
     "assets/js/apps/landerds/domains/dao/active_campaign_model",
     "assets/js/common/notification",
@@ -22,7 +23,7 @@ define(["app",
   function(Landerds, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
     PaginatedButtonView, TopbarView, LoadingView, LanderTabHandleView, CampaignTabHandleView,
     DeployedLandersView, DeployedDomainsCollection, ActiveCampaignsView, DeployedLanderModel,
-    JobModel, ActiveCampaignModel, Notification, BaseListController) {
+    DeployedDomainCollection, JobModel, ActiveCampaignModel, Notification, BaseListController) {
     Landerds.module("DomainsApp.Domains.List", function(List, Landerds, Backbone, Marionette, $, _) {
 
       List.Controller = _.extend({ //BaseListController
@@ -368,35 +369,60 @@ define(["app",
         },
 
 
-        deployNewLander: function(attr) {
-          this.baseClassDeployLandersToDomain(attr);
-          this.redeployLanders(attr.landerModel);
+        deployLandersToDomain: function(attr) {
+          this.addUndeployedLanderRows(attr);
+          this.redeployLanders(attr);
         },
 
-        redeployLanders: function(landerModel) {
+        addUndeployedLanderRows: function(attr) {
           var me = this;
-          //for domains on callback we need to add the id to the deployed row, 
-          //but for each redeploy job response we need to find the deployed lander in the domains
-          //list and add the job to that deployed lander
+          attr.new = [];
+
+          var domainModel = attr.model;
+          var listToDeploy = attr.listToDeploy;
+
+          var masterLander = listToDeploy[0];
+
+          if (!masterLander.noLandersToAdd) {
+
+            //create a list of deployed domain models to create for redeploy
+            var deployedLanders = domainModel.get("deployedLanders");
+            $.each(listToDeploy, function(idx, landerToDeployAttributes) {
+
+              var isDeployed = false;
+              deployedLanders.each(function(deployedLander) {
+                if (deployedLander.get("lander_id") == landerToDeployAttributes.lander_id) {
+                  isDeployed = true;
+                }
+              });
+
+              if (!isDeployed) {
+                var deployedLanderModel = new DeployedLanderModel(landerToDeployAttributes);
+                deployedLanders.add(deployedLanderModel);
+                //set to deploying to start
+                deployedLanderModel.set("deploy_status", "deploying");
+                attr.new.push(deployedLanderModel);
+              }
+            });
+          }
+        },
+
+        redeployLanders: function(attr) {
+          var me = this;
+
+          //used for deploying 1 lander on deploy lander
+          //and used for multiple in add campaign. 
+          //when using for multiple landers no landerModel will be here.
+          //in that case, get the redeploy jobs for the deployed landers without ids yet
+          //because those are the ones we're adding
 
 
           var onAfterRedeployCallback = function(responseJobList) {
 
-            //set the active_campaign_id if we have one. MUST do this outside of the 
-            //add job loop incase there are not any landers to deploy
-            // $.each(responseJobList, function(idx, responseJobAttr) {
-            //   if (responseJobAttr.active_campaign_id) {
-            //     activeCampaignsCollection.each(function(activeCampaign) {
-            //       if (!activeCampaign.get("id")) {
-            //         activeCampaign.set("id", responseJobAttr.active_campaign_id);
-            //       }
-            //     });
-            //   }
-            // });
-
             me.filteredCollection.original.each(function(domainModel) {
 
               var deployedLanderCollection = domainModel.get("deployedLanders");
+              var activeCampaignCollection = domainModel.get("activeCampaigns");
 
               deployedLanderCollection.each(function(deployedLander) {
 
@@ -426,16 +452,22 @@ define(["app",
 
                     activeJobs.add(newDeployJob);
 
-                    //also add the job to any active campaigns that have this domain_id
-                    // activeCampaignsCollection.each(function(activeCampaign) {
-                    //   var domains = activeCampaign.get("domains");
-                    //   $.each(domains, function(idx, domain) {
-                    //     if (domain.domain_id == newDeployJob.get("domain_id")) {
-                    //       var activeCampaignActiveJobs = activeCampaign.get("activeJobs");
-                    //       activeCampaignActiveJobs.add(newDeployJob);
-                    //     }
-                    //   });
-                    // });
+                    //also add the job to any active campaigns that have this lander_id
+                    activeCampaignCollection.each(function(activeCampaign) {
+                      //if active campaign doesn't have an id, add the active_campaign_id as its id
+                      if (!activeCampaign.get("id")) {
+                        activeCampaign.set("id", responseJobAttr.active_campaign_id);
+                      }
+
+                      var activeCampaignDeployedLanders = activeCampaign.get("deployedLanders");
+                      activeCampaignDeployedLanders.each(function(activeCampaignDeployedLander) {
+
+                        if (activeCampaignDeployedLander.lander_id == newDeployJob.get("lander_id")) {
+                          var activeCampaignActiveJobs = activeCampaign.get("activeJobs");
+                          activeCampaignActiveJobs.add(newDeployJob);
+                        }
+                      });
+                    });
 
                     //call start for each job 
                     Landerds.trigger("job:start", newDeployJob);
@@ -446,7 +478,51 @@ define(["app",
             });
           };
 
-          this.baseClassRedeployLanders(landerModel, onAfterRedeployCallback);
+          var landerModel = attr.landerModel;
+          var deployedDomainsJobList = [];
+          var addActiveCampaignModel;
+
+          if (landerModel) {
+            var landerRedeployAttr = this.getLanderRedeployJobs(landerModel);
+            deployedDomainsJobList = landerRedeployAttr.list;
+            addActiveCampaignModel = landerRedeployAttr.addActiveCampaignModel;
+          } else {
+            //loop to get all the jobs for these landers
+            //using deployed landers for deployed domains beacuse all we check is the similar active jobs
+            $.each(attr.new, function(index, newDeployedLanderModel) {
+              //search all domains for this lander and create a deployedDomain collection from it
+              var deployedDomainCollection = new DeployedDomainCollection();
+              me.filteredCollection.each(function(domainModel) {
+                var deployedLanders = domainModel.get("deployedLanders");
+                deployedLanders.each(function(deployedLander) {
+                  if (deployedLander.get("lander_id") == newDeployedLanderModel.get("lander_id")) {
+                    //this domain is of the domains this lander is on
+                    deployedDomainCollection.add(newDeployedLanderModel);
+                  }
+                });
+              });
+              newDeployedLanderModel.set("deployedDomains", deployedDomainCollection);
+
+              var landerRedeployAttr = me.getLanderRedeployJobs(newDeployedLanderModel);
+              deployedDomainsJobList = deployedDomainsJobList.concat(landerRedeployAttr.list);
+              addActiveCampaignModel = landerRedeployAttr.addActiveCampaignModel;
+            });
+          }
+
+          var redeployJobModel = new JobModel({
+            action: "deployLanderToDomain",
+            list: deployedDomainsJobList,
+            model: landerModel,
+            addActiveCampaignModel: addActiveCampaignModel,
+            neverAddToUpdater: true
+          });
+
+          var redeployJobAttributes = {
+            jobModel: redeployJobModel,
+            onSuccess: onAfterRedeployCallback
+          };
+
+          Landerds.trigger("job:start", redeployJobAttributes);
 
         },
 

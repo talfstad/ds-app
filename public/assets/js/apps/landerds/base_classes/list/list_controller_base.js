@@ -53,42 +53,42 @@ define(["app",
 
       //handles add campaigns deploy as well so must take empty list
       //needs to be able to take empty list, or more
-      baseClassDeployLandersToDomain: function(attr) {
-        var me = this;
+      // baseClassDeployLandersToDomain: function(attr) {
+      //   var me = this;
 
-        var landerModel = attr.landerModel;
-        var domainListToDeploy = attr.domainListToDeploy;
+      //   var landerModel = attr.landerModel;
+      //   var domainListToDeploy = attr.domainListToDeploy;
 
-        var masterDomain = domainListToDeploy[0];
+      //   var masterDomain = domainListToDeploy[0];
 
-        if (!masterDomain.noDomainsToAdd) {
+      //   if (!masterDomain.noDomainsToAdd) {
 
-          //create a list of deployed domain models to create for redeploy
-          var deployedDomains = landerModel.get("deployedDomains");
-          $.each(domainListToDeploy, function(idx, domainToDeployAttributes) {
+      //     //create a list of deployed domain models to create for redeploy
+      //     var deployedDomains = landerModel.get("deployedDomains");
+      //     $.each(domainListToDeploy, function(idx, domainToDeployAttributes) {
 
-            var isDeployed = false;
-            deployedDomains.each(function(deployedDomain) {
-              if (deployedDomain.get("domain_id") == domainToDeployAttributes.domain_id) {
-                isDeployed = true;
-              }
-            });
+      //       var isDeployed = false;
+      //       deployedDomains.each(function(deployedDomain) {
+      //         if (deployedDomain.get("domain_id") == domainToDeployAttributes.domain_id) {
+      //           isDeployed = true;
+      //         }
+      //       });
 
-            if (!isDeployed) {
+      //       if (!isDeployed) {
 
-              var deployedDomainModel = new DeployedDomainModel(domainToDeployAttributes);
-              deployedDomains.add(deployedDomainModel);
-              //set to deploying to start
-              deployedDomainModel.set("deploy_status", "deploying");
+      //         var deployedDomainModel = new DeployedDomainModel(domainToDeployAttributes);
+      //         deployedDomains.add(deployedDomainModel);
+      //         //set to deploying to start
+      //         deployedDomainModel.set("deploy_status", "deploying");
 
-            }
+      //       }
 
-          });
-        }
-      },
+      //     });
+      //   }
+      // },
 
-      //add un added landers (with new key), and redeploy if modified
-      baseClassRedeployLanders: function(landerModel, callback) {
+
+      getLanderRedeployJobs: function(landerModel) {
         var addActiveCampaignModel = false;
 
         //get list of all deployedDomains first
@@ -123,7 +123,7 @@ define(["app",
             if (addActiveCampaignModel) {
               var isInCampaign = false;
 
-              var domains = activeCampaignModel.get("domains");
+              var domains = addActiveCampaignModel.get("domains");
               $.each(domains, function(idx, domain) {
                 if (domain.domain_id == deployedDomain.get("domain_id")) {
                   isInCampaign = true;
@@ -230,21 +230,10 @@ define(["app",
 
         }
 
-        var redeployJobModel = new JobModel({
-          action: "deployLanderToDomain",
+        return {
           list: deployedDomainsJobList,
-          model: landerModel,
-          addActiveCampaignModel: addActiveCampaignModel,
-          neverAddToUpdater: true
-        });
-
-        var redeployJobAttributes = {
-          jobModel: redeployJobModel,
-          onSuccess: callback
-        };
-
-        Landerds.trigger("job:start", redeployJobAttributes);
-
+          addActiveCampaignModel: addActiveCampaignModel
+        }
       }
     };
 

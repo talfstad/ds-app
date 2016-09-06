@@ -83,7 +83,7 @@ define(["app",
             }
 
             // triggers add row to deployed domains and starts job 
-            Landerds.trigger("domains:deployNewLander", attrs);
+            Landerds.trigger("domains:deployLandersToDomain", attrs);
 
 
           });

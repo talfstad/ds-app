@@ -6,8 +6,9 @@ define(["app",
     Landerds.module("DomainsApp.Domains.List.ActiveCampaigns", function(ActiveCampaigns, Landerds, Backbone, Marionette, $, _) {
       ActiveCampaigns.EmptyView = Marionette.ItemView.extend({
         template: EmptyTpl,
-        tagName: "tbody"
-        
+        tagName: "tr",
+        className: "dark"
+
       });
     });
     return Landerds.DomainsApp.Domains.List.ActiveCampaigns.EmptyView;

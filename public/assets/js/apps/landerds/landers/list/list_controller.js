@@ -16,13 +16,14 @@ define(["app",
     "assets/js/apps/landerds/landers/dao/active_campaign_model",
     "assets/js/common/notification",
     "assets/js/apps/landerds/base_classes/list/list_controller_base",
+    "assets/js/apps/landerds/landers/dao/deployed_domain_model",
     "assets/js/apps/help/help_app",
     "assets/js/apps/landerds/landers/list/views/list_layout_view"
   ],
   function(Landerds, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
     PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView,
     DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView,
-    JobModel, LanderModel, ActiveCampaignModel, Notification, BaseListController) {
+    JobModel, LanderModel, ActiveCampaignModel, Notification, BaseListController, DeployedDomainModel) {
     Landerds.module("LandersApp.Landers.List", function(List, Landerds, Backbone, Marionette, $, _) {
 
       List.Controller = _.extend({ //BaseListController
@@ -377,8 +378,42 @@ define(["app",
         },
 
         deployLandersToDomain: function(attr) {
-          this.baseClassDeployLandersToDomain(attr);
+          this.addUndeployedDomainRows(attr);
           this.redeployLanders(attr.landerModel);
+        },
+
+        addUndeployedDomainRows: function(attr) {
+          var me = this;
+
+          var landerModel = attr.landerModel;
+          var domainListToDeploy = attr.domainListToDeploy;
+
+          var masterDomain = domainListToDeploy[0];
+
+          if (!masterDomain.noDomainsToAdd) {
+
+            //create a list of deployed domain models to create for redeploy
+            var deployedDomains = landerModel.get("deployedDomains");
+            $.each(domainListToDeploy, function(idx, domainToDeployAttributes) {
+
+              var isDeployed = false;
+              deployedDomains.each(function(deployedDomain) {
+                if (deployedDomain.get("domain_id") == domainToDeployAttributes.domain_id) {
+                  isDeployed = true;
+                }
+              });
+
+              if (!isDeployed) {
+
+                var deployedDomainModel = new DeployedDomainModel(domainToDeployAttributes);
+                deployedDomains.add(deployedDomainModel);
+                //set to deploying to start
+                deployedDomainModel.set("deploy_status", "deploying");
+
+              }
+
+            });
+          }
         },
 
         redeployLanders: function(landerModel) {
@@ -474,7 +509,24 @@ define(["app",
             }
           };
 
-          this.baseClassRedeployLanders(landerModel, onAfterRedeployCallback);
+          var landerRedeployAttr = this.getLanderRedeployJobs(landerModel);
+          var deployedDomainsJobList = landerRedeployAttr.list;
+          var addActiveCampaignModel = landerRedeployAttr.addActiveCampaignModel;
+
+          var redeployJobModel = new JobModel({
+            action: "deployLanderToDomain",
+            list: deployedDomainsJobList,
+            model: landerModel,
+            addActiveCampaignModel: addActiveCampaignModel,
+            neverAddToUpdater: true
+          });
+
+          var redeployJobAttributes = {
+            jobModel: redeployJobModel,
+            onSuccess: onAfterRedeployCallback
+          };
+
+          Landerds.trigger("job:start", redeployJobAttributes);
 
         },
 

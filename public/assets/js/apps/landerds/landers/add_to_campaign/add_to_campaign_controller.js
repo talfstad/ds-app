@@ -3,12 +3,13 @@ define(["app",
     "assets/js/apps/landerds/landers/add_to_campaign/views/campaigns_list_view",
     "assets/js/apps/landerds/landers/dao/active_campaign_model",
     "assets/js/apps/landerds/landers/add_to_campaign/views/add_to_campaign_layout_view",
-    "assets/js/apps/landerds/landers/dao/campaign_collection"
+    "assets/js/apps/landerds/campaigns/dao/campaign_collection"
   ],
   function(Landerds, LoadingView, CampaignsListView, ActiveCampaignModel, AddToCampaignLayoutView) {
     Landerds.module("LandersApp.Landers.AddToCampaign", function(AddToCampaign, Landerds, Backbone, Marionette, $, _) {
 
       AddToCampaign.Controller = {
+
         showAddNewCampaign: function(landerModel) {
 
           var addCampaignToLanderLayout = new AddToCampaignLayoutView({
@@ -67,7 +68,7 @@ define(["app",
           addCampaignToLanderLayout.campaignsListRegion.show(loadingView)
 
 
-          var deferredCampaignsCollection = Landerds.request("domains:campaignsCollection");
+          var deferredCampaignsCollection = Landerds.request("campaigns:campaignsCollection");
 
           $.when(deferredCampaignsCollection).done(function(campaignsCollection) {
 

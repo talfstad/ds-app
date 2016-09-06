@@ -63,8 +63,8 @@ define(["app",
           DeployNewLanderController.showDeployNewLander(model);
         },
 
-        deployNewLander: function(attr) {
-          ListController.deployNewLander(attr);
+        deployLandersToDomain: function(attr) {
+          ListController.deployLandersToDomain(attr);
         },
 
         showUndeployLander: function(model) {
@@ -127,8 +127,8 @@ define(["app",
         domainsAppAPI.showDeployNewLander(model);
       });
 
-      Landerds.on("domains:deployNewLander", function(attr) {
-        domainsAppAPI.deployNewLander(attr);
+      Landerds.on("domains:deployLandersToDomain", function(attr) {
+        domainsAppAPI.deployLandersToDomain(attr);
       });
 
       Landerds.on("domains:removeDeployedLanderModelFromCollection", function(model) {

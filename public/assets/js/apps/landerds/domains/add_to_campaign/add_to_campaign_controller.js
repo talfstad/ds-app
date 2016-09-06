@@ -3,7 +3,7 @@ define(["app",
     "assets/js/apps/landerds/domains/add_to_campaign/views/campaigns_list_view",
     "assets/js/apps/landerds/domains/dao/active_campaign_model",
     "assets/js/apps/landerds/domains/add_to_campaign/views/add_to_campaign_layout_view",
-    "assets/js/apps/landerds/domains/dao/campaign_collection"
+    "assets/js/apps/landerds/campaigns/dao/campaign_collection"
   ],
   function(Landerds, LoadingView, CampaignsListView, ActiveCampaignModel, AddToCampaignLayoutView) {
     Landerds.module("DomainsApp.Domains.AddToCampaign", function(AddToCampaign, Landerds, Backbone, Marionette, $, _) {
@@ -16,52 +16,68 @@ define(["app",
             model: domainModel
           });
 
-          var domain_id = domainModel.get("id");
-
           addCampaignToDomainLayout.render();
 
           Landerds.rootRegion.currentView.modalRegion.show(addCampaignToDomainLayout);
 
-          addCampaignToDomainLayout.on("addCampaignToDomain", function(campaignAttributes) {
-            
-            //taking a campaign model and making it an active campaign model
-            campaignAttributes.campaign_id = campaignAttributes.id;
-            campaignAttributes.domain_id = domainModel.get("id");
-            
-            //callback
-            var addedDomainToCampaignSuccessCallback = function(activeCampaignModel) {
+          addCampaignToDomainLayout.on("addCampaignToDomain", function(campaignModel) {
 
-              //save this lander to landers_with_campaigns
-              var deployCampaignToDomainAttrs = {
-                active_campaign_model: activeCampaignModel,
-                domain_model: domainModel
-              };
+            //create an add the active campaign model to the lander
+            var domain_id = domainModel.get("id");
+            var deployedLanderCollection = campaignModel.get("deployedLanders");
 
-              // triggers add row to deployed domains and starts job 
-              Landerds.trigger("domains:deployCampaignLandersToDomain", deployCampaignToDomainAttrs);
+            //add this domain as a new domain for this campaign model
+            var domains = campaignModel.get("domains");
+            domains.push({
+              domain_id: domain_id,
+              domain: domainModel.get("domain")
+            });
 
-            };
-            var addedDomainToCampaignErrorCallback = function(err, two, three) {
+            var newActiveCampaignModel = new ActiveCampaignModel({
+              deployedLanders: deployedLanderCollection,
+              campaign_id: campaignModel.get("id"),
+              name: campaignModel.get("name"),
+              domain_id: domain_id,
+              action: "domain",
+              domains: domains
+            });
 
-            };
+            var activeCampaignCollection = domainModel.get("activeCampaigns");
+            activeCampaignCollection.add(newActiveCampaignModel);
 
-            //add the campaign to the domain first, on success close dialog
-            var activeCampaignModel = new ActiveCampaignModel(campaignAttributes);
-            activeCampaignModel.unset("id");
+            var listToDeploy = [];
 
-            // create the model for activeCampaign model. make sure it saves to
-            activeCampaignModel.save({}, {
-              success: addedDomainToCampaignSuccessCallback,
-              error: addedDomainToCampaignErrorCallback
+            if (deployedLanderCollection.length > 0) {
+
+              deployedLanderCollection.each(function(deployedLander) {
+                listToDeploy.push({
+                  name: deployedLander.get("name"),
+                  domain_id: domain_id,
+                  modified: deployedLander.get("modified"),
+                  lander_id: deployedLander.get("lander_id")
+                });
+              });
+
+            } else {
+              //push on a dummy object with key to say "dont try to add any domains before calling redeploy"
+              listToDeploy.push({
+                domain_id: domain_id,
+                noLandersToAdd: true
+              });
+            }
+
+            Landerds.trigger("domains:deployLandersToDomain", {
+              model: domainModel,
+              listToDeploy: listToDeploy
             });
           });
-          
+
           //show loading
           var loadingView = new LoadingView();
           addCampaignToDomainLayout.campaignsListRegion.show(loadingView)
-        
-         
-          var deferredCampaignsCollection = Landerds.request("domains:campaignsCollection");
+
+
+          var deferredCampaignsCollection = Landerds.request("campaigns:campaignsCollection");
 
           $.when(deferredCampaignsCollection).done(function(campaignsCollection) {
 

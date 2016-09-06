@@ -45,12 +45,12 @@ define(["app",
             
             var campaignId = selectedRow.attr("data-campaign-id");
 
-            var campaign = this.getRegion("campaignsListRegion").currentView.datatablesCollection.find(function(m) {
-              var id = m.get('campaign_id') || m.get('id')
+            var campaignModel = this.getRegion("campaignsListRegion").currentView.datatablesCollection.find(function(m) {
+              var id = m.get('id')
               return id == campaignId
             });
             
-            this.trigger("addCampaignToDomain", campaign.attributes);
+            this.trigger("addCampaignToDomain", campaignModel);
             this.$el.modal("hide");
           }
         },

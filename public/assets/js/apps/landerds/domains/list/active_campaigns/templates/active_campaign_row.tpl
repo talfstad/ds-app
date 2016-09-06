@@ -1,33 +1,21 @@
-<tr class="campaign-name-row dark" style="border: none; font-size: 14px">
-  <td style="width: 20px">
-    <%= viewIndex %>
-  </td>
-  <td>
-    <div>
-      <%= name %>
-        <div style="float: right; margin-right: 10px; font-size: 16px">
-        <% if(deploy_status === "deployed"){ %>
-          <a class="undeploy" data-domainId="df" data-domainName="fd" href="#">
-            <span class="remove-campaign fa fa-trash-o"></span>
-          </a>
-        <% } else { %>
-        
-          <span style="font-size: 13px">
-            <%= deploy_status_gui %>
-          </span>
+<td><%= viewIndex %></td>
+<td class="table-lander-name deployed-row-td" style="white-space: nowrap; max-width: 305px; min-width: 145px">
+      <span><%= name %></span>
+</td>
 
-        <% } %>
-        
-        </div>
-    </div>
-  </td>
-</tr>
+<td class="absorbing-column">  
+<div class="domains-lander-links" style="margin-left: 0;">
+      
+      <div style="float: right; margin-right: 10px; line-height: 28px; font-size: 16px">
 
-<% _.each(deployedLanders, function(lander) { %>
-  <tr class="lander-on-campaign-row primary">
-    <td></td>
-    <td>
-      <div style="margin-left: 100px"> <%= lander.name %> </div>
-    </td>
-  </tr>
-  <% }) %>
+        <a class="goto-edit-campaign mr10" href="#">
+          <span class="fa fa-edit"></span>
+        </a>
+        
+        <a class="undeploy" data-domainId="df" data-domainName="fd" href="#">
+          <span class="remove-campaign fa fa-trash-o"></span>
+        </a>
+
+      </div>
+</div>
+</td>

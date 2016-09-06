@@ -9,6 +9,19 @@ define(["app",
         tagName: "table",
         className: "table",
 
+        childEvents: {
+          "gotoEditCampaign": "gotoEditCampaign"
+        },
+
+        gotoEditCampaign: function(childView) {
+          var domainId = childView.model.get("domain_id");;
+          var campaignId = childView.model.get("campaign_id");;
+
+          //save this domain so on back button it reopens the domain
+          Landerds.navigate("domains/show/" + domainId);
+          Landerds.trigger("campaigns:list", campaignId);
+        },
+
         onAddChild: function(childView) {
           this.reIndex();
         },
@@ -25,13 +38,13 @@ define(["app",
 
         //pass the deployed list its rendered index for # column
         childViewOptions: function(model) {
-          model.set('viewIndex', parseInt(this.collection.indexOf(model))+1);
+          model.set('viewIndex', parseInt(this.collection.indexOf(model)) + 1);
           model.set("domain", this.collection.domain);
         },
 
         childView: ActiveCampaignRowView,
         emptyView: EmptyView
-                
+
       });
     });
     return Landerds.DomainsApp.Domains.List.ActiveCampaigns.ChildView;

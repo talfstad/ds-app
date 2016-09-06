@@ -9,8 +9,7 @@ define(["app",
       defaults: {
         name: "",
         active_campaigns_count: 0,
-        active_landers_count: 0,
-        currentDomains: []
+        active_landers_count: 0
       },
 
       initialize: function() {

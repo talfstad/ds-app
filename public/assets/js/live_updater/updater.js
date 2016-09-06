@@ -48,7 +48,7 @@ define(["app"], function(Landerds) {
         });
       };
 
-      var intervalLength = 5000;
+      var intervalLength = 1000 * 10; //10 seconds
 
       this.poll = function() {
         setTimeout(function() {

@@ -5,11 +5,20 @@ module.exports = function(app, db) {
     var WorkerController = require("../../../workers")(app, db);
 
     var landerData = jobModelAttributes.model;
-
-    //update lander data to false on save here
-    landerData.saveModified = false;
-
+    var landerDataList = [];
     var list = jobModelAttributes.list;
+    if (landerData) {
+      //update lander data to false on save here
+      landerData.saveModified = false;
+      landerDataList.push(landerData);
+    } else {
+      //multiple landers in this deploy
+      landerDataList = list;
+    }
+
+
+//TODO get rid of landerData so we can use this for multiple lander_ids in the list
+
     var activeCampaignModelAttributes = jobModelAttributes.addActiveCampaignModel
 
     db.landers.updateAllLanderData(user, landerData, function(err, returnModelAttributes) {
@@ -131,7 +140,6 @@ module.exports = function(app, db) {
                       db.jobs.registerJob(user, firstJobAttributes, function(err, registeredMasterJobAttributes) {
 
                         //start the first job (master job)
-                        registeredMasterJobAttributes.landerData = landerData;
                         registeredMasterJobAttributes.active_campaign_id = active_campaign_id;
 
                         WorkerController.startJob(registeredMasterJobAttributes.action, user, registeredMasterJobAttributes);
@@ -148,28 +156,17 @@ module.exports = function(app, db) {
 
                             db.jobs.registerJob(user, list[i], function(err, registeredSlaveJobAttributes) {
 
-                              registeredSlaveJobAttributes.landerData = landerData;
                               finalList.push(registeredSlaveJobAttributes);
 
                               //start slave job
                               WorkerController.startJob(registeredSlaveJobAttributes.action, user, registeredSlaveJobAttributes);
 
                               if (++asyncIndex == list.length) {
-
-                                //put first job attributes back on list without modifying the list
-                                for (var j = 0; j < finalList.length; j++) {
-                                  //no need for landerData to be on the job updater...
-                                  delete finalList[j].landerData;
-                                }
-
                                 callback(false, finalList);
                               }
                             });
                           }
                         } else {
-                          for (var j = 0; j < finalList.length; j++) {
-                            delete finalList[j].landerData;
-                          }
                           callback(false, finalList);
                         }
                       });

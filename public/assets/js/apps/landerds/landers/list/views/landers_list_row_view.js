@@ -72,6 +72,8 @@ define(["app",
           if (deployStatus == "deleting") {
             this.$el.find(".alert-working-badge").hide();
             this.$el.find(".alert-deleting-badge").show();
+            Landerds.trigger('landers:closesidebar');
+            this.disableAccordionPermanently();
           }
 
 
