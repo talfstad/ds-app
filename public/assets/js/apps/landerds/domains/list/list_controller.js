@@ -381,7 +381,7 @@ define(["app",
 
         addUndeployedLanderRows: function(attr) {
           var me = this;
-          attr.new = [];
+          attr.deployList = [];
 
           var domainModel = attr.model;
           var listToDeploy = attr.listToDeploy;
@@ -395,28 +395,40 @@ define(["app",
             $.each(listToDeploy, function(idx, landerToDeployAttributes) {
 
               var isDeployed = false;
+              var shouldRedeploy = true;
+
               deployedLanders.each(function(deployedLander) {
                 if (deployedLander.get("lander_id") == landerToDeployAttributes.lander_id) {
                   isDeployed = true;
-
+                  shouldRedeploy = false;
                   //override if undeploying its not deployed
                   var activeJobs = deployedLander.get("activeJobs");
                   activeJobs.each(function(activeJob) {
                     if (activeJob.get("action") == "undeployLanderFromDomain") {
-                      isDeployed = false
+                      landerToDeployAttributes = deployedLander;
+                      shouldRedeploy = true;
                     }
                   });
                 }
               });
 
+              //create the deployed lander model, use current one if already created
+              var deployedLanderModel = landerToDeployAttributes;
+              if (!(deployedLanderModel instanceof Backbone.Model)) {
+                deployedLanderModel = new DeployedLanderModel(landerToDeployAttributes);
+              }
+
               if (!isDeployed) {
-                var deployedLanderModel = new DeployedLanderModel(landerToDeployAttributes);
                 deployedLanders.add(deployedLanderModel);
                 //set to deploying to start
                 deployedLanderModel.set("deploy_status", "deploying");
-                attr.new.push(deployedLanderModel);
-
               }
+
+              //push new if got no id, or if it has a job thats undeploying
+              if (shouldRedeploy) {
+                attr.deployList.push(deployedLanderModel);
+              }
+
             });
           }
         },
@@ -496,6 +508,8 @@ define(["app",
           var deployedDomainsJobList = [];
           var addActiveCampaignModel;
 
+          //get the list of redeploy jobs. handles for landermodel and for multiple
+          //deployed landers
           if (landerModel) {
             var landerRedeployAttr = this.getLanderRedeployJobs(landerModel);
             deployedDomainsJobList = landerRedeployAttr.list;
@@ -510,7 +524,7 @@ define(["app",
             });
             //loop to get all the jobs for these landers
             //using deployed landers for deployed domains beacuse all we check is the similar active jobs
-            $.each(attr.new, function(index, newDeployedLanderModel) {
+            $.each(attr.deployList, function(index, newDeployedLanderModel) {
               //search all domains for this lander and create a deployedDomain collection from it
               var deployedDomainCollection = new DeployedDomainCollection();
               me.filteredCollection.each(function(domainModel) {
@@ -518,7 +532,7 @@ define(["app",
                 deployedLanders.each(function(deployedLander) {
                   if (deployedLander.get("lander_id") == newDeployedLanderModel.get("lander_id")) {
                     //this domain is of the domains this lander is on
-                    deployedDomainCollection.add(newDeployedLanderModel);
+                    deployedDomainCollection.add(deployedLander);
                   }
                 });
               });
