@@ -15,8 +15,11 @@ module.exports = function(app, db) {
       secretAccessKey: user.aws_secret_access_key
     };
 
-    var landerData = attr.landerData;
-    var modified = landerData.modified;
+    var landerAttr = attr.landerData;
+    var modified = false;
+    if (landerAttr) {
+      modified = landerAttr.modified;
+    }
 
     var landersToGet = [{
       lander_id: lander_id
@@ -32,8 +35,13 @@ module.exports = function(app, db) {
             callback({ code: "CouldNotGetDomainInformation" }, [myJobId]);
           } else {
 
-            var lander = landers[0];
-            var s3_folder_name = lander.s3_folder_name;
+            //if modified not set by landerData use the modified we get from the db
+            var landerData = landers[0];
+            if (!modified) {
+              modified = landerData.modified;
+            }
+
+            var s3_folder_name = landerData.s3_folder_name;
 
             var awsS3FolderPath;
             if (modified) {
@@ -42,8 +50,8 @@ module.exports = function(app, db) {
               awsS3FolderPath = "/landers/" + s3_folder_name + "/optimized/";
             }
 
-            var deployment_folder_name = lander.deployment_folder_name;
-            var currently_deployed_deployment_folder_name = lander.old_deployment_folder_name;
+            var deployment_folder_name = landerData.deployment_folder_name;
+            var currently_deployed_deployment_folder_name = landerData.old_deployment_folder_name;
 
             var domain_name = domain.domain;
             var cloudfront_id = domain.cloudfront_id
@@ -92,7 +100,7 @@ module.exports = function(app, db) {
 
                 var s3_folder_name = landerData.s3_folder_name;
 
-                if (!landerData.modified) {
+                if (!modified) {
                   db.landers.common.unGzipAllFilesInStaging(staging_path, function(err) {
                     if (err) {
                       callback(err);
@@ -218,7 +226,7 @@ module.exports = function(app, db) {
                         } else {
                           app.log("invalidationData: " + JSON.stringify(invalidationData), "debug");
 
-                          var invalidation_id = invalidationData.Invalidation.Id;                          
+                          var invalidation_id = invalidationData.Invalidation.Id;
                           db.jobs.updateDeployStatus(user, myJobId, "invalidating", function(err) {
                             if (err) {
                               callback({ code: "CouldNotUpdateDeployStatus" });

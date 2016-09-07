@@ -49,21 +49,21 @@ define(["app",
           var activeCampaignCollection = this.model.get("activeCampaigns");
 
           var hasActiveCampaigns = false;
-          // if (activeCampaignCollection.length > 0) {
-          //   activeCampaignCollection.each(function(campaign) {
+          if (activeCampaignCollection.length > 0) {
+            activeCampaignCollection.each(function(campaign) {
 
-          //     var campaignLanders = campaign.get('landers');
+              var campaignLanders = campaign.get('landers');
 
-          //     var landerId = me.model.get("lander_id");
+              var landerId = me.model.get("lander_id");
 
-          //     if (campaignLanders.find(function(m) {
-          //         var id = m.lander_id || m.id;
-          //         return id == landerId;
-          //       })) {
-          //       hasActiveCampaigns = true;
-          //     }
-          //   });
-          // }
+              if (campaignLanders.find(function(m) {
+                  var id = m.lander_id;
+                  return id == landerId;
+                })) {
+                hasActiveCampaigns = true;
+              }
+            });
+          }
 
           me.model.set("hasActiveCampaigns", hasActiveCampaigns);
         },

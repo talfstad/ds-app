@@ -3,9 +3,27 @@ module.exports = function(app, db) {
 
   var module = {
 
-    getExtraNestedForActiveCampaign: function(user, activeCampaign, lander, callback) {
+    getExtraNestedForActiveCampaign: function(user, activeCampaign, callback) {
 
       var user_id = user.id;
+
+      var getAllLandersOnActiveCampaign = function(activeCampaign, callback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          } else {
+            connection.query("SELECT a.lander_id,b.name FROM landers_with_campaigns a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, activeCampaign.campaign_id],
+              function(err, dbLanders) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false, dbLanders);
+                }
+                connection.release();
+              });
+          }
+        });
+      };
 
       var getAllDomainsOnActiveCampaign = function(activeCampaign, callback) {
         db.getConnection(function(err, connection) {
@@ -31,7 +49,14 @@ module.exports = function(app, db) {
         } else {
           activeCampaign.domains = dbDomains;
 
-          callback(false);
+          getAllLandersOnActiveCampaign(activeCampaign, function(err, dbLanders) {
+            if (err) {
+              callback(err);
+            } else {
+              activeCampaign.landers = dbLanders;
+              callback(false);
+            }
+          });
         }
       });
     }

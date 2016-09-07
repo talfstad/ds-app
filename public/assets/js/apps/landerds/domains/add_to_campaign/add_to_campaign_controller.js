@@ -39,7 +39,8 @@ define(["app",
               name: campaignModel.get("name"),
               domain_id: domain_id,
               action: "domain",
-              domains: domains
+              domains: domains,
+              landers: campaignModel.get("deployedLanders").toJSON()
             });
 
             var activeCampaignCollection = domainModel.get("activeCampaigns");
@@ -53,6 +54,7 @@ define(["app",
                 listToDeploy.push({
                   name: deployedLander.get("name"),
                   domain_id: domain_id,
+                  campaign_id: campaignModel.get("id"),
                   modified: deployedLander.get("modified"),
                   lander_id: deployedLander.get("lander_id")
                 });

@@ -370,7 +370,12 @@ define(["app",
 
 
         deployLandersToDomain: function(attr) {
-          this.addUndeployedLanderRows(attr);
+          //handles both if we have a lander model and if we dont
+          if (attr.landerModel) {
+            this.baseClassDeployLandersToDomain(attr);
+          } else {
+            this.addUndeployedLanderRows(attr);
+          }
           this.redeployLanders(attr);
         },
 
@@ -402,6 +407,7 @@ define(["app",
                 //set to deploying to start
                 deployedLanderModel.set("deploy_status", "deploying");
                 attr.new.push(deployedLanderModel);
+
               }
             });
           }
@@ -462,7 +468,7 @@ define(["app",
                       var activeCampaignDeployedLanders = activeCampaign.get("deployedLanders");
                       activeCampaignDeployedLanders.each(function(activeCampaignDeployedLander) {
 
-                        if (activeCampaignDeployedLander.lander_id == newDeployJob.get("lander_id")) {
+                        if (activeCampaignDeployedLander.get("lander_id") == newDeployJob.get("lander_id")) {
                           var activeCampaignActiveJobs = activeCampaign.get("activeJobs");
                           activeCampaignActiveJobs.add(newDeployJob);
                         }

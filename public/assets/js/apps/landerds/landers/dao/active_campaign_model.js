@@ -34,7 +34,8 @@ define(["app",
         name: "",
         active_campaigns_count: 0,
         active_landers_count: 0,
-        domains: []
+        domains: [],
+        landers: []
       }
 
     });

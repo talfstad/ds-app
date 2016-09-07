@@ -5,23 +5,28 @@ module.exports = function(app, db) {
     var WorkerController = require("../../../workers")(app, db);
 
     var landerData = jobModelAttributes.model;
-    var landerDataList = [];
     var list = jobModelAttributes.list;
     if (landerData) {
       //update lander data to false on save here
       landerData.saveModified = false;
-      landerDataList.push(landerData);
     } else {
       //multiple landers in this deploy
-      landerDataList = list;
+      landerData = {};
+      landerData.no_optimize_on_save = true;
+
+      //add the landerData.multipleLanders array to update multiple landers data modified = false
+      landerData.multipleLanders = [];
+      _.each(list, function(job) {
+        landerData.multipleLanders.push(job.lander_id);
+      });
+
+      console.log("multipleLanders: " + JSON.stringify(landerData.multipleLanders));
     }
 
 
-//TODO get rid of landerData so we can use this for multiple lander_ids in the list
-
     var activeCampaignModelAttributes = jobModelAttributes.addActiveCampaignModel
 
-    db.landers.updateAllLanderData(user, landerData, function(err, returnModelAttributes) {
+    db.landers.updateAllLanderData(user, landerData, function(err) {
       if (err) {
         callback({ code: "InvalidLanderInputs" });
       } else {
@@ -46,7 +51,6 @@ module.exports = function(app, db) {
                     callback(false, active_campaign_id);
                   }
                 };
-
 
                 var addActiveCampaignToLandersWithCampaigns = function(callback) {
                   db.campaigns.addActiveCampaignToLander(user, activeCampaignModelAttributes, function(err, active_campaign_id) {
@@ -73,6 +77,7 @@ module.exports = function(app, db) {
                 if (activeCampaignAction == "lander") {
                   addActiveCampaignToLandersWithCampaigns(afterAddingActiveCampaignCallback);
                 } else if (activeCampaignAction == "domain") {
+                  console.log("ADdding active campaign to DOMAIN")
                   addActiveCampaignToCampaignsWithDomains(afterAddingActiveCampaignCallback);
                 } else {
                   callback({ code: "CouldNotAddActiveCampaignNoAction" });
@@ -125,11 +130,11 @@ module.exports = function(app, db) {
                     callback(err);
                   } else {
 
-
                     //if not modified then we arent redeploying, so just deploy the NEW lander that was added
-                    if (!landerData.modified && newLanders.length > 0) {
-                      list = newLanders;
-                    }
+                    // ## TODO put this on the front end for landers
+                    // if (!landerData.modified && newLanders.length > 0) {
+                    //   list = newLanders;
+                    // }
 
                     //if list is empty just save the lander
                     if (list.length > 0) {
