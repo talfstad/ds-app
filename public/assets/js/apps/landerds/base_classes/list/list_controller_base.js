@@ -205,6 +205,7 @@ define(["app",
 
                   }
 
+
                   if (deployedDomain.get("domain_id") == domain.domain_id) {
                     //also dont deploy it if domain 
                     deployedDomainInCampaign = true;

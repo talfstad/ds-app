@@ -21,8 +21,7 @@ define(["app",
 
           Landerds.rootRegion.currentView.modalRegion.show(removeDomainFromCampaignLayout);
 
-          //on add save the camp to db
-          removeDomainFromCampaignLayout.on("removeCampaignFromDomain", function() {
+          removeDomainFromCampaignLayout.on("removeCampaignFromLander", function() {
             //no landers on campaign so nothing needs to be undeployed. just destroy it
             activeCampaignModel.destroy();
           });

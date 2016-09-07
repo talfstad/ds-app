@@ -3,11 +3,9 @@ define(["app",
   ],
   function(Landerds, UndeployLayoutTemplate) {
 
-    Landerds.module("DomainsApp.Domains.UndeployCampaign", function(UndeployCampaign, Landerds, Backbone, Marionette, $, _) {
+    Landerds.module("DomainsApp.Domains.List.Campaign.Undeploy", function(Undeploy, Landerds, Backbone, Marionette, $, _) {
 
-      UndeployCampaign.Layout = Marionette.LayoutView.extend({
-
-        id: "undeploy-lander-modal",
+      Undeploy.Layout = Marionette.LayoutView.extend({
 
         className: "modal fade",
 
@@ -45,34 +43,15 @@ define(["app",
 
         onRender: function() {
           var me = this;
-
-          this.$el.off('show.bs.modal');
-          this.$el.off('shown.bs.modal');
-
-          this.$el.on('show.bs.modal', function(e){
-          
-           
-          });
-
-          this.$el.on('shown.bs.modal', function(e) {
-
-
-          });
-
           this.$el.modal('show');
-
         },
 
         onClose: function() {
           this.$el.modal('hide');
-        },
-
-        onDomRefresh: function() {
-
-
         }
+      
       });
 
     });
-    return Landerds.DomainsApp.Domains.UndeployCampaign.Layout;
+    return Landerds.DomainsApp.Domains.List.Campaign.Undeploy.Layout;
   });

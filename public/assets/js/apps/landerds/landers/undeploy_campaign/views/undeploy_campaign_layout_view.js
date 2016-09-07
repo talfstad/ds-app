@@ -7,8 +7,6 @@ define(["app",
 
       Undeploy.Layout = Marionette.LayoutView.extend({
 
-        id: "undeploy-lander-modal",
-
         className: "modal fade",
 
         attributes: {
@@ -40,36 +38,16 @@ define(["app",
         },
 
         confirmedRemoveCampaignFromLander: function() {
-          this.trigger("removeCampaignFromDomain", this.model);      
+          this.trigger("removeCampaignFromLander", this.model);      
         },
 
         onRender: function() {
           var me = this;
-
-          this.$el.off('show.bs.modal');
-          this.$el.off('shown.bs.modal');
-
-          this.$el.on('show.bs.modal', function(e){
-          
-           
-          });
-
-          this.$el.on('shown.bs.modal', function(e) {
-
-
-          });
-
           this.$el.modal('show');
-
         },
 
         onClose: function() {
           this.$el.modal('hide');
-        },
-
-        onDomRefresh: function() {
-
-
         }
       });
 

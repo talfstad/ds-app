@@ -46,7 +46,7 @@
 
         <% if(deploy_status === "deployed") { %>
         
-        <a class="goto-edit-lander" href="#" style="margin-right: 10px">
+        <a class="goto-edit-lander mr10" href="#">
           <span class="fa fa-edit"></span>
         </a>
 
@@ -69,9 +69,13 @@
 
         <% } else { %>
         
-        <span style="font-size: 13px; line-height: 28px">
+        <span style="font-size: 13px; margin-right: 10px; line-height: 28px">
           <%= deploy_status_gui %>
         </span>
+
+        <a class="goto-edit-lander" href="#">
+          <span class="fa fa-edit"></span>
+        </a>
 
         <% } %>
 

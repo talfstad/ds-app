@@ -20,7 +20,6 @@ module.exports = function(app, db) {
         landerData.multipleLanders.push(job.lander_id);
       });
 
-      console.log("multipleLanders: " + JSON.stringify(landerData.multipleLanders));
     }
 
 
@@ -36,6 +35,8 @@ module.exports = function(app, db) {
           if (err) {
             callback(err);
           } else {
+              console.log("GOT HERE: ")
+
             var addActiveCampaign = function(callback) {
               app.log("active campaign attr: " + JSON.stringify(activeCampaignModelAttributes), "debug");
 
@@ -126,7 +127,7 @@ module.exports = function(app, db) {
 
                 //get the list and 
                 addNewLanders(function(err, newLanders) {
-                  if (err) {
+                  if (err) {                    
                     callback(err);
                   } else {
 
@@ -141,6 +142,7 @@ module.exports = function(app, db) {
                       //register first job and assign as master
                       var firstJobAttributes = list.shift();
                       var finalList = [];
+
 
                       db.jobs.registerJob(user, firstJobAttributes, function(err, registeredMasterJobAttributes) {
 

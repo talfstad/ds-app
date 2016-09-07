@@ -11,11 +11,14 @@ define(["app",
 
         var items = new CampaignCollection();
 
-        this.each(function(campaign){
+        this.each(function(campaign) {
           campaignId = campaign.get("id");
 
-          if(!campaignsToFilterOutCollection.get(campaignId)) {
-            items.add(campaign);
+          if (!campaignsToFilterOutCollection.find(function(m) {
+              var id = m.get('campaign_id') || m.get('id');
+              return id == campaignId
+            })) {
+            items.add(domain);
           }
         });
 
@@ -39,7 +42,7 @@ define(["app",
             success: function(campaigns) {
               defer.resolve(campaigns);
             },
-            error: function(one, two, three){
+            error: function(one, two, three) {
               Landerds.execute("show:login");
             }
           });

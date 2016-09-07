@@ -214,7 +214,6 @@ define(["app",
 
         addJobsToActiveCampaigns();
 
-
         activeCampaignCollection.on("add destroy", function(activeCampaignModel) {
           deployedDomainsCollection.trigger("activeCampaignsChanged");
         });

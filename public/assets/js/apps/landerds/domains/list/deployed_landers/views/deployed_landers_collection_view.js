@@ -16,8 +16,12 @@ define(["app",
           "gotoEditLander": "gotoEditLander"
         },
 
+        collectionEvents: {
+          "activeCampaignsChanged": "render"
+        },
+
         gotoEditLander: function(childView) {
-          
+
           var landerId = childView.model.get("lander_id");;
           var domainId = childView.model.get("domain_id");;
 

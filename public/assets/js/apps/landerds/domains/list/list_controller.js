@@ -398,6 +398,14 @@ define(["app",
               deployedLanders.each(function(deployedLander) {
                 if (deployedLander.get("lander_id") == landerToDeployAttributes.lander_id) {
                   isDeployed = true;
+
+                  //override if undeploying its not deployed
+                  var activeJobs = deployedLander.get("activeJobs");
+                  activeJobs.each(function(activeJob) {
+                    if (activeJob.get("action") == "undeployLanderFromDomain") {
+                      isDeployed = false
+                    }
+                  });
                 }
               });
 
@@ -493,6 +501,13 @@ define(["app",
             deployedDomainsJobList = landerRedeployAttr.list;
             addActiveCampaignModel = landerRedeployAttr.addActiveCampaignModel;
           } else {
+            //add active campaign doesnt have an id yet
+            var activeCampaigns = attr.model.get("activeCampaigns");
+            activeCampaigns.each(function(campaign) {
+              if (!campaign.get("id")) {
+                addActiveCampaignModel = campaign;
+              }
+            });
             //loop to get all the jobs for these landers
             //using deployed landers for deployed domains beacuse all we check is the similar active jobs
             $.each(attr.new, function(index, newDeployedLanderModel) {
@@ -511,7 +526,6 @@ define(["app",
 
               var landerRedeployAttr = me.getLanderRedeployJobs(newDeployedLanderModel);
               deployedDomainsJobList = deployedDomainsJobList.concat(landerRedeployAttr.list);
-              addActiveCampaignModel = landerRedeployAttr.addActiveCampaignModel;
             });
           }
 

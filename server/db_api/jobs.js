@@ -120,14 +120,16 @@ module.exports = function(app, db) {
       var user_id = user.id;
 
       var ExternalInterruptJob = function(job, callback) {
-        app.log("\n\n\n\n11111 heres the job trying to cancel?? : " + JSON.stringify(job) + "\n\n\n", "debug");
+        app.log("\n11111 heres the job trying to cancel?? : " + JSON.stringify(job) + "\n", "debug");
 
         var query = "";
         var arr = [];
         if (job.action == "undeployLanderFromDomain" || job.action == "deployLanderToDomain") {
           //also include deployLanderToDomain jobs if we're undeploying
-          query = "UPDATE jobs SET error = ?, error_code = ?, processing = ? WHERE user_id = ? AND lander_id = ? AND domain_id = ? AND (action = ? OR action = ?) AND done = ?";
-          arr = [true, "ExternalInterrupt", false, user_id, job.lander_id, job.domain_id, "undeployLanderFromDomain", "deployLanderToDomain", false];
+          //did this select in update to avoid deadlock in db update
+          query = "update jobs SET error = ?, error_code = ?, processing = ? WHERE id IN (SELECT id FROM (SELECT id FROM jobs WHERE user_id = ? AND lander_id = ? AND domain_id = ? AND done = ? AND (action = ? OR action = ?)) as arbitraryTableName)"
+          // query = "UPDATE jobs SET error = ?, error_code = ?, processing = ? WHERE user_id = ? AND lander_id = ? AND domain_id = ? AND done = ? AND (action = ? OR action = ?) ";
+          arr = [true, "ExternalInterrupt", false, user_id, job.lander_id, job.domain_id, false, "undeployLanderFromDomain", "deployLanderToDomain"];
 
           db.getConnection(function(err, connection) {
             if (err) {
