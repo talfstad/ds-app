@@ -23,9 +23,9 @@ module.exports = function(app, db) {
               } else {
                 callback(false, dbDomains);
               }
+              connection.release();
             });
         }
-        connection.release();
       });
     },
 
@@ -44,9 +44,9 @@ module.exports = function(app, db) {
                 } else {
                   callback(false);
                 }
+                connection.release();
               });
           }
-          connection.release();
         });
       };
 
@@ -77,9 +77,9 @@ module.exports = function(app, db) {
                 } else {
                   callback(false, dbUrlEndpoints);
                 }
+                connection.release();
               });
           }
-          connection.release();
         });
       };
 
@@ -536,9 +536,9 @@ module.exports = function(app, db) {
             connection.query("SELECT id,action,deploy_status,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", arr,
               function(err, dbActiveJobs) {
                 callback(false, deployedDomain, dbActiveJobs);
+                connection.release();
               });
           }
-          connection.release();
         });
       };
 
@@ -553,9 +553,9 @@ module.exports = function(app, db) {
             connection.query("SELECT id,url_endpoint_id,load_time FROM endpoint_load_times WHERE deployed_lander_id = ? AND user_id = ?", [deployed_lander_id, user_id],
               function(err, dbLoadTimes) {
                 callback(false, dbLoadTimes);
+                connection.release();
               });
           }
-          connection.release();
         });
       };
 
@@ -664,9 +664,8 @@ module.exports = function(app, db) {
                   callback(err);
                 } else {
                   callback(false, dbActiveJobs);
-                  connection.release();
                 }
-
+                connection.release();
               });
           }
         });

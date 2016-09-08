@@ -211,8 +211,8 @@ module.exports = function(app, db) {
                 callback(err);
               } else {
                 callback(false, dbActiveJobs);
-                connection.release();
               }
+              connection.release();
             });
         });
       };

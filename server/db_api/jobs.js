@@ -371,9 +371,9 @@ module.exports = function(app, db) {
                 //processing key updated above
                 callback();
               }
+              connection.release();
             });
           }
-          connection.release();
         });
       } else {
         callback();
