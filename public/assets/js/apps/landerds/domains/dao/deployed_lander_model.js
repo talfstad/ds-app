@@ -3,9 +3,11 @@ define(["app",
     "assets/js/apps/landerds/domains/dao/active_campaign_collection",
     "assets/js/apps/landerds/base_classes/deployed_rows/models/deployed_row_base_model",
     "assets/js/apps/landerds/landers/dao/url_endpoint_collection",
+    "assets/js/apps/landerds/landers/dao/deployed_domain_collection", 
     "assets/js/jobs/jobs_app"
   ],
-  function(Landerds, JobsGuiBaseModel, ActiveCampaignCollection, DeployedRowBaseModel, UrlEndpointCollection) {
+  function(Landerds, JobsGuiBaseModel, ActiveCampaignCollection, DeployedRowBaseModel, 
+    UrlEndpointCollection, DeployedDomainCollection) {
     var DeployedLanderModel = DeployedRowBaseModel.extend({
 
       url: '/api/deployed_domain',
@@ -16,10 +18,13 @@ define(["app",
         DeployedRowBaseModel.prototype.initialize.apply(this);
         
 
-        var urlEndpointAttributes = this.get("urlEndpoints");
-        var urlEndpointCollection = new UrlEndpointCollection(urlEndpointAttributes);
+        var urlEndpointsAttributes = this.get("urlEndpoints");
+        var urlEndpointCollection = new UrlEndpointCollection(urlEndpointsAttributes);
         this.set("urlEndpoints", urlEndpointCollection);
 
+        var deployedDomainsAttributes = this.get("deployedDomains");
+        var deployedDomainCollection = new DeployedDomainCollection(deployedDomainsAttributes);
+        this.set("deployedDomains", deployedDomainCollection);
 
         //when job is destroyed must look to see if there are any more
         var activeJobCollection = this.get("activeJobs");

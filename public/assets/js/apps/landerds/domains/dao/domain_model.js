@@ -18,7 +18,6 @@ define(["app",
         var deployedLandersAttributes = this.get("deployedLanders");
 
         var deployedLanderCollection = new DeployedLanderCollection(deployedLandersAttributes);
-
         this.set("deployedLanders", deployedLanderCollection);
 
         var activeCampaignCollection = new ActiveCampaignCollection();
