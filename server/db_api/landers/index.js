@@ -29,6 +29,26 @@ module.exports = function(app, db) {
       });
     },
 
+    getDeployedLandersByLanderId: function(user, lander_id, callback) {
+      var user_id = user.id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          callback(err);
+        } else {
+          connection.query("SELECT id, lander_id, domain_id FROM deployed_landers WHERE user_id = ? AND lander_id = ?", [user_id, lander_id],
+            function(err, dbDeployedLanders) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, dbDeployedLanders);
+              }
+              connection.release();
+            });
+        }
+      });
+    },
+
     deleteFromLandersWithCampaigns: function(user, lander_id, callback) {
       var user_id = user.id;
 

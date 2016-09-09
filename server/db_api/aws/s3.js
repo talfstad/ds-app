@@ -54,7 +54,7 @@ module.exports = function(app, db) {
     },
 
     putObject: function(lander_id, credentials, bucketName, key, body, callback) {
-      
+
       var releaseLockAndCallback = function(err, data) {
         awsCommon.releaseLockForS3(lander_id, function() {
           if (err) {
@@ -508,11 +508,20 @@ module.exports = function(app, db) {
       });
     },
 
-    checkIfObjectExists: function(credentials, username, bucket, callback) {
+    checkIfDirectoryExists: function(credentials, username, bucket, folderPathToCheck, callback) {
       if (!bucket) {
         //no error if we pass a null string cuz the bucket doesn't exist
         callback(false, false);
       } else {
+        var fullDir;
+        if (folderPathToCheck) {
+          fullDir = folderPathToCheck;
+        } else {
+          fullDir = username;
+        }
+
+        app.log("checking if directory exists: " + bucket + " folder: " + folderPathToCheck, "debug");
+
         AWS.config.update({
           region: 'us-west-2',
           maxRetries: 0
@@ -522,9 +531,11 @@ module.exports = function(app, db) {
 
         var params = {
           Bucket: bucket,
-          Key: username + "/"
+          Prefix: fullDir
         };
-        aws_s3_client.headObject(params, function(err, data) {
+
+
+        aws_s3_client.listObjects(params, function(err, data) {
           if (err) {
             if (err.code === "NotFound") {
               callback(false, false);
@@ -532,7 +543,50 @@ module.exports = function(app, db) {
               callback(err, false);
             }
           } else {
-            callback(false, true);
+            var exists = (data.Contents.length > 0);
+            callback(false, exists);
+          }
+        });
+      }
+    },
+
+    checkIfObjectExists: function(credentials, username, bucket, folderPathToCheck, callback) {
+      if (!bucket) {
+        //no error if we pass a null string cuz the bucket doesn't exist
+        callback(false, false);
+      } else {
+        var fullDir;
+        if (folderPathToCheck) {
+          fullDir = folderPathToCheck;
+        } else {
+          fullDir = username;
+        }
+
+        app.log("checking if object exists: " + bucket + " folder: " + folderPathToCheck, "debug");
+
+        AWS.config.update({
+          region: 'us-west-2',
+          maxRetries: 0
+        });
+        AWS.config.update(credentials);
+        var aws_s3_client = new AWS.S3();
+
+        var params = {
+          Bucket: bucket,
+          Key: fullDir
+        };
+        aws_s3_client.headObject(params, function(err, data) {
+          if (err) {
+            console.log("TTTREV: " + JSON.stringify(err));
+            if (err.code === "NotFound") {
+              // callback(false, false);
+            } else {
+              console.log("123TTTREV: " + JSON.stringify(data));
+
+              // callback(err, false);
+            }
+          } else {
+            // callback(false, true);
           }
         });
       }
@@ -802,7 +856,8 @@ module.exports = function(app, db) {
         var me = this;
 
         //back it up if we have something to back up
-        this.checkIfObjectExists(oldCredentials, username, buckets.oldBucketName, function(err, objectExists) {
+        var folderPathToCheck = null;
+        this.checkIfObjectExists(oldCredentials, username, buckets.oldBucketName, folderPathToCheck, function(err, objectExists) {
           if (err) {
             callback(err);
           } else {
