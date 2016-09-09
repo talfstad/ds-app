@@ -55,7 +55,7 @@ define(["app",
             }, 3000);
 
           } else {
-            Notification("Deploying Landing Page", "May take up to 20 minutes", "success", "stack_top_right");
+            // Notification("Deploying Landing Page", "May take up to 20 minutes", "success", "stack_top_right");
 
             var domainId = selectedRow.attr("data-domain-id");
             var domain = selectedRow.text();

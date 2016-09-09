@@ -24,11 +24,10 @@ module.exports = function(app, db) {
             lander_id: lander_id
           }];
 
-
           if (addExtraCode == "finishedSavingLander") {
 
             //get the pagespeed scores for the lander
-            dbLanders.getPagespeedScoresForLander(user, lander_id, domain_id, function(err, pagespeed_scores) {
+            dbLanders.getPagespeedScoresForLander(user, lander_id, function(err, pagespeed_scores) {
               if (err) {
                 callback(err);
               } else {
@@ -48,6 +47,18 @@ module.exports = function(app, db) {
                 callback(false, activeJob);
               }
             }, landersToGet);
+          } else if (addExtraCode == "finishedDeployingLander") {
+
+            dbLanders.getDeployedDomainsForLander(user, lander_id, function(err, dbDeployedDomains) {
+              if (err) {
+                callback(err);
+              } else {
+                activeJob.extra.deployedDomains = dbDeployedDomains;
+
+                callback(false, activeJob);
+              }
+            });
+
           } else {
             callback(false, activeJob);
           }
@@ -69,6 +80,13 @@ module.exports = function(app, db) {
               if (oldDeployStatus == "deploying" && !activeJob.master_job_id) {
                 if (oldDeployStatus != activeJob.deploy_status) {
                   addExtraCode = "finishedSavingLander";
+                }
+              }
+
+              //on finish add stuff too
+              if (oldDeployStatus == "invalidating" || oldDeployStatus == "deploying") {
+                if (activeJob.deploy_status == "deployed") {
+                  addExtraCode = "finishedDeployingLander";
                 }
               }
             }
@@ -144,7 +162,7 @@ module.exports = function(app, db) {
                     if (err) {
                       callback(err);
                     } else {
-                      
+
                       finalActiveJobs.push(activeJob);
 
                       if (++asyncIndex == activeJobsArr.length) {

@@ -10,7 +10,6 @@ module.exports = function(app, passport) {
     var user = req.user;
 
     var data = req.body;
-    var link = data.load_time_link;
 
     db.deployed_domain.getLoadTimeForEndpoint(user, data, function(err, responseObj) {
       if (err) {

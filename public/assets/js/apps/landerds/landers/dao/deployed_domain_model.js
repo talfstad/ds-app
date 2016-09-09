@@ -53,9 +53,27 @@ define(["app",
         });
 
         activeJobCollection.on("finishedState", function(jobModel) {
+
           me.baseModelFinishState(jobModel);
 
-          if (jobModel.get("action") === "undeployDomainFromLander" ||
+          if (jobModel.get("action") == "deployLanderToDomain") {
+
+            var deployedDomainsArr = jobModel.get("extra").deployedDomains;
+            if (deployedDomainsArr) {
+
+              //get the deployed domain for this domain and set the endpoint load times
+              $.each(deployedDomainsArr, function(idx, deployedDomainAttr) {
+                if (deployedDomainAttr.domain_id == me.get("domain_id")) {
+                  me.set("endpoint_load_times", deployedDomainAttr.endpoint_load_times);
+                }
+              });
+            }
+            //finished with this job so destroy the jobModel
+            //hack to get it to not send DELETE XHR
+            delete jobModel.attributes.id;
+            jobModel.destroy();
+
+          } else if (jobModel.get("action") === "undeployDomainFromLander" ||
             jobModel.get("action") === "undeployLanderFromDomain" ||
             jobModel.get("alternate_action") === "undeployDomainFromLander") {
 

@@ -42,7 +42,7 @@ define(["app",
 
           } else {
              //notification that deployment may take up to 20 minutes
-            Notification("Deploying Landing Page", "May take up to 20 minutes", "success", "stack_top_right");
+            // Notification("Deploying Landing Page", "May take up to 20 minutes", "success", "stack_top_right");
 
             var landerId = selectedRow.attr("data-lander-id");
             var lander = this.getRegion("landersListRegion").currentView.datatablesCollection.get(landerId)

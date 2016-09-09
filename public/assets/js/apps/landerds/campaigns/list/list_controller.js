@@ -99,9 +99,9 @@ define(["app",
 
           //notification that deployment may take up to 20 minutes
           if (deployedDomainsCollection.length > 1) {
-            Notification("Deploying Landing Pages", "May take up to 20 minutes", "success", "stack_top_right");
+            // Notification("Deploying Landing Pages", "May take up to 20 minutes", "success", "stack_top_right");
           } else {
-            Notification("Deploying Landing Page", "May take up to 20 minutes", "success", "stack_top_right");
+            // Notification("Deploying Landing Page", "May take up to 20 minutes", "success", "stack_top_right");
           }
 
           deployedDomainsCollection.each(function(deployedDomainModel) {

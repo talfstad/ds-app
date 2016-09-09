@@ -80,30 +80,30 @@ module.exports = function(app, db) {
 
     },
 
-    getPagespeedScoresForLander: function(user, lander_id, domain_id, callback) {
-      //return an array of objects like this:
-      // {filename:"",optimized_pagespeed:"",original_pagespeed:""}
+    getUrlEndpointsForLander: function(user, lander_id, callback) {
       var user_id = user.id;
+      db.getConnection(function(err, connection) {
+        if (err) {
+          callback(err);
+        } else {
+          connection.query("SELECT id,filename,optimized_pagespeed,original_pagespeed FROM url_endpoints WHERE lander_id = ? AND user_id = ?", [lander_id, user_id],
+            function(err, dbUrlEndpoints) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, dbUrlEndpoints);
+              }
+              connection.release();
+            });
+        }
+      });
+    },
 
-      var getUrlEndpointsForLander = function(callback) {
-        db.getConnection(function(err, connection) {
-          if (err) {
-            callback(err);
-          } else {
-            connection.query("SELECT filename,optimized_pagespeed,original_pagespeed FROM url_endpoints WHERE lander_id = ? AND user_id = ?", [lander_id, user_id],
-              function(err, dbUrlEndpoints) {
-                if (err) {
-                  callback(err);
-                } else {
-                  callback(false, dbUrlEndpoints);
-                }
-                connection.release();
-              });
-          }
-        });
-      };
+    getPagespeedScoresForLander: function(user, lander_id, callback) {
+      //return an array of objects like this:
+      // {id: "", filename:"",optimized_pagespeed:"",original_pagespeed:""}
 
-      getUrlEndpointsForLander(function(err, dbUrlEndpoints) {
+      module.getUrlEndpointsForLander(user, lander_id, function(err, dbUrlEndpoints) {
         if (err) {
           callback(err);
         } else {
@@ -510,39 +510,8 @@ module.exports = function(app, db) {
       });
     },
 
-    getAll: function(user, successCallback, landersToGetArr) {
-
+    getDeployedDomainsForLander: function(user, lander_id, callback) {
       var user_id = user.id;
-
-      var getActiveCampaignsForLander = function(lander, callback) {
-        db.getConnection(function(err, connection) {
-          if (err) {
-            console.log(err);
-          }
-          connection.query("SELECT a.id AS campaign_id, b.id, a.name,b.lander_id from campaigns a JOIN landers_with_campaigns b ON a.id=b.campaign_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
-            function(err, dbActiveCampaigns) {
-
-              if (dbActiveCampaigns.length <= 0) {
-                callback(false, []);
-              } else {
-                var idx = 0;
-                for (var i = 0; i < dbActiveCampaigns.length; i++) {
-                  module.getExtraNestedForActiveCampaign(user, dbActiveCampaigns[i], function(err) {
-                    if (err) {
-                      callback(err);
-                    } else {
-                      if (++idx == dbActiveCampaigns.length) {
-                        callback(false, dbActiveCampaigns);
-                      }
-                    }
-
-                  });
-                }
-              }
-              connection.release();
-            });
-        });
-      };
 
       var getActiveJobsForDeployedDomain = function(deployedDomain, callback) {
         //get all jobs attached to lander and make sure only select those. list is:
@@ -579,12 +548,12 @@ module.exports = function(app, db) {
         });
       };
 
-      var getDeployedDomainsForLander = function(lander, callback) {
+      var getDeployedDomainsForLander = function(callback) {
         db.getConnection(function(err, connection) {
           if (err) {
             console.log(err);
           } else {
-            connection.query("SELECT a.id AS domain_id,a.domain,b.id,b.lander_id from domains a JOIN deployed_landers b ON a.id=b.domain_id WHERE (b.user_id = ? AND lander_id = ?)", [user_id, lander.id],
+            connection.query("SELECT a.id AS domain_id,a.domain,b.id,b.lander_id from domains a JOIN deployed_landers b ON a.id=b.domain_id WHERE (b.user_id = ? AND lander_id = ?)", [user_id, lander_id],
               function(err, dbDeployedDomains) {
                 if (err) {
                   callback(err)
@@ -605,7 +574,6 @@ module.exports = function(app, db) {
                               callback(false, dbDeployedDomains);
                             }
                           });
-
                         }
                       });
                     }
@@ -616,6 +584,46 @@ module.exports = function(app, db) {
           }
         });
       };
+
+      getDeployedDomainsForLander(callback);
+    },
+
+
+    getAll: function(user, successCallback, landersToGetArr) {
+
+      var user_id = user.id;
+
+      var getActiveCampaignsForLander = function(lander, callback) {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            console.log(err);
+          }
+          connection.query("SELECT a.id AS campaign_id, b.id, a.name,b.lander_id from campaigns a JOIN landers_with_campaigns b ON a.id=b.campaign_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
+            function(err, dbActiveCampaigns) {
+
+              if (dbActiveCampaigns.length <= 0) {
+                callback(false, []);
+              } else {
+                var idx = 0;
+                for (var i = 0; i < dbActiveCampaigns.length; i++) {
+                  module.getExtraNestedForActiveCampaign(user, dbActiveCampaigns[i], function(err) {
+                    if (err) {
+                      callback(err);
+                    } else {
+                      if (++idx == dbActiveCampaigns.length) {
+                        callback(false, dbActiveCampaigns);
+                      }
+                    }
+
+                  });
+                }
+              }
+              connection.release();
+            });
+        });
+      };
+
+
 
       var getActiveSnippetsForUrlEndpoint = function(urlEndpoint, callback) {
         db.getConnection(function(err, connection) {
@@ -697,7 +705,7 @@ module.exports = function(app, db) {
 
           lander.urlEndpoints = endpoints;
 
-          getDeployedDomainsForLander(lander, function(err, deployedDomains) {
+          module.getDeployedDomainsForLander(user, lander.id, function(err, deployedDomains) {
             if (err) {
               callback(err);
             } else {

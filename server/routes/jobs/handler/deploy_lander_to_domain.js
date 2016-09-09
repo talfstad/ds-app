@@ -35,7 +35,6 @@ module.exports = function(app, db) {
           if (err) {
             callback(err);
           } else {
-              console.log("GOT HERE: ")
 
             var addActiveCampaign = function(callback) {
               app.log("active campaign attr: " + JSON.stringify(activeCampaignModelAttributes), "debug");

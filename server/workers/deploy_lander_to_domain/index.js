@@ -14,6 +14,7 @@ module.exports = function(app, db) {
       accessKeyId: user.aws_access_key_id,
       secretAccessKey: user.aws_secret_access_key
     };
+    var deployed_row_id = attr.deployed_row_id;
 
     var landerAttr = attr.landerData;
     var modified = false;
@@ -248,41 +249,36 @@ module.exports = function(app, db) {
                               var waitForInvalidationComplete = function(callback) {
                                 if (folderPathToDeployCurrentlyExists) {
 
-                                  var invalidation_id = invalidationData.Invalidation.Id;
-                                  db.aws.cloudfront.waitForInvalidationComplete(user, myJobId, credentials, cloudfront_id, invalidation_id, function(err) {
+                                  db.jobs.updateDeployStatus(user, myJobId, "invalidating", function(err) {
                                     if (err) {
-                                      callback(err);
+                                      callback({ code: "CouldNotUpdateDeployStatus" });
                                     } else {
-                                      db.jobs.updateDeployStatus(user, myJobId, "deployed", function(err) {
+                                      var invalidation_id = invalidationData.Invalidation.Id;
+                                      db.aws.cloudfront.waitForInvalidationComplete(user, myJobId, credentials, cloudfront_id, invalidation_id, function(err) {
                                         if (err) {
-                                          callback({ code: "CouldNotUpdateDeployStatus" });
+                                          callback(err);
                                         } else {
                                           callback(false);
                                         }
                                       });
                                     }
                                   });
+
                                 } else {
                                   callback(false);
                                 }
                               };
 
-                              db.jobs.updateDeployStatus(user, myJobId, "invalidating", function(err) {
+                              //- wait for invalidation to finish and then finish job
+                              waitForInvalidationComplete(function(err) {
                                 if (err) {
-                                  callback({ code: "CouldNotUpdateDeployStatus" });
+                                  if (err.code == "ExternalInterrupt") {
+                                    app.log("external interrupt2!! " + myJobId);
+                                    err.staging_path = staging_path;
+                                  }
+                                  callback(err);
                                 } else {
-                                  //- wait for invalidation to finish and then finish job
-                                  waitForInvalidationComplete(function(err) {
-                                    if (err) {
-                                      if (err.code == "ExternalInterrupt") {
-                                        app.log("external interrupt2!! " + myJobId);
-                                        err.staging_path = staging_path;
-                                      }
-                                      callback(err);
-                                    } else {
-                                      callback(false);
-                                    }
-                                  });
+                                  callback(false);
                                 }
                               });
                             }
@@ -322,6 +318,50 @@ module.exports = function(app, db) {
                   }
                 };
 
+                var runYslowSpeedTestOnEndpoints = function(callback) {
+                  //get the url endpoints for the lander
+
+
+                  //domain info to get link, 
+
+                  //url endpoint id + filename to make link, run it
+
+
+                  db.landers.getUrlEndpointsForLander(user, lander_id, function(err, dbUrlEndpoints) {
+                    if (err) {
+                      callback(err);
+                    } else {
+                      var asyncIndex = 0;
+                      for (var i = 0; i < dbUrlEndpoints.length; i++) {
+                        var url_endpoint_id = dbUrlEndpoints[i].id;
+                        var filename = dbUrlEndpoints[i].filename;
+                        var link = "http://" + domain_name + "/" + deployment_folder_name + "/" + filename;
+                        app.log("url_endpoint_id: " + url_endpoint_id + "\ndeployed row id: " + deployed_row_id + "\nlink: " + link);
+
+                        //for each deployed lander
+                        var params = {
+                          id: deployed_row_id,
+                          load_time_data: {
+                            link: link,
+                            url_endpoint_id: url_endpoint_id
+                          }
+                        };
+
+                        db.deployed_domain.getLoadTimeForEndpoint(user, params, function(err, responseObj) {
+                          if (err) {
+                            callback(err);
+                          } else {
+                            app.log("got load times for endpoint: " + JSON.stringify(responseObj), "debug");
+                            if (++asyncIndex == dbUrlEndpoints.length) {
+                              callback(false);
+                            }
+                          }
+                        });
+                      }
+                    }
+                  });
+                };
+
                 deleteOldDeployedS3Dir(function(err) {
                   if (err) {
                     callback(err, [myJobId]);
@@ -330,7 +370,7 @@ module.exports = function(app, db) {
                       if (err) {
                         callback(err, [myJobId]);
                       } else {
-                        console.log(myJobId + " master prepare starting " + master_job_id)
+                        console.log(myJobId + " master prepare starting " + master_job_id);
                         masterPrepareLanderStagingArea(function(err, master_staging_path) {
                           if (err) {
                             callback(err, [myJobId]);
@@ -344,36 +384,47 @@ module.exports = function(app, db) {
                                     callback(err, [myJobId]);
                                   } else {
                                     app.log(myJobId + " done pushNewLanderToS3AndInvalidate", "debug");
+                                    runYslowSpeedTestOnEndpoints(function(err) {
+                                      if (err) {
+                                        callback(err, [myJobId]);
+                                      } else {
 
-                                    if (!master_job_id) {
-                                      //if master finish job and still wait around
-                                      db.jobs.finishedJobSuccessfully(user, [myJobId], function() {
+                                        if (!master_job_id) {
+                                          //if master finish job and still wait around
+                                          db.jobs.updateDeployStatus(user, myJobId, "deployed", function(err) {
+                                            if (err) {
+                                              callback({ code: "CouldNotUpdateDeployStatus" });
+                                            } else {
+                                              db.jobs.finishedJobSuccessfully(user, [myJobId], function() {
+                                                masterWaitForSlavesToFinish(function(err) {
+                                                  if (err) {
+                                                    callback(err, [myJobId]);
+                                                  } else {
+                                                    app.log(myJobId + " done masterWaitForSlavesToFinish", "debug");
 
-                                        masterWaitForSlavesToFinish(function(err) {
-                                          if (err) {
-                                            callback(err, [myJobId]);
-                                          } else {
-                                            app.log(myJobId + " done masterWaitForSlavesToFinish", "debug");
+                                                    //-when all slaves finished, delete staging directory
+                                                    deleteStagingArea(master_staging_path, function(err) {
+                                                      if (err) {
+                                                        callback(err, [myJobId]);
+                                                      } else {
+                                                        app.log(myJobId + " done deleteStagingArea", "debug");
 
-                                            //-when all slaves finished, delete staging directory
-                                            deleteStagingArea(master_staging_path, function(err) {
-                                              if (err) {
-                                                callback(err, [myJobId]);
-                                              } else {
-                                                app.log(myJobId + " done deleteStagingArea", "debug");
-
-                                                var finishedJobs = []; //master already finished his job above
-                                                callback(false, finishedJobs);
-                                              }
-                                            });
-                                          }
-                                        });
-                                      });
-                                    } else {
-                                      //slave just finishes
-                                      var finishedJobs = [myJobId];
-                                      callback(false, finishedJobs);
-                                    }
+                                                        var finishedJobs = []; //master already finished his job above
+                                                        callback(false, finishedJobs);
+                                                      }
+                                                    });
+                                                  }
+                                                });
+                                              });
+                                            }
+                                          });
+                                        } else {
+                                          //slave just finishes
+                                          var finishedJobs = [myJobId];
+                                          callback(false, finishedJobs);
+                                        }
+                                      }
+                                    });
                                   }
                                 });
                               }
