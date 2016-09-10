@@ -4,12 +4,18 @@ module.exports = function(app, db) {
 
   var uuid = require("uuid");
   var scraper = require('website-scraper');
+  var fs = require('fs');
+  var path = require('path');
+  var find = require('find');
+
 
   module.ripLander = function(user, attr, callback) {
+
     var me = this;
     var myJobId = attr.id;
     var lander_id = attr.lander_id;
     var url = attr.lander_url;
+
 
     var landerData = {
       id: lander_id,
@@ -45,23 +51,40 @@ module.exports = function(app, db) {
               if (err) {
                 cleanupAndError(err);
               } else {
-                var deleteStaging = true;
-                //rip and add lander both call this to finish the add lander process           
-                db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, stagingDir, landerData, function(err, data) {
-                  if (err) {
-                    db.log.rip.error(err, user, stagingDir, landerData, function(err) {
-                      //callback to user that we logged the error and are going to help figure it out
-                      cleanupAndError(err);
-                    });
-                  } else {
-                    db.jobs.updateDeployStatus(user, myJobId, 'not_deployed', function(err) {
-                      if (err) {
-                        cleanupAndError(err);
-                      } else {
-                        callback(false, [myJobId]);
+
+                var removeNonIndexHtmlFiles = function(callback) {
+                  //remove html files that aren't index.html since this is a rip
+                  find.file(/\.html$/, stagingPath, function(htmlFilePaths) {
+                    //create htmlFilesToDelete obj for saving
+                    for (var i = 0; i < htmlFilePaths.length; i++) {
+                      if (path.basename(htmlFilePaths[i]) != "index.html") {
+                        app.log("deleting staging html file (because not index.html): " + htmlFilePaths[i], "debug");
+                        fs.unlinkSync(htmlFilePaths[i]);
                       }
-                    });
-                  }
+                    }
+                    callback(false);
+                  });
+                }
+
+                removeNonIndexHtmlFiles(function() {
+                  var deleteStaging = true;
+                  //rip and add lander both call this to finish the add lander process           
+                  db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, stagingDir, landerData, function(err, data) {
+                    if (err) {
+                      db.log.rip.error(err, user, stagingDir, landerData, function(err) {
+                        //callback to user that we logged the error and are going to help figure it out
+                        cleanupAndError(err);
+                      });
+                    } else {
+                      db.jobs.updateDeployStatus(user, myJobId, 'not_deployed', function(err) {
+                        if (err) {
+                          cleanupAndError(err);
+                        } else {
+                          callback(false, [myJobId]);
+                        }
+                      });
+                    }
+                  });
                 });
               }
             });

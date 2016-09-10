@@ -293,11 +293,17 @@ module.exports = function(app, db) {
         //worker can do work no matter what because its just reading
         //file and isnt used by main loop. only used by another worker function
         request(href, function(err, response, body) {
-          if (err && response.statusCode != 200) {
-            callback(err);
+          if (response) {
+            if (err && response.statusCode != 200) {
+              callback(err);
+            } else {
+              callback(false, body);
+            }
           } else {
-            callback(false, body);
+            // console.log("HREF: " + href);
+            callback({code: "NoResponseGettingExternalFile"});
           }
+
         });
       };
 
