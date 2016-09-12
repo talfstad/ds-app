@@ -1,1 +1,1 @@
-<div id="campaigns-collection-items" class="clearfix"></div>
+<div id="list-collection-items" class="clearfix"></div>

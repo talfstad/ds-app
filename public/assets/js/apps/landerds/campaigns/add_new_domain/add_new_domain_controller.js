@@ -2,10 +2,10 @@ define(["app",
     "assets/js/apps/landerds/campaigns/add_new_domain/views/loading_view",
     "assets/js/apps/landerds/campaigns/add_new_domain/views/domains_list_view",
     "assets/js/apps/landerds/campaigns/add_new_domain/views/add_new_domain_layout_view",
-    "assets/js/apps/landerds/campaigns/dao/deployed_domain_model",
-    "assets/js/apps/landerds/campaigns/dao/domain_collection"
+    "assets/js/apps/landerds/campaigns/dao/domain_list_model",
+    "assets/js/apps/landerds/campaigns/dao/domain_list_collection"
   ],
-  function(Landerds, LoadingView, DomainsListView, AddNewDomainLayoutView, DeployedDomainModel) {
+  function(Landerds, LoadingView, DomainsListView, AddNewDomainLayoutView, DomainListModel) {
     Landerds.module("LandersApp.Landers.DeployToDomain", function(DeployToDomain, Landerds, Backbone, Marionette, $, _) {
 
       DeployToDomain.Controller = {
@@ -30,11 +30,11 @@ define(["app",
             domainAttributes.campaign_id = campaign_id;
             
             //callback
-            var addedDomainToCampaignSuccessCallback = function(deployedDomainModel) {
+            var addedDomainToCampaignSuccessCallback = function(domainListModel) {
 
               //save this lander to landers_with_campaigns
               var deployCampaignLandersToDomainAttrs = {
-                deployed_domain_model: deployedDomainModel,
+                domain_list_model: domainListModel,
                 campaign_model: campaignModel
               };
 
@@ -47,11 +47,11 @@ define(["app",
             };
 
             //add the campaign to the domain first, on success close dialog
-            var deployedDomainModel = new DeployedDomainModel(domainAttributes);
-            deployedDomainModel.unset("id");
+            var domainListModel = new DomainListModel(domainAttributes);
+            domainListModel.unset("id");
 
             // create the model for activeCampaign model. make sure it saves to
-            deployedDomainModel.save({}, {
+            domainListModel.save({}, {
               success: addedDomainToCampaignSuccessCallback,
               error: addedDomainToCampaignErrorCallback
             });
@@ -62,12 +62,12 @@ define(["app",
           var loadingView = new LoadingView();
           deployLanderToDomainLayout.domainsListRegion.show(loadingView)
         
-          var deferredDomainsCollection = Landerds.request("campaigns:domainsCollection");
+          var deferredDomainsCollection = Landerds.request("domains:domainsCollection");
 
           $.when(deferredDomainsCollection).done(function(domainsCollection) {
 
             //filter this collection, take out domains that lander is already deployed to
-            var filteredDomainsCollection = domainsCollection.filterOutDomains(campaignModel.get("deployedDomains"));
+            var filteredDomainsCollection = domainsCollection.filterOutDomains(campaignModel.get("domains"));
 
             //create the view, pass collection in as a var to be used to dynamically add to DT
             //show dt in view

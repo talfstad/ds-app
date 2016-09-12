@@ -3,25 +3,21 @@ define(["app",
     "assets/js/apps/landerds/campaigns/list/deployed_landers/views/deployed_landers_collection_view",
     "assets/js/apps/landerds/campaigns/list/deployed_landers/views/deployed_landers_empty_view",
     "assets/js/apps/landerds/campaigns/dao/sidebar_model",
-    "moment-timezone",
     "assets/js/apps/landerds/campaigns/list/views/lander_tab_handle_view",
     "assets/js/apps/landerds/campaigns/list/views/domain_tab_handle_view",
-    "assets/js/apps/landerds/campaigns/list/deployed_domains/views/deployed_domains_collection_view",
+    "assets/js/apps/landerds/campaigns/list/domains/views/domains_collection_view",
     "assets/js/common/notification",
+    "assets/js/apps/landerds/base_classes/list/views/list_rows_base_view",
     "bootstrap",
-    "jstz"
   ],
-  function(Landerds, LandersListItemTpl, DeployedListChildView, DeployedListEmptyView, SidebarModel, moment,
-    DeployStatusView, DomainTabHandleView, ActiveCampaignsView, Notification) {
+  function(Landerds, LandersListItemTpl, DeployedListChildView, DeployedListEmptyView, SidebarModel,
+    DeployStatusView, DomainTabHandleView, ActiveCampaignsView, Notification, ListRowsBaseView) {
 
-    Landerds.module("CampaignsApp.Campaigns.List.CollectionView", function(CollectionView, Landerds, Backbone, Marionette, $, _) {
-      CollectionView.RowView = Marionette.LayoutView.extend({
+    Landerds.module("CampaignsApp.Campaigns.List", function(List, Landerds, Backbone, Marionette, $, _) {
+      List.childView = ListRowsBaseView.extend({
 
         initialize: function() {
-          var me = this;
-          this.listenTo(this.model, "view:expand", function() {
-            me.expandAccordion();
-          });
+          ListRowsBaseView.prototype.initialize.apply(this);
         },
 
         className: "bs-component accordion-group",
@@ -35,6 +31,7 @@ define(["app",
           "notifySuccessDeleteCampaign": "notifySuccessDeleteCampaign",
           "notifySuccessChangeCampaignName": "notifySuccessChangeCampaignName",
           "notifyErrorDeleteCampaign": "notifyErrorDeleteCampaign",
+          "resortAndExpandModelView": "renderAndShowThisViewsPage",
           "change:deploy_status": "alertDeployStatus"
         },
 
@@ -42,9 +39,8 @@ define(["app",
           'lander_tab_handle_region': '.lander-tab-handle-region',
           'deployed_landers_region': '.deployed-landers-region',
           'domain_tab_handle_region': '.domain-tab-handle-region',
-          'deployed_domains_region': '.deployed-domains-region',
+          'domains_region': '.domains-region',
           'deploy_to_new_domain_region': '.deploy-to-new-domain-region',
-          'add_to_new_campaign_region': '.add-to-new-campaign-region'
         },
 
         alertDeployStatus: function() {
@@ -66,14 +62,7 @@ define(["app",
         },
 
         onBeforeRender: function() {
-          var createdOnRawMysqlDateTime = this.model.get("created_on");
-          var timezoneName = new jstz().timezone_name;
-          var formattedTime = moment.utc(createdOnRawMysqlDateTime, "MMM DD, YYYY h:mm A").tz(timezoneName).format("MMM DD, YYYY h:mm A");
-          this.model.set("created_on_gui", formattedTime);
-        },
-
-        expandAccordion: function() {
-          this.$el.find("a:first").click();
+          ListRowsBaseView.prototype.onBeforeRender.apply(this);
         },
 
         notifySuccessDeleteCampaign: function() {
@@ -89,59 +78,6 @@ define(["app",
           // this.model.trigger("reset");
         },
 
-        disableAccordionPermanently: function() {
-          //disable tab links
-          var me = this;
-
-          // first try collapsing it
-          $("#campaigns-collection .collapse").collapse("hide");
-
-          this.$el.find(".domain-tab-handle-region").off();
-          this.$el.find(".domain-status-tab-handle").removeAttr("data-toggle");
-
-          this.$el.find(".accordion-toggle").off();
-
-          this.$el.find(".lander-tab-handle-region").off();
-          this.$el.find(".lander-status-tab-handle").off();
-
-          this.$el.off();
-
-          this.$el.find(".nav.panel-tabs").off();
-
-          this.$el.find(".accordion-toggle").click(function(e) {
-            e.preventDefault();
-            return false;
-          });
-
-          this.$el.find(".accordion-toggle").hover(function() {
-            $(this).addClass("disabled-link");
-          });
-
-          this.$el.find("ul li").addClass("disabled");
-
-        },
-
-        reAlignTableHeader: function() {
-          var me = this;
-
-          setTimeout(function() {
-            //set the correct margin for the top headers
-            var landersColumnWidth = me.$el.find(".table-lander-name").width();
-            var newLanderLinkMargin = landersColumnWidth - 70;
-            if (newLanderLinkMargin > 0) {
-              me.$el.find(".deployed-domain-links-header").css("margin-left", newLanderLinkMargin);
-              me.$el.find(".deployed-landers-header").show();
-            } else {
-              me.$el.find(".deployed-landers-header").hide();
-            }
-
-            //fade  in the headers fast
-            $(".deployed-landers-header-container").show();
-
-          }, 10);
-
-        },
-
 
         onRender: function() {
 
@@ -149,6 +85,7 @@ define(["app",
 
           this.alertDeployStatus();
 
+          this.reAlignTableHeader();
 
           //if deleting need to show delet state (which is disabling the whole thing)
           if (this.model.get("deploy_status") === "deleting") {
@@ -177,15 +114,12 @@ define(["app",
 
             this.$el.on('hide.bs.collapse', function(e) {
 
-              //hide the header so it can fade in on next open
-              // $(".deployed-landers-header-container").hide();
+              me.trigger('childCollapsed');
 
               //close right sidebar if closing all domain accordions
               if ($(e.currentTarget).find("a[data-currently-hovering='true']").length > 0) {
                 Landerds.trigger('campaigns:closesidebar');
               }
-
-              //hide the tab
 
               $(e.currentTarget).find("li.active").removeClass("active");
               $(e.currentTarget).find(".accordion-toggle").removeClass('active');
@@ -193,10 +127,12 @@ define(["app",
             });
 
             this.$el.on('show.bs.collapse', function(e) {
+              me.reAlignTableHeader();
 
+              me.trigger('childExpanded');
 
               //collapse ALL others so we get an accordian effect !IMPORTANT for design
-              $("#campaigns-collection .collapse").collapse("hide");
+              $("#list-collection .collapse").collapse("hide");
 
               //disable the controls until shown (fixes multiple showing bug if clicked too fast)
               $(".accordion-toggle").addClass("inactive-link");
@@ -247,5 +183,5 @@ define(["app",
         }
       });
     });
-    return Landerds.CampaignsApp.Campaigns.List.CollectionView.RowView;
+    return Landerds.CampaignsApp.Campaigns.List.childView;
   });

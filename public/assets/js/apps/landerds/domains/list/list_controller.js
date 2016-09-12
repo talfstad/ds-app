@@ -51,21 +51,7 @@ define(["app",
 
           //set initial topbar view crap reloads when data loads
           var topbarView = new TopbarView({
-            model: new PaginatedModel({
-              current_page: 1,
-              num_pages: 0,
-              showing_high: 0,
-              showing_low: 0,
-              showing_total: 0,
-              total_deleting: 0,
-              total_deploying: 0,
-              total_undeploying: 0,
-              total_initializing: 0,
-              total: 0,
-              total_modified: 0,
-              total_not_deployed: 0,
-              total_num_items: 0
-            })
+            model: new PaginatedModel
           });
 
           domainsListLayout.topbarRegion.show(topbarView);
@@ -275,7 +261,7 @@ define(["app",
               domainsListLayout.topbarRegion.show(topbarView);
             }
 
-            var filterVal = $(".lander-search").val() || "";
+            var filterVal = $(".list-search").val() || "";
             if (me.filteredCollection.length > 0) {
               me.filteredCollection.filter(filterVal);
             }
@@ -596,11 +582,6 @@ define(["app",
           Landerds.trigger("job:start", deleteJobAttributes);
 
         }
-
-
-
-
-
 
       }, BaseListController);
     });

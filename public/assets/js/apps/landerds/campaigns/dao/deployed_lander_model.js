@@ -99,7 +99,7 @@ define(["app",
         nameservers: "",
 
         //gui attributes
-        //should default true since deployed_domains is where this model is used
+        //should default true since domains is where this model is used
         deploy_status: 'not_deployed',
       }
 

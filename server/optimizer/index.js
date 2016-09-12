@@ -875,10 +875,10 @@ module.exports = function(app, db) {
       app.log("ALERT: not optimizing images", "debug");
       callback(false);
     } else {
-      optimizePng(function(err) {
-        if (err) {
-          callback(err);
-        } else {
+      // optimizePng(function(err) {
+      //   if (err) {
+      //     callback(err);
+      //   } else {
           optimizeJpg(function(err) {
             if (err) {
               callback(err);
@@ -893,8 +893,8 @@ module.exports = function(app, db) {
             }
 
           });
-        }
-      });
+      //   }
+      // });
     }
   };
 

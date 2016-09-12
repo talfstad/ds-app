@@ -36,11 +36,7 @@ define(["app",
           this.sidebarView.on("updateCampaignName", function() {
             model.save({}, {
               success: function() {
-                if (model.collection.original) {
-                  model.collection.original.trigger("resortAndExpandModelView", model);
-                } else {
-                  model.collection.trigger("resortAndExpandModelView", model);
-                }
+                  model.trigger("resortAndExpandModelView");
               },
               error: function() {
 

@@ -1,10 +1,10 @@
 define(["app",
-    "tpl!assets/js/apps/landerds/campaigns/list/deployed_domains/templates/deployed_domain_row.tpl"
+    "tpl!assets/js/apps/landerds/campaigns/list/domains/templates/domain_row.tpl"
   ],
   function(Landerds, DeployedDomainRowTpl) {
 
-    Landerds.module("CampaignsApp.Campaigns.List.CollectionView.RowView.DeployedDomainsCollectionView", function(DeployedDomainsCollectionView, Landerds, Backbone, Marionette, $, _) {
-      DeployedDomainsCollectionView.DeployedDomainRowView = Marionette.ItemView.extend({
+    Landerds.module("CampaignsApp.Campaigns.List.Domain", function(Domain, Landerds, Backbone, Marionette, $, _) {
+      Domain.DeployedDomainRowView = Marionette.ItemView.extend({
 
         template: DeployedDomainRowTpl,
         tagName: "tr",
@@ -68,5 +68,5 @@ define(["app",
 
       });
     });
-    return Landerds.CampaignsApp.Campaigns.List.CollectionView.RowView.DeployedDomainsCollectionView.DeployedDomainRowView;
+    return Landerds.CampaignsApp.Campaigns.List.Domain.DeployedDomainRowView;
   });

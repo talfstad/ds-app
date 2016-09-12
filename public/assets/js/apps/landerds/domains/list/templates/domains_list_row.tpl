@@ -1,7 +1,7 @@
 <div class="panel-group">
   <div class="panel">
     <div class="panel-heading">
-      <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#landers-collection" href="#accord<%= id %>">
+      <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#list-collection" href="#accord<%= id %>">
         <%= domain %>
 
           <div class="alert-working-badge widget-menu domain-campaign-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">

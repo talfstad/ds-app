@@ -35,7 +35,7 @@ define(["app",
             this.model.set("showAwsHelp", true);
           }
 
-          this.model.set('filterVal', $('.lander-search').val());
+          this.model.set('filterVal', $('.list-search').val());
 
 
         },

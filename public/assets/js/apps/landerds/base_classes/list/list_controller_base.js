@@ -39,8 +39,8 @@ define(["app",
       expandAndShowRow: function(model) {
         if (this.filteredCollection) {
 
+          childExpandedId = model.get("id");
           this.filteredCollection.showPageWithModel(model);
-
           model.trigger("view:expand");
         }
       },

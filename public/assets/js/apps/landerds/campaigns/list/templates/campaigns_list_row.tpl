@@ -1,7 +1,7 @@
 <div class="panel-group">
   <div class="panel">
     <div class="panel-heading">
-      <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#campaigns-collection" href="#accord<%= id %>">
+      <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#list-collection" href="#accord<%= id %>">
         <span class="campaign-name-text">
           <%= name %>
         </span>
@@ -40,7 +40,7 @@
           </div>
           <div class="panel-body">
             <div style="padding-bottom: 15px">
-              <table class="table deployed-domains-region"></table>
+              <table class="table domains-region"></table>
             </div>
           </div>
         </div>

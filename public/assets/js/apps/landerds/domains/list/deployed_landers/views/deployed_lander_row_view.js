@@ -74,7 +74,6 @@ define(["app",
 
         showUndeployLander: function(e) {
           e.preventDefault();
-          
           this.trigger("undeployLander", this.model);
         }
       });

@@ -11,6 +11,24 @@ define(["app",
         var str = doc.get('domain') || '';
         return str.toLowerCase();
       },
+
+      filterOutDomains: function(domainsToFilterOutCollection) {
+
+        var items = new DomainCollection();
+
+        this.each(function(domain) {
+          domainId = domain.get("domain_id") || domain.get("id");
+
+          if (!domainsToFilterOutCollection.find(function(m) {
+              var id = m.get('domain_id') || m.get('id')
+              return id == domainId
+            })) {
+            items.add(domain);
+          }
+        });
+
+        return items;
+      }
     });
 
 

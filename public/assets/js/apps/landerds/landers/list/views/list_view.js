@@ -11,7 +11,7 @@ define(["app",
     Landerds.module("LandersApp.Landers.List", function(List, Landerds, Backbone, Marionette, $, _) {
 
       List.View = Marionette.CollectionView.extend({
-        id: "landers-collection",
+        id: "list-collection",
         className: "accordion",
         emptyView: landersEmptyView,
         childView: landersListRowView,
@@ -98,7 +98,7 @@ define(["app",
 
           $(".collapse").collapse({
             toggle: false,
-            parent: "#landers-collection"
+            parent: "#list-collection"
           });
         }
       });

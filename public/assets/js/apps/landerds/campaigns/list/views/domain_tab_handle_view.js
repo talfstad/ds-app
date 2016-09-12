@@ -17,7 +17,7 @@ define(["app",
         template: domainTabHandleTpl,
 
         modelEvents: {
-          "change:deployed_domains_count": "render",
+          "change:domains_count": "render",
         },
 
         events: {

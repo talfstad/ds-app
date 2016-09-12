@@ -3,26 +3,21 @@ define(["app",
     "assets/js/apps/landerds/landers/list/deployed_domains/views/deployed_domains_collection_view",
     "assets/js/apps/landerds/landers/list/deployed_domains/views/deployed_domains_empty_view",
     "assets/js/apps/landerds/landers/dao/sidebar_model",
-    "moment-timezone",
     "assets/js/apps/landerds/landers/list/views/domain_tab_handle_view",
     "assets/js/apps/landerds/landers/list/views/campaign_tab_handle_view",
     "assets/js/apps/landerds/landers/list/active_campaigns/views/active_campaigns_collection_view",
     "assets/js/apps/landerds/landers/list/deployed_domains/views/deployed_domains_collection_view",
     "assets/js/apps/landerds/base_classes/list/views/list_rows_base_view",
     "bootstrap",
-    "jstz"
   ],
-  function(Landerds, LandersListItemTpl, DeployedListChildView, DeployedListEmptyView, SidebarModel, moment,
+  function(Landerds, LandersListItemTpl, DeployedListChildView, DeployedListEmptyView, SidebarModel,
     DeployStatusView, CampaignTabHandleView, ActiveCampaignsView, DeployedDomainsView, ListRowsBaseView) {
 
     Landerds.module("LandersApp.Landers.List", function(List, Landerds, Backbone, Marionette, $, _) {
       List.childView = ListRowsBaseView.extend({
 
         initialize: function() {
-          var me = this;
-          this.listenTo(this.model, "view:expand", function() {
-            me.expandAccordion();
-          });
+          ListRowsBaseView.prototype.initialize.apply(this);
         },
 
         className: "bs-component accordion-group",
@@ -47,12 +42,6 @@ define(["app",
           'deployed_domains_region': '.deployed-domains-region',
           'campaign_tab_handle_region': '.campaign-tab-handle-region',
           'active_campaigns_region': '.active-campaigns-region'
-        },
-
-        //if this is called it means view is rendered so call for a show page
-        //thing which will render the collection again and show the page again
-        renderAndShowThisViewsPage: function() {
-          this.trigger("renderAndShowThisViewsPage");
         },
 
         alertDeployStatus: function() {
@@ -118,46 +107,7 @@ define(["app",
         },
 
         onBeforeRender: function() {
-          var lastUpdatedRawMysqlDateTime = this.model.get("created_on");
-          var timezoneName = new jstz().timezone_name;
-          var formattedTime = moment.utc(lastUpdatedRawMysqlDateTime, "MMM DD, YYYY h:mm A").tz(timezoneName).format("MMM DD, YYYY h:mm A");
-          this.model.set("created_on_gui", formattedTime);
-        },
-
-        expandAccordion: function() {
-          this.$el.find("a:first").click();
-        },
-
-        disableAccordionPermanently: function() {
-          //disable tab links
-          var me = this;
-
-          // first try collapsing it
-          $("#landers-collection .collapse").collapse("hide");
-
-          this.$el.find(".campaign-tab-handle-region").off();
-          this.$el.find(".campaign-tab-handle-region a").attr("data-toggle", "");
-
-          this.$el.find(".accordion-toggle").off();
-          this.$el.find(".deploy-status-region").off();
-          this.$el.find(".deploy-status-region a").attr("data-toggle", "");
-
-          this.$el.off();
-          this.$el.find(".nav.panel-tabs").off();
-
-          this.$el.find(".accordion-toggle").click(function(e) {
-            e.preventDefault();
-            return false;
-          });
-
-          //disable main link
-          // this.$el.find(".accordion-toggle").removeAttr("data-toggle");
-          this.$el.find(".accordion-toggle").hover(function() {
-            $(this).addClass("disabled-link");
-          });
-
-          this.$el.find("ul li").addClass("disabled");
-
+          ListRowsBaseView.prototype.onBeforeRender.apply(this);
         },
 
         onRender: function() {
@@ -218,7 +168,7 @@ define(["app",
               me.trigger('childExpanded');
 
               //collapse ALL others so we get an accordian effect !IMPORTANT for design
-              $("#landers-collection .collapse").collapse("hide");
+              $("#list-collection .collapse").collapse("hide");
 
               //disable the controls until shown (fixes multiple showing bug if clicked too fast)
               $(".accordion-toggle").addClass("inactive-link");

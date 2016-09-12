@@ -1,11 +1,11 @@
 define(["app",
-    "assets/js/apps/landerds/campaigns/list/deployed_domains/views/deployed_domain_row_view",
-    "assets/js/apps/landerds/campaigns/list/deployed_domains/views/deployed_domain_empty_view"
+    "assets/js/apps/landerds/campaigns/list/domains/views/domain_row_view",
+    "assets/js/apps/landerds/campaigns/list/domains/views/domain_empty_view"
   ],
   function(Landerds, DeployedDomainRowView, EmptyView) {
 
-    Landerds.module("CampaignsApp.Campaigns.List.CollectionView.RowView", function(RowView, Landerds, Backbone, Marionette, $, _) {
-      RowView.DeployedDomainsCollectionView = Marionette.CollectionView.extend({
+    Landerds.module("CampaignsApp.Campaigns.List.Domain", function(Domain, Landerds, Backbone, Marionette, $, _) {
+      Domain.DeployedDomainsCollectionView = Marionette.CollectionView.extend({
         tagName: "tbody",
 
         childEvents: {
@@ -33,14 +33,15 @@ define(["app",
         },
 
         reIndex: function() {
-          this.collection.each(function(deployedDomainModel, idx) {
-            deployedDomainModel.set("viewIndex", idx + 1);
+          this.collection.each(function(domainListModel, idx) {
+            domainListModel.set("viewIndex", idx + 1);
           });
         },
 
         //pass the deployed list its rendered index for # column
         childViewOptions: function(model) {
           model.set('viewIndex', parseInt(this.collection.indexOf(model)) + 1);
+          model.set('campaign_id', this.collection.campaign_id);
           // model.set("name", this.collection.name);
         },
 
@@ -49,5 +50,5 @@ define(["app",
 
       });
     });
-    return Landerds.CampaignsApp.Campaigns.List.CollectionView.RowView.DeployedDomainsCollectionView;
+    return Landerds.CampaignsApp.Campaigns.List.Domain.DeployedDomainsCollectionView;
   });

@@ -3,7 +3,7 @@ define(["app",
     "assets/js/jobs/jobs_app"
   ],
   function(Landerds, JobsGuiBaseModel) {
-    var DeployedDomainModel = JobsGuiBaseModel.extend({
+    var DomainListModel = JobsGuiBaseModel.extend({
 
       urlRoot: '/api/active_campaigns_on_domain',
 
@@ -108,13 +108,13 @@ define(["app",
       defaults: {
         domain: "",
         //gui attributes
-        //should default true since deployed_domains is where this model is used
+        //should default true since domains is where this model is used
         deploy_status: 'not_deployed'
       }
 
 
     });
 
-    return DeployedDomainModel;
+    return DomainListModel;
 
   });

@@ -1,14 +1,21 @@
 define(["app"],
   function(Landerds) {
 
-  	var PaginatedButtonViewModel = Backbone.Model.extend({
+    var PaginatedButtonViewModel = Backbone.Model.extend({
       defaults: {
-        num_pages: 1,
-        total_num_items: 0,
         current_page: 1,
-        showing_low: 1,
-        showing_high: 10,
-        showing_total: 10
+        num_pages: 0,
+        showing_high: 0,
+        showing_low: 0,
+        showing_total: 0,
+        total_deleting: 0,
+        total_deploying: 0,
+        total_initializing: 0,
+        total: 0,
+        total_modified: 0,
+        total_not_deployed: 0,
+        total_num_items: 0,
+        total_undeploying: 0
       }
     });
 

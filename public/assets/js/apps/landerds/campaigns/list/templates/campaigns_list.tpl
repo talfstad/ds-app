@@ -71,7 +71,7 @@
         <ul class="nav nav-list nav-list-topbar pull-left">
           <form class="navbar-form navbar-search pull-left mtn mbn" role="search">
             <div class=" mt10 form-group">
-              <input type="text" class="lander-search w250 form-control" placeholder="Search Campaign Name..." value="">
+              <input type="text" class="list-search w250 form-control" placeholder="Search Campaign Name..." value="">
             </div>
           </form>
         </ul>

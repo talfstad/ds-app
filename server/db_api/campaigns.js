@@ -50,7 +50,8 @@ module.exports = function(app, db) {
               //don't send back deployedLanders or deployedDomains because it will overwrite the collections
               delete newCampaignAttributes.deployedLanders;
               delete newCampaignAttributes.activeJobs;
-
+              delete newCampaignAttributes.domains;
+              
               newCampaignAttributes.created_on = docs[1][0]["created_on"];
               newCampaignAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
               callback(false, newCampaignAttributes);
@@ -222,7 +223,7 @@ module.exports = function(app, db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT a.id AS domain_id,a.domain from domains a JOIN campaigns_with_domains b ON a.id=b.domain_id WHERE b.user_id = ? AND b.campaign_id = ?", [user_id, campaign.id],
+            connection.query("SELECT b.id, a.id AS domain_id,a.domain from domains a JOIN campaigns_with_domains b ON a.id=b.domain_id WHERE b.user_id = ? AND b.campaign_id = ?", [user_id, campaign.id],
               function(err, dbDomains) {
                 if (err) {
                   callback(err);

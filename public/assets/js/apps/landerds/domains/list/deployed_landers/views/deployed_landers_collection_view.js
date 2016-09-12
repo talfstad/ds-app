@@ -51,16 +51,6 @@ define(["app",
           model.set('domain', this.collection.domain);
           model.set('domain_id', this.collection.domain_id);
           model.set('activeCampaigns', this.collection.activeCampaigns);
-          //return options ONLY used by our empty view.
-          return {
-            isInitializing: this.collection.isInitializing || false
-          };
-        },
-
-        onRender: function() {
-
-
-
         }
 
       });

@@ -3,13 +3,11 @@ define(["app",
   ],
   function(Landerds, EmptyTpl) {
 
-    Landerds.module("DomainsApp.Domains.List.Deployed", function(List, Landerds, Backbone, Marionette, $, _) {
-      List.EmptyView = Marionette.ItemView.extend({
+    Landerds.module("DomainsApp.Domains.List.Deployed", function(Deployed, Landerds, Backbone, Marionette, $, _) {
+      Deployed.EmptyView = Marionette.ItemView.extend({
         template: EmptyTpl,
         tagName: "tr",
         className: "dark"
-
-
       });
     });
     return Landerds.DomainsApp.Domains.List.Deployed.EmptyView;
