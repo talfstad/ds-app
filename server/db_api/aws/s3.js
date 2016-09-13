@@ -125,16 +125,19 @@ module.exports = function(app, db) {
         Prefix: dirPath
       };
 
-      var deleteDirAction = s3_client.deleteDir(params);
-      deleteDirAction.on("error", function(err) {
-        console.log("ERROR deleting dir from s3");
-        callback(err);
-      });
-      deleteDirAction.on("end", function() {
-        console.log("DELETED DIR : " + bucketName + " : dir : " + dirPath);
-        callback();
-      });
-
+      if (dirPath) {
+        var deleteDirAction = s3_client.deleteDir(params);
+        deleteDirAction.on("error", function(err) {
+          app.log("ERROR deleting dir from s3", "debug");
+          callback(err);
+        });
+        deleteDirAction.on("end", function() {
+          app.log("DELETED DIR : " + bucketName + " : dir : " + dirPath, "debug");
+          callback(false);
+        });
+      } else {
+        callback(false);
+      }
     },
 
 
@@ -165,7 +168,6 @@ module.exports = function(app, db) {
         if (err) {
           callback(err);
         } else {
-          // console.log("successfully created bucket"); // successful response
           callback(false, data);
         }
       });
@@ -200,7 +202,7 @@ module.exports = function(app, db) {
         if (err) {
           callback(err);
         } else {
-          // console.log("successfully configured bucket for website " + bucketName); // successful response
+          app.log("successfully configured bucket for website " + bucketName, "debug"); // successful response
           callback(false, data);
         }
       });
@@ -223,10 +225,9 @@ module.exports = function(app, db) {
 
       aws_s3_client.deleteBucket(params, function(err, data) {
         if (err) {
-          console.log(err, err.stack); // an error occurred
           callback(err)
         } else {
-          // console.log("successfully deleted bucket" + bucketName); // successful response
+          app.log("successfully deleted bucket" + bucketName, "debug"); // successful response
           callback(false, data);
         }
       });
@@ -286,7 +287,7 @@ module.exports = function(app, db) {
             if (bucket.indexOf("lander-ds-") > -1) {
               returnBucketName = bucket;
               bucketExists = returnBucketName;
-              // console.log("bucket exists so not remaking everything")
+              app.log("bucket exists so not remaking everything", "debug");
             }
           }
 
@@ -333,7 +334,7 @@ module.exports = function(app, db) {
         if (err) {
           callback(err);
         } else {
-          // console.log("added " + username + " snippets folder"); // successful response
+          app.log("added " + username + " snippets folder", "debug"); // successful response
           callback();
         }
       });
@@ -381,7 +382,7 @@ module.exports = function(app, db) {
           if (err) {
             completeCallback(err);
           } else {
-            // console.log("added " + username + " snippets folder"); // successful response
+            app.log("added " + username + " snippets folder", "debug"); // successful response
             callback();
           }
         });
@@ -397,7 +398,7 @@ module.exports = function(app, db) {
           if (err) {
             completeCallback(err);
           } else {
-            // console.log("added " + username + " snippets folder"); // successful response
+            app.log("added " + username + " snippets folder", "debug"); // successful response
             callback();
           }
         });
@@ -413,7 +414,7 @@ module.exports = function(app, db) {
           if (err) {
             completeCallback(err);
           } else {
-            // console.log("added " + username + " landers folder"); // successful response
+            app.log("added " + username + " landers folder", "debug"); // successful response
             callback();
           }
         });
@@ -429,7 +430,7 @@ module.exports = function(app, db) {
           if (err) {
             completeCallback(err);
           } else {
-            // console.log("added " + username + " landers folder"); // successful response
+            app.log("added " + username + " landers folder", "debug"); // successful response
             callback();
           }
         });
@@ -446,7 +447,7 @@ module.exports = function(app, db) {
           if (err) {
             completeCallback(err);
           } else {
-            // console.log("added domains"); // successful response
+            app.log("added domains", "debug"); // successful response
             callback();
           }
         });
@@ -577,16 +578,13 @@ module.exports = function(app, db) {
         };
         aws_s3_client.headObject(params, function(err, data) {
           if (err) {
-            console.log("TTTREV: " + JSON.stringify(err));
             if (err.code === "NotFound") {
-              // callback(false, false);
+              callback(false, false);
             } else {
-              console.log("123TTTREV: " + JSON.stringify(data));
-
-              // callback(err, false);
+              callback(err, false);
             }
           } else {
-            // callback(false, true);
+            callback(false, true);
           }
         });
       }
@@ -820,7 +818,6 @@ module.exports = function(app, db) {
         var me = this;
 
         dbCommon.createStagingArea(function(err, stagingPath) {
-          // console.log("made staging dir " + stagingPath);
           me.copyDirFromS3ToStaging(false, stagingPath, oldCredentials, username, buckets.oldBucketName, null, function(err) {
             if (err) {
               callback(err);
@@ -873,7 +870,7 @@ module.exports = function(app, db) {
               });
 
             } else {
-              // console.log("nothing to backup no folder found")
+              app.log("nothing to backup no folder found", "debug");
               callback(false, false);
             }
           }

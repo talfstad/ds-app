@@ -64,7 +64,7 @@ module.exports = function(app, passport) {
 
     var user = req.user;
 
-    db.aws.keys.getAmazonApiKeys(user, function(err, response) {
+    db.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, response) {
       if (err) {
         res.json({
           error: err

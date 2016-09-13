@@ -197,8 +197,7 @@ define(["app",
 
               }
 
-
-              $(e.currentTarget).find(".accordion-toggle").addClass('active')
+              $(e.currentTarget).find(".accordion-toggle").addClass('active');
 
               $(e.currentTarget).parent().find(".panel").addClass(".panel-info");
 
@@ -209,10 +208,10 @@ define(["app",
             this.$el.on('shown.bs.collapse', function(e) {
               //enable the anchor tags
               $(".accordion-toggle").removeClass("inactive-link");
-
             });
 
             this.$el.find(".nav.panel-tabs").click(function(e) {
+              me.reAlignTableHeader();
               $(e.currentTarget).parent().parent().find(".panel-collapse").collapse('show');
             });
           }

@@ -33,7 +33,7 @@
 	text-decoration: none;
 }
 
-.domains-region, .deployed-landers-region {
+.domains-region, .deployed-domains-region, .deployed-landers-region {
 	font-size: 14px;
 }
 

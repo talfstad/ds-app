@@ -24,6 +24,7 @@ define(["app",
         },
 
         modelEvents: {
+          "change:viewIndex": "updateViewIndex",
           "change:deploy_status": "render",
           "change:load_time_spinner_gui": "setLoadTimeSpinnerState"
         },
@@ -35,7 +36,7 @@ define(["app",
 
         onBeforeRender: function() {
           var me = this;
-          
+
           DeployedRowBaseView.prototype.onBeforeRender.apply(this);
 
           var activeCampaignCollection = this.model.get("activeCampaigns");
@@ -44,10 +45,10 @@ define(["app",
           if (activeCampaignCollection.length > 0) {
             activeCampaignCollection.each(function(campaign) {
 
-              var campaignDomains = campaign.get('domains');
-
               var domainId = me.model.get("domain_id");
 
+              //check if this deployed domain belongs to this campaign
+              var campaignDomains = campaign.get("domains").toJSON();
               if (campaignDomains.find(function(m) {
                   var id = m.domain_id || m.id;
                   return id == domainId;

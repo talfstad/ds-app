@@ -1,11 +1,11 @@
 define(["app",
-    "tpl!assets/js/apps/landerds/campaigns/remove_domain/templates/remove_domain_layout.tpl"
+    "tpl!assets/js/apps/landerds/campaigns/undeploy_lander/templates/undeploy_lander_layout.tpl"
   ],
-  function(Landerds, RemoveDomainLayout) {
+  function(Landerds, RemoveLanderLayout) {
 
-    Landerds.module("CampaignsApp.Campaigns.RemoveDomain", function(RemoveDomain, Landerds, Backbone, Marionette, $, _) {
+    Landerds.module("CampaignsApp.Campaigns.RemoveLander", function(RemoveLander, Landerds, Backbone, Marionette, $, _) {
 
-      RemoveDomain.Layout = Marionette.LayoutView.extend({
+      RemoveLander.Layout = Marionette.LayoutView.extend({
 
         className: "modal fade",
 
@@ -15,26 +15,26 @@ define(["app",
           "data-backdrop": "static"
         },
 
-        template: RemoveDomainLayout,
+        template: RemoveLanderLayout,
 
         events: {
-          "click .remove-domain-confirm": "confirmedRemoveDomain"
+          "click .remove-lander-confirm": "confirmedRemoveLander"
         },
 
         initialize: function() {
           this.campaignModel = this.options.campaign_model;
-          this.domainModel = this.options.domain_model;
+          this.landerModel = this.options.lander_model;
         },
 
         templateHelpers: function() {
           return {
             campaign_name: this.campaignModel.get("name"),
-            domain_name: this.domainModel.get("domain")
+            lander_name: this.landerModel.get("name")
           }
         },
 
-        confirmedRemoveDomain: function(domain) {
-          this.trigger("removeDomainFromCampaignConfirm");
+        confirmedRemoveLander: function(lander) {
+          this.trigger("removeLanderFromCampaignConfirm");
         },
 
         onRender: function() {
@@ -68,5 +68,5 @@ define(["app",
       });
 
     });
-    return Landerds.CampaignsApp.Campaigns.RemoveDomain.Layout;
+    return Landerds.CampaignsApp.Campaigns.RemoveLander.Layout;
   });

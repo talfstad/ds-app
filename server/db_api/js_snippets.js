@@ -34,34 +34,35 @@ module.exports = function(app, db) {
 
     },
 
-    getAll: function(user, successCallback) {
+    getAll: function(user, callback) {
 
       var user_id = user.id;
 
-      var getAllJsSnippetsDb = function(gotSnippetsCallback) {
+      var getAllJsSnippetsDb = function(callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
-          }
-          connection.query("SELECT id, code, name, load_before_dom, for_everyone, description FROM snippets WHERE user_id = ?", [user_id], function(err, dbsnippets) {
-            if (err) {
-              console.log(err);
-            } else {
-              for (var i = 0; i < dbsnippets.length; i++) {
-                var snippet = dbsnippets[i];
-                snippet.snippet_id = snippet.id
+            callback(err);
+          } else {
+            connection.query("SELECT id, code, name, load_before_dom, for_everyone, description FROM snippets WHERE user_id = ?", [user_id], function(err, dbsnippets) {
+              if (err) {
+                callback(err);
+              } else {
+                for (var i = 0; i < dbsnippets.length; i++) {
+                  var snippet = dbsnippets[i];
+                  snippet.snippet_id = snippet.id
+                }
+                callback(false, dbsnippets);
               }
-              gotSnippetsCallback(dbsnippets);
-            }
-            connection.release();
-          });
+              connection.release();
+            });
+          }
         });
       };
 
 
       //call to get all and return rows
-      getAllJsSnippetsDb(function(domains) {
-        return successCallback(domains);
+      getAllJsSnippetsDb(function(err, domains) {
+        return callback(false, domains);
       });
 
     },
@@ -77,12 +78,11 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
           connection.query("UPDATE snippets SET name = ?, load_before_dom = ?, description = ? WHERE id = ? AND user_id = ?", [name, load_before_dom, description, snippet_id, user_id],
             function(err, docs) {
               if (err) {
-                console.log(err);
                 callback(err);
               } else {
                 callback(false);
@@ -181,7 +181,7 @@ module.exports = function(app, db) {
                 callback(err);
               } else {
                 //write the snippet into the file using cheerio
-                var $ = cheerio.load(fileData, {decodeEntities: false});
+                var $ = cheerio.load(fileData, { decodeEntities: false });
 
                 snippetAlreadyOnPage = $('#snippet-' + snippet_id);
 
@@ -241,7 +241,7 @@ module.exports = function(app, db) {
 
           db.getConnection(function(err, connection) {
             if (err) {
-              console.log(err);
+              callback(err);
             } else {
               app.log("deleting from snippets where id is = " + snippet_id, "debug");
 
@@ -275,11 +275,11 @@ module.exports = function(app, db) {
 
         var scriptTag;
         if (load_before_dom) {
-          scriptTag = $("<script id='snippet-" + snippet_id + "' class='ds-no-modify'>"+ code +"</script>");
+          scriptTag = $("<script id='snippet-" + snippet_id + "' class='ds-no-modify'>" + code + "</script>");
           $('head').append(scriptTag);
 
         } else {
-          scriptTag = $("<script id='snippet-" + snippet_id + "' class='ds-no-modify'>"+ code +"</script>");
+          scriptTag = $("<script id='snippet-" + snippet_id + "' class='ds-no-modify'>" + code + "</script>");
 
           $('body').append(scriptTag);
         }
@@ -295,13 +295,12 @@ module.exports = function(app, db) {
 
           db.getConnection(function(err, connection) {
             if (err) {
-              console.log(err);
+              callback(err);
             } else {
               connection.query("UPDATE snippets SET code = ? WHERE id = ? AND user_id = ?", [code, snippet_id, user_id],
                 function(err, docs) {
                   if (err) {
-                    console.log(err);
-                    callback("\nError updating snippet code.");
+                    callback(err);
                   } else {
                     callback(false, affectedLanderIds);
                   }
@@ -324,14 +323,13 @@ module.exports = function(app, db) {
 
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
           } else {
             connection.query("SELECT a.url_endpoint_id as urlEndpointId, a.snippet_id, b.lander_id FROM active_snippets a, url_endpoints b WHERE a.id = ? AND a.user_id = ? AND a.url_endpoint_id = b.id", [active_snippet_id, user_id],
               function(err, docs) {
                 if (err) {
                   callback(err);
                 } else {
-                  console.log("GOT DOCS: " + JSON.stringify(docs));
                   var params = docs[0];
                   params.action = "delete";
                   callback(false, params);
@@ -346,19 +344,18 @@ module.exports = function(app, db) {
 
       getParams(function(err, params) {
         module.addSnippetToUrlEndpoint(user, params, function(err) {
-          console.log("params; " + JSON.stringify(params));
+          app.log("params: " + JSON.stringify(params), "debug");
 
           db.getConnection(function(err, connection) {
             if (err) {
-              console.log(err);
+              callback(err);
             } else {
               connection.query("DELETE FROM active_snippets WHERE id = ? AND user_id = ?", [active_snippet_id, user_id],
                 function(err, docs) {
                   if (err) {
-                    console.log(err);
                     callback(err);
                   } else {
-                    console.log("DELETED! ! success id: " + active_snippet_id);
+                    app.log("DELETED! ! success id: " + active_snippet_id, "debug");
                     callback(false, {});
                   }
                   //release connection
@@ -387,44 +384,46 @@ module.exports = function(app, db) {
       var getUrlEndpointData = function(urlEndpointId, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
+          } else {
+            connection.query("SELECT filename FROM url_endpoints WHERE user_id = ? AND id = ?", [user_id, urlEndpointId], function(err, docs) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, docs[0]);
+              }
+              connection.release();
+            });
           }
-          connection.query("SELECT filename FROM url_endpoints WHERE user_id = ? AND id = ?", [user_id, urlEndpointId], function(err, docs) {
-            if (err) {
-              callback(err);
-            } else {
-              callback(false, docs[0]);
-            }
-            connection.release();
-          });
+
         });
       };
 
       var getSnippetCode = function(snippetId, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
+          } else {
+            connection.query("SELECT code, load_before_dom FROM snippets WHERE user_id = ? AND id = ?", [user_id, snippetId], function(err, docs) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, docs[0]);
+              }
+              connection.release();
+            });
           }
-          connection.query("SELECT code, load_before_dom FROM snippets WHERE user_id = ? AND id = ?", [user_id, snippetId], function(err, docs) {
-            if (err) {
-              callback(err);
-            } else {
-              callback(false, docs[0]);
-            }
-            connection.release();
-          });
+
         });
       }
 
       var addSnippetToEndpoint = function(snippet_id, urlEndpointId, user_id, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
             callback(err);
           } else {
             connection.query("call add_snippet_to_url_endpoint(?, ?, ?)", [snippet_id, urlEndpointId, user_id], function(err, docs) {
               if (err) {
-                console.log(err);
                 callback(err);
               } else {
                 callback(false, {
@@ -471,7 +470,7 @@ module.exports = function(app, db) {
                       var fileData = data.Body.toString();
 
                       //write the snippet into the file using cheerio
-                      var $ = cheerio.load(fileData, {decodeEntities: false});
+                      var $ = cheerio.load(fileData, { decodeEntities: false });
 
                       snippetAlreadyOnPage = $('#snippet-' + snippet_id);
 
@@ -488,7 +487,7 @@ module.exports = function(app, db) {
                           if (action != "delete") {
                             var code = data.code;
                             var load_before_dom = data.load_before_dom;
-  
+
 
                             var scriptTag;
                             if (load_before_dom) {
@@ -510,7 +509,6 @@ module.exports = function(app, db) {
                               //update lander to modified and return that
                               dbLanders.updateLanderModifiedData(user, { id: landerId, modified: true }, function(err, id) {
                                 if (err) {
-                                  console.log(err);
                                   callback(err);
                                 } else {
                                   if (action == "delete") {

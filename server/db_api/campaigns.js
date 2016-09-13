@@ -14,19 +14,21 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
+        } else {
+          connection.query("UPDATE campaigns SET name = ? WHERE user_id = ? AND id = ?", [name, user_id, campaign_id],
+            function(err, docs) {
+              if (err) {
+                callback({
+                  code: "CouldNotUpdateCampNameIntoDb"
+                });
+              } else {
+                callback(false, campaignAttributes);
+              }
+              connection.release();
+            });
         }
-        connection.query("UPDATE campaigns SET name = ? WHERE user_id = ? AND id = ?", [name, user_id, campaign_id],
-          function(err, docs) {
-            if (err) {
-              callback({
-                code: "CouldNotUpdateCampNameIntoDb"
-              });
-            } else {
-              callback(false, campaignAttributes);
-            }
-            connection.release();
-          });
+
       });
     },
 
@@ -38,28 +40,28 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
-        }
-        connection.query("call insert_new_campaign(?, ?)", [user_id, name],
-          function(err, docs) {
-            if (err) {
-              callback({
-                code: "CouldNotInsertCampIntoDb"
-              });
-            } else {
-              //don't send back deployedLanders or deployedDomains because it will overwrite the collections
-              delete newCampaignAttributes.deployedLanders;
-              delete newCampaignAttributes.activeJobs;
-              delete newCampaignAttributes.domains;
-              
-              newCampaignAttributes.created_on = docs[1][0]["created_on"];
-              newCampaignAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
-              callback(false, newCampaignAttributes);
-            }
-            connection.release();
-          });
-      });
+          callback(err);
+        } else {
+          connection.query("call insert_new_campaign(?, ?)", [user_id, name],
+            function(err, docs) {
+              if (err) {
+                callback({
+                  code: "CouldNotInsertCampIntoDb"
+                });
+              } else {
+                //don't send back deployedLanders or deployedDomains because it will overwrite the collections
+                delete newCampaignAttributes.deployedLanders;
+                delete newCampaignAttributes.activeJobs;
+                delete newCampaignAttributes.domains;
 
+                newCampaignAttributes.created_on = docs[1][0]["created_on"];
+                newCampaignAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
+                callback(false, newCampaignAttributes);
+              }
+              connection.release();
+            });
+        }
+      });
     },
 
     deleteCampaign: function(user, id, callback) {
@@ -151,7 +153,7 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
           connection.query("CALL add_campaign_to_lander(?, ?, ?)", [modelAttributes.lander_id, modelAttributes.campaign_id, user_id], function(err, docs) {
             if (err) {
@@ -204,17 +206,18 @@ module.exports = function(app, db) {
         // 2. undeployLanderFromDomain
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
+          } else {
+            connection.query("SELECT id,action,processing,deploy_status,done,error,lander_id,domain_id,campaign_id,created_on FROM jobs WHERE user_id = ? AND campaign_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?)", [user_id, campaign.id, deployedDomain.domain_id, true, 0],
+              function(err, dbActiveJobs) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false, dbActiveJobs);
+                }
+                connection.release();
+              });
           }
-          connection.query("SELECT id,action,processing,deploy_status,done,error,lander_id,domain_id,campaign_id,created_on FROM jobs WHERE user_id = ? AND campaign_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?)", [user_id, campaign.id, deployedDomain.domain_id, true, 0],
-            function(err, dbActiveJobs) {
-              if (err) {
-                callback(err);
-              } else {
-                callback(false, dbActiveJobs);
-              }
-              connection.release();
-            });
         });
       };
 
@@ -247,7 +250,6 @@ module.exports = function(app, db) {
               function(err, dbActiveJobs) {
                 if (err) {
                   callback(err);
-                  console.log(err);
                 } else {
                   if (dbActiveJobs <= 0) {
                     callback(false, []);
@@ -255,7 +257,6 @@ module.exports = function(app, db) {
                     callback(false, dbActiveJobs);
                   }
                 }
-
                 connection.release();
               });
           }
@@ -322,31 +323,32 @@ module.exports = function(app, db) {
       var getDeployedLandersForCampaign = function(campaign, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
-          }
-          connection.query("SELECT a.id, b.id AS lander_id, b.modified, a.campaign_id, b.name FROM landers_with_campaigns a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.id],
-            function(err, dbLandersOnCampaign) {
-              if (err) {
-                callback(err);
-              } else {
-                var idx = 0;
-                for (var i = 0; i < dbLandersOnCampaign.length; i++) {
-                  module.getExtraNestedForDeployedLander(user, dbLandersOnCampaign[i], campaign, function(err) {
-                    if (err) {
-                      callback(err);
-                    } else {
-                      if (++idx == dbLandersOnCampaign.length) {
-                        callback(false, dbLandersOnCampaign);
+            callback(err);
+          } else {
+            connection.query("SELECT a.id, b.id AS lander_id, b.modified, b.deployment_folder_name, b.name FROM landers_with_campaigns a JOIN landers b ON a.lander_id = b.id WHERE (a.user_id = ? AND a.campaign_id = ?)", [user_id, campaign.id],
+              function(err, dbLandersOnCampaign) {
+                if (err) {
+                  callback(err);
+                } else {
+                  var idx = 0;
+                  for (var i = 0; i < dbLandersOnCampaign.length; i++) {
+                    module.getExtraNestedForDeployedLander(user, dbLandersOnCampaign[i], campaign, function(err) {
+                      if (err) {
+                        callback(err);
+                      } else {
+                        if (++idx == dbLandersOnCampaign.length) {
+                          callback(false, dbLandersOnCampaign);
+                        }
                       }
-                    }
-                  });
+                    });
+                  }
+                  if (dbLandersOnCampaign.length <= 0) {
+                    callback(false, []);
+                  }
                 }
-                if (dbLandersOnCampaign.length <= 0) {
-                  callback(false, []);
-                }
-              }
-              connection.release();
-            });
+                connection.release();
+              });
+          }
         });
       };
 
@@ -373,33 +375,34 @@ module.exports = function(app, db) {
       var getAllCampaignsDb = function(callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
-          }
-          connection.query("SELECT id,name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM campaigns WHERE user_id = ?", [user_id],
-            function(err, dbCampaigns) {
-              if (err) {
-                callback(err);
-              } else {
-                var idx = 0;
-                if (dbCampaigns.length > 0) {
-                  for (var i = 0; i < dbCampaigns.length; i++) {
-                    getExtraNestedForCampaign(dbCampaigns[i], function(err) {
-                      if (err) {
-                        callback(err);
-                      } else {
-                        if (++idx == dbCampaigns.length) {
-                          callback(false, dbCampaigns);
-                        }
-                      }
-                    });
-                  }
+            callback(err);
+          } else {
+            connection.query("SELECT id,name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM campaigns WHERE user_id = ?", [user_id],
+              function(err, dbCampaigns) {
+                if (err) {
+                  callback(err);
                 } else {
-                  callback(false, []);
+                  var idx = 0;
+                  if (dbCampaigns.length > 0) {
+                    for (var i = 0; i < dbCampaigns.length; i++) {
+                      getExtraNestedForCampaign(dbCampaigns[i], function(err) {
+                        if (err) {
+                          callback(err);
+                        } else {
+                          if (++idx == dbCampaigns.length) {
+                            callback(false, dbCampaigns);
+                          }
+                        }
+                      });
+                    }
+                  } else {
+                    callback(false, []);
+                  }
                 }
-              }
-              //release connection
-              connection.release();
-            });
+                //release connection
+                connection.release();
+              });
+          }
         });
       };
 

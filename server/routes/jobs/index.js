@@ -15,9 +15,8 @@ module.exports = function(app, passport) {
     //validate job domain_id and lander_id
     handler.validate.allJobs(user, jobModelAttributes, function(err) {
       if (err) {
-        json.res(err);
+        res.json(err);
       } else {
-
 
         //trigger handler based on action
         try {

@@ -123,7 +123,7 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
           //get all jobs and filter them based on what came in
           connection.query("SELECT * FROM jobs WHERE user_id = ?", [user.id], function(err, userJobsArr) {

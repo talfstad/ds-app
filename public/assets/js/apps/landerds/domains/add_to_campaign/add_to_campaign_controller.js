@@ -40,7 +40,8 @@ define(["app",
               domain_id: domain_id,
               action: "domain",
               domains: domains,
-              landers: campaignModel.get("deployedLanders").toJSON()
+              landers: deployedLanderCollection.toJSON(), //prob eventually needs to be correct landers arr
+
             });
 
             var activeCampaignCollection = domainModel.get("activeCampaigns");
@@ -56,7 +57,11 @@ define(["app",
                   domain_id: domain_id,
                   campaign_id: campaignModel.get("id"),
                   modified: deployedLander.get("modified"),
-                  lander_id: deployedLander.get("lander_id")
+                  lander_id: deployedLander.get("lander_id"),
+                  deployedDomains: deployedLander.get("deployedDomains"),
+                  urlEndpoints: deployedLander.get("urlEndpoints"),
+                  deployment_folder_name: deployedLander.get("deployment_folder_name"),
+                  endpoint_load_times: deployedLander.get("endpoint_load_times")
                 });
               });
 

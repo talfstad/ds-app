@@ -46,7 +46,6 @@ module.exports = function(app, passport) {
                   var deleteStaging = true;
                   db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, stagingDir, landerData, function(err, data) {
                     if (err) {
-                      console.log('err: ' + err);
                       callback(err);
                     } else {
                       callback(false, data);

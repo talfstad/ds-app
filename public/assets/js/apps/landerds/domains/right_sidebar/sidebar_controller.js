@@ -1,9 +1,8 @@
 define(["app",
     "assets/js/apps/landerds/domains/right_sidebar/sidebar_layout_view",
-    "assets/js/apps/landerds/domains/dao/sidebar_model",
     "assets/js/apps/landerds/domains/right_sidebar/nameservers_view"
   ],
-  function(Landerds, SidebarLayoutView, SidebarModel, NameserversView) {
+  function(Landerds, SidebarLayoutView, NameserversView) {
     Landerds.module("DomainsApp.RightSidebar", function(RightSidebar, Landerds, Backbone, Marionette, $, _) {
 
       RightSidebar.Controller = {
@@ -11,17 +10,6 @@ define(["app",
         sidebarView: null,
 
         domainModel: null,
-
-        //needed to make animations correct sets width etc. for initial opening
-        loadDomainsSideMenu: function() {
-          this.domainModel = new SidebarModel();
-
-          this.sidebarView = new SidebarLayoutView({
-            model: this.domainModel
-          });
-
-          Landerds.rootRegion.currentView.rightSidebarRegion.show(this.sidebarView);
-        },
 
         //save even if not modified because it might not be deployed
         //in which case we would want to save it anyway
@@ -65,7 +53,6 @@ define(["app",
           nameserversView.on("modified", function() {
 
             me.updateToModified();
-
 
           });
 

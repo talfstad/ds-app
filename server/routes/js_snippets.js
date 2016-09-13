@@ -7,7 +7,7 @@ module.exports = function(app, passport) {
   app.get('/api/js_snippets', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
 
-    db.js_snippets.getAll(user, function(rows) {
+    db.js_snippets.getAll(user, function(err, rows) {
       res.json(rows);
     });
   });

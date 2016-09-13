@@ -77,7 +77,7 @@ module.exports = function(app, db) {
                 if (activeCampaignAction == "lander") {
                   addActiveCampaignToLandersWithCampaigns(afterAddingActiveCampaignCallback);
                 } else if (activeCampaignAction == "domain") {
-                  console.log("ADdding active campaign to DOMAIN")
+                  app.log("Adding active campaign to DOMAIN", "debug")
                   addActiveCampaignToCampaignsWithDomains(afterAddingActiveCampaignCallback);
                 } else {
                   callback({ code: "CouldNotAddActiveCampaignNoAction" });

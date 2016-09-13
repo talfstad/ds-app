@@ -94,16 +94,17 @@ exports.authenticate = function() {
       user.auth_token = uuid.v4();
       db.users.setAuthToken(user.id, user.auth_token, function(err) {
         if (err) {
-          console.log(err);
+          app.log("auth error : " + JSON.stringify(err), "debug");
+          return;
         } else {
           req.login(user, function(err) {
             if (err) {
               res.json({
                 logged_in: false
               });
-              return;
+            } else {
+              return next();
             }
-            return next();
           });
         }
       });

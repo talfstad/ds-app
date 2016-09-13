@@ -19,6 +19,7 @@ define(["app",
           "destroy:activeJobs": "render",
           "destroy:activeCampaigns": "render",
           "add:activeCampaigns": "render",
+          "change:viewIndex": "updateViewIndex",
           "change:load_time_spinner_gui": "setLoadTimeSpinnerState"
         },
 
@@ -50,9 +51,9 @@ define(["app",
           DeployedRowBaseView.prototype.onRender.apply(this);
         },
 
-        showRemoveLander: function(e) {
+        showUndeployLander: function(e) {
           e.preventDefault();
-          this.model.trigger("showRemoveLander", this.model);
+          this.model.trigger("showUndeployLander", this.model);
         }
       });
     });

@@ -137,7 +137,7 @@ define(["app",
         if (urlEndpoints) {
           urlEndpointsJSON = urlEndpoints.toJSON();
         }
-        
+
         this.model.set("urlEndpointsJSON", urlEndpointsJSON);
 
         var deployStatus = this.model.get("deploy_status");

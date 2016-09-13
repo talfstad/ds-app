@@ -326,7 +326,7 @@ module.exports = function(app, db) {
 
             db.getConnection(function(err, connection) {
               if (err) {
-                console.log(err);
+                callback(err);
               } else {
                 connection.query("UPDATE landers SET modified = ?, deploy_root = ?, deployment_folder_name = ? WHERE user_id = ? AND id = ?", attrArr,
                   function(err, docs) {
@@ -359,7 +359,7 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
           connection.query("UPDATE landers SET modified = ? WHERE user_id = ? AND id = ?", [modified, user_id, lander_id],
             function(err, docs) {
@@ -380,7 +380,7 @@ module.exports = function(app, db) {
       var user_id = user.id;
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
         } else {
           connection.query("DELETE FROM landers WHERE user_id = ? AND id = ?", [user_id, lander_id], function(err, docs) {
             if (err) {
@@ -395,40 +395,40 @@ module.exports = function(app, db) {
 
     },
 
-    addNewDuplicateLander: function(user, duplicateLanderAttributes, successCallback) {
+    // addNewDuplicateLander: function(user, duplicateLanderAttributes, callback) {
 
-      var user_id = user.id;
-      var lander_name = duplicateLanderAttributes.name;
+    //   var user_id = user.id;
+    //   var lander_name = duplicateLanderAttributes.name;
 
-      db.getConnection(function(err, connection) {
-        if (err) {
-          console.log(err);
-        } else {
-          connection.query("CALL save_new_duplicate_lander(?, ?)", [lander_name, user_id],
-            function(err, docs) {
-              if (err) {
-                console.log(err);
-              } else {
-                //success
+    //   db.getConnection(function(err, connection) {
+    //     if (err) {
+    //       callback(err);
+    //     } else {
+    //       connection.query("CALL save_new_duplicate_lander(?, ?)", [lander_name, user_id],
+    //         function(err, docs) {
+    //           if (err) {
+    //             callback(err);
+    //           } else {
+    //             //success
 
-                //TODO copy all lander resources as well on duplicate lander (urlEndpoints, files, etc)
+    //             //TODO copy all lander resources as well on duplicate lander (urlEndpoints, files, etc)
 
 
-                duplicateLanderAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
-                duplicateLanderAttributes.created_on = docs[1][0].created_on;
-                //remove any attributes we dont want to overwrite
-                delete duplicateLanderAttributes.deployedDomains;
-                delete duplicateLanderAttributes.activeJobs;
-                delete duplicateLanderAttributes.activeCampaigns;
-                delete duplicateLanderAttributes.urlEndpoints;
+    //             duplicateLanderAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
+    //             duplicateLanderAttributes.created_on = docs[1][0].created_on;
+    //             //remove any attributes we dont want to overwrite
+    //             delete duplicateLanderAttributes.deployedDomains;
+    //             delete duplicateLanderAttributes.activeJobs;
+    //             delete duplicateLanderAttributes.activeCampaigns;
+    //             delete duplicateLanderAttributes.urlEndpoints;
 
-                successCallback(duplicateLanderAttributes);
-              }
-              connection.release();
-            });
-        }
-      });
-    },
+    //             callback(false, duplicateLanderAttributes);
+    //           }
+    //           connection.release();
+    //         });
+    //     }
+    //   });
+    // },
 
     saveNewLander: function(user, landerData, callback) {
 
@@ -497,7 +497,6 @@ module.exports = function(app, db) {
         } else {
           connection.query("CALL add_deployed_lander(?, ?, ?);", [user_id, lander_id, domain_id], function(err, docs) {
             if (err) {
-              console.log(err);
               callback(err);
             } else {
               landerData.id = docs[0][0]["LAST_INSERT_ID()"];
@@ -551,7 +550,7 @@ module.exports = function(app, db) {
       var getDeployedDomainsForLander = function(callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
           } else {
             connection.query("SELECT a.id AS domain_id,a.domain,b.id,b.lander_id from domains a JOIN deployed_landers b ON a.id=b.domain_id WHERE (b.user_id = ? AND lander_id = ?)", [user_id, lander_id],
               function(err, dbDeployedDomains) {
@@ -596,30 +595,31 @@ module.exports = function(app, db) {
       var getActiveCampaignsForLander = function(lander, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
-          }
-          connection.query("SELECT a.id AS campaign_id, b.id, a.name,b.lander_id from campaigns a JOIN landers_with_campaigns b ON a.id=b.campaign_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
-            function(err, dbActiveCampaigns) {
+            callback(err);
+          } else {
+            connection.query("SELECT a.id AS campaign_id, b.id, a.name,b.lander_id from campaigns a JOIN landers_with_campaigns b ON a.id=b.campaign_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
+              function(err, dbActiveCampaigns) {
 
-              if (dbActiveCampaigns.length <= 0) {
-                callback(false, []);
-              } else {
-                var idx = 0;
-                for (var i = 0; i < dbActiveCampaigns.length; i++) {
-                  module.getExtraNestedForActiveCampaign(user, dbActiveCampaigns[i], function(err) {
-                    if (err) {
-                      callback(err);
-                    } else {
-                      if (++idx == dbActiveCampaigns.length) {
-                        callback(false, dbActiveCampaigns);
+                if (dbActiveCampaigns.length <= 0) {
+                  callback(false, []);
+                } else {
+                  var idx = 0;
+                  for (var i = 0; i < dbActiveCampaigns.length; i++) {
+                    module.getExtraNestedForActiveCampaign(user, dbActiveCampaigns[i], function(err) {
+                      if (err) {
+                        callback(err);
+                      } else {
+                        if (++idx == dbActiveCampaigns.length) {
+                          callback(false, dbActiveCampaigns);
+                        }
                       }
-                    }
 
-                  });
+                    });
+                  }
                 }
-              }
-              connection.release();
-            });
+                connection.release();
+              });
+          }
         });
       };
 
@@ -642,7 +642,7 @@ module.exports = function(app, db) {
       var getEndpointsForLander = function(lander, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
           } else {
             connection.query("SELECT id,filename,lander_id,optimization_errors, original_pagespeed,optimized_pagespeed from url_endpoints WHERE (user_id = ? AND lander_id = ?)", [user_id, lander.id],
               function(err, dbUrlEndpoints) {
@@ -683,7 +683,7 @@ module.exports = function(app, db) {
         // 2. deleteLander
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
           } else {
 
             connection.query("SELECT id,action,lander_id,deploy_status,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addLander", "deleteLander", "ripLander", "savingLander", user_id, lander.id, true],
@@ -782,7 +782,6 @@ module.exports = function(app, db) {
 
             connection.query(queryString, [user_id], function(err, dblanders) {
               if (err) {
-                console.log("1: " + err);
                 callback(err);
               } else {
                 var idx = 0;

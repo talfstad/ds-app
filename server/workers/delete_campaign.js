@@ -10,7 +10,7 @@ module.exports = function(app, db) {
     var setErrorAndStop = function(err) {
       var code = err.code || "UnkownError";
       db.jobs.setErrorAndStop(code, myJobId, function(err) {
-        console.log("error occured during delete campaign: " + err);
+        app.log("error occured during delete campaign: " + err, "debug");
       });
     };
 
@@ -32,7 +32,7 @@ module.exports = function(app, db) {
                 setErrorAndStop(err)
               } else {
                 //5. total success!
-                console.log("successfully updated deleteCampaign job to finished");
+                app.log("successfully updated deleteCampaign job to finished", "debug");
               }
             });
           }

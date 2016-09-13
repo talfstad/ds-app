@@ -300,7 +300,6 @@ module.exports = function(app, db) {
               callback(false, body);
             }
           } else {
-            // console.log("HREF: " + href);
             callback({code: "NoResponseGettingExternalFile"});
           }
 
@@ -779,7 +778,6 @@ module.exports = function(app, db) {
           callback(false);
         });
       } catch (err) {
-        // console.log("err minify html, probably parse error ...");
         callback({ code: "CouldNotMinifyHtmlFile", err: err });
       }
 

@@ -123,9 +123,9 @@ define(["app",
             if (addActiveCampaignModel) {
               var isInCampaign = false;
 
-              var domains = addActiveCampaignModel.get("domains");
-              $.each(domains, function(idx, domain) {
-                if (domain.domain_id == deployedDomain.get("domain_id")) {
+              var domainCollection = addActiveCampaignModel.get("domains");
+              domainCollection.each(function(domain) {
+                if (domain.get("domain_id") == deployedDomain.get("domain_id")) {
                   isInCampaign = true;
                 }
               });
@@ -188,15 +188,15 @@ define(["app",
             var domains = addActiveCampaignModel.get("domains");
 
             //if deployed domain has no id and belongs to this campaign we deploy it !
-            //if deployed domain is not in the campaign collection dont deploy it
+            //if deployed domain is not in the campaign collection dont deploy it            
             deployedDomainCollection.each(function(deployedDomain) {
               var domainDeployed = false;
               if (domains.length > 0) {
 
                 var deployedDomainInCampaign = false;
 
-                $.each(domains, function(idx, domain) {
-                  if (deployedDomain.get("domain_id") == domain.domain_id &&
+                domains.each(function(domain) {
+                  if (deployedDomain.get("domain_id") == domain.get("domain_id") &&
                     deployedDomain.get("id") &&
                     deployedDomain.get("deploy_status") != "undeploying" &&
                     deployedDomain.get("deploy_status") != "undeploy_invalidating") {
@@ -206,7 +206,7 @@ define(["app",
                   }
 
 
-                  if (deployedDomain.get("domain_id") == domain.domain_id) {
+                  if (deployedDomain.get("domain_id") == domain.get("domain_id")) {
                     //also dont deploy it if domain 
                     deployedDomainInCampaign = true;
                   }

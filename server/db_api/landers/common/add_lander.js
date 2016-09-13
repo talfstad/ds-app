@@ -287,12 +287,12 @@ module.exports = function(app, db) {
             var optimizedUrl = 'http://' + awsData.aws_root_bucket + '.s3-website-us-west-2.amazonaws.com/' + user.user + '/landers/' + s3_folder_name + '/optimized/' + filePath;
 
 
-            console.log("getting pagespeed for: " + originalUrl);
+            app.log("getting pagespeed for: " + originalUrl, "debug");
             getPagespeedScore(originalUrl, function(err, originalPagespeed) {
               if (err) {
                 callback(err);
               } else {
-                console.log("getting optimized pagespeed for: " + optimizedUrl);
+                app.log("getting optimized pagespeed for: " + optimizedUrl, "debug");
 
                 getPagespeedScore(optimizedUrl, function(err, optimizedPagespeed) {
                   if (err) {

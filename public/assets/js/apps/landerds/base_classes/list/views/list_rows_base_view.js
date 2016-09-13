@@ -31,13 +31,13 @@ define(["app",
         this.$el.find("a:first").click();
       },
 
-      reAlignTableHeader: function() {
+      reAlignTableHeader: function(noTimeout) {
         var me = this;
 
         //setTimeout is used to let dom set to visible to extract widths/heights!
         //run this after a very little bit so we can have the items VISIBLE!!!
-        setTimeout(function() {
 
+        var reAlign = function() {
           //set the correct margin for the top headers
           var landersColumnWidth = me.$el.find(".table-lander-name").width();
           var textWidth = me.$el.find(".table-name-header").width();
@@ -48,22 +48,19 @@ define(["app",
           if (newLanderLinkMargin > 0) {
             me.$el.find(".deployed-domain-links-header").css("margin-left", newLanderLinkMargin);
             me.$el.find(".deployed-landers-header").show();
-          } else {
-            me.$el.find(".deployed-landers-header").hide();
           }
 
           //fade  in the headers fast
           $(".deployed-landers-header-container").show();
+        };
 
-
-          //hide unneccessary columns if we're deploying/undeploying
-          var deployStatus = me.model.get('deploy_status');
-          if (deployStatus == "deploying" || deployStatus == "undeploying") {
-            me.$el.find(".deployed-landers-header").hide();
-          }
-
-        }, 10);
-
+        if (noTimeout) {
+          reAlign();
+        } else {
+          setTimeout(function() {
+            reAlign();
+          }, 10);
+        }
       },
 
       disableAccordionPermanently: function() {

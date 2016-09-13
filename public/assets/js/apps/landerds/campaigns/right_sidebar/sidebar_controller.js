@@ -11,17 +11,6 @@ define(["app",
 
         campaignModel: null,
 
-        //needed to make animations correct sets width etc. for initial opening
-        loadCampaignsSideMenu: function() {
-          this.campaignModel = new SidebarModel();
-
-          this.sidebarView = new SidebarLayoutView({
-            model: this.campaignModel
-          });
-
-          Landerds.rootRegion.currentView.rightSidebarRegion.show(this.sidebarView);
-        },
-
         //whenever sidebar is open it has the real lander model as its model not a stupid sidebar model
         //sidebar model is just a mock thing to make loading work
         openSidebar: function(model) {
@@ -36,7 +25,7 @@ define(["app",
           this.sidebarView.on("updateCampaignName", function() {
             model.save({}, {
               success: function() {
-                  model.trigger("resortAndExpandModelView");
+                model.trigger("resortAndExpandModelView");
               },
               error: function() {
 

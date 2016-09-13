@@ -53,7 +53,6 @@ module.exports = function(app, db) {
 
       route53.createHostedZone(hostedZoneParams, function(err, data) {
         if (err) {
-          console.log(err, err.stack);
           error = "Error creating hosted zone: " + domain;
           callback(error, {});
           return;
@@ -117,9 +116,7 @@ module.exports = function(app, db) {
 
           route53.changeResourceRecordSets(recordSetParams, function(err, data) {
             if (err) {
-              console.log(err, err.stack);
-              error = "Error adding record set for: " + cloudfront_domain_name;
-              callback(error, {});
+              callback(err, {});
             } else {
               getNameServers(hostedZoneId, function(err, recordSets) {
                 if (err) {
@@ -140,7 +137,7 @@ module.exports = function(app, db) {
 
     addSubdomainRecord: function(credentials, subdomain, cloudfrontDomainName, hostedZoneId, callback) {
       var timestamp = moment().format();
-      console.log("hosted zone id: " + hostedZoneId);
+      app.log("hosted zone id: " + hostedZoneId, "debug");
 
       //cloudfront hosted zone is always this
       var cloudfrontHostedZoneId = 'Z2FDTNDATAQYW2';
@@ -352,7 +349,6 @@ module.exports = function(app, db) {
 
           route53.changeResourceRecordSets(recordSetParams, function(err, data) {
             if (err) {
-              console.log(err, err.stack);
               callback(error, {});
             } else {
               callback(false);
@@ -421,7 +417,7 @@ module.exports = function(app, db) {
         } else {
 
           if (numDomainsInHostedZone < 2) {
-            console.log("deleting the hosted zone not just domain");
+            app.log("deleting the hosted zone not just domain", "debug");
             //delete the hosted zone
             me.deleteHostedZone(credentials, hostedZoneId, function(err, deletedHostedZoneData) {
               if (err) {
@@ -431,7 +427,7 @@ module.exports = function(app, db) {
               }
             });
           } else {
-            console.log("deleting the domains record sets not the hosted zone");
+            app.log("deleting the domains record sets not the hosted zone", "debug");
 
             //delete just the domains record set
             me.deleteDomainRecordSets(credentials, domain, hostedZoneId, function(err, deletedRecordData) {

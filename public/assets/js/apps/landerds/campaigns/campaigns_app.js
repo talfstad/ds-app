@@ -5,8 +5,8 @@ define(["app",
     "assets/js/apps/landerds/campaigns/add_new_campaign/add_new_campaign_controller",
     "assets/js/apps/landerds/campaigns/add_new_lander/add_new_lander_controller",
     "assets/js/apps/landerds/campaigns/add_new_domain/add_new_domain_controller",
-    "assets/js/apps/landerds/campaigns/remove_lander/remove_lander_controller",
-    "assets/js/apps/landerds/campaigns/remove_domain/remove_domain_controller",
+    "assets/js/apps/landerds/campaigns/undeploy_lander/undeploy_lander_controller",
+    "assets/js/apps/landerds/campaigns/undeploy_domain/undeploy_domain_controller",
     "assets/js/apps/landerds/campaigns/remove_campaign/remove_campaign_controller",
   ],
   function(Landerds, ListController, CommonLogin, SidemenuController, AddNewCampaignController,
@@ -60,12 +60,12 @@ define(["app",
           SidemenuController.closeSidebar();
         },
 
-        showRemoveLander: function(model) {
-          RemoveLanderController.showRemoveLander(model);
+        showUndeployLander: function(model) {
+          RemoveLanderController.showUndeployLander(model);
         },
 
-        showRemoveDomain: function(model) {
-          RemoveDomainController.showRemoveDomain(model);
+        showUndeployDomain: function(model) {
+          RemoveDomainController.showUndeployDomain(model);
         },
 
         updateTopbarTotals: function() {
@@ -114,12 +114,12 @@ define(["app",
         campaignsAppAPI.deployCampaignLandersToDomain(attr);
       });
 
-      Landerds.on("campaigns:showRemoveLander", function(model) {
-        campaignsAppAPI.showRemoveLander(model);
+      Landerds.on("campaigns:showUndeployLander", function(model) {
+        campaignsAppAPI.showUndeployLander(model);
       });
 
-      Landerds.on("campaigns:showRemoveDomain", function(model) {
-        campaignsAppAPI.showRemoveDomain(model);
+      Landerds.on("campaigns:showUndeployDomain", function(model) {
+        campaignsAppAPI.showUndeployDomain(model);
       });
 
       Landerds.on("campaigns:showRemoveCampaign", function(model) {

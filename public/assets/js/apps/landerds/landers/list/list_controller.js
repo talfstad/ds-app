@@ -220,7 +220,7 @@ define(["app",
 
                   //when campaign link selected go to camp tab (this is from deployed domains campaign name link)
                   deployedDomainsView.on("childview:selectCampaignTab", function(one, two, three) {
-                    landerView.$el.find("a[href=#campaigns-tab-id-" + landerView.model.get("id") + "]").tab('show')
+                    landerView.$el.find("a[href=#campaigns-tab-id-" + landerView.model.get("id") + "]").tab('show');
                   });
 
                   deployedDomainsView.on("childview:updateParentLayout", function(childView, options) {
@@ -230,11 +230,6 @@ define(["app",
                     domainTabHandleView.model.set("deployed_domains_count", length);
                     landerView.reAlignTableHeader();
                   });
-
-                  domainTabHandleView.on("reAlignHeader", function() {
-                    landerView.reAlignTableHeader();
-                  });
-
 
                   landerView.deploy_status_region.show(domainTabHandleView);
                   landerView.campaign_tab_handle_region.show(campaignTabHandleView);
@@ -463,8 +458,8 @@ define(["app",
                   //also add the job to any active campaigns that have this domain_id
                   activeCampaignsCollection.each(function(activeCampaign) {
                     var domains = activeCampaign.get("domains");
-                    $.each(domains, function(idx, domain) {
-                      if (domain.domain_id == newDeployJob.get("domain_id")) {
+                    domains.each(function(domain) {
+                      if (domain.get("domain_id") == newDeployJob.get("domain_id")) {
                         var activeCampaignActiveJobs = activeCampaign.get("activeJobs");
                         activeCampaignActiveJobs.add(newDeployJob);
                       }

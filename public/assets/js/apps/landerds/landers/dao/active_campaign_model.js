@@ -1,7 +1,8 @@
 define(["app",
-    "assets/js/apps/landerds/base_classes/deployed_rows/models/deployed_row_base_model"
+    "assets/js/apps/landerds/base_classes/deployed_rows/models/deployed_row_base_model",
+    "assets/js/apps/landerds/campaigns/dao/domain_list_collection"
   ],
-  function(Landerds, DeployedRowBaseModel) {
+  function(Landerds, DeployedRowBaseModel, DomainListCollection) {
     var ActiveCampaignModel = DeployedRowBaseModel.extend({
 
       urlRoot: "/api/active_campaigns_on_lander",
@@ -10,6 +11,14 @@ define(["app",
         var me = this;
         //call base class init
         DeployedRowBaseModel.prototype.initialize.apply(this);
+
+        //create collection only if we didnt initiate using a collection
+        var domainListAttributes = this.get("domains");
+        if (Array.isArray(domainListAttributes)) {
+          var domainListCollection = new DomainListCollection(domainListAttributes);
+          this.set("domains", domainListCollection);
+
+        }
 
         //when job is destroyed must look to see if there are any more
         var activeJobsCollection = this.get("activeJobs");

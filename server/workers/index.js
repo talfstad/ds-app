@@ -34,6 +34,8 @@ module.exports = function(app, db) {
           } else {
             if (jobIdArr.length > 0) {
               //set error and be done
+              console.log("ERRORRRRR :  " + JSON.stringify(err));
+              
               db.jobs.setErrorAndStop(err.code, jobIdArr[0], function() {
                 console.log("set error and stopped jobs: " + JSON.stringify(jobIdArr));
                 return;

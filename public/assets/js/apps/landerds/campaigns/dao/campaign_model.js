@@ -15,7 +15,9 @@ define(["app",
         var domainListAttributes = this.get("domains");
         var deployedLandersAttributes = this.get("deployedLanders");
 
-        var deployedLanderCollection = new DeployedLanderCollection(deployedLandersAttributes);
+        var deployedLanderCollection = new DeployedLanderCollection(deployedLandersAttributes, {
+          url: '/api/active_campaigns_on_lander'
+        });
 
         this.set("deployedLanders", deployedLanderCollection);
 
@@ -171,8 +173,8 @@ define(["app",
                 activeCampaignCollection.each(function(activeCampaign) {
                   var isOnCampaign = false;
                   var domains = activeCampaign.get("domains");
-                  $.each(domains, function(idx, domain) {
-                    if (domain.domain_id == activeJob.get("domain_id")) {
+                  domains.each(function(idx, domain) {
+                    if (domain.get("domain_id") == activeJob.get("domain_id")) {
                       isOnCampaign = true;
                     }
                   });
@@ -199,7 +201,7 @@ define(["app",
         deployedLanderCollection.on("destroy", function(domainModel) {
           me.setDeployStatus();
         });
-        
+
         this.setDeployStatus();
       },
 

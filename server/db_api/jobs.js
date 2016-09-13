@@ -128,7 +128,7 @@ module.exports = function(app, db) {
           //also include deployLanderToDomain jobs if we're undeploying
           //did this select in update to avoid deadlock in db update
           query = "update jobs SET error = ?, error_code = ?, processing = ? WHERE id IN (SELECT id FROM (SELECT id FROM jobs WHERE user_id = ? AND lander_id = ? AND domain_id = ? AND done = ? AND (action = ? OR action = ?)) as arbitraryTableName)"
-          // query = "UPDATE jobs SET error = ?, error_code = ?, processing = ? WHERE user_id = ? AND lander_id = ? AND domain_id = ? AND done = ? AND (action = ? OR action = ?) ";
+            // query = "UPDATE jobs SET error = ?, error_code = ?, processing = ? WHERE user_id = ? AND lander_id = ? AND domain_id = ? AND done = ? AND (action = ? OR action = ?) ";
           arr = [true, "ExternalInterrupt", false, user_id, job.lander_id, job.domain_id, false, "undeployLanderFromDomain", "deployLanderToDomain"];
 
           db.getConnection(function(err, connection) {
@@ -423,15 +423,24 @@ module.exports = function(app, db) {
         if (err) {
           callback(err);
         }
-        connection.query("UPDATE jobs SET error = ?, error_code = ? WHERE id = ?", [true, code, errorJobId], function(err, docs) {
+        connection.query("UPDATE jobs SET error = ?, error_code = ?, processing = ? WHERE id = ?", [true, code, false, errorJobId], function(err, docs) {
           if (err) {
             callback({
               code: err
             });
           } else {
-            callback(false);
+            //external interrupt slave jobs
+            connection.query("UPDATE jobs SET error = ?, error_code = ?, processing = ? WHERE master_job_id = ?", [true, "ExternalInterrupt", false, errorJobId], function(err, docs) {
+              if (err) {
+                callback({
+                  code: err
+                });
+              } else {
+                callback(false);
+              }
+              connection.release();
+            });
           }
-          connection.release();
         });
       });
     },

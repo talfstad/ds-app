@@ -14,12 +14,12 @@ module.exports = function(app, db) {
       //deploy with this
       var yslow = new YSlow(link, ['--info', 'basic']);
 
-      //testing this 
-      // var yslow = new YSlow("landerds.com", ['--info', 'basic']);
-
       yslow.run(function(err, results) {
         if (err) {
-          callback(err);
+          //if run error it means the link 404'd. thats not so much an error as just the yslow failed.
+          //since it can be run on the user interface we'll return success
+          returnObj.load_time = "N/A";
+          callback(false, responseObj);
         } else {
           var load_time = results.lt;
           var grade = results.o;
@@ -34,7 +34,7 @@ module.exports = function(app, db) {
 
                   var returnObj = {
                     url_endpoint_id: url_endpoint_id
-                  }
+                  };
 
                   if (err) {
                     returnObj.load_time = "N/A";

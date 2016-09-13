@@ -41,7 +41,6 @@ module.exports = function(app, db) {
           if (err) {
             callback(err);
           } else {
-            console.log("domain id: " + domain_id);
 
             connection.query("SELECT * FROM jobs WHERE domain_id = ? AND processing = ? AND action = ?", [domain_id, true, "deleteDomain"],
               function(err, dbDuplicates) {
@@ -164,17 +163,19 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
+        } else {
+          connection.query("DELETE FROM campaigns_with_domains WHERE user_id = ? AND domain_id = ?", [user_id, domain_id],
+            function(err, docs) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, docs);
+              }
+              connection.release();
+            });
         }
-        connection.query("DELETE FROM campaigns_with_domains WHERE user_id = ? AND domain_id = ?", [user_id, domain_id],
-          function(err, docs) {
-            if (err) {
-              callback(err);
-            } else {
-              callback(false, docs);
-            }
-            connection.release();
-          });
+
       });
 
     },
@@ -185,32 +186,23 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
+        } else {
+          connection.query("DELETE FROM deployed_landers WHERE user_id = ? AND domain_id = ?", [user_id, domain_id],
+            function(err, docs) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, docs);
+              }
+              connection.release();
+            });
         }
-        connection.query("DELETE FROM deployed_landers WHERE user_id = ? AND domain_id = ?", [user_id, domain_id],
-          function(err, docs) {
-            if (err) {
-              callback(err);
-            } else {
-              callback(false, docs);
-            }
-            connection.release();
-          });
       });
 
     },
 
     addNewDomain: function(user, newDomainAttributes, callback) {
-      // console.log(newDomainAttributes);
-      // {
-      //   bucketUrl: 'http://f2e569da-f6d7-47af-bffb-486bcac07d67.s3.amazonaws.com/',
-      //   cloudfrontDomainName: 'd1euhkwq20z1me.cloudfront.net',
-      //   nameservers: ['ns-1177.awsdns-19.org',
-      //     'ns-1715.awsdns-22.co.uk',
-      //     'ns-800.awsdns-36.net',
-      //     'ns-325.awsdns-40.com'
-      //   ]
-      // }
 
       //insert a new domain 
       var user_id = user.id;
@@ -224,21 +216,22 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
+        } else {
+          connection.query("call insert_new_domain(?, ?, ?, ?, ?, ?, ?)", [user_id, nameservers, domain, cloudfront_domain, cloudfront_id, hosted_zone_id, root_bucket],
+            function(err, docs) {
+              if (err) {
+                callback({
+                  code: "CouldNotInsertIntoDb"
+                });
+              } else {
+                newDomainAttributes.created_on = docs[1][0]["created_on"];
+                newDomainAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
+                callback(false, newDomainAttributes);
+              }
+              connection.release();
+            });
         }
-        connection.query("call insert_new_domain(?, ?, ?, ?, ?, ?, ?)", [user_id, nameservers, domain, cloudfront_domain, cloudfront_id, hosted_zone_id, root_bucket],
-          function(err, docs) {
-            if (err) {
-              callback({
-                code: "CouldNotInsertIntoDb"
-              });
-            } else {
-              newDomainAttributes.created_on = docs[1][0]["created_on"];
-              newDomainAttributes.id = docs[0][0]["LAST_INSERT_ID()"];
-              callback(false, newDomainAttributes);
-            }
-            connection.release();
-          });
       });
     },
 
@@ -248,17 +241,18 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
+        } else {
+          connection.query("SELECT * FROM domains WHERE user_id = ? AND id = ?", [user_id, domain_id],
+            function(err, dbDomainInfo) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, dbDomainInfo[0]);
+              }
+              connection.release();
+            });
         }
-        connection.query("SELECT * FROM domains WHERE user_id = ? AND id = ?", [user_id, domain_id],
-          function(err, dbDomainInfo) {
-            if (err) {
-              callback(err);
-            } else {
-              callback(false, dbDomainInfo[0]);
-            }
-            connection.release();
-          });
       });
     },
 
@@ -267,17 +261,18 @@ module.exports = function(app, db) {
 
       db.getConnection(function(err, connection) {
         if (err) {
-          console.log(err);
+          callback(err);
+        } else {
+          connection.query("SELECT * FROM domains WHERE id = ? AND aws_root_bucket = ?", [domain_id, aws_root_bucket],
+            function(err, dbDomainInfo) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, dbDomainInfo[0]);
+              }
+              connection.release();
+            });
         }
-        connection.query("SELECT * FROM domains WHERE id = ? AND aws_root_bucket = ?", [domain_id, aws_root_bucket],
-          function(err, dbDomainInfo) {
-            if (err) {
-              callback(err);
-            } else {
-              callback(false, dbDomainInfo[0]);
-            }
-            connection.release();
-          });
       });
     },
 
@@ -287,30 +282,31 @@ module.exports = function(app, db) {
       var getActiveCampaignsForDomain = function(domain, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
-          }
-          connection.query("SELECT a.id AS campaign_id, b.id, a.name,b.domain_id from campaigns a JOIN campaigns_with_domains b ON a.id=b.campaign_id WHERE (a.user_id = ? AND domain_id = ?)", [user_id, domain.id],
-            function(err, dbActiveCampaigns) {
+            callback(err);
+          } else {
+            connection.query("SELECT a.id AS campaign_id, b.id, a.name,b.domain_id from campaigns a JOIN campaigns_with_domains b ON a.id=b.campaign_id WHERE (a.user_id = ? AND domain_id = ?)", [user_id, domain.id],
+              function(err, dbActiveCampaigns) {
 
-              if (dbActiveCampaigns.length <= 0) {
-                callback(false, []);
-              } else {
-                var idx = 0;
-                for (var i = 0; i < dbActiveCampaigns.length; i++) {
-                  baseActiveCampaign.getExtraNestedForActiveCampaign(user, dbActiveCampaigns[i], function(err) {
-                    if (err) {
-                      callback(err);
-                    } else {
-                      if (++idx == dbActiveCampaigns.length) {
-                        callback(false, dbActiveCampaigns);
+                if (dbActiveCampaigns.length <= 0) {
+                  callback(false, []);
+                } else {
+                  var idx = 0;
+                  for (var i = 0; i < dbActiveCampaigns.length; i++) {
+                    baseActiveCampaign.getExtraNestedForActiveCampaign(user, dbActiveCampaigns[i], function(err) {
+                      if (err) {
+                        callback(err);
+                      } else {
+                        if (++idx == dbActiveCampaigns.length) {
+                          callback(false, dbActiveCampaigns);
+                        }
                       }
-                    }
 
-                  });
+                    });
+                  }
                 }
-              }
-              connection.release();
-            });
+                connection.release();
+              });
+          }
         });
       };
 
@@ -401,37 +397,38 @@ module.exports = function(app, db) {
       var getAllDomainsDb = function(callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
-          }
-          connection.query("SELECT id,domain,nameservers,aws_root_bucket,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM domains WHERE aws_root_bucket = ?", [rootBucket], function(err, dbdomains) {
-            if (err) {
-              callback(err);
-            } else {
-              var idx = 0;
-              for (var i = 0; i < dbdomains.length; i++) {
+            callback(err);
+          } else {
+            connection.query("SELECT id,domain,nameservers,aws_root_bucket,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM domains WHERE aws_root_bucket = ?", [rootBucket], function(err, dbdomains) {
+              if (err) {
+                callback(err);
+              } else {
+                var idx = 0;
+                for (var i = 0; i < dbdomains.length; i++) {
 
-                //set nameservers obj/parse correctly to ARRAY
-                if (dbdomains[i].nameservers) {
-                  var nameserversArray = dbdomains[i].nameservers.split(',');
-                  dbdomains[i].nameservers = nameserversArray;
-                }
-
-                getExtraNestedForDomain(dbdomains[i], function(err) {
-                  if (err) {
-                    callback(err);
-                  } else {
-                    if (++idx == dbdomains.length) {
-                      callback(false, dbdomains);
-                    }
+                  //set nameservers obj/parse correctly to ARRAY
+                  if (dbdomains[i].nameservers) {
+                    var nameserversArray = dbdomains[i].nameservers.split(',');
+                    dbdomains[i].nameservers = nameserversArray;
                   }
-                });
+
+                  getExtraNestedForDomain(dbdomains[i], function(err) {
+                    if (err) {
+                      callback(err);
+                    } else {
+                      if (++idx == dbdomains.length) {
+                        callback(false, dbdomains);
+                      }
+                    }
+                  });
+                }
+                if (dbdomains.length <= 0) {
+                  callback(false, dbdomains);
+                }
               }
-              if (dbdomains.length <= 0) {
-                callback(false, dbdomains);
-              }
-            }
-            connection.release();
-          });
+              connection.release();
+            });
+          }
         });
       };
 
@@ -543,7 +540,6 @@ module.exports = function(app, db) {
           connection.query("SELECT * from domains WHERE aws_root_bucket = ?", [rootBucket],
             function(err, docs) {
               if (err) {
-                console.log(err);
                 callback({
                   code: "ErrorGettingDomainsFromDb"
                 });

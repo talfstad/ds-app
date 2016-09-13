@@ -3,7 +3,7 @@ module.exports = function(app, db) {
   return {
 
     releaseLockForS3: function(lander_id, callback) {
-      console.log("LANDER ID : " + lander_id);
+      app.log("release lock LANDER ID : " + lander_id, "debug");
 
       if (!lander_id) {
         callback(false);
@@ -43,7 +43,7 @@ module.exports = function(app, db) {
       var date = new Date();
       var startTime = date.getTime();
 
-      console.log("LANDER ID : " + lander_id);
+      app.log("LANDER ID : " + lander_id, "debug");
 
       if (!lander_id) {
         callback(false);

@@ -41,10 +41,10 @@ define(["app",
 
             if (domains.length > 0) {
 
-              $.each(domains, function(idx, domain) {
+              domains.each(function(domain) {
                 domainListToDeploy.push({
-                  domain: domain.domain,
-                  domain_id: domain.domain_id,
+                  domain: domain.get("domain"),
+                  domain_id: domain.get("domain_id"),
                   lander_id: lander_id
                 });
               });

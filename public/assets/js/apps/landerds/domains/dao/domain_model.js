@@ -98,8 +98,8 @@ define(["app",
                 activeCampaignCollection.each(function(activeCampaign) {
                   var isOnCampaign = false;
                   var domains = activeCampaign.get("domains");
-                  $.each(domains, function(idx, domain) {
-                    if (domain.domain_id == activeJob.get("domain_id")) {
+                  domains.each(function(domain) {
+                    if (domain.get("domain_id") == activeJob.get("domain_id")) {
                       isOnCampaign = true;
                     }
                   });

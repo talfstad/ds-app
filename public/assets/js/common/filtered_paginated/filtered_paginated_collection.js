@@ -25,17 +25,7 @@ define(["app",
 
 
         if (filtered.state.paginated) {
-          filtered.state.gui = new PaginatedModel();
-          //init
-          filtered.state.gui.set('current_page', 1);
-          filtered.state.gui.set('num_pages', 1);
-          filtered.state.gui.set('total_not_deployed', 0);
-          filtered.state.gui.set('total_undeploying', 0);
-          filtered.state.gui.set('total_deploying', 0);
-          filtered.state.gui.set('total', 0);
-          filtered.state.gui.set('total_initializing', 0);
-          filtered.state.gui.set('total_deleting', 0);
-          filtered.state.gui.set('total_modified', 0);
+          filtered.state.gui = new PaginatedModel;
         }
         filtered.state.currentFilter = "";
 
@@ -120,7 +110,6 @@ define(["app",
         };
 
         filtered.showPageWithModel = function(model) {
-
           filtered.resetWithOriginals(filtered.state.currentFilter);
           //1. get page number that this model is on
           var pageSize = filtered.state.gui.get("page_size");

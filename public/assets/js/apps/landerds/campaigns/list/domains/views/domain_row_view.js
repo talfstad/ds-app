@@ -1,21 +1,23 @@
 define(["app",
-    "tpl!assets/js/apps/landerds/campaigns/list/domains/templates/domain_row.tpl"
+    "tpl!assets/js/apps/landerds/campaigns/list/domains/templates/domain_row.tpl",
+    "assets/js/apps/landerds/base_classes/deployed_rows/views/deployed_row_base_view"
   ],
-  function(Landerds, DeployedDomainRowTpl) {
+  function(Landerds, DeployedDomainRowTpl, DeployedRowBaseView) {
 
     Landerds.module("CampaignsApp.Campaigns.List.Domain", function(Domain, Landerds, Backbone, Marionette, $, _) {
-      Domain.DeployedDomainRowView = Marionette.ItemView.extend({
+      Domain.DeployedDomainRowView = DeployedRowBaseView.extend({
 
         template: DeployedDomainRowTpl,
         tagName: "tr",
 
         events: {
-          "click .remove-domain": "showRemoveDomain",
+          "click .undeploy-domain": "showUndeployDomain",
           "click .goto-edit-domain": "gotoEditDomain",
         },
 
         modelEvents: {
-          "change": "render"
+          "change:viewIndex": "updateViewIndex",
+          "change:deploy_status": "render"
         },
 
         gotoEditDomain: function(e) {
@@ -59,11 +61,11 @@ define(["app",
 
         },
 
-        showRemoveDomain: function(e) {
+        showUndeployDomain: function(e) {
           e.preventDefault();
           e.stopPropagation();
 
-          this.model.trigger("showRemoveDomain", this.model);
+          this.model.trigger("showUndeployDomain", this.model);
         }
 
       });

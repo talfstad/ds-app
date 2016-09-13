@@ -176,6 +176,7 @@ define(["app",
             });
 
             this.$el.find(".nav.panel-tabs").click(function(e) {
+              me.reAlignTableHeader();
               $(e.currentTarget).parent().parent().find(".panel-collapse").collapse('show');
             });
           }

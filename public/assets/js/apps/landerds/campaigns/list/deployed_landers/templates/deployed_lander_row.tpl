@@ -1,4 +1,4 @@
-<td><%= viewIndex %></td>
+<td class="view-index"><%= viewIndex %></td>
 <td class="table-lander-name" style="white-space: nowrap; max-width: 305px; min-width: 145px">
       <span><%= name %></span>
 </td>
@@ -15,8 +15,8 @@
           <span class="fa fa-edit"></span>
         </a>
 
-        <a class="remove-lander" href="#">
-          <span class="fa fa-trash-o"></span>
+        <a class="undeploy" href="#">
+          <span class="fa fa-trash-o" style="padding-right: 1px; padding-left: 2px"></span>
         </a>
 
         </div>

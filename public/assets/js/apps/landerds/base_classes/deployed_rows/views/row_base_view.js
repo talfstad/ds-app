@@ -8,6 +8,10 @@ define(["app",
         this.trigger("updateParentLayout", this.model);
       },
 
+      updateViewIndex: function(e) {
+        this.$el.find(".view-index").text(this.model.get("viewIndex"));
+      },
+
       onRender: function() {
        
         var deployStatus = this.model.get("deploy_status");

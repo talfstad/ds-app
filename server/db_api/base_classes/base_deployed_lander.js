@@ -14,7 +14,6 @@ module.exports = function(app, db) {
         //get all jobs attached to deployedLander and make sure only select those. list is:
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
             callback(err);
           } else {
             connection.query("SELECT id,action,processing,deploy_status,lander_id,domain_id,campaign_id,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?))", ["addNewLander", "deleteLander", "ripNewLander", "deployLanderToDomain", "undeployLanderFromDomain", user_id, lander_id, domain_id, true, 0],
@@ -53,7 +52,7 @@ module.exports = function(app, db) {
           } else {
             connection.query("SELECT id,url_endpoint_id,load_time FROM endpoint_load_times WHERE deployed_lander_id = ? AND user_id = ?", [deployed_lander_id, user_id],
               function(err, dbLoadTimes) {
-                callback(false, dbLoadTimes);
+                callback(false, deployedDomain, dbLoadTimes);
                 connection.release();
               });
           }
@@ -81,7 +80,7 @@ module.exports = function(app, db) {
       var getDeployedDomainsForDeployedLander = function(deployedLander, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
-            console.log(err);
+            callback(err);
           } else {
             connection.query("SELECT a.id AS domain_id,a.domain,b.id,b.lander_id from domains a JOIN deployed_landers b ON a.id=b.domain_id WHERE (b.user_id = ? AND lander_id = ?)", [user_id, deployedLander.lander_id],
               function(err, dbDeployedDomains) {
@@ -93,20 +92,20 @@ module.exports = function(app, db) {
                   } else {
                     var idx = 0;
                     for (var i = 0; i < dbDeployedDomains.length; i++) {
-                      getActiveJobsForDeployedDomain(dbDeployedDomains[i], function(err, deployedDomain, activeJobs) {
-                        if (err) {
-                          callback(err);
-                        } else {
-                          deployedDomain.activeJobs = activeJobs;
-                          getLoadTimesForDeployedDomain(deployedDomain, function(err, loadTimes) {
+                      // getActiveJobsForDeployedDomain(dbDeployedDomains[i], function(err, deployedDomain, activeJobs) {
+                      //   if (err) {
+                      //     callback(err);
+                      //   } else {
+                          // deployedDomain.activeJobs = activeJobs;
+                          getLoadTimesForDeployedDomain(dbDeployedDomains[i], function(err, deployedDomain, loadTimes) {
                             deployedDomain.endpoint_load_times = loadTimes;
                             if (++idx == dbDeployedDomains.length) {
                               callback(false, dbDeployedDomains);
                             }
                           });
 
-                        }
-                      });
+                      //   }
+                      // });
                     }
                   }
                 }

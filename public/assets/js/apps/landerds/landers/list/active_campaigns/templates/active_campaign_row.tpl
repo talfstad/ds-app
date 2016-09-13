@@ -1,4 +1,4 @@
-<td><%= viewIndex %></td>
+<td class="view-index"><%= viewIndex %></td>
 <td class="table-lander-name deployed-row-td" style="white-space: nowrap; max-width: 305px; min-width: 145px">
       <span><%= name %></span>
 </td>

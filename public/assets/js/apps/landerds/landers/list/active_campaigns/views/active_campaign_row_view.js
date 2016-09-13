@@ -18,6 +18,7 @@ define(["app",
         },
 
         modelEvents: {
+          "change:viewIndex": "updateViewIndex",
           "change:deploy_status": "render"
         },
 

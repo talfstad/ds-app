@@ -82,12 +82,12 @@ module.exports = function(app, db) {
                   if (currently_deployed_deployment_folder_name != "" && currently_deployed_deployment_folder_name != deployment_folder_name) {
                     //- create invalidation for this undeployment
                     var invalidationPath = "/" + currently_deployed_deployment_folder_name + "/*";
-                    console.log("invalidating the old deployed path because we changed it: " + invalidationPath);
+                    app.log("invalidating the old deployed path because we changed it: " + invalidationPath, "debug");
                     db.aws.cloudfront.createInvalidation(credentials, cloudfront_id, invalidationPath, function(err, invalidationData) {
                       if (err) {
                         callback({ code: "CouldNotCreateInvalidation" }, [myJobId]);
                       } else {
-                        console.log("invalidationData: " + JSON.stringify(invalidationData));
+                        app.log("invalidationData: " + JSON.stringify(invalidationData), "debug");
                         callback(false);
                       }
                     });
@@ -263,7 +263,6 @@ module.exports = function(app, db) {
                                       });
                                     }
                                   });
-
                                 } else {
                                   callback(false);
                                 }
@@ -388,13 +387,13 @@ module.exports = function(app, db) {
                                       if (err) {
                                         callback(err, [myJobId]);
                                       } else {
+                                        db.jobs.updateDeployStatus(user, myJobId, "deployed", function(err) {
+                                          if (err) {
+                                            callback({ code: "CouldNotUpdateDeployStatus" }, [myJobId]);
+                                          } else {
+                                            if (!master_job_id) {
+                                              //if master finish job and still wait around
 
-                                        if (!master_job_id) {
-                                          //if master finish job and still wait around
-                                          db.jobs.updateDeployStatus(user, myJobId, "deployed", function(err) {
-                                            if (err) {
-                                              callback({ code: "CouldNotUpdateDeployStatus" });
-                                            } else {
                                               db.jobs.finishedJobSuccessfully(user, [myJobId], function() {
                                                 masterWaitForSlavesToFinish(function(err) {
                                                   if (err) {
@@ -416,13 +415,13 @@ module.exports = function(app, db) {
                                                   }
                                                 });
                                               });
+                                            } else {
+                                              //slave just finishes
+                                              var finishedJobs = [myJobId];
+                                              callback(false, finishedJobs);
                                             }
-                                          });
-                                        } else {
-                                          //slave just finishes
-                                          var finishedJobs = [myJobId];
-                                          callback(false, finishedJobs);
-                                        }
+                                          }
+                                        });
                                       }
                                     });
                                   }

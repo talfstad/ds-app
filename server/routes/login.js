@@ -14,7 +14,6 @@ module.exports = function(app, passport) {
     var user = req.user;
     db.users.getUserSettings(user, function(error, access_key_id, secret_access_key, aws_root_bucket) {
       if (error) {
-        console.log(error);
         res.json({});
       } else {
         res.json({
@@ -36,7 +35,6 @@ module.exports = function(app, passport) {
     if (req.user) {
       db.users.getUserSettings(user, function(error, access_key_id, secret_access_key, aws_root_bucket) {
         if (error) {
-          console.log(error);
           res.json({});
         } else {
           res.json({

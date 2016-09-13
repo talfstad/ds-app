@@ -150,10 +150,9 @@ define(["app",
                   });
 
                   campaignView.on("renderAndShowThisViewsPage", function() {
-                    // me.showRow(campaignView.model);
+                    me.filteredCollection.sortFiltered();
                     me.expandAndShowRow(campaignView.model);
                   });
-
 
                   var domainListCollection = campaignView.model.get("domains");
                   //set landername to be used by campaign models dialog
@@ -164,12 +163,13 @@ define(["app",
                     collection: domainListCollection
                   });
 
-                  domainListCollection.on("showRemoveDomain", function(domainModel) {
+                  domainListCollection.off("showUndeployDomain");
+                  domainListCollection.on("showUndeployDomain", function(domainModel) {
                     var attr = {
                       campaign_model: campaignView.model,
                       domain_model: domainModel
                     };
-                    Landerds.trigger("campaigns:showRemoveDomain", attr);
+                    Landerds.trigger("campaigns:showUndeployDomain", attr);
                   });
 
                   domainListView.on("childview:updateParentLayout", function(childView, options) {
@@ -188,12 +188,13 @@ define(["app",
                     collection: deployedLandersCollection
                   });
 
-                  deployedLandersCollection.on("showRemoveLander", function(landerModel) {
+                  deployedLandersCollection.off("showUndeployLander");
+                  deployedLandersCollection.on("showUndeployLander", function(landerModel) {
                     var attr = {
                       campaign_model: campaignView.model,
                       lander_model: landerModel
                     };
-                    Landerds.trigger("campaigns:showRemoveLander", attr);
+                    Landerds.trigger("campaigns:showUndeployLander", attr);
                   });
 
                   deployedLandersView.on("childview:updateParentLayout", function(childView, options) {

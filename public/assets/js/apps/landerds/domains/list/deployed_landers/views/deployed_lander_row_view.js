@@ -19,7 +19,8 @@ define(["app",
           "destroy:activeJobs": "render",
           "destroy:activeCampaigns": "render",
           "add:activeCampaigns": "render",
-          "change:load_time_spinner_gui": "setLoadTimeSpinnerState"
+          "change:load_time_spinner_gui": "setLoadTimeSpinnerState",
+          "change:viewIndex": "updateViewIndex"
         },
 
         events: {

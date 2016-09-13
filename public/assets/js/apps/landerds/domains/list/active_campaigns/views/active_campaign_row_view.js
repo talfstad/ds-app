@@ -18,7 +18,8 @@ define(["app",
         },
 
         modelEvents: {
-          "change:deploy_status": "render"
+          "change:deploy_status": "render",
+          "change:viewIndex": "updateViewIndex"
         },
 
         gotoEditCampaign: function(e) {

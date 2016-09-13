@@ -92,7 +92,7 @@ module.exports = function(app, db) {
 
     makeCloudfrontDistribution: function(credentials, domain, path, bucketName, callback) {
       //needs a / in the beginning because aws appends it to domain name
-      // console.log("origin path: " + path)
+      app.log("origin path: " + path, "debug");
       //set keys before every action
       AWS.config.update({
         region: 'us-west-2',
@@ -112,7 +112,7 @@ module.exports = function(app, db) {
       var s3_id = 'domain-' + bucketName;
       var s3_domain = bucketName + '.s3.amazonaws.com';
 
-      // console.log("s3 domain name: " + s3_domain);
+      app.log("s3 domain name: " + s3_domain, "debug");
 
       var params = {
         DistributionConfig: { /* required */
@@ -193,7 +193,6 @@ module.exports = function(app, db) {
 
       cloudfront_client.createDistribution(params, function(err, data) {
         if (err) {
-          console.log(err, err.stack);
           error = {
             code: "ErrorCreatingCloudfrontDistribution"
           };
@@ -222,7 +221,6 @@ module.exports = function(app, db) {
       cloudfront_client.getDistributionConfig(params, function(err, data) {
         if (err) {
           callback(err);
-          console.log(err);
         } else {
           callback(false, data);
         }
