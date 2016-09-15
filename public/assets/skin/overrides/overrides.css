@@ -2,7 +2,7 @@
 @import url('login_overrides.css');
 @import url('landers_overrides.css');
 @import url('domains_overrides.css');
-@import url('campaigns_overrides.css');
+@import url('groups_overrides.css');
 @import url('active_snippets_overrides.css');
 
 
@@ -157,13 +157,13 @@ body.sb-l-o #topbar.affix,
 }
 
 .domain-title a,
-.campaign-title a {
+.group-title a {
     color: #fff;
     font-size: 10px;
     margin-right: 10px;
 }
 
-.campaign-list,
+.group-list,
 .lander-list {
     padding-top: 5px;
     padding-left: 30px;
@@ -172,7 +172,7 @@ body.sb-l-o #topbar.affix,
     list-style: none;
 }
 
-.campaign-item {
+.group-item {
     display: block;
     position: relative;
     margin: 0;
@@ -182,7 +182,7 @@ body.sb-l-o #topbar.affix,
     line-height: 20px;
 }
 
-.campaign-title {
+.group-title {
     color: #FFF;
     background-color: #3bafda !important;
     border-color: #3bafda !important;
@@ -245,7 +245,7 @@ body.sb-l-o #topbar.affix,
     width: 100%;
 }
 
-.campaign-controls {
+.group-controls {
     float: right;
     position: relative;
     display: block;
@@ -258,7 +258,7 @@ body.sb-l-o #topbar.affix,
     border-left: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.campaign-notification-label {
+.group-notification-label {
     margin-top: 10px;
     position: relative;
     right: 2px;
@@ -445,7 +445,7 @@ body.sb-l-o #topbar.affix,
     content: "\e900";
 }
 
-.icon-campaigns_icon:before {
+.icon-groups_icon:before {
     content: "\e901";
 }
 
@@ -469,7 +469,7 @@ body.sb-l-o #topbar.affix,
     border-top: none !important;
 }
 
-.active_campaigns_region {
+.active_groups_region {
     font-size: 14px;
 }
 

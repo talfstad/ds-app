@@ -7,7 +7,7 @@ module.exports = {
       host: 'landerds-app.cynwtdt18kyi.us-west-2.rds.amazonaws.com',
       user: 'buildcave',
       password: 'Wewillrockyou1986!',
-      database: 'test',
+      database: 'test_db',
       //database: 'prod',  
       multipleStatements: true,
       connectionLimit: 50

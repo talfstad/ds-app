@@ -17,7 +17,7 @@ define(["app",
         },
 
         collectionEvents: {
-          "activeCampaignsChanged": "render"
+          "activeGroupsChanged": "render"
         },
 
         gotoEditDomain: function(childView) {
@@ -50,7 +50,7 @@ define(["app",
           model.set('viewIndex', parseInt(this.collection.indexOf(model)) + 1);
           model.set('urlEndpoints', this.collection.urlEndpoints);
           model.set('landerName', this.collection.landerName);
-          model.set('activeCampaigns', this.collection.activeCampaigns);
+          model.set('activeGroups', this.collection.activeGroups);
           model.set('deployment_folder_name', this.collection.deployment_folder_name);
 
           //return options ONLY used by our empty view.

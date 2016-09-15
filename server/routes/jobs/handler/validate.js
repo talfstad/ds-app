@@ -74,11 +74,11 @@ module.exports = function(app, db) {
 
 
 
-    // "addActiveCampaignModel": false,
+    // "addActiveGroupModel": false,
     // "neverAddToUpdater": true,
     // "processing": false,
     // "lander_id": "",
-    // "campaign_id": "",
+    // "group_id": "",
     // "domain_id": "",
     // "lander_url": "",
     // "extra": {},

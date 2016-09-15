@@ -95,7 +95,7 @@
         
         <div style="float: left; margin-left: 15px; margin-bottom: 10px">Domain Name</div>
         <div style="float: right; margin-right: 95px; margin-bottom: 10px">Deployed Landers</div>
-        <div style="float: right; margin-right: 28px; margin-bottom: 10px">Campaigns on Domain</div>
+        <div style="float: right; margin-right: 28px; margin-bottom: 10px">Groups on Domain</div>
         <div style="float: right; margin-right: 85px; margin-bottom: 10px">Created On</div>
         
 

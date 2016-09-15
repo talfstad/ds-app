@@ -9,7 +9,7 @@ module.exports = function(app) {
 
   module.users = require('./users')(app, db);
   module.landers = require('./landers')(app, db);
-  module.campaigns = require('./campaigns')(app, db);
+  module.groups = require('./groups')(app, db);
   module.domains = require('./domains')(app, db);
   module.js_snippets = require('./js_snippets')(app, db);
   module.updater = require('./updater')(app, db);

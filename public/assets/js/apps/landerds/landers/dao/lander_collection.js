@@ -1,9 +1,9 @@
 define(["app",
     "assets/js/apps/landerds/landers/dao/lander_model",
-    "assets/js/apps/landerds/landers/dao/active_campaign_collection",
+    "assets/js/apps/landerds/landers/dao/active_group_collection",
     "assets/js/apps/landerds/landers/dao/url_endpoint_collection"
   ],
-  function(Landerds, LanderModel, ActiveCampaignCollection, UrlEndpointCollection) {
+  function(Landerds, LanderModel, ActiveGroupsCollection, UrlEndpointCollection) {
     var LanderCollection = Backbone.Collection.extend({
       url: '/api/landers',
       model: LanderModel,

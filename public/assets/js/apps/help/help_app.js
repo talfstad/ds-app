@@ -2,7 +2,7 @@ define(["app",
     "assets/js/apps/help/aws_tutorial/aws_tutorial_controller"  
   ],
   function(Landerds, AwsTutorialController) {
-    Landerds.module("CampaignsApp", function(CampaignsApp, Landerds, Backbone, Marionette, $, _) {
+    Landerds.module("GroupsApp", function(GroupsApp, Landerds, Backbone, Marionette, $, _) {
 
       var helpAppAPI = {
        

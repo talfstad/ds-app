@@ -1,7 +1,7 @@
 module.exports = function(app, db) {
 
   var baseDeployedLander = require('./base_classes/base_deployed_lander')(app, db);
-  var baseActiveCampaign = require('./base_classes/base_active_campaign')(app, db);
+  var baseActiveGroup = require('./base_classes/base_active_group')(app, db);
 
   var module = {
 
@@ -98,14 +98,14 @@ module.exports = function(app, db) {
       });
     },
 
-    deleteFromCampaignsWithSharedDomains: function(domain_id, callback) {
+    deleteFromGroupsWithSharedDomains: function(domain_id, callback) {
 
-      var removeDomainFromCampaigns = function(callback) {
+      var removeDomainFromGroups = function(callback) {
         db.getConnection(function(err, connection) {
           if (err) {
             callback(err);
           } else {
-            connection.query("DELETE FROM campaigns_with_domains WHERE domain_id = ?", [domain_id],
+            connection.query("DELETE FROM groups_with_domains WHERE domain_id = ?", [domain_id],
               function(err, docs) {
                 if (err) {
                   callback(err);
@@ -118,7 +118,7 @@ module.exports = function(app, db) {
         });
       };
 
-      removeDomainFromCampaigns(function(err) {
+      removeDomainFromGroups(function(err) {
         if (err) {
           callback(err);
         } else {
@@ -127,15 +127,15 @@ module.exports = function(app, db) {
       });
     },
 
-    deleteFromCampaignsWithDomains: function(user, domain_id, callback) {
+    deleteFromGroupsWithDomains: function(user, domain_id, callback) {
       var user_id = user.id;
 
-      var removeDomainFromCampaigns = function(callback) {
+      var removeDomainFromGroups = function(callback) {
         db.getConnection(function(err, connection) {
           if (err) {
             callback(err);
           } else {
-            connection.query("DELETE FROM campaigns_with_domains WHERE domain_id = ? AND user_id = ?", [domain_id, user_id],
+            connection.query("DELETE FROM groups_with_domains WHERE domain_id = ? AND user_id = ?", [domain_id, user_id],
               function(err, docs) {
                 if (err) {
                   callback(err);
@@ -148,7 +148,7 @@ module.exports = function(app, db) {
         });
       };
 
-      removeDomainFromCampaigns(function(err) {
+      removeDomainFromGroups(function(err) {
         if (err) {
           callback(err);
         } else {
@@ -157,15 +157,15 @@ module.exports = function(app, db) {
       });
     },
 
-    //remove domain from all campaigns that have it
-    removeActiveCampaignsForDomain: function(user, domain_id, callback) {
+    //remove domain from all groups that have it
+    removeActiveGroupsForDomain: function(user, domain_id, callback) {
       var user_id = user.id;
 
       db.getConnection(function(err, connection) {
         if (err) {
           callback(err);
         } else {
-          connection.query("DELETE FROM campaigns_with_domains WHERE user_id = ? AND domain_id = ?", [user_id, domain_id],
+          connection.query("DELETE FROM groups_with_domains WHERE user_id = ? AND domain_id = ?", [user_id, domain_id],
             function(err, docs) {
               if (err) {
                 callback(err);
@@ -279,25 +279,25 @@ module.exports = function(app, db) {
     getAll: function(user, rootBucket, successCallback) {
       var user_id = user.id;
 
-      var getActiveCampaignsForDomain = function(domain, callback) {
+      var getActiveGroupsForDomain = function(domain, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT a.id AS campaign_id, b.id, a.name,b.domain_id from campaigns a JOIN campaigns_with_domains b ON a.id=b.campaign_id WHERE (a.user_id = ? AND domain_id = ?)", [user_id, domain.id],
-              function(err, dbActiveCampaigns) {
+            connection.query("SELECT a.id AS group_id, b.id, a.name,b.domain_id from groups a JOIN groups_with_domains b ON a.id=b.group_id WHERE (a.user_id = ? AND domain_id = ?)", [user_id, domain.id],
+              function(err, dbActiveGroups) {
 
-                if (dbActiveCampaigns.length <= 0) {
+                if (dbActiveGroups.length <= 0) {
                   callback(false, []);
                 } else {
                   var idx = 0;
-                  for (var i = 0; i < dbActiveCampaigns.length; i++) {
-                    baseActiveCampaign.getExtraNestedForActiveCampaign(user, dbActiveCampaigns[i], function(err) {
+                  for (var i = 0; i < dbActiveGroups.length; i++) {
+                    baseActiveGroup.getExtraNestedForActiveGroup(user, dbActiveGroups[i], function(err) {
                       if (err) {
                         callback(err);
                       } else {
-                        if (++idx == dbActiveCampaigns.length) {
-                          callback(false, dbActiveCampaigns);
+                        if (++idx == dbActiveGroups.length) {
+                          callback(false, dbActiveGroups);
                         }
                       }
 
@@ -319,7 +319,7 @@ module.exports = function(app, db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT a.id,a.action,a.processing,a.deploy_status,a.lander_id,a.domain_id,a.campaign_id,a.done,a.error,a.created_on FROM jobs a JOIN domains b ON a.domain_id = b.id WHERE a.action = ? AND b.aws_root_bucket = ? AND a.domain_id = ? AND a.processing = ? AND (a.done IS NULL OR a.done = ?)", ["deleteDomain", aws_root_bucket, domain.id, true, false],
+            connection.query("SELECT a.id,a.action,a.processing,a.deploy_status,a.lander_id,a.domain_id,a.group_id,a.done,a.error,a.created_on FROM jobs a JOIN domains b ON a.domain_id = b.id WHERE a.action = ? AND b.aws_root_bucket = ? AND a.domain_id = ? AND a.processing = ? AND (a.done IS NULL OR a.done = ?)", ["deleteDomain", aws_root_bucket, domain.id, true, false],
               function(err, dbActiveJobs) {
                 if (err) {
                   callback(err);
@@ -374,11 +374,11 @@ module.exports = function(app, db) {
           } else {
             domain.deployedLanders = landers;
 
-            getActiveCampaignsForDomain(domain, function(err, activeCampaigns) {
+            getActiveGroupsForDomain(domain, function(err, activeGroups) {
               if (err) {
                 callback(err);
               } else {
-                domain.activeCampaigns = activeCampaigns;
+                domain.activeGroups = activeGroups;
 
                 getActiveJobsForDomain(domain, function(err, activeJobs) {
                   if (err) {

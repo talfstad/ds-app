@@ -10,7 +10,7 @@ function(Landerds, listTpl){
 
       events: {
         "click .go-domains": "goDomains",
-        "click .go-campaigns": "goCampaigns",
+        "click .go-groups": "goGroups",
         "click .go-landers": "goLanders"
       },
 
@@ -19,9 +19,9 @@ function(Landerds, listTpl){
         this.trigger("showDomains");
       },
 
-      goCampaigns: function(e){
+      goGroups: function(e){
         e.preventDefault();
-        this.trigger("showCampaigns");
+        this.trigger("showGroups");
       },
 
       goLanders: function(e){

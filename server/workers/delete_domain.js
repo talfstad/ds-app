@@ -16,7 +16,7 @@ module.exports = function(app, db) {
 
     var undeployJobs = [];
 
-    db.domains.deleteFromCampaignsWithSharedDomains(domain_id, function(err) {
+    db.domains.deleteFromGroupsWithSharedDomains(domain_id, function(err) {
       if (err) {
         callback(err, [myJobId]);
       } else {

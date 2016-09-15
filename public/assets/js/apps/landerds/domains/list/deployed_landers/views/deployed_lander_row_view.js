@@ -17,15 +17,15 @@ define(["app",
           "change:urlEndpoints": "render",
           "change:activeJobs": "render",
           "destroy:activeJobs": "render",
-          "destroy:activeCampaigns": "render",
-          "add:activeCampaigns": "render",
+          "destroy:activeGroups": "render",
+          "add:activeGroups": "render",
           "change:load_time_spinner_gui": "setLoadTimeSpinnerState",
           "change:viewIndex": "updateViewIndex"
         },
 
         events: {
           "click .undeploy": "showUndeployLander",
-          "click .campaign-tab-link": "selectCampaignTab",
+          "click .group-tab-link": "selectGroupsTab",
           "click .open-link": "openLanderLink",
           "click .goto-edit-lander": "gotoEditLander",
           "change .lander-links-select": "updateLoadTime",
@@ -47,26 +47,26 @@ define(["app",
 
           DeployedRowBaseView.prototype.onBeforeRender.apply(this);
 
-          var activeCampaignCollection = this.model.get("activeCampaigns");
+          var activeGroupsCollection = this.model.get("activeGroups");
 
-          var hasActiveCampaigns = false;
-          if (activeCampaignCollection.length > 0) {
-            activeCampaignCollection.each(function(campaign) {
+          var hasActiveGroups = false;
+          if (activeGroupsCollection.length > 0) {
+            activeGroupsCollection.each(function(group) {
 
-              var campaignLanders = campaign.get('landers');
+              var groupLanders = group.get('landers');
 
               var landerId = me.model.get("lander_id");
 
-              if (campaignLanders.find(function(m) {
+              if (groupLanders.find(function(m) {
                   var id = m.lander_id;
                   return id == landerId;
                 })) {
-                hasActiveCampaigns = true;
+                hasActiveGroups = true;
               }
             });
           }
 
-          me.model.set("hasActiveCampaigns", hasActiveCampaigns);
+          me.model.set("hasActiveGroups", hasActiveGroups);
         },
         
         onRender: function() {

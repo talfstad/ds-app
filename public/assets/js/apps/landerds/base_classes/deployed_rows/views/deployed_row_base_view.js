@@ -12,9 +12,9 @@ define(["app",
         this.updateLoadTimeDisplay(urlEndpointIdToUpdateTo);
       },
 
-      selectCampaignTab: function(e) {
+      selectGroupsTab: function(e) {
         e.preventDefault();
-        this.trigger("selectCampaignTab");
+        this.trigger("selectGroupsTab");
       },
 
       updateLoadTimeDisplay: function(url_endpoint_id) {

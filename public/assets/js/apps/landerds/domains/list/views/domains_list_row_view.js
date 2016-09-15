@@ -4,14 +4,14 @@ define(["app",
     "assets/js/apps/landerds/domains/list/deployed_landers/views/deployed_landers_empty_view",
     "assets/js/apps/landerds/domains/dao/sidebar_model",
     "assets/js/apps/landerds/domains/list/views/lander_tab_handle_view",
-    "assets/js/apps/landerds/domains/list/views/campaign_tab_handle_view",
-    "assets/js/apps/landerds/domains/list/active_campaigns/views/active_campaigns_collection_view",
+    "assets/js/apps/landerds/domains/list/views/group_tab_handle_view",
+    "assets/js/apps/landerds/domains/list/active_groups/views/active_groups_collection_view",
     "assets/js/common/notification",
     "assets/js/apps/landerds/base_classes/list/views/list_rows_base_view",
     "bootstrap",
   ],
   function(Landerds, LandersListItemTpl, DeployedListChildView, DeployedListEmptyView, SidebarModel,
-    DeployStatusView, CampaignTabHandleView, ActiveCampaignsView, Notification, ListRowsBaseView) {
+    DeployStatusView, GroupsTabHandleView, ActiveGroupsView, Notification, ListRowsBaseView) {
 
     Landerds.module("DomainsApp.Domains.List", function(List, Landerds, Backbone, Marionette, $, _) {
       List.childView = ListRowsBaseView.extend({
@@ -24,7 +24,7 @@ define(["app",
         childViewContainer: "table.deployed-landers-region",
 
         events: {
-          "click button.add-to-campaign": "showAddToCampaign"
+          "click button.add-to-group": "showAddToGroups"
         },
 
         modelEvents: {
@@ -35,10 +35,10 @@ define(["app",
         regions: {
           'lander_tab_handle_region': '.lander-tab-handle-region',
           'deployed_landers_region': '.deployed-landers-region',
-          'campaign_tab_handle_region': '.campaign-tab-handle-region',
-          'active_campaigns_region': '.active_campaigns_region',
+          'group_tab_handle_region': '.group-tab-handle-region',
+          'active_groups_region': '.active_groups_region',
           'deploy_to_new_domain_region': '.deploy-to-new-domain-region',
-          'add_to_new_campaign_region': '.add-to-new-campaign-region'
+          'add_to_new_group_region': '.add-to-new-group-region'
         },
 
         initialize: function() {
@@ -66,8 +66,8 @@ define(["app",
 
         },
 
-        showAddToCampaign: function() {
-          Landerds.trigger("domains:showAddToCampaign", this.model);
+        showAddToGroups: function() {
+          Landerds.trigger("domains:showAddToGroups", this.model);
         },
 
         onBeforeRender: function() {
@@ -100,7 +100,7 @@ define(["app",
                 $(e.currentTarget).attr("data-currently-hovering", false);
               });
 
-            this.$el.find(".campaign-tab-handle-region").hover(function(e) {
+            this.$el.find(".group-tab-handle-region").hover(function(e) {
               $(e.currentTarget).attr("data-currently-hovering", true);
             }, function(e) {
               $(e.currentTarget).attr("data-currently-hovering", false);
@@ -141,8 +141,8 @@ define(["app",
               //first dont show any tabs then show correct tab
               $(e.currentTarget).find("li.lander-tab-handle-region").removeClass("active");
               $(e.currentTarget).find("div[id^='landers-tab']").removeClass("active");
-              $(e.currentTarget).find("li.campaign-tab-handle-region").removeClass("active");
-              $(e.currentTarget).find("div[id^='campaigns-tab']").removeClass("active");
+              $(e.currentTarget).find("li.group-tab-handle-region").removeClass("active");
+              $(e.currentTarget).find("div[id^='groups-tab']").removeClass("active");
               //show the correct tab
               var currentTab = $(e.currentTarget).find("li[data-currently-hovering='true']");
               var currentTabData = $("#" + currentTab.attr("data-tab-target"));

@@ -18,8 +18,8 @@ define(["app",
             Landerds.trigger("landers:list");
           });
 
-          header.on("showCampaigns", function(childView, model, child) {
-            Landerds.trigger("campaigns:list");
+          header.on("showGroups", function(childView, model, child) {
+            Landerds.trigger("groups:list");
           });
 
           Landerds.rootRegion.currentView.headerRegion.show(header);
@@ -33,7 +33,7 @@ define(["app",
           //close all sidebars
           Landerds.trigger("domains:closesidebar");
           Landerds.trigger("landers:closesidebar");
-          Landerds.trigger("campaigns:closesidebar");
+          Landerds.trigger("groups:closesidebar");
 
           if (Landerds.rootRegion.currentView.headerRegion.hasView()) {
             var headerView = Landerds.rootRegion.currentView.headerRegion.currentView;

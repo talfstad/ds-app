@@ -1,9 +1,9 @@
 define(["app",
     "assets/js/apps/landerds/domains/dao/deployed_lander_collection",
-    "assets/js/apps/landerds/domains/dao/active_campaign_collection",
+    "assets/js/apps/landerds/domains/dao/active_group_collection",
     "assets/js/jobs/jobs_base_gui_model"
   ],
-  function(Landerds, DeployedLanderCollection, ActiveCampaignCollection, JobsGuiBaseModel) {
+  function(Landerds, DeployedLanderCollection, ActiveGroupsCollection, JobsGuiBaseModel) {
     var DomainModel = JobsGuiBaseModel.extend({
       urlRoot: "/api/domains",
 
@@ -14,21 +14,21 @@ define(["app",
       initialize: function() {
         var me = this;
 
-        var activeCampaignAttributes = this.get("activeCampaigns");
+        var activeGroupsAttributes = this.get("activeGroups");
         var deployedLandersAttributes = this.get("deployedLanders");
 
         var deployedLanderCollection = new DeployedLanderCollection(deployedLandersAttributes);
         this.set("deployedLanders", deployedLanderCollection);
 
-        var activeCampaignCollection = new ActiveCampaignCollection();
+        var activeGroupsCollection = new ActiveGroupsCollection();
 
         //whenever deployed domain coll updates deploy_status, update master lander deploy status
         deployedLanderCollection.on("add change:deploy_status", function(domainModel) {
           me.setDeployStatus();
         });
 
-        this.set("activeCampaigns", activeCampaignCollection);
-        activeCampaignCollection.add(activeCampaignAttributes);
+        this.set("activeGroups", activeGroupsCollection);
+        activeGroupsCollection.add(activeGroupsAttributes);
 
 
 
@@ -85,28 +85,28 @@ define(["app",
 
         this.startActiveJobs();
 
-        var addJobsToActiveCampaigns = function() {
+        var addJobsToActiveGroups = function() {
           deployedLanderCollection.each(function(deployedLander) {
 
             var activeJobCollection = deployedLander.get("activeJobs");
 
-            //if job has campaign_id also add it to the active campaign
+            //if job has group_id also add it to the active group
             if (activeJobCollection.length > 0) {
 
               activeJobCollection.each(function(activeJob) {
 
-                activeCampaignCollection.each(function(activeCampaign) {
-                  var isOnCampaign = false;
-                  var domains = activeCampaign.get("domains");
+                activeGroupsCollection.each(function(activeGroups) {
+                  var isOnGroups = false;
+                  var domains = activeGroups.get("domains");
                   domains.each(function(domain) {
                     if (domain.get("domain_id") == activeJob.get("domain_id")) {
-                      isOnCampaign = true;
+                      isOnGroups = true;
                     }
                   });
 
-                  if (isOnCampaign) {
-                    activeCampaignActiveJobs = activeCampaign.get("activeJobs");
-                    activeCampaignActiveJobs.add(activeJob);
+                  if (isOnGroups) {
+                    activeGroupsActiveJobs = activeGroups.get("activeJobs");
+                    activeGroupsActiveJobs.add(activeJob);
                   }
                 });
               });
@@ -116,10 +116,10 @@ define(["app",
           });
         };
 
-        addJobsToActiveCampaigns();
+        addJobsToActiveGroups();
 
-        activeCampaignCollection.on("add destroy", function(activeCampaignModel) {
-          deployedLanderCollection.trigger("activeCampaignsChanged");
+        activeGroupsCollection.on("add destroy", function(activeGroupsModel) {
+          deployedLanderCollection.trigger("activeGroupsChanged");
         });
 
 
@@ -184,9 +184,9 @@ define(["app",
         name: "",
         created_on: "",
         deployedLanders: [],
-        activeCampaigns: [],
+        activeGroups: [],
         deploy_status: "deployed",
-        active_campaigns_count: 0,
+        active_groups_count: 0,
         active_landers_count: 0
       }
 

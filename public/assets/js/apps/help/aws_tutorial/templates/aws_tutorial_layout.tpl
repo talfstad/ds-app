@@ -3,7 +3,7 @@
     <div class="modal-header">
       <h4 class="modal-title">Welcome to Lander DS!</h4>
     </div>
-    <div class="campaigns-list-region modal-body">
+    <div class="groups-list-region modal-body">
       <div class="row">
         <div class="col-md-12">
           <div class="alert alert-micro alert-border-left alert-alert">

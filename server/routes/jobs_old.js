@@ -22,7 +22,7 @@ module.exports = function(app, passport) {
       landerData.saveModified = false;
 
       var list = jobModelAttributes.list;
-      var activeCampaignModelAttributes = jobModelAttributes.addActiveCampaignModel
+      var activeGroupModelAttributes = jobModelAttributes.addActiveGroupModel
 
 
 
@@ -38,51 +38,51 @@ module.exports = function(app, passport) {
               if (err) {
                 res.json(err);
               } else {
-                var addActiveCampaign = function(callback) {
-                  app.log("active campaign attr: " + JSON.stringify(activeCampaignModelAttributes), "debug");
+                var addActiveGroup = function(callback) {
+                  app.log("active group attr: " + JSON.stringify(activeGroupModelAttributes), "debug");
 
-                  if (!activeCampaignModelAttributes) {
+                  if (!activeGroupModelAttributes) {
                     callback(false);
                   } else {
 
-                    var afterAddingActiveCampaignCallback = function(err, active_campaign_id) {
+                    var afterAddingActiveGroupCallback = function(err, active_group_id) {
                       if (err) {
                         callback(err);
                       } else {
-                        app.log("\n\ngot active domain campaign_id! : T: " + active_campaign_id, "debug");
-                        callback(false, active_campaign_id);
+                        app.log("\n\ngot active domain group_id! : T: " + active_group_id, "debug");
+                        callback(false, active_group_id);
                       }
                     };
 
 
-                    var addActiveCampaignToLandersWithCampaigns = function(callback) {
-                      db.campaigns.addActiveCampaignToLander(user, activeCampaignModelAttributes, function(err, active_campaign_id) {
+                    var addActiveGroupToLandersWithGroups = function(callback) {
+                      db.groups.addActiveGroupToLander(user, activeGroupModelAttributes, function(err, active_group_id) {
                         if (err) {
                           callback(err);
                         } else {
-                          callback(false, active_campaign_id);
+                          callback(false, active_group_id);
                         }
                       });
                     };
 
-                    var addActiveCampaignToCampaignsWithDomains = function(callback) {
-                      db.campaigns.addActiveCampaignToDomain(user, activeCampaignModelAttributes, function(err, active_campaign_id) {
+                    var addActiveGroupToGroupsWithDomains = function(callback) {
+                      db.groups.addActiveGroupToDomain(user, activeGroupModelAttributes, function(err, active_group_id) {
                         if (err) {
                           callback(err);
                         } else {
-                          callback(false, active_campaign_id);
+                          callback(false, active_group_id);
                         }
                       });
                     };
 
-                    //add the active campaign, this means add to landers or domains based on what action we passed the model
-                    var activeCampaignAction = activeCampaignModelAttributes.action;
-                    if (activeCampaignAction == "lander") {
-                      addActiveCampaignToLandersWithCampaigns(afterAddingActiveCampaignCallback);
-                    } else if (activeCampaignAction == "domain") {
-                      addActiveCampaignToCampaignsWithDomains(afterAddingActiveCampaignCallback);
+                    //add the active group, this means add to landers or domains based on what action we passed the model
+                    var activeGroupAction = activeGroupModelAttributes.action;
+                    if (activeGroupAction == "lander") {
+                      addActiveGroupToLandersWithGroups(afterAddingActiveGroupCallback);
+                    } else if (activeGroupAction == "domain") {
+                      addActiveGroupToGroupsWithDomains(afterAddingActiveGroupCallback);
                     } else {
-                      callback({ code: "CouldNotAddActiveCampaignNoAction" });
+                      callback({ code: "CouldNotAddActiveGroupNoAction" });
                     }
                   }
                 };
@@ -121,7 +121,7 @@ module.exports = function(app, passport) {
                   }
                 };
 
-                addActiveCampaign(function(err, active_campaign_id) {
+                addActiveGroup(function(err, active_group_id) {
                   if (err) {
                     res.json(err);
                   } else {
@@ -148,7 +148,7 @@ module.exports = function(app, passport) {
 
                             //start the first job (master job)
                             registeredMasterJobAttributes.landerData = landerData;
-                            registeredMasterJobAttributes.active_campaign_id = active_campaign_id;
+                            registeredMasterJobAttributes.active_group_id = active_group_id;
 
                             WorkerController.startJob(registeredMasterJobAttributes.action, user, registeredMasterJobAttributes);
 
@@ -197,7 +197,7 @@ module.exports = function(app, passport) {
                               lander_id: landerData.id,
                               action: "savingLander",
                               deploy_status: "saving",
-                              active_campaign_id: active_campaign_id
+                              active_group_id: active_group_id
                             };
 
                             db.jobs.registerJob(user, saveLanderJobAttributes, function(err, registeredJobAttributes) {
@@ -207,7 +207,7 @@ module.exports = function(app, passport) {
 
                           } else {
                             //just a light save, no optimization needed. no job added to optimize
-                            res.json([{ active_campaign_id: active_campaign_id }]);
+                            res.json([{ active_group_id: active_group_id }]);
                           }
                         }
                       }

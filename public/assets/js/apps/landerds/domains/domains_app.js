@@ -6,12 +6,12 @@ define(["app",
     "assets/js/apps/landerds/domains/deploy_new_lander/deploy_new_lander_controller",
     "assets/js/apps/landerds/domains/delete_domain/delete_domain_controller",
     "assets/js/apps/landerds/domains/undeploy_lander/undeploy_controller",
-    "assets/js/apps/landerds/domains/add_to_campaign/add_to_campaign_controller",
-    "assets/js/apps/landerds/domains/undeploy_campaign/undeploy_controller"
+    "assets/js/apps/landerds/domains/add_to_group/add_to_group_controller",
+    "assets/js/apps/landerds/domains/undeploy_group/undeploy_controller"
   ],
   function(Landerds, ListController, CommonLogin, SidemenuController, AddNewDomainController,
-    DeployNewLanderController, DeleteDomainController, UndeployLanderController, AddToCampaignController,
-    UndeployCampaignController) {
+    DeployNewLanderController, DeleteDomainController, UndeployLanderController, AddToGroupsController,
+    UndeployGroupsController) {
     Landerds.module("DomainsApp", function(DomainsApp, Landerds, Backbone, Marionette, $, _) {
 
       var domainsAppAPI = {
@@ -71,20 +71,20 @@ define(["app",
           UndeployLanderController.showUndeployLander(model);
         },
 
-        showAddNewCampaign: function(model) {
-          AddToCampaignController.showAddNewCampaign(model);
+        showAddNewGroups: function(model) {
+          AddToGroupsController.showAddNewGroups(model);
         },
 
-        deployCampaignLandersToDomain: function(attr) {
-          ListController.deployCampaignLandersToDomain(attr);
+        deployGroupsLandersToDomain: function(attr) {
+          ListController.deployGroupsLandersToDomain(attr);
         },
 
-        showUndeployDomainFromCampaignDialog: function(model) {
-          UndeployCampaignController.showUndeployDomainFromCampaignDialog(model);
+        showUndeployDomainFromGroupsDialog: function(model) {
+          UndeployGroupsController.showUndeployDomainFromGroupsDialog(model);
         },
 
-        removeCampaignFromDomain: function(campaignModel) {
-          ListController.removeCampaignFromDomain(campaignModel);
+        removeGroupsFromDomain: function(groupModel) {
+          ListController.removeGroupsFromDomain(groupModel);
         },
 
         //above functions are certain, below not sure we need yet
@@ -139,24 +139,24 @@ define(["app",
         domainsAppAPI.showUndeployLander(model);
       });
 
-      Landerds.on("domains:showAddNewCampaign", function(model) {
-        domainsAppAPI.showAddNewCampaign(model);
+      Landerds.on("domains:showAddNewGroups", function(model) {
+        domainsAppAPI.showAddNewGroups(model);
       });
 
       Landerds.on("domains:undeployLandersFromDomain", function(attr) {
         domainsAppAPI.undeployLandersFromDomain(attr);
       });
 
-      Landerds.on("domains:deployCampaignLandersToDomain", function(attr) {
-        domainsAppAPI.deployCampaignLandersToDomain(attr);
+      Landerds.on("domains:deployGroupsLandersToDomain", function(attr) {
+        domainsAppAPI.deployGroupsLandersToDomain(attr);
       });
 
-      Landerds.on("domains:showUndeployDomainFromCampaignDialog", function(attr) {
-        domainsAppAPI.showUndeployDomainFromCampaignDialog(attr);
+      Landerds.on("domains:showUndeployDomainFromGroupsDialog", function(attr) {
+        domainsAppAPI.showUndeployDomainFromGroupsDialog(attr);
       });
 
-      Landerds.on("domains:removeCampaignFromDomain", function(model) {
-        domainsAppAPI.removeCampaignFromDomain(model);
+      Landerds.on("domains:removeGroupsFromDomain", function(model) {
+        domainsAppAPI.removeGroupsFromDomain(model);
       });
 
 

@@ -7,13 +7,13 @@ define(["app",
     "assets/js/apps/landerds/landers/list/views/topbar_view",
     "assets/js/apps/landerds/landers/list/views/loading_view",
     "assets/js/apps/landerds/landers/list/views/domain_tab_handle_view",
-    "assets/js/apps/landerds/landers/list/views/campaign_tab_handle_view",
+    "assets/js/apps/landerds/landers/list/views/group_tab_handle_view",
     "assets/js/apps/landerds/landers/list/deployed_domains/views/deployed_domains_collection_view",
     "assets/js/apps/landerds/domains/dao/domain_collection",
-    "assets/js/apps/landerds/landers/list/active_campaigns/views/active_campaigns_collection_view",
+    "assets/js/apps/landerds/landers/list/active_groups/views/active_groups_collection_view",
     "assets/js/jobs/jobs_model",
     "assets/js/apps/landerds/landers/dao/lander_model",
-    "assets/js/apps/landerds/landers/dao/active_campaign_model",
+    "assets/js/apps/landerds/landers/dao/active_group_model",
     "assets/js/common/notification",
     "assets/js/apps/landerds/base_classes/list/list_controller_base",
     "assets/js/apps/landerds/landers/dao/deployed_domain_model",
@@ -21,9 +21,9 @@ define(["app",
     "assets/js/apps/landerds/landers/list/views/list_layout_view"
   ],
   function(Landerds, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
-    PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, CampaignTabHandleView,
-    DeployedDomainsView, DeployedDomainsCollection, ActiveCampaignsView,
-    JobModel, LanderModel, ActiveCampaignModel, Notification, BaseListController, DeployedDomainModel) {
+    PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, GroupsTabHandleView,
+    DeployedDomainsView, DeployedDomainsCollection, ActiveGroupsView,
+    JobModel, LanderModel, ActiveGroupsModel, Notification, BaseListController, DeployedDomainModel) {
     Landerds.module("LandersApp.Landers.List", function(List, Landerds, Backbone, Marionette, $, _) {
 
       List.Controller = _.extend({ //BaseListController
@@ -158,7 +158,7 @@ define(["app",
                     model: landerView.model
                   });
 
-                  var campaignTabHandleView = new CampaignTabHandleView({
+                  var groupTabHandleView = new GroupsTabHandleView({
                     model: landerView.model
                   });
 
@@ -172,34 +172,34 @@ define(["app",
                     Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerView.model);
                   });
 
-                  var activeCampaignsCollection = landerView.model.get("activeCampaigns");
-                  //set landername to be used by campaign models dialog
-                  activeCampaignsCollection.landerName = landerView.model.get("name");
-                  activeCampaignsCollection.deploy_status = landerView.model.get("deploy_status");
+                  var activeGroupsCollection = landerView.model.get("activeGroups");
+                  //set landername to be used by group models dialog
+                  activeGroupsCollection.landerName = landerView.model.get("name");
+                  activeGroupsCollection.deploy_status = landerView.model.get("deploy_status");
 
-                  var activeCampaignsView = new ActiveCampaignsView({
-                    collection: activeCampaignsCollection
+                  var activeGroupsView = new ActiveGroupsView({
+                    collection: activeGroupsCollection
                   });
 
-                  activeCampaignsCollection.off("showUndeployDomainFromCampaignDialog");
-                  activeCampaignsCollection.on("showUndeployDomainFromCampaignDialog", function(campaignModel) {
+                  activeGroupsCollection.off("showUndeployDomainFromGroupsDialog");
+                  activeGroupsCollection.on("showUndeployDomainFromGroupsDialog", function(groupModel) {
                     var attr = {
-                      campaign_model: campaignModel,
+                      group_model: groupModel,
                       lander_model: landerView.model
                     };
-                    Landerds.trigger("landers:showUndeployDomainFromCampaignDialog", attr);
+                    Landerds.trigger("landers:showUndeployDomainFromGroupsDialog", attr);
                   });
 
-                  activeCampaignsView.on("childview:updateParentLayout", function(childView, options) {
-                    //update the campaign count for lander
+                  activeGroupsView.on("childview:updateParentLayout", function(childView, options) {
+                    //update the group count for lander
                     var length = this.children.length;
                     if (childView.isDestroyed) --length;
-                    campaignTabHandleView.model.set("active_campaigns_count", length);
+                    groupTabHandleView.model.set("active_groups_count", length);
                   });
 
                   var deployedDomainsCollection = landerView.model.get("deployedDomains");
 
-                  deployedDomainsCollection.activeCampaigns = activeCampaignsCollection;
+                  deployedDomainsCollection.activeGroups = activeGroupsCollection;
                   deployedDomainsCollection.urlEndpoints = landerView.model.get("urlEndpoints");
 
                   var landerViewDeploymentFolderName = landerView.model.get("deployment_folder_name");
@@ -218,13 +218,13 @@ define(["app",
                     Landerds.trigger("landers:showRemoveDomain", attr);
                   });
 
-                  //when campaign link selected go to camp tab (this is from deployed domains campaign name link)
-                  deployedDomainsView.on("childview:selectCampaignTab", function(one, two, three) {
-                    landerView.$el.find("a[href=#campaigns-tab-id-" + landerView.model.get("id") + "]").tab('show');
+                  //when group link selected go to camp tab (this is from deployed domains group name link)
+                  deployedDomainsView.on("childview:selectGroupsTab", function(one, two, three) {
+                    landerView.$el.find("a[href=#groups-tab-id-" + landerView.model.get("id") + "]").tab('show');
                   });
 
                   deployedDomainsView.on("childview:updateParentLayout", function(childView, options) {
-                    //update the campaign count for lander
+                    //update the group count for lander
                     var length = this.children.length;
                     if (childView.isDestroyed) --length;
                     domainTabHandleView.model.set("deployed_domains_count", length);
@@ -232,9 +232,9 @@ define(["app",
                   });
 
                   landerView.deploy_status_region.show(domainTabHandleView);
-                  landerView.campaign_tab_handle_region.show(campaignTabHandleView);
+                  landerView.group_tab_handle_region.show(groupTabHandleView);
                   landerView.deployed_domains_region.show(deployedDomainsView);
-                  landerView.active_campaigns_region.show(activeCampaignsView);
+                  landerView.active_groups_region.show(activeGroupsView);
                 });
               }
 
@@ -401,7 +401,7 @@ define(["app",
 
           var onAfterRedeployCallback = function(responseJobList) {
 
-            var activeCampaignsCollection = landerModel.get("activeCampaigns");
+            var activeGroupsCollection = landerModel.get("activeGroups");
             var deployedDomainCollection = landerModel.get("deployedDomains");
 
             //redeploy happening so now we're working, not modified
@@ -413,13 +413,13 @@ define(["app",
             //its a save job (lander level if there are no deployed domains (or any that are not undeploying))
             var deployedAtLeastOne = false;
 
-            //set the active_campaign_id if we have one. MUST do this outside of the 
+            //set the active_group_id if we have one. MUST do this outside of the 
             //add job loop incase there are not any landers to deploy
             $.each(responseJobList, function(idx, responseJobAttr) {
-              if (responseJobAttr.active_campaign_id) {
-                activeCampaignsCollection.each(function(activeCampaign) {
-                  if (!activeCampaign.get("id")) {
-                    activeCampaign.set("id", responseJobAttr.active_campaign_id);
+              if (responseJobAttr.active_group_id) {
+                activeGroupsCollection.each(function(activeGroups) {
+                  if (!activeGroups.get("id")) {
+                    activeGroups.set("id", responseJobAttr.active_group_id);
                   }
                 });
               }
@@ -455,13 +455,13 @@ define(["app",
                   deployedAtLeastOne = true;
                   activeJobs.add(newDeployJob);
 
-                  //also add the job to any active campaigns that have this domain_id
-                  activeCampaignsCollection.each(function(activeCampaign) {
-                    var domains = activeCampaign.get("domains");
+                  //also add the job to any active groups that have this domain_id
+                  activeGroupsCollection.each(function(activeGroups) {
+                    var domains = activeGroups.get("domains");
                     domains.each(function(domain) {
                       if (domain.get("domain_id") == newDeployJob.get("domain_id")) {
-                        var activeCampaignActiveJobs = activeCampaign.get("activeJobs");
-                        activeCampaignActiveJobs.add(newDeployJob);
+                        var activeGroupsActiveJobs = activeGroups.get("activeJobs");
+                        activeGroupsActiveJobs.add(newDeployJob);
                       }
                     });
                   });
@@ -492,13 +492,13 @@ define(["app",
 
           var landerRedeployAttr = this.getLanderRedeployJobs(landerModel);
           var deployedDomainsJobList = landerRedeployAttr.list;
-          var addActiveCampaignModel = landerRedeployAttr.addActiveCampaignModel;
+          var addActiveGroupsModel = landerRedeployAttr.addActiveGroupsModel;
 
           var redeployJobModel = new JobModel({
             action: "deployLanderToDomain",
             list: deployedDomainsJobList,
             model: landerModel,
-            addActiveCampaignModel: addActiveCampaignModel,
+            addActiveGroupsModel: addActiveGroupsModel,
             neverAddToUpdater: true
           });
 

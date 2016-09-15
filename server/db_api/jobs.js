@@ -171,15 +171,15 @@ module.exports = function(app, db) {
       }
     },
 
-    //returns all processing jobs for campaign id
-    getAllProcessingForCampaign: function(user, campaign_id, callback) {
+    //returns all processing jobs for group id
+    getAllProcessingForGroup: function(user, group_id, callback) {
       var user_id = user.id;
 
       db.getConnection(function(err, connection) {
         if (err) {
           callback(err);
         } else {
-          connection.query("SELECT * FROM jobs WHERE user_id = ? AND campaign_id = ? AND action <> ? AND processing = ? AND (done IS NULL OR done = ?);", [user_id, campaign_id, "deleteCampaign", 1, 0],
+          connection.query("SELECT * FROM jobs WHERE user_id = ? AND group_id = ? AND action <> ? AND processing = ? AND (done IS NULL OR done = ?);", [user_id, group_id, "deleteGroup", 1, 0],
             function(err, docs) {
               if (err) {
                 callback(err);
@@ -316,12 +316,12 @@ module.exports = function(app, db) {
 
       //set processing true to start processing on response
       modelAttributes.processing = true;
-      //param order: working_node_id, action, alternate_action, processing, lander_id, domain_id, campaign_id, user_id
+      //param order: working_node_id, action, alternate_action, processing, lander_id, domain_id, group_id, user_id
       db.getConnection(function(err, connection) {
         if (err) {
           callback(err);
         } else {
-          connection.query("CALL register_job(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [modelAttributes.deploy_status, app.config.id, modelAttributes.action, modelAttributes.alternate_action, true, modelAttributes.lander_id, modelAttributes.domain_id, modelAttributes.campaign_id, user_id, modelAttributes.master_job_id],
+          connection.query("CALL register_job(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [modelAttributes.deploy_status, app.config.id, modelAttributes.action, modelAttributes.alternate_action, true, modelAttributes.lander_id, modelAttributes.domain_id, modelAttributes.group_id, user_id, modelAttributes.master_job_id],
             function(err, docs) {
               if (err) {
                 callback(err);

@@ -14,10 +14,10 @@
           <span class="sidebar-title">Domains</span>
         </a>
       </li>
-      <li id="campaigns-left-nav">
-        <a href="/campaigns">
+      <li id="groups-left-nav">
+        <a href="/groups">
           <span style="font-size: 18px" class="fa fa-crosshairs"></span>
-          <span  class="sidebar-title">Campaigns</span>
+          <span  class="sidebar-title">Groups</span>
         </a>
       </li>
       <li id="landers-left-nav">

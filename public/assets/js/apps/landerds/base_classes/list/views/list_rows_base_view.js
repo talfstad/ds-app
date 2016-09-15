@@ -70,19 +70,19 @@ define(["app",
         // first try collapsing it
         $("#list-collection .collapse").collapse("hide");
 
-        //for campaigns
+        //for groups
         this.$el.find(".domain-tab-handle-region").off();
         this.$el.find(".domain-status-tab-handle").removeAttr("data-toggle");
         this.$el.find(".lander-tab-handle-region").off();
         this.$el.find(".lander-status-tab-handle").off();
 
         //for domains
-        this.$el.find(".campaign-status-tab-handle").removeAttr("data-toggle");
+        this.$el.find(".group-status-tab-handle").removeAttr("data-toggle");
 
 
         //for landers
-        this.$el.find(".campaign-tab-handle-region").off();
-        this.$el.find(".campaign-tab-handle-region a").attr("data-toggle", "");
+        this.$el.find(".group-tab-handle-region").off();
+        this.$el.find(".group-tab-handle-region a").attr("data-toggle", "");
         this.$el.find(".deploy-status-region").off();
         this.$el.find(".deploy-status-region a").attr("data-toggle", "");
 

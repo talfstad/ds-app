@@ -20,7 +20,7 @@ define(["app",
 
           var duplicatedLanderModel = new LanderModel(duplicateLanderModelAttr)
 
-          duplicatedLanderModel.attributes.active_campaigns_count = 0;
+          duplicatedLanderModel.attributes.active_groups_count = 0;
 
           $.each(duplicatedLanderModel.get("urlEndpointsJSON"), function(idx, endpoint) {
             endpoint.activeSnippets = []; //no active snippets carried over

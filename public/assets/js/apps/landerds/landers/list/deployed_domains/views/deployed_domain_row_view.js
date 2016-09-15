@@ -12,7 +12,7 @@ define(["app",
 
         events: {
           "click .undeploy": "showRemoveDomain",
-          "click .campaign-tab-link": "selectCampaignTab",
+          "click .group-tab-link": "selectGroupsTab",
           "click .open-link": "openLanderLink",
           "change .lander-links-select": "updateLoadTime",
           "click .get-load-time": "getLoadTime",
@@ -39,26 +39,26 @@ define(["app",
 
           DeployedRowBaseView.prototype.onBeforeRender.apply(this);
 
-          var activeCampaignCollection = this.model.get("activeCampaigns");
+          var activeGroupsCollection = this.model.get("activeGroups");
 
-          var hasActiveCampaigns = false;
-          if (activeCampaignCollection.length > 0) {
-            activeCampaignCollection.each(function(campaign) {
+          var hasActiveGroups = false;
+          if (activeGroupsCollection.length > 0) {
+            activeGroupsCollection.each(function(group) {
 
               var domainId = me.model.get("domain_id");
 
-              //check if this deployed domain belongs to this campaign
-              var campaignDomains = campaign.get("domains").toJSON();
-              if (campaignDomains.find(function(m) {
+              //check if this deployed domain belongs to this group
+              var groupDomains = group.get("domains").toJSON();
+              if (groupDomains.find(function(m) {
                   var id = m.domain_id || m.id;
                   return id == domainId;
                 })) {
-                hasActiveCampaigns = true;
+                hasActiveGroups = true;
               }
             });
           }
 
-          me.model.set("hasActiveCampaigns", hasActiveCampaigns);
+          me.model.set("hasActiveGroups", hasActiveGroups);
         },
 
         onRender: function() {

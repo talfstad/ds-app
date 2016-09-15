@@ -2,9 +2,9 @@ module.exports = function(app, db) {
 
   var dbAws = require("../aws")(app, db);
 
-  var baseActiveCampaign = require('../base_classes/base_active_campaign')(app, db);
+  var baseActiveGroup = require('../base_classes/base_active_group')(app, db);
 
-  var module = _.extend(baseActiveCampaign, {
+  var module = _.extend(baseActiveGroup, {
 
     common: require("./common")(app, db), //needs to be like this to access in other classes
 
@@ -49,15 +49,15 @@ module.exports = function(app, db) {
       });
     },
 
-    deleteFromLandersWithCampaigns: function(user, lander_id, callback) {
+    deleteFromLandersWithGroups: function(user, lander_id, callback) {
       var user_id = user.id;
 
-      var removeLanderFromCampaigns = function(callback) {
+      var removeLanderFromGroups = function(callback) {
         db.getConnection(function(err, connection) {
           if (err) {
             callback(err);
           } else {
-            connection.query("DELETE FROM landers_with_campaigns WHERE lander_id = ? AND user_id = ?", [lander_id, user_id],
+            connection.query("DELETE FROM landers_with_groups WHERE lander_id = ? AND user_id = ?", [lander_id, user_id],
               function(err, docs) {
                 if (err) {
                   callback(err);
@@ -70,7 +70,7 @@ module.exports = function(app, db) {
         });
       };
 
-      removeLanderFromCampaigns(function(err) {
+      removeLanderFromGroups(function(err) {
         if (err) {
           callback(err);
         } else {
@@ -419,7 +419,7 @@ module.exports = function(app, db) {
     //             //remove any attributes we dont want to overwrite
     //             delete duplicateLanderAttributes.deployedDomains;
     //             delete duplicateLanderAttributes.activeJobs;
-    //             delete duplicateLanderAttributes.activeCampaigns;
+    //             delete duplicateLanderAttributes.activeGroups;
     //             delete duplicateLanderAttributes.urlEndpoints;
 
     //             callback(false, duplicateLanderAttributes);
@@ -440,7 +440,7 @@ module.exports = function(app, db) {
       if (!urlEndpoints) urlEndpoints = [];
 
       var user_id = user.id;
-      //param order: working_node_id, action, processing, lander_id, domain_id, campaign_id, user_id
+      //param order: working_node_id, action, processing, lander_id, domain_id, group_id, user_id
       db.getConnection(function(err, connection) {
         if (err) {
           callback(err)
@@ -521,7 +521,7 @@ module.exports = function(app, db) {
             callback(err);
           } else {
             var arr = ["undeployLanderFromDomain", "deployLanderToDomain", user_id, deployedDomain.lander_id, deployedDomain.domain_id, true];
-            connection.query("SELECT id,action,deploy_status,lander_id,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", arr,
+            connection.query("SELECT id,action,deploy_status,lander_id,domain_id,group_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND domain_id = ? AND processing = ?)", arr,
               function(err, dbActiveJobs) {
                 callback(false, deployedDomain, dbActiveJobs);
                 connection.release();
@@ -592,25 +592,25 @@ module.exports = function(app, db) {
 
       var user_id = user.id;
 
-      var getActiveCampaignsForLander = function(lander, callback) {
+      var getActiveGroupsForLander = function(lander, callback) {
         db.getConnection(function(err, connection) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT a.id AS campaign_id, b.id, a.name,b.lander_id from campaigns a JOIN landers_with_campaigns b ON a.id=b.campaign_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
-              function(err, dbActiveCampaigns) {
+            connection.query("SELECT a.id AS group_id, b.id, a.name,b.lander_id from groups a JOIN landers_with_groups b ON a.id=b.group_id WHERE (a.user_id = ? AND lander_id = ?)", [user_id, lander.id],
+              function(err, dbActiveGroups) {
 
-                if (dbActiveCampaigns.length <= 0) {
+                if (dbActiveGroups.length <= 0) {
                   callback(false, []);
                 } else {
                   var idx = 0;
-                  for (var i = 0; i < dbActiveCampaigns.length; i++) {
-                    module.getExtraNestedForActiveCampaign(user, dbActiveCampaigns[i], function(err) {
+                  for (var i = 0; i < dbActiveGroups.length; i++) {
+                    module.getExtraNestedForActiveGroup(user, dbActiveGroups[i], function(err) {
                       if (err) {
                         callback(err);
                       } else {
-                        if (++idx == dbActiveCampaigns.length) {
-                          callback(false, dbActiveCampaigns);
+                        if (++idx == dbActiveGroups.length) {
+                          callback(false, dbActiveGroups);
                         }
                       }
 
@@ -686,7 +686,7 @@ module.exports = function(app, db) {
             callback(err);
           } else {
 
-            connection.query("SELECT id,action,lander_id,deploy_status,domain_id,campaign_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addLander", "deleteLander", "ripLander", "savingLander", user_id, lander.id, true],
+            connection.query("SELECT id,action,lander_id,deploy_status,domain_id,group_id,processing,done,error,created_on FROM jobs WHERE ((action = ? OR action = ? OR action = ? OR action = ?) AND user_id = ? AND lander_id = ? AND processing = ?)", ["addLander", "deleteLander", "ripLander", "savingLander", user_id, lander.id, true],
               function(err, dbActiveJobs) {
                 if (err) {
                   callback(err);
@@ -711,12 +711,12 @@ module.exports = function(app, db) {
             } else {
               lander.deployedDomains = deployedDomains;
 
-              getActiveCampaignsForLander(lander, function(err, activeCampaigns) {
+              getActiveGroupsForLander(lander, function(err, activeGroups) {
                 if (err) {
                   callback(err);
                 } else {
 
-                  lander.activeCampaigns = activeCampaigns;
+                  lander.activeGroups = activeGroups;
 
                   getActiveJobsForLander(lander, function(err, activeJobsForLander) {
                     if (err) {

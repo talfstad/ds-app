@@ -5,7 +5,7 @@
         <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#list-collection" href="#accord<%= id %>">
           <%= name %>
 
-          <div class="alert-working-badge widget-menu domain-campaign-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
+          <div class="alert-working-badge widget-menu domain-group-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
             <span class="open_sidemenu_r label">
         
           <div class="text-alert">
@@ -14,7 +14,7 @@
            </div>
             </span>
           </div>
-          <!-- <div class="alert-modified-badge widget-menu domain-campaign-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
+          <!-- <div class="alert-modified-badge widget-menu domain-group-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
             <span class="open_sidemenu_r label">
         
           <div class="text-warning">
@@ -22,7 +22,7 @@
            </div>
             </span>
           </div> -->
-          <div class="alert-deleting-badge widget-menu domain-campaign-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
+          <div class="alert-deleting-badge widget-menu domain-group-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
             <span class="open_sidemenu_r label">
         
           <div class="text-danger">
@@ -32,13 +32,13 @@
             </span>
           </div>
        
-        <div class="widget-menu domain-campaign-notification">
+        <div class="widget-menu domain-group-notification">
            <span class="fs11" title="created on <%= created_on_gui %>"><%= created_on_gui %></span>
         </div>
          </a>
        
         <ul class="nav panel-tabs">
-          <li class="campaign-tab-handle-region" data-tab-target="campaigns-tab-id-<%= id %>"></li>
+          <li class="group-tab-handle-region" data-tab-target="groups-tab-id-<%= id %>"></li>
           <li class="deploy-status-region" data-tab-target="domains-tab-id-<%= id %>"></li>
         </ul>
       </div>
@@ -65,21 +65,21 @@
             </div>
           </div>
 
-          <div class="tab-pane" role="tabpanel" id="campaigns-tab-id-<%= id %>">
+          <div class="tab-pane" role="tabpanel" id="groups-tab-id-<%= id %>">
             <div class="panel-menu clearfix">
               <div class="row" style="margin-left: 0px; margin-right: 0px;">
                 <div style="margin-left: 5px; font-weight: 600; padding-top: 10px; float: left;" class="clearfix">
                 <span style="width: 20px">#</span>
-                <span style="margin-left: 15px">Campaign</span>
+                <span style="margin-left: 15px">Groups</span>
               </div>
-                <div style="float: right;" class="add-to-new-campaign-region clearfix">
+                <div style="float: right;" class="add-to-new-group-region clearfix">
                   
                 </div>
               </div>
              </div>
             <div class="panel-body">
               <div style="padding-bottom: 15px">
-                <table class="table active-campaigns-region"></table>
+                <table class="table active-groups-region"></table>
               </div>
             </div>
           </div>

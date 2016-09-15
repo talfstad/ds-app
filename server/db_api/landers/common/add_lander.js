@@ -195,7 +195,7 @@ module.exports = function(app, db) {
         } else {
           var modelAttributes = {};
 
-          //param order: working_node_id, action, alternate_action, processing, lander_id, domain_id, campaign_id, user_id
+          //param order: working_node_id, action, alternate_action, processing, lander_id, domain_id, group_id, user_id
           db.getConnection(function(err, connection) {
             if (err) {
               callback(err);

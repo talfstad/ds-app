@@ -3,10 +3,10 @@ define(["app",
     "assets/js/apps/landerds/domains/dao/domain_collection",
     "assets/js/apps/landerds/landers/dao/url_endpoint_collection",
     "assets/js/apps/landerds/landers/dao/deployed_domain_collection",
-    "assets/js/apps/landerds/landers/dao/active_campaign_collection"
+    "assets/js/apps/landerds/landers/dao/active_group_collection"
   ],
   function(Landerds, JobsGuiBaseModel, DomainCollection, UrlEndpointCollection,
-    DeployedDomainsCollection, ActiveCampaignCollection) {
+    DeployedDomainsCollection, ActiveGroupsCollection) {
     var LanderModel = JobsGuiBaseModel.extend({
 
       urlRoot: "/api/landers",
@@ -20,7 +20,7 @@ define(["app",
         this.set("originalValueDeployRoot", this.get("deploy_root"));
         this.set("originalActiveSnippets", this.get("activeSnippets"));
 
-        var activeCampaignAttributes = this.get("activeCampaigns");
+        var activeGroupsAttributes = this.get("activeGroups");
         var urlEndpointAttributes = this.get("urlEndpoints");
         var deployedDomainAttributes = this.get("deployedDomains");
 
@@ -55,9 +55,9 @@ define(["app",
         var urlEndpointCollection = new UrlEndpointCollection(urlEndpointAttributes);
         this.set("urlEndpoints", urlEndpointCollection);
 
-        var activeCampaignCollection = new ActiveCampaignCollection();
-        this.set("activeCampaigns", activeCampaignCollection);
-        activeCampaignCollection.add(activeCampaignAttributes);
+        var activeGroupsCollection = new ActiveGroupsCollection();
+        this.set("activeGroups", activeGroupsCollection);
+        activeGroupsCollection.add(activeGroupsAttributes);
 
 
 
@@ -67,7 +67,7 @@ define(["app",
 
           var deployStatus = this.get("deploy_status");
           deployedDomainsCollection.deploy_status = deployStatus;
-          activeCampaignCollection.deploy_status = deployStatus;
+          activeGroupsCollection.deploy_status = deployStatus;
 
         });
 
@@ -181,28 +181,28 @@ define(["app",
 
         this.startActiveJobs();
 
-        var addJobsToActiveCampaigns = function() {
+        var addJobsToActiveGroups = function() {
           deployedDomainsCollection.each(function(deployedDomain) {
 
             var activeJobCollection = deployedDomain.get("activeJobs");
 
-            //if job has campaign_id also add it to the active campaign
+            //if job has group_id also add it to the active group
             if (activeJobCollection.length > 0) {
 
               activeJobCollection.each(function(activeJob) {
 
-                activeCampaignCollection.each(function(activeCampaign) {
-                  var isOnCampaign = false;
-                  var domains = activeCampaign.get("domains");
+                activeGroupsCollection.each(function(activeGroups) {
+                  var isOnGroups = false;
+                  var domains = activeGroups.get("domains");
                   domains.each(function(domain) {
                     if (domain.get("domain_id") == activeJob.get("domain_id")) {
-                      isOnCampaign = true;
+                      isOnGroups = true;
                     }
                   });
 
-                  if (isOnCampaign) {
-                    activeCampaignActiveJobs = activeCampaign.get("activeJobs");
-                    activeCampaignActiveJobs.add(activeJob);
+                  if (isOnGroups) {
+                    activeGroupsActiveJobs = activeGroups.get("activeJobs");
+                    activeGroupsActiveJobs.add(activeJob);
                   }
                 });
               });
@@ -212,10 +212,10 @@ define(["app",
           });
         };
 
-        addJobsToActiveCampaigns();
+        addJobsToActiveGroups();
 
-        activeCampaignCollection.on("add destroy", function(activeCampaignModel) {
-          deployedDomainsCollection.trigger("activeCampaignsChanged");
+        activeGroupsCollection.on("add destroy", function(activeGroupsModel) {
+          deployedDomainsCollection.trigger("activeGroupsChanged");
         });
 
 
@@ -305,7 +305,7 @@ define(["app",
         deploy_root: false,
         urlEndpoints: [],
         deployedDomains: [],
-        activeCampaigns: [],
+        activeGroups: [],
         no_optimize_on_save: true,
         deploymentFolderInvalid: false,
         //gui update attributes
@@ -316,7 +316,7 @@ define(["app",
         s3_folder_name: "",
         modified: false,
         deployed_domains_count: 0,
-        active_campaigns_count: 0,
+        active_groups_count: 0,
         currentPreviewEndpointId: 0,
         saving_lander: false
       }

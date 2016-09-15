@@ -1,9 +1,9 @@
 define(["app",
     "assets/js/apps/landerds/domains/dao/domain_model",
-    "assets/js/apps/landerds/domains/dao/active_campaign_collection",
+    "assets/js/apps/landerds/domains/dao/active_group_collection",
     "assets/js/apps/landerds/domains/dao/url_endpoint_collection"
   ],
-  function(Landerds, DomainModel, ActiveCampaignCollection, UrlEndpointCollection) {
+  function(Landerds, DomainModel, ActiveGroupsCollection, UrlEndpointCollection) {
     var DomainCollection = Backbone.Collection.extend({
       url: '/api/domains',
       model: DomainModel,

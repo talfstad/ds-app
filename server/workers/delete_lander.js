@@ -45,7 +45,7 @@ module.exports = function(app, db) {
         // bucket / username / landers / <s3_folder_name /
         var landerS3FolderPath = username + "/landers/" + s3_folder_name + "/";
 
-        db.landers.deleteFromLandersWithCampaigns(user, lander_id, function(err) {
+        db.landers.deleteFromLandersWithGroups(user, lander_id, function(err) {
           if (err) {
             callback(err, [myJobId]);
           } else {

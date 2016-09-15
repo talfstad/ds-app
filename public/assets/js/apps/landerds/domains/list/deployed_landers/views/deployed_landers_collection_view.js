@@ -17,7 +17,7 @@ define(["app",
         },
 
         collectionEvents: {
-          "activeCampaignsChanged": "render"
+          "activeGroupsChanged": "render"
         },
 
         gotoEditLander: function(childView) {
@@ -50,7 +50,7 @@ define(["app",
           model.set('viewIndex', parseInt(this.collection.indexOf(model)) + 1);
           model.set('domain', this.collection.domain);
           model.set('domain_id', this.collection.domain_id);
-          model.set('activeCampaigns', this.collection.activeCampaigns);
+          model.set('activeGroups', this.collection.activeGroups);
         }
 
       });

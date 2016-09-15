@@ -50,10 +50,10 @@
           <span class="fa fa-edit"></span>
         </a>
 
-        <% if(hasActiveCampaigns) { %>
+        <% if(hasActiveGroups) { %>
 
-          <a class="campaign-tab-link" href="#">
-            <span class="icon-campaigns_icon">
+          <a class="group-tab-link" href="#">
+            <span class="icon-groups_icon">
                 
                 </span>
           </a>

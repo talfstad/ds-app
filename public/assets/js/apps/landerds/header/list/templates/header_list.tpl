@@ -12,10 +12,10 @@
         <span class="ml5 sidebar-title">Landing Pages</span>
       </a>
     </li>
-    <li class="campaigns">
-      <a href="/campaigns" role="button" class="go-campaigns fw600">
-        <span style="position: relative; top: 5px" class="fs20 icon-campaigns_icon"></span>
-        <span  class="ml5 sidebar-title">Campaigns</span>
+    <li class="groups">
+      <a href="/groups" role="button" class="go-groups fw600">
+        <span style="position: relative; top: 5px" class="fs20 icon-groups_icon"></span>
+        <span  class="ml5 sidebar-title">Groups</span>
       </a>
     </li>
     <li class="domains">

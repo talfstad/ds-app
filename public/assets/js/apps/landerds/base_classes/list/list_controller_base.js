@@ -26,7 +26,7 @@ define(["app",
       //add the lander model to the list
       addRow: function(model) {
         Landerds.trigger('landers:closesidebar');
-        Landerds.trigger('campaigns:closesidebar');
+        Landerds.trigger('groups:closesidebar');
         Landerds.trigger('domains:closesidebar');
 
         this.filteredCollection.add(model);
@@ -51,7 +51,7 @@ define(["app",
         }
       },
 
-      //handles add campaigns deploy as well so must take empty list
+      //handles add groups deploy as well so must take empty list
       //needs to be able to take empty list, or more
       baseClassDeployLandersToDomain: function(attr) {
         var me = this;
@@ -89,17 +89,17 @@ define(["app",
 
 
       getLanderRedeployJobs: function(landerModel) {
-        var addActiveCampaignModel = false;
+        var addActiveGroupsModel = false;
 
         //get list of all deployedDomains first
         var deployedDomainsJobList = [];
         var deployedDomainCollection = landerModel.get("deployedDomains");
 
-        //figure out if we need to add the active campaign if it doesn't have an ID yet
-        var activeCampaignsCollection = landerModel.get("activeCampaigns");
-        activeCampaignsCollection.each(function(activeCampaign) {
-          if (!activeCampaign.get("id")) {
-            addActiveCampaignModel = activeCampaign;
+        //figure out if we need to add the active group if it doesn't have an ID yet
+        var activeGroupsCollection = landerModel.get("activeGroups");
+        activeGroupsCollection.each(function(activeGroups) {
+          if (!activeGroups.get("id")) {
+            addActiveGroupsModel = activeGroups;
           }
         });
 
@@ -114,24 +114,24 @@ define(["app",
             }
           });
 
-          //if activecampaignmodel and modified we want all of them 
-          //-- this handles case where we are undeploying a domain but then add a campaign to it with that domain
-          //if no active campaign model just this normal
+          //if activegroupmodel and modified we want all of them 
+          //-- this handles case where we are undeploying a domain but then add a group to it with that domain
+          //if no active group model just this normal
           var addDeployedDomain = false;
           if (landerModel.get("modified")) {
 
-            if (addActiveCampaignModel) {
-              var isInCampaign = false;
+            if (addActiveGroupsModel) {
+              var isInGroups = false;
 
-              var domainCollection = addActiveCampaignModel.get("domains");
+              var domainCollection = addActiveGroupsModel.get("domains");
               domainCollection.each(function(domain) {
                 if (domain.get("domain_id") == deployedDomain.get("domain_id")) {
-                  isInCampaign = true;
+                  isInGroups = true;
                 }
               });
 
-              //dont add it if its undeploying and NOT in the campaign
-              if (isUndeploying && !isInCampaign) {
+              //dont add it if its undeploying and NOT in the group
+              if (isUndeploying && !isInGroups) {
                 addDeployedDomain = false;
               } else {
                 addDeployedDomain = true;
@@ -144,9 +144,9 @@ define(["app",
 
           } else {
 
-            //if not modified and no addActiveCampaign model we just want to add
+            //if not modified and no addActiveGroups model we just want to add
             //the NEW deployed domains
-            if (!addActiveCampaignModel) {
+            if (!addActiveGroupsModel) {
               if (!deployedDomain.get("id")) {
                 addDeployedDomain = true;
               }
@@ -170,7 +170,7 @@ define(["app",
         });
 
         //NOTE: if deployedDomainsJobList is empty it means we're
-        //  . saving the lander! not deploying it (if there is no addActiveCampaignModel)
+        //  . saving the lander! not deploying it (if there is no addActiveGroupsModel)
 
         //if modified we're going to be saving so set saving = true
         //  . this gets set false when the job updateStatus is correct
@@ -181,19 +181,19 @@ define(["app",
           });
 
         } else {
-          //if not modified then this is a light save, or add of active campaign (to domain/lander)
-          //only deploy the new domains from the active campaign
-          if (addActiveCampaignModel) {
-            var deployedDomainsOnActiveCampaign = [];
-            var domains = addActiveCampaignModel.get("domains");
+          //if not modified then this is a light save, or add of active group (to domain/lander)
+          //only deploy the new domains from the active group
+          if (addActiveGroupsModel) {
+            var deployedDomainsOnActiveGroups = [];
+            var domains = addActiveGroupsModel.get("domains");
 
-            //if deployed domain has no id and belongs to this campaign we deploy it !
-            //if deployed domain is not in the campaign collection dont deploy it            
+            //if deployed domain has no id and belongs to this group we deploy it !
+            //if deployed domain is not in the group collection dont deploy it            
             deployedDomainCollection.each(function(deployedDomain) {
               var domainDeployed = false;
               if (domains.length > 0) {
 
-                var deployedDomainInCampaign = false;
+                var deployedDomainInGroups = false;
 
                 domains.each(function(domain) {
                   if (deployedDomain.get("domain_id") == domain.get("domain_id") &&
@@ -208,15 +208,15 @@ define(["app",
 
                   if (deployedDomain.get("domain_id") == domain.get("domain_id")) {
                     //also dont deploy it if domain 
-                    deployedDomainInCampaign = true;
+                    deployedDomainInGroups = true;
                   }
                 });
               } else {
                 domainDeployed = true;
               }
 
-              if (!domainDeployed && deployedDomainInCampaign) {
-                deployedDomainsOnActiveCampaign.push({
+              if (!domainDeployed && deployedDomainInGroups) {
+                deployedDomainsOnActiveGroups.push({
                   lander_id: deployedDomain.get("lander_id"),
                   domain_id: deployedDomain.get("domain_id"),
                   action: "deployLanderToDomain",
@@ -226,14 +226,14 @@ define(["app",
               }
             });
 
-            deployedDomainsJobList = deployedDomainsOnActiveCampaign;
+            deployedDomainsJobList = deployedDomainsOnActiveGroups;
           }
 
         }
 
         return {
           list: deployedDomainsJobList,
-          addActiveCampaignModel: addActiveCampaignModel
+          addActiveGroupsModel: addActiveGroupsModel
         }
       }
     };

@@ -3,10 +3,10 @@ define(["app",
     "assets/js/apps/landerds/domains/dao/domain_collection",
     "assets/js/apps/landerds/landers/dao/url_endpoint_collection",
     "assets/js/apps/landerds/landers/dao/deployed_domain_collection",
-    "assets/js/apps/landerds/landers/dao/active_campaign_collection"
+    "assets/js/apps/landerds/landers/dao/active_group_collection"
   ],
   function(Landerds, JobsGuiBaseModel, DomainCollection, UrlEndpointCollection,
-    DeployedDomainsCollection, ActiveCampaignCollection) {
+    DeployedDomainsCollection, ActiveGroupsCollection) {
     var LanderModel = JobsGuiBaseModel.extend({
       
     
@@ -39,10 +39,10 @@ define(["app",
         this.set("urlEndpoints", urlEndpointCollection);
 
         
-        var activeCampaignAttributes = this.get("activeCampaigns");
-        var activeCampaignCollection = new ActiveCampaignCollection();
-        this.set("activeCampaigns", activeCampaignCollection);
-        activeCampaignCollection.add(activeCampaignAttributes);
+        var activeGroupsAttributes = this.get("activeGroups");
+        var activeGroupsCollection = new ActiveGroupsCollection();
+        this.set("activeGroups", activeGroupsCollection);
+        activeGroupsCollection.add(activeGroupsAttributes);
 
       }
 

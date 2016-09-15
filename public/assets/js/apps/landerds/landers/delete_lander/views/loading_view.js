@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!assets/js/apps/landerds/landers/add_to_campaign/templates/loading.tpl"
+    "tpl!assets/js/apps/landerds/landers/add_to_group/templates/loading.tpl"
   ],
   function(Landerds, DeleteLanderLoadingTpl) {
 

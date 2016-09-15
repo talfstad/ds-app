@@ -3,7 +3,7 @@ define(["app",
     "assets/js/apps/landerds/header/header_app",
     "assets/js/apps/landerds/domains/domains_app",
     "assets/js/apps/landerds/landers/landers_app",
-    "assets/js/apps/landerds/campaigns/campaigns_app"
+    "assets/js/apps/landerds/groups/groups_app"
   ],
   function(Landerds, EntryController) {
 
@@ -15,8 +15,8 @@ define(["app",
           "domains/show/:id": "showDomainsAndExpandDomain",
           "landers": "showLanders",
           "landers/show/:id": "showLandersAndExpandLander",
-          "campaigns": "showCampaigns",
-          "campaigns/show/:id": "showCampaignsAndExpandCampaign",
+          "groups": "showGroups",
+          "groups/show/:id": "showGroupsAndExpandGroups",
           "*notFound": "showLanders",
         }
       });
@@ -42,9 +42,9 @@ define(["app",
             Landerds.trigger("domains:list", domain_id);
           });
         },
-        showCampaignsAndExpandCampaign: function(campaign_id) {
+        showGroupsAndExpandGroups: function(group_id) {
           loadCommonStuff(function() {
-            Landerds.trigger("campaigns:list", campaign_id);
+            Landerds.trigger("groups:list", group_id);
           });
         },
         showLanders: function() {
@@ -57,9 +57,9 @@ define(["app",
             Landerds.trigger("landers:list", lander_id);
           });
         },
-        showCampaigns: function() {
+        showGroups: function() {
           loadCommonStuff(function() {
-            Landerds.trigger("campaigns:list");
+            Landerds.trigger("groups:list");
           });
         }
       };

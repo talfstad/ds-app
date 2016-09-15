@@ -83,7 +83,7 @@
     background: #fafafa;
 }
 
-.domain-campaign-notification, .domain-lander-notification {
+.domain-group-notification, .domain-lander-notification {
     position: absolute;
     bottom: 0;
     right: 0;
@@ -91,7 +91,7 @@
     margin-right: 300px;
 }
 
-.accordion-toggle.active .domain-campaign-notification span {
+.accordion-toggle.active .domain-group-notification span {
     /*color: #000 !important;*/
 }
 
@@ -428,7 +428,7 @@ tr.warning input[type=select] {
     pointer-events: none;
 }
 
-.campaign-status-tab-handle {
+.group-status-tab-handle {
     color: #666 !important;
     width: 145px !important;
 }
@@ -480,6 +480,6 @@ tr.warning input[type=select] {
 }
 
 
-.campaign-name-row {
+.group-name-row {
     border: none !important;
 }

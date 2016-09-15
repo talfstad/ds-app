@@ -1,12 +1,12 @@
 define(["app",
     "assets/js/jobs/jobs_base_gui_model",
-    "assets/js/apps/landerds/domains/dao/active_campaign_collection",
+    "assets/js/apps/landerds/domains/dao/active_group_collection",
     "assets/js/apps/landerds/base_classes/deployed_rows/models/deployed_row_base_model",
     "assets/js/apps/landerds/landers/dao/url_endpoint_collection",
     "assets/js/apps/landerds/landers/dao/deployed_domain_collection",
     "assets/js/jobs/jobs_app"
   ],
-  function(Landerds, JobsGuiBaseModel, ActiveCampaignCollection, DeployedRowBaseModel,
+  function(Landerds, JobsGuiBaseModel, ActiveGroupsCollection, DeployedRowBaseModel,
     UrlEndpointCollection, DeployedDomainCollection) {
     var DeployedLanderModel = DeployedRowBaseModel.extend({
 
@@ -109,7 +109,7 @@ define(["app",
         //gui attributes
         //should default true since deployed_domains is where this model is used
         deploy_status: 'deployed',
-        hasActiveCampaigns: false,
+        hasActiveGroups: false,
         modified: false,
         endpoint_load_times: []
       }

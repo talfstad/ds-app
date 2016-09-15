@@ -16,7 +16,7 @@ module.exports = function(app, passport) {
 
   require('./login')(app, passport);
   require('./landers/index')(app, passport);
-  require('./campaigns')(app, passport);
+  require('./groups')(app, passport);
   require('./domains')(app, passport);
   require('./js_snippets')(app, passport);
   require('./live_updater')(app, passport);

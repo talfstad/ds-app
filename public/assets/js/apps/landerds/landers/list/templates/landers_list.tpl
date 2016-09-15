@@ -98,7 +98,7 @@
         
         <div style="float: left; margin-left: 15px; margin-bottom: 10px">Landing Page Name</div>
         <div style="float: right; margin-right: 95px; margin-bottom: 10px">Deployed Domains</div>
-        <div style="float: right; margin-right: 32px; margin-bottom: 10px">Campaigns on Lander</div>
+        <div style="float: right; margin-right: 32px; margin-bottom: 10px">Groups on Lander</div>
         <div style="float: right; margin-right: 82px; margin-bottom: 10px">Created On</div>
         
 
