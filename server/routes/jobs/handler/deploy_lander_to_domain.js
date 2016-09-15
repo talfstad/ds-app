@@ -158,7 +158,10 @@ module.exports = function(app, db) {
                           var asyncIndex = 0;
                           for (var i = 0; i < list.length; i++) {
 
-                            list[i].master_job_id = masterJobId;
+                            //if the master job id domain and lander ids are equal its a slave
+                            if(registeredMasterJobAttributes.lander_id == list[i].lander_id) {
+                              list[i].master_job_id = masterJobId;
+                            }
 
                             db.jobs.registerJob(user, list[i], function(err, registeredSlaveJobAttributes) {
 

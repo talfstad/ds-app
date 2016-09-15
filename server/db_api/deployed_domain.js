@@ -18,7 +18,9 @@ module.exports = function(app, db) {
         if (err) {
           //if run error it means the link 404'd. thats not so much an error as just the yslow failed.
           //since it can be run on the user interface we'll return success
-          returnObj.load_time = "N/A";
+          var responseObj = {
+            load_time: "N/A"
+          };
           callback(false, responseObj);
         } else {
           var load_time = results.lt;

@@ -102,7 +102,7 @@ module.exports = function(app, db) {
                               if (err) {
                                 callback(err, [myJobId]);
                               } else {
-                                app.log("FINISHED ! saving lander job !", "debug");
+                                app.log("FINISHED ! undeploy lander job !", "debug");
                                 callback(false, [myJobId]);
                               }
                             });

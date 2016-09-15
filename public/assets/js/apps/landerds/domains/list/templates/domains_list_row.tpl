@@ -42,7 +42,7 @@
                 <span style="width: 20px">#</span>
                 <span class="table-name-header" style="margin-left: 15px">Lander Name</span>
                 <span class="deployed-landers-header deployed-domain-links-header">Lander Links</span>
-                <span class="deployed-landers-header " style="margin-left: 315px">Load Time</span>
+                <span class="deployed-landers-header " style="margin-left: 315px">YSlow Load Time</span>
               </div>
 
               <div style="float: right;" class="deploy-to-new-domain-region clearfix">
