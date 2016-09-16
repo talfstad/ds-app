@@ -5,28 +5,28 @@ define(["app",
     "assets/js/apps/landerds/landers/add_to_group/views/add_to_group_layout_view",
     "assets/js/apps/landerds/groups/dao/group_collection"
   ],
-  function(Landerds, LoadingView, GroupsListView, ActiveGroupsModel, AddToGroupsLayoutView) {
-    Landerds.module("LandersApp.Landers.AddToGroups", function(AddToGroups, Landerds, Backbone, Marionette, $, _) {
+  function(Landerds, LoadingView, GroupListView, ActiveGroupModel, AddToGroupLayoutView) {
+    Landerds.module("LandersApp.Landers.AddToGroup", function(AddToGroup, Landerds, Backbone, Marionette, $, _) {
 
-      AddToGroups.Controller = {
+      AddToGroup.Controller = {
 
-        showAddNewGroups: function(landerModel) {
+        showAddNewGroup: function(landerModel) {
 
-          var addGroupsToLanderLayout = new AddToGroupsLayoutView({
+          var addGroupToLanderLayout = new AddToGroupLayoutView({
             model: landerModel
           });
 
-          addGroupsToLanderLayout.render();
+          addGroupToLanderLayout.render();
 
-          Landerds.rootRegion.currentView.modalRegion.show(addGroupsToLanderLayout);
+          Landerds.rootRegion.currentView.modalRegion.show(addGroupToLanderLayout);
 
-          addGroupsToLanderLayout.on("addGroupsToLander", function(groupModel) {
+          addGroupToLanderLayout.on("addGroupToLander", function(groupModel) {
 
             //create an add the active group model to the lander
             var lander_id = landerModel.get("id");
             var domains = groupModel.get("domains");
 
-            var newActiveGroupsModel = new ActiveGroupsModel({
+            var newActiveGroupModel = new ActiveGroupModel({
               domains: domains,
               group_id: groupModel.get("id"),
               name: groupModel.get("name"),
@@ -34,8 +34,8 @@ define(["app",
               action: "lander"
             });
 
-            var activeGroupsCollection = landerModel.get("activeGroups");
-            activeGroupsCollection.add(newActiveGroupsModel);
+            var activeGroupCollection = landerModel.get("activeGroups");
+            activeGroupCollection.add(newActiveGroupModel);
 
             var domainListToDeploy = [];
 
@@ -65,30 +65,30 @@ define(["app",
 
           //show loading
           var loadingView = new LoadingView();
-          addGroupsToLanderLayout.groupsListRegion.show(loadingView)
+          addGroupToLanderLayout.groupListRegion.show(loadingView)
 
 
-          var deferredGroupsCollection = Landerds.request("groups:groupsCollection");
+          var deferredGroupCollection = Landerds.request("groups:groupCollection");
 
-          $.when(deferredGroupsCollection).done(function(groupsCollection) {
+          $.when(deferredGroupCollection).done(function(groupCollection) {
 
             //filter this collection, take out groups that lander is already deployed to
-            var filteredGroupsCollection = groupsCollection.filterOutGroups(landerModel.get("activeGroups"));
+            var filteredGroupCollection = groupCollection.filterOutGroups(landerModel.get("activeGroups"));
 
             //create the view, pass collection in as a var to be used to dynamically add to DT
             //show dt in view
-            var groupsListView = new GroupsListView({
-              datatablesCollection: filteredGroupsCollection
+            var groupListView = new GroupListView({
+              datatablesCollection: filteredGroupCollection
             });
 
 
             //show actual view
-            addGroupsToLanderLayout.groupsListRegion.show(groupsListView)
+            addGroupToLanderLayout.groupListRegion.show(groupListView)
 
           });
         }
       }
     });
 
-    return Landerds.LandersApp.Landers.AddToGroups.Controller;
+    return Landerds.LandersApp.Landers.AddToGroup.Controller;
   });

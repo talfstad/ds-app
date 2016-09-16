@@ -21,11 +21,11 @@ define(["app",
         },
 
         events: {
-          "click .add-link-plus": "addNewGroups"
+          "click .add-link-plus": "addNewGroup"
         },
 
-        addNewGroups: function() {
-          Landerds.trigger("domains:showAddNewGroups", this.model);
+        addNewGroup: function() {
+          Landerds.trigger("domains:showAddNewGroup", this.model);
         },
 
         onRender: function() {

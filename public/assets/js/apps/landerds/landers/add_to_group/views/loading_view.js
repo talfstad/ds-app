@@ -3,7 +3,7 @@ define(["app",
   ],
   function(Landerds, groupListLoadingTpl) {
 
-    Landerds.module("LandersApp.AddToGroups.List", function(List, Landerds, Backbone, Marionette, $, _) {
+    Landerds.module("LandersApp.AddToGroup.List", function(List, Landerds, Backbone, Marionette, $, _) {
       List.LoadingView = Marionette.ItemView.extend({
 
         template: groupListLoadingTpl,
@@ -14,5 +14,5 @@ define(["app",
 
       });
     });
-    return Landerds.LandersApp.AddToGroups.List.LoadingView;
+    return Landerds.LandersApp.AddToGroup.List.LoadingView;
   });

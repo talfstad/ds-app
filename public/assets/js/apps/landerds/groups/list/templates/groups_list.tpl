@@ -35,14 +35,14 @@
           <button data-toggle="dropdown" style="text-align: left" role="button" aria-expanded="false" type="button" class="ml10 w210 pl10 pt5 pb5 btn btn-default btn-gradient dark">
             <span class="fa fa-caret-down pr5"></span>
             Sort By: 
-            <span class="sortbyname">Groups Name</span> 
+            <span class="sortbyname">Group Name</span> 
             <span class="sortbyorder">Asc</span>
           </button>
           <ul class="topbar dropdown-menu dropdown-menu-left pt5" role="menu">
             <li>
               <a class="pl5 radio-custom radio-primary" href="#">
                 <input checked data-sortby-name="Domain Name" data-sort-by="group-name" type="radio" id="group-name" name="sort-radio">
-                <label class="ml5" for="group-name">Groups Name</label>
+                <label class="ml5" for="group-name">Group Name</label>
               </a>
             </li>
             <li>
@@ -71,7 +71,7 @@
         <ul class="nav nav-list nav-list-topbar pull-left">
           <form class="navbar-form navbar-search pull-left mtn mbn" role="search">
             <div class=" mt10 form-group">
-              <input type="text" class="list-search w250 form-control" placeholder="Search Groups Name..." value="">
+              <input type="text" class="list-search w250 form-control" placeholder="Search Group Name..." value="">
             </div>
           </form>
         </ul>
@@ -82,7 +82,7 @@
           </button>
            <div class="bs-component btn-group ml5">
             <button type="button" class="add-new-group-button pl10 pt5 pb5 btn btn-default btn-gradient dark">
-              <span class="fa fa-plus pr5"></span>Add New Groups
+              <span class="fa fa-plus pr5"></span>Add New Group
             </button>
           </div>
         </div>
@@ -92,9 +92,9 @@
       <section id="content" class="landers-list-content">
         <div style="position: absolute; width: 100%; font-size: 11px; font-weight: 600">
         
-        <div style="float: left; margin-left: 15px; margin-bottom: 10px">Groups Name</div>
-        <div style="float: right; margin-right: 75px; margin-bottom: 10px">Landers on Groups</div>
-        <div style="float: right; margin-right: 30px; margin-bottom: 10px">Domains on Groups</div>
+        <div style="float: left; margin-left: 15px; margin-bottom: 10px">Group Name</div>
+        <div style="float: right; margin-right: 75px; margin-bottom: 10px">Landers</div>
+        <div style="float: right; margin-right: 30px; margin-bottom: 10px">Domains</div>
         <div style="float: right; margin-right: 83px; margin-bottom: 10px">Created On</div>
         
 

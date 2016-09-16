@@ -40,13 +40,13 @@ define(["app",
 
           //make layout for groups
           var me = this;
-          var groupsListLayout = new List.Layout();
-          groupsListLayout.render();
+          var groupListLayout = new List.Layout();
+          groupListLayout.render();
 
-          Landerds.rootRegion.currentView.mainContentRegion.show(groupsListLayout);
+          Landerds.rootRegion.currentView.mainContentRegion.show(groupListLayout);
 
           var loadingView = new LoadingView();
-          groupsListLayout.groupsCollectionRegion.show(loadingView);
+          groupListLayout.groupCollectionRegion.show(loadingView);
 
 
           //set initial topbar view crap reloads when data loads
@@ -54,12 +54,12 @@ define(["app",
             model: new PaginatedModel
           });
 
-          groupsListLayout.topbarRegion.show(topbarView);
+          groupListLayout.topbarRegion.show(topbarView);
 
           //request groups collection
-          var deferredGroupsCollection = Landerds.request("groups:groupsCollection");
+          var deferredGroupCollection = Landerds.request("groups:groupCollection");
 
-          $.when(deferredGroupsCollection).done(function(groupCollection) {
+          $.when(deferredGroupCollection).done(function(groupCollection) {
 
             me.filteredCollection = FilteredPaginatedCollection({
               collection: groupCollection,
@@ -75,27 +75,27 @@ define(["app",
             });
 
             //make landers view and display data
-            var groupsListView = new ListView({
+            var groupListView = new ListView({
               collection: me.filteredCollection
             });
 
-            groupsListView.on("childview:showAwsTutorial", function() {
+            groupListView.on("childview:showAwsTutorial", function() {
               Landerds.trigger("help:showAwsTutorial");
             });
 
-            groupsListLayout.on("groups:filterList", function(filterVal) {
+            groupListLayout.on("groups:filterList", function(filterVal) {
               me.filteredCollection.filter(filterVal);
             });
 
-            groupsListLayout.on("groups:sort", function() {
-              groupsListView.trigger("groups:sort");
+            groupListLayout.on("groups:sort", function() {
+              groupListView.trigger("groups:sort");
             });
 
-            groupsListLayout.on("groups:changepagesize", function(pageSize) {
+            groupListLayout.on("groups:changepagesize", function(pageSize) {
               me.filteredCollection.setPageSize(pageSize);
             });
 
-            groupsListLayout.on("toggleInfo", function() {
+            groupListLayout.on("toggleInfo", function() {
               if (me.filteredCollection) {
                 var toggle = this.toggleHelpInfo();
 
@@ -109,8 +109,8 @@ define(["app",
               }
             });
 
-            if (groupsListLayout.isRendered) {
-              groupsListLayout.groupsCollectionRegion.show(groupsListView);
+            if (groupListLayout.isRendered) {
+              groupListLayout.groupCollectionRegion.show(groupListView);
             }
 
             //this is the pagination pages totals and lander count totals view
@@ -119,11 +119,11 @@ define(["app",
             });
 
             //on child expanded save for re-open on reset
-            groupsListView.on("childview:childExpanded", function(childView, data) {
+            groupListView.on("childview:childExpanded", function(childView, data) {
               me.childExpandedId = childView.model.get("id");
             });
             //on child collapse if is current expanded then reset to null
-            groupsListView.on("childview:childCollapsed", function(childView, data) {
+            groupListView.on("childview:childCollapsed", function(childView, data) {
               var childCollapsedModel = childView.model;
               if (me.childExpandedId == childCollapsedModel.get("id")) {
                 me.childExpandedId = null;
@@ -139,7 +139,7 @@ define(["app",
               var filteredCollection = this;
 
               if (this.length > 0) {
-                groupsListView.children.each(function(groupView) {
+                groupListView.children.each(function(groupView) {
 
                   var landerTabHandleView = new LanderTabHandleView({
                     model: groupView.model
@@ -253,9 +253,9 @@ define(["app",
               me.filteredCollection.gotoPage(page);
             });
 
-            if (groupsListLayout.isRendered) {
-              groupsListLayout.footerRegion.show(paginatedButtonView);
-              groupsListLayout.topbarRegion.show(topbarView);
+            if (groupListLayout.isRendered) {
+              groupListLayout.footerRegion.show(paginatedButtonView);
+              groupListLayout.topbarRegion.show(topbarView);
             }
 
             var filterVal = $(".list-search").val() || "";
@@ -272,7 +272,7 @@ define(["app",
           });
         },
 
-        // deployGroupsLandersToDomain: function(attr) {
+        // deployGroupLandersToDomain: function(attr) {
 
         //   var groupModel = attr.group_model;
         //   var domainListModel = attr.domain_list_model;
@@ -383,7 +383,7 @@ define(["app",
         // },
 
 
-        addGroups: function(model) {
+        addGroup: function(model) {
           this.addRow(model);
           this.expandAndShowRow(model);
         }

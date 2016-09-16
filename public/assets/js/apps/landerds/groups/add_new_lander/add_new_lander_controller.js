@@ -50,7 +50,7 @@ define(["app",
             var deployedLanderModel = new DeployedLanderModel(landerAttributes);
             deployedLanderModel.unset("id");
             
-            // create the model for activeGroups model. make sure it saves to
+            // create the model for activeGroup model. make sure it saves to
             // /api/active_groups
             deployedLanderModel.save({}, {
               success: addedLanderToGroupsSuccessCallback,

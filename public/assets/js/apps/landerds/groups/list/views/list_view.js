@@ -35,13 +35,13 @@ define(["app",
           if (sortKey === "group-name") {
             me.collection.comparator = function(a, b) {
 
-              var aGroupsName = a.get("name").toLowerCase();
-              var bGroupsName = b.get("name").toLowerCase();
+              var aGroupName = a.get("name").toLowerCase();
+              var bGroupName = b.get("name").toLowerCase();
 
-              if (aGroupsName === bGroupsName) {
+              if (aGroupName === bGroupName) {
                 return 0;
               } else {
-                if (aGroupsName < bGroupsName) {
+                if (aGroupName < bGroupName) {
                   if (sortOrder === 'asc') {
                     return -1;
                   } else {

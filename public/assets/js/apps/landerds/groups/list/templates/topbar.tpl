@@ -10,17 +10,17 @@
   <div class="right-stats"> 
 
 <% 
-      var total_domains = "Groups"
+      var total_domains = "Group"
       if(total > 1 || total < 1) {
         total_domains = "Groups"
       }
 
-      var deletingGroupsText = "Groups"
+      var deletingGroupsText = "Group"
       if(total_deleting > 1 || total_deleting < 1){
         deletingGroupsText = "Groups"
       }
 
-      var deployingGroupsText = "Groups"
+      var deployingGroupsText = "Group"
       if(total_deploying > 1 || total_deploying < 1) {
         deployingGroupsText = "Groups"
       }

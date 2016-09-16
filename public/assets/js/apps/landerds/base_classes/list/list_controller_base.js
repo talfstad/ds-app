@@ -39,7 +39,7 @@ define(["app",
       expandAndShowRow: function(model) {
         if (this.filteredCollection) {
 
-          childExpandedId = model.get("id");
+          this.childExpandedId = model.get("id");
           this.filteredCollection.showPageWithModel(model);
           model.trigger("view:expand");
         }
@@ -51,7 +51,7 @@ define(["app",
         }
       },
 
-      //handles add groups deploy as well so must take empty list
+      //handles add group deploy as well so must take empty list
       //needs to be able to take empty list, or more
       baseClassDeployLandersToDomain: function(attr) {
         var me = this;
@@ -89,17 +89,17 @@ define(["app",
 
 
       getLanderRedeployJobs: function(landerModel) {
-        var addActiveGroupsModel = false;
+        var addActiveGroupModel = false;
 
         //get list of all deployedDomains first
         var deployedDomainsJobList = [];
         var deployedDomainCollection = landerModel.get("deployedDomains");
 
         //figure out if we need to add the active group if it doesn't have an ID yet
-        var activeGroupsCollection = landerModel.get("activeGroups");
-        activeGroupsCollection.each(function(activeGroups) {
-          if (!activeGroups.get("id")) {
-            addActiveGroupsModel = activeGroups;
+        var activeGroupCollection = landerModel.get("activeGroups");
+        activeGroupCollection.each(function(activeGroup) {
+          if (!activeGroup.get("id")) {
+            addActiveGroupModel = activeGroup;
           }
         });
 
@@ -120,18 +120,18 @@ define(["app",
           var addDeployedDomain = false;
           if (landerModel.get("modified")) {
 
-            if (addActiveGroupsModel) {
-              var isInGroups = false;
+            if (addActiveGroupModel) {
+              var isInGroup = false;
 
-              var domainCollection = addActiveGroupsModel.get("domains");
+              var domainCollection = addActiveGroupModel.get("domains");
               domainCollection.each(function(domain) {
                 if (domain.get("domain_id") == deployedDomain.get("domain_id")) {
-                  isInGroups = true;
+                  isInGroup = true;
                 }
               });
 
               //dont add it if its undeploying and NOT in the group
-              if (isUndeploying && !isInGroups) {
+              if (isUndeploying && !isInGroup) {
                 addDeployedDomain = false;
               } else {
                 addDeployedDomain = true;
@@ -144,9 +144,9 @@ define(["app",
 
           } else {
 
-            //if not modified and no addActiveGroups model we just want to add
+            //if not modified and no addActiveGroup model we just want to add
             //the NEW deployed domains
-            if (!addActiveGroupsModel) {
+            if (!addActiveGroupModel) {
               if (!deployedDomain.get("id")) {
                 addDeployedDomain = true;
               }
@@ -170,7 +170,7 @@ define(["app",
         });
 
         //NOTE: if deployedDomainsJobList is empty it means we're
-        //  . saving the lander! not deploying it (if there is no addActiveGroupsModel)
+        //  . saving the lander! not deploying it (if there is no addActiveGroupModel)
 
         //if modified we're going to be saving so set saving = true
         //  . this gets set false when the job updateStatus is correct
@@ -183,9 +183,9 @@ define(["app",
         } else {
           //if not modified then this is a light save, or add of active group (to domain/lander)
           //only deploy the new domains from the active group
-          if (addActiveGroupsModel) {
-            var deployedDomainsOnActiveGroups = [];
-            var domains = addActiveGroupsModel.get("domains");
+          if (addActiveGroupModel) {
+            var deployedDomainsOnActiveGroup = [];
+            var domains = addActiveGroupModel.get("domains");
 
             //if deployed domain has no id and belongs to this group we deploy it !
             //if deployed domain is not in the group collection dont deploy it            
@@ -193,7 +193,7 @@ define(["app",
               var domainDeployed = false;
               if (domains.length > 0) {
 
-                var deployedDomainInGroups = false;
+                var deployedDomainInGroup = false;
 
                 domains.each(function(domain) {
                   if (deployedDomain.get("domain_id") == domain.get("domain_id") &&
@@ -208,15 +208,15 @@ define(["app",
 
                   if (deployedDomain.get("domain_id") == domain.get("domain_id")) {
                     //also dont deploy it if domain 
-                    deployedDomainInGroups = true;
+                    deployedDomainInGroup = true;
                   }
                 });
               } else {
                 domainDeployed = true;
               }
 
-              if (!domainDeployed && deployedDomainInGroups) {
-                deployedDomainsOnActiveGroups.push({
+              if (!domainDeployed && deployedDomainInGroup) {
+                deployedDomainsOnActiveGroup.push({
                   lander_id: deployedDomain.get("lander_id"),
                   domain_id: deployedDomain.get("domain_id"),
                   action: "deployLanderToDomain",
@@ -226,14 +226,14 @@ define(["app",
               }
             });
 
-            deployedDomainsJobList = deployedDomainsOnActiveGroups;
+            deployedDomainsJobList = deployedDomainsOnActiveGroup;
           }
 
         }
 
         return {
           list: deployedDomainsJobList,
-          addActiveGroupsModel: addActiveGroupsModel
+          addActiveGroupModel: addActiveGroupModel
         }
       }
     };

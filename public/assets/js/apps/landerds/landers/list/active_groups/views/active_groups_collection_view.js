@@ -10,10 +10,10 @@ define(["app",
         className: "table",
 
         childEvents: {
-          "gotoEditGroups": "gotoEditGroups"
+          "gotoEditGroup": "gotoEditGroup"
         },
 
-        gotoEditGroups: function(childView) {
+        gotoEditGroup: function(childView) {
           var landerId = childView.model.get("lander_id");;
           var groupId = childView.model.get("group_id");;
 
@@ -32,8 +32,8 @@ define(["app",
         },
 
         reIndex: function() {
-          this.collection.each(function(activeGroupsModel, idx) {
-            activeGroupsModel.set("viewIndex", idx + 1);
+          this.collection.each(function(activeGroupModel, idx) {
+            activeGroupModel.set("viewIndex", idx + 1);
           });
         },
 

@@ -5,22 +5,22 @@ define(["app",
     "assets/js/apps/landerds/domains/add_to_group/views/add_to_group_layout_view",
     "assets/js/apps/landerds/groups/dao/group_collection"
   ],
-  function(Landerds, LoadingView, GroupsListView, ActiveGroupsModel, AddToGroupsLayoutView) {
-    Landerds.module("DomainsApp.Domains.AddToGroups", function(AddToGroups, Landerds, Backbone, Marionette, $, _) {
+  function(Landerds, LoadingView, GroupListView, ActiveGroupModel, AddToGroupLayoutView) {
+    Landerds.module("DomainsApp.Domains.AddToGroup", function(AddToGroup, Landerds, Backbone, Marionette, $, _) {
 
-      AddToGroups.Controller = {
+      AddToGroup.Controller = {
 
-        showAddNewGroups: function(domainModel) {
+        showAddNewGroup: function(domainModel) {
 
-          var addGroupsToDomainLayout = new AddToGroupsLayoutView({
+          var addGroupToDomainLayout = new AddToGroupLayoutView({
             model: domainModel
           });
 
-          addGroupsToDomainLayout.render();
+          addGroupToDomainLayout.render();
 
-          Landerds.rootRegion.currentView.modalRegion.show(addGroupsToDomainLayout);
+          Landerds.rootRegion.currentView.modalRegion.show(addGroupToDomainLayout);
 
-          addGroupsToDomainLayout.on("addGroupsToDomain", function(groupModel) {
+          addGroupToDomainLayout.on("addGroupToDomain", function(groupModel) {
 
             //create an add the active group model to the lander
             var domain_id = domainModel.get("id");
@@ -33,19 +33,19 @@ define(["app",
               domain: domainModel.get("domain")
             });
 
-            var newActiveGroupsModel = new ActiveGroupsModel({
+            var newActiveGroupModel = new ActiveGroupModel({
               deployedLanders: deployedLanderCollection,
               group_id: groupModel.get("id"),
               name: groupModel.get("name"),
               domain_id: domain_id,
               action: "domain",
               domains: domains,
-              landers: deployedLanderCollection.toJSON(), //prob eventually needs to be correct landers arr
+              landers: deployedLanderCollection.toJSON()
 
             });
 
-            var activeGroupsCollection = domainModel.get("activeGroups");
-            activeGroupsCollection.add(newActiveGroupsModel);
+            var activeGroupCollection = domainModel.get("activeGroups");
+            activeGroupCollection.add(newActiveGroupModel);
 
             var listToDeploy = [];
 
@@ -81,30 +81,30 @@ define(["app",
 
           //show loading
           var loadingView = new LoadingView();
-          addGroupsToDomainLayout.groupsListRegion.show(loadingView)
+          addGroupToDomainLayout.groupListRegion.show(loadingView)
 
 
-          var deferredGroupsCollection = Landerds.request("groups:groupsCollection");
+          var deferredGroupCollection = Landerds.request("groups:groupCollection");
 
-          $.when(deferredGroupsCollection).done(function(groupsCollection) {
+          $.when(deferredGroupCollection).done(function(groupCollection) {
 
             //filter this collection, take out groups that lander is already deployed to
-            var filteredGroupsCollection = groupsCollection.filterOutGroups(domainModel.get("activeGroups"));
+            var filteredGroupCollection = groupCollection.filterOutGroups(domainModel.get("activeGroups"));
 
             //create the view, pass collection in as a var to be used to dynamically add to DT
             //show dt in view
-            var groupsListView = new GroupsListView({
-              datatablesCollection: filteredGroupsCollection
+            var groupListView = new GroupListView({
+              datatablesCollection: filteredGroupCollection
             });
 
 
             //show actual view
-            addGroupsToDomainLayout.groupsListRegion.show(groupsListView)
+            addGroupToDomainLayout.groupListRegion.show(groupListView)
 
           });
         }
       }
     });
 
-    return Landerds.DomainsApp.Domains.AddToGroups.Controller;
+    return Landerds.DomainsApp.Domains.AddToGroup.Controller;
   });

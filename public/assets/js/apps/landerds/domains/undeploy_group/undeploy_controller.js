@@ -7,23 +7,23 @@ define(["app",
 
       Undeploy.Controller = {
 
-        showUndeployDomainFromGroupsDialog: function(attr) {
-          var activeGroupsModel = attr.group_model;
+        showUndeployDomainFromGroupDialog: function(attr) {
+          var activeGroupModel = attr.group_model;
           var domainModel = attr.domain_model;
-          var group_id = activeGroupsModel.get("group_id");
+          var group_id = activeGroupModel.get("group_id");
 
-          var removeDomainFromGroupsLayout = new UndeployLayoutView({
-            group_model: activeGroupsModel,
+          var removeDomainFromGroupLayout = new UndeployLayoutView({
+            group_model: activeGroupModel,
             domain_model: domainModel
           });
 
-          removeDomainFromGroupsLayout.render();
+          removeDomainFromGroupLayout.render();
 
-          Landerds.rootRegion.currentView.modalRegion.show(removeDomainFromGroupsLayout);
+          Landerds.rootRegion.currentView.modalRegion.show(removeDomainFromGroupLayout);
 
-          removeDomainFromGroupsLayout.on("removeGroupsFromDomain", function() {
+          removeDomainFromGroupLayout.on("removeGroupFromDomain", function() {
             //no landers on group so nothing needs to be undeployed. just destroy it
-            activeGroupsModel.destroy();
+            activeGroupModel.destroy();
           });
         }
 

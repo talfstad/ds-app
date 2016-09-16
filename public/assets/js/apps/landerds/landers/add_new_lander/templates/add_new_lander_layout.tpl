@@ -5,7 +5,7 @@
             <h4 class="modal-title">Add a New Lander</h4>
         </div>
 
-        <div class="groups-list-region modal-body">
+        <div class="group-list-region modal-body">
           <div class="alert-loading spinner-full-container">
             <div class="modal-loading-container" style="margin-top: 200px">
               <span class="spinner-large glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>

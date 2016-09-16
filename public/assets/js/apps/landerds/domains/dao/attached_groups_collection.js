@@ -1,11 +1,11 @@
 define(["app",
 		"assets/js/apps/landerds/domains/dao/active_group_model"], 
-function(Landerds, ActiveGroupsModel) {
+function(Landerds, ActiveGroupModel) {
   
-  var AttachedGroupsCollection = Backbone.Collection.extend({
-    model: ActiveGroupsModel,
+  var AttachedGroupCollection = Backbone.Collection.extend({
+    model: ActiveGroupModel,
   });
 
 
-  return AttachedGroupsCollection;
+  return AttachedGroupCollection;
 });

@@ -12,7 +12,7 @@
       <div class="url-endpoints-region"></div>
       <div class="pagespeed-region"></div>
       <h5 class="title-divider mt20 mb0">
-              Active Javascript Snippets 
+              Active Snippets 
               
               <a class="add-snippet-button" style="float: right" title="Add a new snippet" href="#">
                 <i style="font-size: 18px !important" class="fa fa-plus text-info fs12 pl5 pr5"></i>

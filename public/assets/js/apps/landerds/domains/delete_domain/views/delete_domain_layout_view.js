@@ -19,7 +19,7 @@ define(["app",
         template: DeleteDomainLayoutTpl,
 
         regions: {
-          // "groupsListRegion": ".groups-list-region"
+          // "groupListRegion": ".group-list-region"
         },
 
         events: {

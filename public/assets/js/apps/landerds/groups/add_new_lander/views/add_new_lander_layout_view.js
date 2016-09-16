@@ -24,10 +24,10 @@ define(["app",
         },
 
         events: {
-          "click .add-group-confirm": "confirmedToAddGroups"
+          "click .add-group-confirm": "confirmedToAddGroup"
         },
 
-        confirmedToAddGroups: function() {
+        confirmedToAddGroup: function() {
 
           //show error if no lander selected or if more than 1 is somehow selected
           var selectedRow = $("#landers-list-datatable").find("tr.primary");

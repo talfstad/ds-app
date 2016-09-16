@@ -13,8 +13,8 @@ define(["app",
         className: "group-name-row",
 
         events: {
-          "click .remove-group": "showUndeployDomainFromGroupsDialog",
-          "click .goto-edit-group": "gotoEditGroups",
+          "click .remove-group": "showUndeployDomainFromGroupDialog",
+          "click .goto-edit-group": "gotoEditGroup",
         },
 
         modelEvents: {
@@ -22,14 +22,14 @@ define(["app",
           "change:deploy_status": "render"
         },
 
-        gotoEditGroups: function(e) {
+        gotoEditGroup: function(e) {
           if (e) e.preventDefault();
-          this.trigger("gotoEditGroups");
+          this.trigger("gotoEditGroup");
         },
 
-        showUndeployDomainFromGroupsDialog: function(e) {
+        showUndeployDomainFromGroupDialog: function(e) {
           e.preventDefault();
-          this.model.trigger("showUndeployDomainFromGroupsDialog", this.model);
+          this.model.trigger("showUndeployDomainFromGroupDialog", this.model);
         },
 
         onBeforeRender: function() {

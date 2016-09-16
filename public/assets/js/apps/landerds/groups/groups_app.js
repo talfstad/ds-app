@@ -9,7 +9,7 @@ define(["app",
     "assets/js/apps/landerds/groups/undeploy_domain/undeploy_domain_controller",
     "assets/js/apps/landerds/groups/remove_group/remove_group_controller",
   ],
-  function(Landerds, ListController, CommonLogin, SidemenuController, AddNewGroupsController,
+  function(Landerds, ListController, CommonLogin, SidemenuController, AddNewGroupController,
     AddNewLanderController, AddNewDomainController, RemoveLanderController, RemoveDomainController,
     RemoveGroupsController) {
     Landerds.module("GroupsApp", function(GroupsApp, Landerds, Backbone, Marionette, $, _) {
@@ -28,12 +28,12 @@ define(["app",
           });
         },
 
-        showAddNewGroupsModal: function(model) {
-          AddNewGroupsController.showAddNewGroupsModal(model);
+        showAddNewGroupModal: function(model) {
+          AddNewGroupController.showAddNewGroupModal(model);
         },
 
-        addGroups: function(model) {
-          ListController.addGroups(model);
+        addGroup: function(model) {
+          ListController.addGroup(model);
         },
 
         showAddNewLander: function(model) {
@@ -48,8 +48,8 @@ define(["app",
           AddNewDomainController.showAddNewDomain(model);
         },
 
-        deployGroupsLandersToDomain: function(attr) {
-          ListController.deployGroupsLandersToDomain(attr);
+        deployGroupLandersToDomain: function(attr) {
+          ListController.deployGroupLandersToDomain(attr);
         },
 
         openSidebar: function(model) {
@@ -90,12 +90,12 @@ define(["app",
         groupsAppAPI.closeSidebar();
       });
 
-      Landerds.on("groups:showAddNewGroupsModal", function(model) {
-        groupsAppAPI.showAddNewGroupsModal(model);
+      Landerds.on("groups:showAddNewGroupModal", function(model) {
+        groupsAppAPI.showAddNewGroupModal(model);
       });
 
-      Landerds.on("groups:list:addGroups", function(model) {
-        groupsAppAPI.addGroups(model);
+      Landerds.on("groups:list:addGroup", function(model) {
+        groupsAppAPI.addGroup(model);
       });
 
       Landerds.on("groups:showAddNewLander", function(attr) {
@@ -110,8 +110,8 @@ define(["app",
         groupsAppAPI.showAddNewDomain(model);
       });
 
-      Landerds.on("groups:deployGroupsLandersToDomain", function(attr) {
-        groupsAppAPI.deployGroupsLandersToDomain(attr);
+      Landerds.on("groups:deployGroupLandersToDomain", function(attr) {
+        groupsAppAPI.deployGroupLandersToDomain(attr);
       });
 
       Landerds.on("groups:showUndeployLander", function(model) {

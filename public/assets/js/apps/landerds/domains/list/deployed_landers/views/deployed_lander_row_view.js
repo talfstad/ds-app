@@ -47,11 +47,11 @@ define(["app",
 
           DeployedRowBaseView.prototype.onBeforeRender.apply(this);
 
-          var activeGroupsCollection = this.model.get("activeGroups");
+          var activeGroupCollection = this.model.get("activeGroups");
 
           var hasActiveGroups = false;
-          if (activeGroupsCollection.length > 0) {
-            activeGroupsCollection.each(function(group) {
+          if (activeGroupCollection.length > 0) {
+            activeGroupCollection.each(function(group) {
 
               var groupLanders = group.get('landers');
 

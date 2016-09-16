@@ -5,7 +5,7 @@ define(["app",
     "assets/js/jobs/jobs_model"
   ],
   function(Landerds, DeployedLanderCollection, DomainListCollection, JobsGuiBaseModel, JobModel) {
-    var GroupsModel = JobsGuiBaseModel.extend({
+    var GroupModel = JobsGuiBaseModel.extend({
       urlRoot: '/api/groups',
 
       initialize: function() {
@@ -41,7 +41,7 @@ define(["app",
           var action = actualAddedJobModel.get("action");
           var deployStatus = "deployed";
 
-          if (action === "deleteGroups") {
+          if (action === "deleteGroup") {
             deployStatus = "deleting";
           }
 
@@ -111,7 +111,7 @@ define(["app",
 
         activeJobCollection.on("finishedState", function(jobModel) {
 
-          if (jobModel.get("action") === "deleteGroups") {
+          if (jobModel.get("action") === "deleteGroup") {
 
             //hack to get it to not send DELETE XHR
             delete jobModel.attributes.id;
@@ -170,18 +170,18 @@ define(["app",
 
               activeJobCollection.each(function(activeJob) {
 
-                activeGroupsCollection.each(function(activeGroups) {
-                  var isOnGroups = false;
-                  var domains = activeGroups.get("domains");
+                activeGroupCollection.each(function(activeGroup) {
+                  var isOnGroup = false;
+                  var domains = activeGroup.get("domains");
                   domains.each(function(idx, domain) {
                     if (domain.get("domain_id") == activeJob.get("domain_id")) {
-                      isOnGroups = true;
+                      isOnGroup = true;
                     }
                   });
 
-                  if (isOnGroups) {
-                    activeGroupsActiveJobs = activeGroups.get("activeJobs");
-                    activeGroupsActiveJobs.add(activeJob);
+                  if (isOnGroup) {
+                    activeGroupActiveJobs = activeGroup.get("activeJobs");
+                    activeGroupActiveJobs.add(activeJob);
                   }
                 });
               });
@@ -194,7 +194,7 @@ define(["app",
         addJobsToActiveGroups();
 
 
-        domainListCollection.on("add destroy", function(activeGroupsModel) {
+        domainListCollection.on("add destroy", function(activeGroupModel) {
           deployedLanderCollection.trigger("domainsChanged");
         });
 
@@ -265,6 +265,6 @@ define(["app",
 
     });
 
-    return GroupsModel;
+    return GroupModel;
 
   });

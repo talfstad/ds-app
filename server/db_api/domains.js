@@ -284,6 +284,7 @@ module.exports = function(app, db) {
           if (err) {
             callback(err);
           } else {
+
             connection.query("SELECT a.id AS group_id, b.id, a.name,b.domain_id from groups a JOIN groups_with_domains b ON a.id=b.group_id WHERE (a.user_id = ? AND domain_id = ?)", [user_id, domain.id],
               function(err, dbActiveGroups) {
 
@@ -291,6 +292,7 @@ module.exports = function(app, db) {
                   callback(false, []);
                 } else {
                   var idx = 0;
+
                   for (var i = 0; i < dbActiveGroups.length; i++) {
                     baseActiveGroup.getExtraNestedForActiveGroup(user, dbActiveGroups[i], function(err) {
                       if (err) {

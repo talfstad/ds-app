@@ -16,7 +16,7 @@
         </ul>
       </div>
     </header>
-    <div class="groups-list-region modal-body">
+    <div class="group-list-region modal-body">
       <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="aws">
           <div class="alert-loading spinner-full-container">

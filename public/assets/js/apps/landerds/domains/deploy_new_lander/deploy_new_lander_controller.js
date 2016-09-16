@@ -61,11 +61,11 @@ define(["app",
               "urlEndpoints": urlEndpoints,
               "activeJobs": [],
               "endpoint_load_times": [],
-              "deploy_status": "deploying" //set to deploying because we know we're deploying it
             };
 
             //add the row to deployed landers
             var newDeployedLanderModel = new DeployedLanderModel(deployedLanderAttributes);
+            newDeployedLanderModel.set("deploy_status", "deploying"); //after init set deploy status for user before server response
 
             var deployedLanders = domainModel.get("deployedLanders");
             deployedLanders.add(newDeployedLanderModel);

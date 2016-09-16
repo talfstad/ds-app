@@ -6,7 +6,7 @@ define(["app",
     "assets/js/apps/landerds/landers/dao/active_group_collection"
   ],
   function(Landerds, JobsGuiBaseModel, DomainCollection, UrlEndpointCollection,
-    DeployedDomainsCollection, ActiveGroupsCollection) {
+    DeployedDomainsCollection, ActiveGroupCollection) {
     var LanderModel = JobsGuiBaseModel.extend({
       
     
@@ -39,10 +39,10 @@ define(["app",
         this.set("urlEndpoints", urlEndpointCollection);
 
         
-        var activeGroupsAttributes = this.get("activeGroups");
-        var activeGroupsCollection = new ActiveGroupsCollection();
-        this.set("activeGroups", activeGroupsCollection);
-        activeGroupsCollection.add(activeGroupsAttributes);
+        var activeGroupAttributes = this.get("activeGroups");
+        var activeGroupCollection = new ActiveGroupCollection();
+        this.set("activeGroups", activeGroupCollection);
+        activeGroupCollection.add(activeGroupAttributes);
 
       }
 

@@ -4,7 +4,7 @@
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       <h4 class="modal-title">Add a New Domain</h4>
     </div>
-    <div class="groups-list-region modal-body">
+    <div class="group-list-region modal-body">
       <div class="alert-loading spinner-full-container">
         <div class="modal-loading-container">
           <span class="spinner-large glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>

@@ -26,7 +26,7 @@ define(["app",
         },
 
         confirmedRemoveGroups: function(lander) {
-          this.trigger("removeGroupsConfirm");
+          this.trigger("removeGroupConfirm");
         },
 
         onRender: function() {

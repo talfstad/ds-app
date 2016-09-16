@@ -5,7 +5,7 @@
             <h4 class="modal-title">Create a Copy of <%= fromName %></h4>
         </div>
 
-        <div class="groups-list-region modal-body">
+        <div class="group-list-region modal-body">
           <div class="alert-loading spinner-full-container">
             <div class="modal-loading-container">
               <span class="spinner-large glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>

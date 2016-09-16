@@ -23,26 +23,26 @@ define(["app",
           Landerds.rootRegion.currentView.modalRegion.show(deployLanderToDomainLayout);
           
 
-          deployLanderToDomainLayout.on("addDomainToGroups", function(domainAttributes) {
+          deployLanderToDomainLayout.on("addDomainToGroup", function(domainAttributes) {
 
             //taking a lander model and making it a deployed lander model
             domainAttributes.domain_id = domainAttributes.id;
             domainAttributes.group_id = group_id;
             
             //callback
-            var addedDomainToGroupsSuccessCallback = function(domainListModel) {
+            var addedDomainToGroupSuccessCallback = function(domainListModel) {
 
               //save this lander to landers_with_groups
-              var deployGroupsLandersToDomainAttrs = {
+              var deployGroupLandersToDomainAttrs = {
                 domain_list_model: domainListModel,
                 group_model: groupModel
               };
 
               // triggers add row to deployed domains and starts job 
-              Landerds.trigger("groups:deployGroupsLandersToDomain", deployGroupsLandersToDomainAttrs);
+              Landerds.trigger("groups:deployGroupLandersToDomain", deployGroupLandersToDomainAttrs);
 
             };
-            var addedDomainToGroupsErrorCallback = function(err, two, three) {
+            var addedDomainToGroupErrorCallback = function(err, two, three) {
 
             };
 
@@ -50,10 +50,10 @@ define(["app",
             var domainListModel = new DomainListModel(domainAttributes);
             domainListModel.unset("id");
 
-            // create the model for activeGroups model. make sure it saves to
+            // create the model for activeGroup model. make sure it saves to
             domainListModel.save({}, {
-              success: addedDomainToGroupsSuccessCallback,
-              error: addedDomainToGroupsErrorCallback
+              success: addedDomainToGroupSuccessCallback,
+              error: addedDomainToGroupErrorCallback
             });
 
           });

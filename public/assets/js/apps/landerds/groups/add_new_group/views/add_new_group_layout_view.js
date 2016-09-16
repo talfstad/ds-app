@@ -3,11 +3,11 @@ define(["app",
     "bootstrap.fileinput",
     "syphon"
   ],
-  function(Landerds, AddNewGroupsLayoutTpl) {
+  function(Landerds, AddNewGroupLayoutTpl) {
 
-    Landerds.module("GroupsApp.Groups.AddNewGroups", function(AddNewGroups, Landerds, Backbone, Marionette, $, _) {
+    Landerds.module("GroupsApp.Groups.AddNewGroup", function(AddNewGroup, Landerds, Backbone, Marionette, $, _) {
 
-      AddNewGroups.Layout = Marionette.LayoutView.extend({
+      AddNewGroup.Layout = Marionette.LayoutView.extend({
 
         // id: "undeploy-lander-modal",
 
@@ -19,12 +19,12 @@ define(["app",
           "data-backdrop": "static"
         },
 
-        template: AddNewGroupsLayoutTpl,
+        template: AddNewGroupLayoutTpl,
 
         regions: {},
 
         events: {
-          "click .add-new-group-confirm": "confirmedAddNewGroups",
+          "click .add-new-group-confirm": "confirmedAddNewGroup",
           "keyup input": "ifEnterSubmit"
         },
 
@@ -144,7 +144,7 @@ define(["app",
 
         },
 
-        confirmedAddNewGroups: function(e) {
+        confirmedAddNewGroup: function(e) {
 
           var me = this;
 
@@ -160,7 +160,7 @@ define(["app",
               //1. set the new values into the job model
               this.model.set("name", newGroupsData.groupName);
 
-              this.trigger("confirmAddGroups", this.model);
+              this.trigger("confirmAddGroup", this.model);
 
             } else {
               this.model.set("groupInputError", true);
@@ -197,5 +197,5 @@ define(["app",
       });
 
     });
-    return Landerds.GroupsApp.Groups.AddNewGroups.Layout;
+    return Landerds.GroupsApp.Groups.AddNewGroup.Layout;
   });

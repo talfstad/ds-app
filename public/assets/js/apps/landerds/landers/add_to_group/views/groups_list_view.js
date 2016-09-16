@@ -2,12 +2,12 @@ define(["app",
     "tpl!assets/js/apps/landerds/landers/add_to_group/templates/groups_list.tpl",
     "bootstrap.datatables"
   ],
-  function(Landerds, groupsListTpl) {
+  function(Landerds, groupListTpl) {
 
-    Landerds.module("LandersApp.AddToGroups.List", function(List, Landerds, Backbone, Marionette, $, _) {
+    Landerds.module("LandersApp.AddToGroup.List", function(List, Landerds, Backbone, Marionette, $, _) {
       List.View = Marionette.ItemView.extend({
 
-        template: groupsListTpl,
+        template: groupListTpl,
 
         initialize: function() {
           //our collection to show (which isnt tied to any other views!)
@@ -18,7 +18,7 @@ define(["app",
         //onRender builds the datatable object with our collection
         onRender: function() {
           var me = this;
-          this.$el.find('#groups-list-datatable').dataTable({
+          this.$el.find('#group-list-datatable').dataTable({
             "aoColumnDefs": [{
               'bSortable': false,
               'aTargets': [-1]
@@ -55,7 +55,7 @@ define(["app",
             }
           });
 
-          this.$el.find('#groups-list-datatable tbody').on('click', 'tr', function(e) {
+          this.$el.find('#group-list-datatable tbody').on('click', 'tr', function(e) {
             if($(this).hasClass("primary")) {
               $(this).toggleClass("primary");
             } else {
@@ -64,7 +64,7 @@ define(["app",
             }
           });
 
-          var dt = this.$el.find('#groups-list-datatable').DataTable();
+          var dt = this.$el.find('#group-list-datatable').DataTable();
 
           //loop this
           var dtRows = [];
@@ -82,5 +82,5 @@ define(["app",
 
       });
     });
-    return Landerds.LandersApp.AddToGroups.List.View;
+    return Landerds.LandersApp.AddToGroup.List.View;
   });

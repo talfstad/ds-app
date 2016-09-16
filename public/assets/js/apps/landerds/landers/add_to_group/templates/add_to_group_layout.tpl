@@ -7,7 +7,7 @@
 
         
 
-    	<div class="groups-list-region">
+    	<div class="group-list-region">
 
                 
 
@@ -16,7 +16,7 @@
 
     	<div class="modal-footer">
             <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Cancel</button>
-    		<button type="button" class="<% if(saving_lander) { %> disabled <% } %> add-group-confirm btn btn-primary btn-clipboard">Add Groups</button>
+    		<button type="button" class="<% if(saving_lander) { %> disabled <% } %> add-group-confirm btn btn-primary btn-clipboard">Add Group</button>
     	</div> 
     </div>
 </div>

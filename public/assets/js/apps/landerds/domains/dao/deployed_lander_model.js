@@ -6,7 +6,7 @@ define(["app",
     "assets/js/apps/landerds/landers/dao/deployed_domain_collection",
     "assets/js/jobs/jobs_app"
   ],
-  function(Landerds, JobsGuiBaseModel, ActiveGroupsCollection, DeployedRowBaseModel,
+  function(Landerds, JobsGuiBaseModel, ActiveGroupCollection, DeployedRowBaseModel,
     UrlEndpointCollection, DeployedDomainCollection) {
     var DeployedLanderModel = DeployedRowBaseModel.extend({
 

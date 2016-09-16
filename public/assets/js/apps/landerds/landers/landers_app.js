@@ -14,7 +14,7 @@ define(["app",
     "assets/js/apps/landerds/landers/js_snippets/js_snippets_controller"
   ],
   function(Landerds, ListController, CommonLogin, SidemenuController, EditController, DeployToDomainController,
-    AddNewGroupsController, RemoveDomainController, RemoveGroupsController, AddNewLanderController, DeleteLanderController,
+    AddNewGroupController, RemoveDomainController, RemoveGroupsController, AddNewLanderController, DeleteLanderController,
     DuplicateLanderController, RipNewLanderController, JsSnippetsController) {
     Landerds.module("LandersApp", function(LandersApp, Landerds, Backbone, Marionette, $, _) {
 
@@ -76,8 +76,8 @@ define(["app",
         showDuplicateLanderModal: function(landerModelToDuplicateAttr) {
           DuplicateLanderController.showDuplicateLander(landerModelToDuplicateAttr);
         },
-        addGroupsToLander: function(attr) {
-          ListController.addGroupsToLander(attr);
+        addGroupToLander: function(attr) {
+          ListController.addGroupToLander(attr);
         },
         showEditLander: function(model) {
           EditController.showEditLander(model);
@@ -88,8 +88,8 @@ define(["app",
         showDeployToDomain: function(model) {
           DeployToDomainController.showDeployLanderToDomain(model);
         },
-        showAddNewGroups: function(model) {
-          AddNewGroupsController.showAddNewGroups(model);
+        showAddNewGroup: function(model) {
+          AddNewGroupController.showAddNewGroup(model);
         },
         showAddNewLanderModal: function() {
           AddNewLanderController.showAddNewLanderModal();
@@ -100,8 +100,8 @@ define(["app",
         showEditJsSnippetsModal: function(landerModel, snippet_id, showDescription) {
           JsSnippetsController.showEditJsSnippetsModal(landerModel, snippet_id, showDescription);
         },
-        showUndeployDomainFromGroupsDialog: function(attr) {
-          RemoveGroupsController.showUndeployDomainFromGroupsDialog(attr);
+        showUndeployDomainFromGroupDialog: function(attr) {
+          RemoveGroupsController.showUndeployDomainFromGroupDialog(attr);
         },
         removeGroupsFromLander: function(groupModel) {
           ListController.removeGroupsFromLander(groupModel);
@@ -124,8 +124,8 @@ define(["app",
         createLanderFromJobAddToCollection: function(landerModel) {
           ListController.createLanderFromJobAddToCollection(landerModel);
         },
-        deployGroupsLandersToDomain: function(attr) {
-          ListController.deployGroupsLandersToDomain(attr);
+        deployGroupLandersToDomain: function(attr) {
+          ListController.deployGroupLandersToDomain(attr);
         }
       };
 
@@ -133,8 +133,8 @@ define(["app",
         landersAppAPI.removeDeployedDomainModelFromCollection(model);
       });
 
-      Landerds.on("landers:deployGroupsLandersToDomain", function(attr) {
-        landersAppAPI.deployGroupsLandersToDomain(attr);
+      Landerds.on("landers:deployGroupLandersToDomain", function(attr) {
+        landersAppAPI.deployGroupLandersToDomain(attr);
       });
 
       Landerds.on("landers:list", function(id) {
@@ -181,8 +181,8 @@ define(["app",
         landersAppAPI.showDeleteLanderModal(model);
       });
 
-      Landerds.on("landers:showUndeployDomainFromGroupsDialog", function(attr) {
-        landersAppAPI.showUndeployDomainFromGroupsDialog(attr);
+      Landerds.on("landers:showUndeployDomainFromGroupDialog", function(attr) {
+        landersAppAPI.showUndeployDomainFromGroupDialog(attr);
       });
 
       Landerds.on("landers:list:addNewDuplicatedLander", function(model) {
@@ -206,8 +206,8 @@ define(["app",
       Landerds.on("landers:undeployLanderFromDomains", function(undeployAttr) {
         landersAppAPI.undeployLanderFromDomains(undeployAttr);
       });
-      Landerds.on("landers:addGroupsToLander", function(attr) {
-        landersAppAPI.addGroupsToLander(attr);
+      Landerds.on("landers:addGroupToLander", function(attr) {
+        landersAppAPI.addGroupToLander(attr);
       });
 
       Landerds.on("landers:showDeployToDomain", function(model) {
@@ -222,8 +222,8 @@ define(["app",
       Landerds.on("landers:updateAllActiveSnippetNames", function(model) {
         landersAppAPI.updateAllActiveSnippetNames(model);
       });
-      Landerds.on("landers:showAddNewGroups", function(model) {
-        landersAppAPI.showAddNewGroups(model);
+      Landerds.on("landers:showAddNewGroup", function(model) {
+        landersAppAPI.showAddNewGroup(model);
       });
       Landerds.on("landers:redeploy", function(model) {
         landersAppAPI.redeployLanders(model);

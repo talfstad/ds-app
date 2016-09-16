@@ -1,11 +1,11 @@
 define(["app"], 
 function(Landerds){
-  var GroupsModel = Backbone.Model.extend({
+  var GroupModel = Backbone.Model.extend({
   	urlRoot: '/api/groups',
     defaults: {
     }
   });
 
-  return GroupsModel;
+  return GroupModel;
 
 });

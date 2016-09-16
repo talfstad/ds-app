@@ -1,11 +1,11 @@
 define(["app",
     "tpl!assets/js/apps/landerds/domains/add_to_group/templates/add_to_group_layout.tpl"
   ],
-  function(Landerds, AddToGroupsLayoutTpl) {
+  function(Landerds, AddToGroupLayoutTpl) {
 
-    Landerds.module("DomainsApp.Domains.AddToGroups", function(AddToGroups, Landerds, Backbone, Marionette, $, _) {
+    Landerds.module("DomainsApp.Domains.AddToGroup", function(AddToGroup, Landerds, Backbone, Marionette, $, _) {
 
-      AddToGroups.Layout = Marionette.LayoutView.extend({
+      AddToGroup.Layout = Marionette.LayoutView.extend({
 
         // id: "undeploy-lander-modal",
 
@@ -17,20 +17,20 @@ define(["app",
           "data-backdrop": "static"
         },
 
-        template: AddToGroupsLayoutTpl,
+        template: AddToGroupLayoutTpl,
 
         regions: {
-          "groupsListRegion": ".groups-list-region"
+          "groupListRegion": ".group-list-region"
         },
 
         events: {
-          "click .add-group-confirm": "confirmedAddGroups"
+          "click .add-group-confirm": "confirmedAddGroup"
         },
 
-        confirmedAddGroups: function() {
+        confirmedAddGroup: function() {
 
           //show error if no domain selected or if more than 1 is somehow selected
-          var selectedRow = $("#groups-list-datatable").find("tr.primary");
+          var selectedRow = $("#group-list-datatable").find("tr.primary");
 
           if(selectedRow.length <= 0 || selectedRow.length > 1) {
             $(".alert").addClass("alert-danger").removeClass("alert-primary");
@@ -45,12 +45,12 @@ define(["app",
             
             var groupId = selectedRow.attr("data-group-id");
 
-            var groupModel = this.getRegion("groupsListRegion").currentView.datatablesCollection.find(function(m) {
+            var groupModel = this.getRegion("groupListRegion").currentView.datatablesCollection.find(function(m) {
               var id = m.get('id')
               return id == groupId
             });
             
-            this.trigger("addGroupsToDomain", groupModel);
+            this.trigger("addGroupToDomain", groupModel);
             this.$el.modal("hide");
           }
         },
@@ -86,5 +86,5 @@ define(["app",
       });
 
     });
-    return Landerds.DomainsApp.Domains.AddToGroups.Layout;
+    return Landerds.DomainsApp.Domains.AddToGroup.Layout;
   });

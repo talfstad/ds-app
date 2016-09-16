@@ -3,7 +3,7 @@ define(["app",
     "assets/js/apps/landerds/groups/dao/domain_list_collection"
   ],
   function(Landerds, DeployedRowBaseModel, DomainListCollection) {
-    var ActiveGroupsModel = DeployedRowBaseModel.extend({
+    var ActiveGroupModel = DeployedRowBaseModel.extend({
 
       urlRoot: "/api/active_groups_on_domain",
 
@@ -47,5 +47,5 @@ define(["app",
       }
 
     });
-    return ActiveGroupsModel;
+    return ActiveGroupModel;
   });

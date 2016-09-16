@@ -2,7 +2,7 @@ define(["app",
     "assets/js/apps/landerds/groups/remove_group/views/remove_group_layout_view",
     "assets/js/jobs/jobs_model"
   ],
-  function(Landerds, RemoveLanderFromGroupsLayout, JobModel) {
+  function(Landerds, RemoveLanderFromGroupLayout, JobModel) {
     Landerds.module("GroupsApp.Groups.RemoveGroups", function(RemoveGroups, Landerds, Backbone, Marionette, $, _) {
 
       RemoveGroups.Controller = {
@@ -10,20 +10,20 @@ define(["app",
         showRemoveGroups: function(groupModel) {
           var group_id = groupModel.get("id");
 
-          var removeGroupsLayout = new RemoveLanderFromGroupsLayout({
+          var removeGroupLayout = new RemoveLanderFromGroupLayout({
             model: groupModel
           });
 
-          removeGroupsLayout.render();
+          removeGroupLayout.render();
 
-          Landerds.rootRegion.currentView.modalRegion.show(removeGroupsLayout);
+          Landerds.rootRegion.currentView.modalRegion.show(removeGroupLayout);
 
-          removeGroupsLayout.on("removeGroupsConfirm", function() {
+          removeGroupLayout.on("removeGroupConfirm", function() {
 
-            //1. create a deleteGroups job add to active jobs for group
+            //1. create a deleteGroup job add to active jobs for group
 
             var jobAttributes = {
-              action: "deleteGroups",
+              action: "deleteGroup",
               group_id: group_id,
               deploy_status: "deleting"
             };

@@ -12,17 +12,17 @@ define(["app",
           var domainListModel = attr.domain_model;
           var group_id = groupModel.get("id");
 
-          var removeDomainFromGroupsLayout = new RemoveDomainFromGroupsLayout({
+          var removeDomainFromGroupLayout = new RemoveDomainFromGroupsLayout({
             group_model: groupModel,
             domain_model: domainListModel
           });
 
-          removeDomainFromGroupsLayout.render();
+          removeDomainFromGroupLayout.render();
 
-          Landerds.rootRegion.currentView.modalRegion.show(removeDomainFromGroupsLayout);
+          Landerds.rootRegion.currentView.modalRegion.show(removeDomainFromGroupLayout);
 
           //on add save the camp to db
-          removeDomainFromGroupsLayout.on("removeDomainFromGroupsConfirm", function() {
+          removeDomainFromGroupLayout.on("removeDomainFromGroupsConfirm", function() {
 
             //just destroy it to unattach it
             domainListModel.destroy();

@@ -7,11 +7,11 @@
     </div>
   </div>
   <div class="js-snippet-alert alert alert-danger group-name-alert" style="display: none;">  
-      <span style="font-weight: 600">Groups Name Can't be Empty</span>.
+      <span style="font-weight: 600">Group Name Can't be Empty</span>.
   </div>
   <div class="admin-form panel-body pn pb25" style="font-size: 13px">
     <div class="name-and-optimizations-region">
-      <h5 class="title-divider mt20 mb10">Groups Name
+      <h5 class="title-divider mt20 mb10">Group Name
   <a style="float: right" href="#">
                 <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
               </a>

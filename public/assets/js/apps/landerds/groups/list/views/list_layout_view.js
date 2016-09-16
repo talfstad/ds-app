@@ -4,23 +4,23 @@ define(["app",
     "typewatch",
     "bootstrap"
   ],
-  function(Landerds, groupsListTpl) {
+  function(Landerds, groupListTpl) {
     Landerds.module("GroupsApp.Groups.List", function(List, Landerds, Backbone, Marionette, $, _) {
 
       List.Layout = Marionette.LayoutView.extend({
 
-        template: groupsListTpl,
+        template: groupListTpl,
         tagName: "section",
         id: "content_wrapper",
 
         regions: {
-          groupsCollectionRegion: "#groups-region",
+          groupCollectionRegion: "#groups-region",
           footerRegion: "#footer-region",
           topbarRegion: "#first-topbar"
         },
 
         events: {
-          "click .add-new-group-button": "showAddNewGroups",
+          "click .add-new-group-button": "showAddNewGroup",
           "click .toggle-help-info": "triggerToggleHelpInfo"
         },
 
@@ -43,9 +43,9 @@ define(["app",
           this.trigger("toggleInfo", this.toggle);
         },
 
-        showAddNewGroups: function(e) {
+        showAddNewGroup: function(e) {
           e.preventDefault();
-          Landerds.trigger("groups:showAddNewGroupsModal");
+          Landerds.trigger("groups:showAddNewGroupModal");
         },
 
         filterGroups: function(filterValue) {

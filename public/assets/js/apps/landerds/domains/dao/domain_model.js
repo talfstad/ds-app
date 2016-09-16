@@ -3,7 +3,7 @@ define(["app",
     "assets/js/apps/landerds/domains/dao/active_group_collection",
     "assets/js/jobs/jobs_base_gui_model"
   ],
-  function(Landerds, DeployedLanderCollection, ActiveGroupsCollection, JobsGuiBaseModel) {
+  function(Landerds, DeployedLanderCollection, ActiveGroupCollection, JobsGuiBaseModel) {
     var DomainModel = JobsGuiBaseModel.extend({
       urlRoot: "/api/domains",
 
@@ -14,21 +14,21 @@ define(["app",
       initialize: function() {
         var me = this;
 
-        var activeGroupsAttributes = this.get("activeGroups");
+        var activeGroupAttributes = this.get("activeGroups");
         var deployedLandersAttributes = this.get("deployedLanders");
 
         var deployedLanderCollection = new DeployedLanderCollection(deployedLandersAttributes);
         this.set("deployedLanders", deployedLanderCollection);
 
-        var activeGroupsCollection = new ActiveGroupsCollection();
+        var activeGroupCollection = new ActiveGroupCollection();
 
         //whenever deployed domain coll updates deploy_status, update master lander deploy status
         deployedLanderCollection.on("add change:deploy_status", function(domainModel) {
           me.setDeployStatus();
         });
 
-        this.set("activeGroups", activeGroupsCollection);
-        activeGroupsCollection.add(activeGroupsAttributes);
+        this.set("activeGroups", activeGroupCollection);
+        activeGroupCollection.add(activeGroupAttributes);
 
 
 
@@ -95,18 +95,18 @@ define(["app",
 
               activeJobCollection.each(function(activeJob) {
 
-                activeGroupsCollection.each(function(activeGroups) {
-                  var isOnGroups = false;
-                  var domains = activeGroups.get("domains");
-                  domains.each(function(domain) {
-                    if (domain.get("domain_id") == activeJob.get("domain_id")) {
-                      isOnGroups = true;
+                activeGroupCollection.each(function(activeGroup) {
+                  var isOnGroup = false;
+                  var landers = activeGroup.get("landers");
+                  $.each(landers, function(idx, lander) {
+                    if (lander.lander_id == activeJob.get("lander_id")) {
+                      isOnGroup = true;
                     }
                   });
 
-                  if (isOnGroups) {
-                    activeGroupsActiveJobs = activeGroups.get("activeJobs");
-                    activeGroupsActiveJobs.add(activeJob);
+                  if (isOnGroup) {
+                    var activeGroupActiveJobs = activeGroup.get("activeJobs");
+                    activeGroupActiveJobs.add(activeJob);
                   }
                 });
               });
@@ -118,7 +118,7 @@ define(["app",
 
         addJobsToActiveGroups();
 
-        activeGroupsCollection.on("add destroy", function(activeGroupsModel) {
+        activeGroupCollection.on("add destroy", function(activeGroupModel) {
           deployedLanderCollection.trigger("activeGroupsChanged");
         });
 

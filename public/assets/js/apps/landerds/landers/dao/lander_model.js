@@ -6,7 +6,7 @@ define(["app",
     "assets/js/apps/landerds/landers/dao/active_group_collection"
   ],
   function(Landerds, JobsGuiBaseModel, DomainCollection, UrlEndpointCollection,
-    DeployedDomainsCollection, ActiveGroupsCollection) {
+    DeployedDomainsCollection, ActiveGroupCollection) {
     var LanderModel = JobsGuiBaseModel.extend({
 
       urlRoot: "/api/landers",
@@ -20,7 +20,7 @@ define(["app",
         this.set("originalValueDeployRoot", this.get("deploy_root"));
         this.set("originalActiveSnippets", this.get("activeSnippets"));
 
-        var activeGroupsAttributes = this.get("activeGroups");
+        var activeGroupAttributes = this.get("activeGroups");
         var urlEndpointAttributes = this.get("urlEndpoints");
         var deployedDomainAttributes = this.get("deployedDomains");
 
@@ -55,9 +55,9 @@ define(["app",
         var urlEndpointCollection = new UrlEndpointCollection(urlEndpointAttributes);
         this.set("urlEndpoints", urlEndpointCollection);
 
-        var activeGroupsCollection = new ActiveGroupsCollection();
-        this.set("activeGroups", activeGroupsCollection);
-        activeGroupsCollection.add(activeGroupsAttributes);
+        var activeGroupCollection = new ActiveGroupCollection();
+        this.set("activeGroups", activeGroupCollection);
+        activeGroupCollection.add(activeGroupAttributes);
 
 
 
@@ -67,7 +67,7 @@ define(["app",
 
           var deployStatus = this.get("deploy_status");
           deployedDomainsCollection.deploy_status = deployStatus;
-          activeGroupsCollection.deploy_status = deployStatus;
+          activeGroupCollection.deploy_status = deployStatus;
 
         });
 
@@ -191,18 +191,18 @@ define(["app",
 
               activeJobCollection.each(function(activeJob) {
 
-                activeGroupsCollection.each(function(activeGroups) {
-                  var isOnGroups = false;
-                  var domains = activeGroups.get("domains");
+                activeGroupCollection.each(function(activeGroup) {
+                  var isOnGroup = false;
+                  var domains = activeGroup.get("domains");
                   domains.each(function(domain) {
                     if (domain.get("domain_id") == activeJob.get("domain_id")) {
-                      isOnGroups = true;
+                      isOnGroup = true;
                     }
                   });
 
-                  if (isOnGroups) {
-                    activeGroupsActiveJobs = activeGroups.get("activeJobs");
-                    activeGroupsActiveJobs.add(activeJob);
+                  if (isOnGroup) {
+                    activeGroupActiveJobs = activeGroup.get("activeJobs");
+                    activeGroupActiveJobs.add(activeJob);
                   }
                 });
               });
@@ -214,7 +214,7 @@ define(["app",
 
         addJobsToActiveGroups();
 
-        activeGroupsCollection.on("add destroy", function(activeGroupsModel) {
+        activeGroupCollection.on("add destroy", function(activeGroupModel) {
           deployedDomainsCollection.trigger("activeGroupsChanged");
         });
 

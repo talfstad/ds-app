@@ -10,8 +10,8 @@ define(["app",
     "assets/js/apps/landerds/domains/undeploy_group/undeploy_controller"
   ],
   function(Landerds, ListController, CommonLogin, SidemenuController, AddNewDomainController,
-    DeployNewLanderController, DeleteDomainController, UndeployLanderController, AddToGroupsController,
-    UndeployGroupsController) {
+    DeployNewLanderController, DeleteDomainController, UndeployLanderController, AddToGroupController,
+    UndeployGroupController) {
     Landerds.module("DomainsApp", function(DomainsApp, Landerds, Backbone, Marionette, $, _) {
 
       var domainsAppAPI = {
@@ -71,20 +71,20 @@ define(["app",
           UndeployLanderController.showUndeployLander(model);
         },
 
-        showAddNewGroups: function(model) {
-          AddToGroupsController.showAddNewGroups(model);
+        showAddNewGroup: function(model) {
+          AddToGroupController.showAddNewGroup(model);
         },
 
-        deployGroupsLandersToDomain: function(attr) {
-          ListController.deployGroupsLandersToDomain(attr);
+        deployGroupLandersToDomain: function(attr) {
+          ListController.deployGroupLandersToDomain(attr);
         },
 
-        showUndeployDomainFromGroupsDialog: function(model) {
-          UndeployGroupsController.showUndeployDomainFromGroupsDialog(model);
+        showUndeployDomainFromGroupDialog: function(model) {
+          UndeployGroupController.showUndeployDomainFromGroupDialog(model);
         },
 
-        removeGroupsFromDomain: function(groupModel) {
-          ListController.removeGroupsFromDomain(groupModel);
+        removeGroupFromDomain: function(groupModel) {
+          ListController.removeGroupFromDomain(groupModel);
         },
 
         //above functions are certain, below not sure we need yet
@@ -139,24 +139,24 @@ define(["app",
         domainsAppAPI.showUndeployLander(model);
       });
 
-      Landerds.on("domains:showAddNewGroups", function(model) {
-        domainsAppAPI.showAddNewGroups(model);
+      Landerds.on("domains:showAddNewGroup", function(model) {
+        domainsAppAPI.showAddNewGroup(model);
       });
 
       Landerds.on("domains:undeployLandersFromDomain", function(attr) {
         domainsAppAPI.undeployLandersFromDomain(attr);
       });
 
-      Landerds.on("domains:deployGroupsLandersToDomain", function(attr) {
-        domainsAppAPI.deployGroupsLandersToDomain(attr);
+      Landerds.on("domains:deployGroupLandersToDomain", function(attr) {
+        domainsAppAPI.deployGroupLandersToDomain(attr);
       });
 
-      Landerds.on("domains:showUndeployDomainFromGroupsDialog", function(attr) {
-        domainsAppAPI.showUndeployDomainFromGroupsDialog(attr);
+      Landerds.on("domains:showUndeployDomainFromGroupDialog", function(attr) {
+        domainsAppAPI.showUndeployDomainFromGroupDialog(attr);
       });
 
-      Landerds.on("domains:removeGroupsFromDomain", function(model) {
-        domainsAppAPI.removeGroupsFromDomain(model);
+      Landerds.on("domains:removeGroupFromDomain", function(model) {
+        domainsAppAPI.removeGroupFromDomain(model);
       });
 
 

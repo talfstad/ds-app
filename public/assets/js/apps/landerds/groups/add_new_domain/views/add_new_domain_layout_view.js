@@ -56,7 +56,7 @@ define(["app",
 
         startDeployingLandersToNewDomain: function(domain) {
           // triggers add row to deployed domains and starts job 
-          this.trigger("addDomainToGroups", domain.attributes);
+          this.trigger("addDomainToGroup", domain.attributes);
         },
 
         onRender: function() {

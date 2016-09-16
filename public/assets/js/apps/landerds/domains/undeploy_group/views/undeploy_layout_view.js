@@ -38,7 +38,7 @@ define(["app",
         },
 
         confirmedRemoveGroupsFromLander: function() {
-          this.trigger("removeGroupsFromDomain", this.model);      
+          this.trigger("removeGroupFromDomain", this.model);      
         },
 
         onRender: function() {

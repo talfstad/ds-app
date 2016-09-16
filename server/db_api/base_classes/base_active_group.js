@@ -53,6 +53,7 @@ module.exports = function(app, db) {
             if (err) {
               callback(err);
             } else {
+
               activeGroup.landers = dbLanders;
               callback(false);
             }

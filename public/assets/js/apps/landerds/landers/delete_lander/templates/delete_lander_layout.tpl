@@ -7,7 +7,7 @@
 
         
 
-    	<div class="groups-list-region modal-body">
+    	<div class="group-list-region modal-body">
 
             <p>Are you sure you want to delete <strong><%= name %></strong> permanently?</p>
                 

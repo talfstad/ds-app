@@ -29,7 +29,7 @@ define(["app",
 
         events: {
           "click button.deploy-to-domain": "showDeployLanderToDomain",
-          "click button.add-to-group": "showAddToGroups"
+          "click button.add-to-group": "showAddToGroup"
         },
 
         modelEvents: {
@@ -102,8 +102,8 @@ define(["app",
           Landerds.trigger("landers:showDeployToDomain", this.model);
         },
 
-        showAddToGroups: function() {
-          Landerds.trigger("landers:showAddToGroups", this.model);
+        showAddToGroup: function() {
+          Landerds.trigger("landers:showAddToGroup", this.model);
         },
 
         onBeforeRender: function() {

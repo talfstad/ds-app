@@ -24,7 +24,7 @@ define(["app",
         childViewContainer: "table.deployed-landers-region",
 
         events: {
-          "click button.add-to-group": "showAddToGroups"
+          "click button.add-to-group": "showAddToGroup"
         },
 
         modelEvents: {
@@ -66,8 +66,8 @@ define(["app",
 
         },
 
-        showAddToGroups: function() {
-          Landerds.trigger("domains:showAddToGroups", this.model);
+        showAddToGroup: function() {
+          Landerds.trigger("domains:showAddToGroup", this.model);
         },
 
         onBeforeRender: function() {

@@ -1,10 +1,10 @@
 define(["app",
     "assets/js/apps/landerds/groups/dao/group_model"
   ],
-  function(Landerds, GroupsModel) {
-    var GroupsCollection = Backbone.Collection.extend({
+  function(Landerds, GroupModel) {
+    var GroupCollection = Backbone.Collection.extend({
       url: '/api/groups',
-      model: GroupsModel,
+      model: GroupModel,
       comparator: function(doc) {
         var str = doc.get('name') || '';
         return str.toLowerCase();
@@ -12,7 +12,7 @@ define(["app",
 
       filterOutGroups: function(groupsToFilterOutCollection) {
 
-        var items = new GroupsCollection();
+        var items = new GroupCollection();
 
         this.each(function(group) {
           groupId = group.get("id");
@@ -33,11 +33,11 @@ define(["app",
     var groupCollectionInstance = null;
 
     var API = {
-      getGroupsCollection: function() {
+      getGroupCollection: function() {
         var me = this;
         var defer = $.Deferred();
 
-          groupCollectionInstance = new GroupsCollection();
+          groupCollectionInstance = new GroupCollection();
 
           groupCollectionInstance.fetch({
             success: function(groups) {
@@ -54,9 +54,9 @@ define(["app",
       }
     };
 
-    Landerds.reqres.setHandler("groups:groupsCollection", function() {
-      return API.getGroupsCollection();
+    Landerds.reqres.setHandler("groups:groupCollection", function() {
+      return API.getGroupCollection();
     });
 
-    return GroupsCollection;
+    return GroupCollection;
   });

@@ -1,12 +1,12 @@
 define(["app",
     "tpl!assets/js/apps/landerds/landers/list/templates/add_new_group.tpl"
   ],
-  function(Landerds, AddNewGroupsTpl) {
+  function(Landerds, AddNewGroupTpl) {
 
     Landerds.module("LandersApp.Landers.List", function(List, Landerds, Backbone, Marionette, $, _) {
-      List.AddNewGroups = Marionette.ItemView.extend({
+      List.AddNewGroup = Marionette.ItemView.extend({
 
-        template: AddNewGroupsTpl,
+        template: AddNewGroupTpl,
 
         modelEvents: {
           'change': 'render'
@@ -20,5 +20,5 @@ define(["app",
 
       });
     });
-    return Landerds.LandersApp.Landers.List.AddNewGroups;
+    return Landerds.LandersApp.Landers.List.AddNewGroup;
   });

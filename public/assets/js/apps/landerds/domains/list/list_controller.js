@@ -22,7 +22,7 @@ define(["app",
   function(Landerds, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
     PaginatedButtonView, TopbarView, LoadingView, LanderTabHandleView, GroupsTabHandleView,
     DeployedLandersView, ActiveGroupsView, DeployedLanderModel, DeployedDomainModel,
-    JobModel, ActiveGroupsModel, Notification, BaseListController) {
+    JobModel, ActiveGroupModel, Notification, BaseListController) {
     Landerds.module("DomainsApp.Domains.List", function(List, Landerds, Backbone, Marionette, $, _) {
 
       List.Controller = _.extend({ //BaseListController
@@ -155,25 +155,25 @@ define(["app",
                     model: domainView.model
                   });
 
-                  var activeGroupsCollection = domainView.model.get("activeGroups");
+                  var activeGroupCollection = domainView.model.get("activeGroups");
                   //set landername to be used by group models dialog
 
-                  activeGroupsCollection.domain = domainView.model.get("domain");
+                  activeGroupCollection.domain = domainView.model.get("domain");
 
-                  var activeGroupsView = new ActiveGroupsView({
-                    collection: activeGroupsCollection
+                  var activeGroupView = new ActiveGroupsView({
+                    collection: activeGroupCollection
                   });
 
-                  activeGroupsCollection.off("showUndeployDomainFromGroupsDialog");
-                  activeGroupsCollection.on("showUndeployDomainFromGroupsDialog", function(groupModel) {
+                  activeGroupCollection.off("showUndeployDomainFromGroupDialog");
+                  activeGroupCollection.on("showUndeployDomainFromGroupDialog", function(groupModel) {
                     var attr = {
                       group_model: groupModel,
                       domain_model: domainView.model
                     };
-                    Landerds.trigger("domains:showUndeployDomainFromGroupsDialog", attr);
+                    Landerds.trigger("domains:showUndeployDomainFromGroupDialog", attr);
                   });
 
-                  activeGroupsView.on("childview:updateParentLayout", function(childView, options) {
+                  activeGroupView.on("childview:updateParentLayout", function(childView, options) {
                     //update the group count for lander
                     var length = this.children.length;
                     if (childView.isDestroyed) --length;
@@ -185,7 +185,7 @@ define(["app",
                   //set the domain for child views
                   deployedLandersCollection.domain = domainView.model.get("domain");
                   deployedLandersCollection.domain_id = domainView.model.get("id");
-                  deployedLandersCollection.activeGroups = activeGroupsCollection;
+                  deployedLandersCollection.activeGroups = activeGroupCollection;
 
                   var deployedLandersView = new DeployedLandersView({
                     collection: deployedLandersCollection
@@ -221,7 +221,7 @@ define(["app",
                   domainView.lander_tab_handle_region.show(landerTabHandleView);
                   domainView.group_tab_handle_region.show(groupTabHandleView);
                   domainView.deployed_landers_region.show(deployedLandersView);
-                  domainView.active_groups_region.show(activeGroupsView);
+                  domainView.active_groups_region.show(activeGroupView);
                 });
               }
 
@@ -433,7 +433,7 @@ define(["app",
             me.filteredCollection.original.each(function(domainModel) {
 
               var deployedLanderCollection = domainModel.get("deployedLanders");
-              var activeGroupsCollection = domainModel.get("activeGroups");
+              var activeGroupCollection = domainModel.get("activeGroups");
 
               deployedLanderCollection.each(function(deployedLander) {
 
@@ -464,18 +464,18 @@ define(["app",
                     activeJobs.add(newDeployJob);
 
                     //also add the job to any active groups that have this lander_id
-                    activeGroupsCollection.each(function(activeGroups) {
+                    activeGroupCollection.each(function(activeGroup) {
                       //if active group doesn't have an id, add the active_group_id as its id
-                      if (!activeGroups.get("id")) {
-                        activeGroups.set("id", responseJobAttr.active_group_id);
+                      if (!activeGroup.get("id")) {
+                        activeGroup.set("id", responseJobAttr.active_group_id);
                       }
 
-                      var activeGroupsLanders = activeGroups.get("landers");
-                      $.each(activeGroupsLanders, function(idx, activeGroupsDeployedLander) {
+                      var activeGroupLanders = activeGroup.get("landers");
+                      $.each(activeGroupLanders, function(idx, activeGroupDeployedLander) {
 
-                        if (activeGroupsDeployedLander.lander_id == newDeployJob.get("lander_id")) {
-                          var activeGroupsActiveJobs = activeGroups.get("activeJobs");
-                          activeGroupsActiveJobs.add(newDeployJob);
+                        if (activeGroupDeployedLander.lander_id == newDeployJob.get("lander_id")) {
+                          var activeGroupActiveJobs = activeGroup.get("activeJobs");
+                          activeGroupActiveJobs.add(newDeployJob);
                         }
                       });
                     });
@@ -491,20 +491,20 @@ define(["app",
 
           var landerModel = attr.landerModel;
           var deployedDomainsJobList = [];
-          var addActiveGroupsModel;
+          var addActiveGroupModel;
 
           //get the list of redeploy jobs. handles for landermodel and for multiple
           //deployed landers
           if (landerModel) {
             var landerRedeployAttr = this.getLanderRedeployJobs(landerModel);
             deployedDomainsJobList = landerRedeployAttr.list;
-            addActiveGroupsModel = landerRedeployAttr.addActiveGroupsModel;
+            addActiveGroupModel = landerRedeployAttr.addActiveGroupModel;
           } else {
             //add active group doesnt have an id yet
-            var activeGroups = attr.model.get("activeGroups");
-            activeGroups.each(function(group) {
+            var activeGroup = attr.model.get("activeGroups");
+            activeGroup.each(function(group) {
               if (!group.get("id")) {
-                addActiveGroupsModel = group;
+                addActiveGroupModel = group;
               }
             });
             //loop to get all the jobs for these landers
@@ -512,9 +512,9 @@ define(["app",
             $.each(attr.deployList, function(index, newDeployedLanderModel) {
               //add the group domains to the deployed domians collection before calling this
               //so the redeploy has updated list of deployed domains
-              if (addActiveGroupsModel) {
+              if (addActiveGroupModel) {
                 var deployedDomains = newDeployedLanderModel.get("deployedDomains");
-                var domains = addActiveGroupsModel.get("domains");
+                var domains = addActiveGroupModel.get("domains");
                 var lander_id = newDeployedLanderModel.get("lander_id");
 
                 //add this deployed domain to the newDeployedLanderModels deployedDomains if its not there
@@ -549,7 +549,7 @@ define(["app",
             action: "deployLanderToDomain",
             list: deployedDomainsJobList,
             model: landerModel,
-            addActiveGroupsModel: addActiveGroupsModel,
+            addActiveGroupModel: addActiveGroupModel,
             neverAddToUpdater: true
           });
 

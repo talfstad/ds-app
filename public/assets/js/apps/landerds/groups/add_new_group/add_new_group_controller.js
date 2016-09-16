@@ -3,27 +3,27 @@ define(["app",
     "assets/js/jobs/jobs_model",
     "assets/js/apps/landerds/groups/dao/group_model"
   ],
-  function(Landerds, AddNewGroupsLayoutView, JobModel, GroupsModel) {
-    Landerds.module("GroupsApp.Groups.AddNewGroups", function(AddNewGroups, Landerds, Backbone, Marionette, $, _) {
+  function(Landerds, AddNewGroupLayoutView, JobModel, GroupModel) {
+    Landerds.module("GroupsApp.Groups.AddNewGroup", function(AddNewGroup, Landerds, Backbone, Marionette, $, _) {
 
-      AddNewGroups.Controller = {
+      AddNewGroup.Controller = {
 
-        showAddNewGroupsModal: function() {
+        showAddNewGroupModal: function() {
 
           //make new lander model for it
-          var groupModel = new GroupsModel();
+          var groupModel = new GroupModel();
 
-          var addNewGroupsLayout = new AddNewGroupsLayoutView({
+          var addNewGroupLayout = new AddNewGroupLayoutView({
             model: groupModel
           });
 
-          addNewGroupsLayout.on("confirmAddGroups", function(groupModel) {
+          addNewGroupLayout.on("confirmAddGroup", function(groupModel) {
 
             //show loading
             groupModel.set("alertLoading", true);
 
             groupModel.save({}, {
-              success: function(savedGroupsModel, serverResponse, options) {
+              success: function(savedGroupModel, serverResponse, options) {
                 //remove loading
                 if (serverResponse.error) {
                   
@@ -32,10 +32,10 @@ define(["app",
                   
                 } else {
                   //successfully saved new group
-                  addNewGroupsLayout.onClose();
+                  addNewGroupLayout.onClose();
 
                   //now add it to the collection
-                  Landerds.trigger("groups:list:addGroups", savedGroupsModel);
+                  Landerds.trigger("groups:list:addGroup", savedGroupModel);
                 }
                 groupModel.set("alertLoading", false);
                 
@@ -48,14 +48,14 @@ define(["app",
           });
 
 
-          addNewGroupsLayout.render();
+          addNewGroupLayout.render();
 
-          Landerds.rootRegion.currentView.modalRegion.show(addNewGroupsLayout);
+          Landerds.rootRegion.currentView.modalRegion.show(addNewGroupLayout);
 
         }
 
       }
     });
 
-    return Landerds.GroupsApp.Groups.AddNewGroups.Controller;
+    return Landerds.GroupsApp.Groups.AddNewGroup.Controller;
   });
