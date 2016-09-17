@@ -14,7 +14,7 @@
     </li>
     <li class="groups">
       <a href="/groups" role="button" class="go-groups fw600">
-        <span style="position: relative; top: 5px" class="fs20 icon-groups_icon"></span>
+        <span style="position: relative; top: 3px" class="fs20 fa fa-sitemap"></span>
         <span  class="ml5 sidebar-title">Groups</span>
       </a>
     </li>

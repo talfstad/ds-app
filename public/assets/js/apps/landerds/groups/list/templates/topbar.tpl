@@ -1,7 +1,7 @@
 <div class="topbar-left">
   <ol class="breadcrumb">
     <li class="crumb-active" style="font-size: 20px; color: #222">
-      <span style="position: relative; top: 1px" class="icon-groups_icon"></span>
+      <span style="position: relative; top: 1px" class="fa fa-sitemap"></span>
       <span>Groups</span>
     </li>
     <li class="crumb-trail">Showing <%= showing_low %>-<%= showing_high %> of <%= showing_total %></li>

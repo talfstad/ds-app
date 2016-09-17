@@ -53,7 +53,7 @@
         <% if(hasActiveGroups) { %>
 
           <a class="group-tab-link" href="#">
-            <span class="icon-groups_icon"></span>
+            <span class="fa fa-sitemap"></span>
           </a>
           
           <% } else { %>

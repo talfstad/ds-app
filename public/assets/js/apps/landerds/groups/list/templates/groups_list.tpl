@@ -93,8 +93,8 @@
         <div style="position: absolute; width: 100%; font-size: 11px; font-weight: 600">
         
         <div style="float: left; margin-left: 15px; margin-bottom: 10px">Group Name</div>
-        <div style="float: right; margin-right: 75px; margin-bottom: 10px">Landers</div>
-        <div style="float: right; margin-right: 30px; margin-bottom: 10px">Domains</div>
+        <div style="float: right; margin-right: 150px; margin-bottom: 10px">Landers</div>
+        <div style="float: right; margin-right: 99px; margin-bottom: 10px">Domains</div>
         <div style="float: right; margin-right: 83px; margin-bottom: 10px">Created On</div>
         
 

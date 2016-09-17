@@ -454,8 +454,14 @@ tr.warning input[type=select] {
 .deployed-domains-region .alert {
     border: none !important;
 }
+.domains-region > tbody > tr > td {
+    line-height: 24px;
+}
 .deployed-landers-region .alert {
     border: none !important;
+}
+.deployed-landers-region > tbody > tr > td {
+    line-height: 24px;
 }
 
 .table > tbody > tr > td.absorbing-column {

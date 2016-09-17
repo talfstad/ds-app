@@ -27,7 +27,7 @@
                 <label for="groupName" class="field prepend-icon">
                   <input type="text" name="groupName" id="group-name" class="group-name gui-input" value="">
                   <label for="groupName" class="field-icon">
-                    <i class="icon-groups_icon"></i>
+                    <i class="fa fa-sitemap"></i>
                   </label>
                 </label>
               </div>
