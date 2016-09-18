@@ -79,6 +79,6 @@ module.exports = {
       images: true
     },
     noGzipArr: ['mp4'],
-    logLevel: 'none'
+    logLevel: 'all'
   }
 };

@@ -29,10 +29,11 @@ RUN sudo apt-get install -y pngcrush #pngcrush
 #Install java >= 1.5 for yuicompressor
 #RUN sudo apt-get install -y default-jre
 
+
 # use changes to package.json to force Docker not to use the cache
 # when we change our application's nodejs dependencies:
 ADD package.json /tmp/package.json
-RUN cd /tmp && npm install
+RUN cd /tmp && npm install phantomjs -g && npm install
 RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
 
 # Bundle app source
