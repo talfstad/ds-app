@@ -121,10 +121,14 @@ module.exports = function(app, db) {
                     //runs in its own thread so it will clean up its stupid ass tmp files
                     cmd.get("node ./optimizer/critical_css_thread " + fullHtmlFilePath + " " + outputCssFile + " " + fileName, function(output) {
                       // search output for custom error and get the JSON
-                      // console.log("critical output: " + output);
-                      var err = JSON.parse(output.replace(/(.*%startErr%\s+)(.*)(\s+%endErr%.*)/, "$2"));
-                      if (!err.noErr) {
-                        callback({ code: "CouldNotCriticalCss", err: err });
+                      // app.log("critical output: " + output, "debug");
+                      if (output) {
+                        var err = JSON.parse(output.replace(/(.*%startErr%\s+)(.*)(\s+%endErr%.*)/, "$2"));
+                        if (!err.noErr) {
+                          callback({ code: "CouldNotCriticalCss", err: err });
+                        } else {
+                          callback(false);
+                        }
                       } else {
                         callback(false);
                       }
@@ -300,7 +304,7 @@ module.exports = function(app, db) {
               callback(false, body);
             }
           } else {
-            callback({code: "NoResponseGettingExternalFile"});
+            callback({ code: "NoResponseGettingExternalFile" });
           }
 
         });
@@ -877,20 +881,20 @@ module.exports = function(app, db) {
       //   if (err) {
       //     callback(err);
       //   } else {
-          optimizeJpg(function(err) {
+      optimizeJpg(function(err) {
+        if (err) {
+          callback(err);
+        } else {
+          optimizeGif(function(err) {
             if (err) {
               callback(err);
             } else {
-              optimizeGif(function(err) {
-                if (err) {
-                  callback(err);
-                } else {
-                  callback(false);
-                }
-              });
+              callback(false);
             }
-
           });
+        }
+
+      });
       //   }
       // });
     }
