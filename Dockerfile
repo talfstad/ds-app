@@ -17,6 +17,7 @@ RUN sudo apt-get install -y libfontconfig
 
 #gzip for gzip dependency
 RUN sudo apt-get install -y gzip
+RUN sudo apt-get install -y unzip
 
 #git is a dependency for the npm install. not sure which package uses it but its @annoying
 RUN sudo apt-get install -y git
