@@ -25,6 +25,7 @@ RUN sudo apt-get install -y git
 RUN sudo apt-get install -y libjpeg-progs #jpegtran
 RUN sudo apt-get install -y gifsicle #gifsicle
 RUN sudo apt-get install -y pngcrush #pngcrush
+RUN sudo apt-get install -y optipng #png optimize
 
 #Install java >= 1.5 for yuicompressor
 #RUN sudo apt-get install -y default-jre

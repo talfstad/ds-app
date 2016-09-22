@@ -20,7 +20,7 @@ var config = require("./config");
 //config
 var env = 'prod';
 if (process.argv[2] == 'dev') {
-   env = process.argv[2];
+  env = process.argv[2];
 }
 
 var app = express();
@@ -55,7 +55,7 @@ app.use(bodyParser.urlencoded({
 })); // parse application/x-www-form-urlencoded
 app.use(methodOverride()); // must come after bodyParser
 
-app.use(multer({dest: './staging'}).any());
+app.use(multer({ dest: './staging' }).any());
 
 app.set('view engine', 'html');
 app.set('views', __dirname + '/');
@@ -70,6 +70,18 @@ http.globalAgent.maxSockets = 100
 //server
 http.createServer(app).listen(app.config.port, function() {
   console.log('Express server listening on port ' + app.config.port);
+});
+
+process.on("uncaughtException", function(err) {
+  
+  console.log("FATAL ERROR: \n" + JSON.stringify(err));
+  
+  db.log.fatal.error(err, function(err) {
+    if (err) {
+      console.log("error logging fatal: " + JSON.stringify(err));
+    }
+  });
+  
 });
 
 module.exports = app;

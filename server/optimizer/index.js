@@ -293,6 +293,11 @@ module.exports = function(app, db) {
 
     module.optimizeJsInline = function(stagingPath, htmlFiles, callback) {
 
+      var getMissingResources = function(jsFiles) {
+        //search js files for resouces, check that they exist if they dont go download them
+
+      };
+
       var readExternalFile = function(href, callback) {
         //worker can do work no matter what because its just reading
         //file and isnt used by main loop. only used by another worker function
@@ -394,6 +399,12 @@ module.exports = function(app, db) {
         //inline //loop script tags and inline if has source
         var inlineAllScripts = function(callback) {
           if (scriptTags.length > 0) {
+
+            var replaceAllClosingScriptTags = function(inlinedJs) {
+              //search this text for </ and replace with \x3C
+              return inlinedJs.replace(/<\/script>/g, '\x3C/script>');
+            };
+
             var asyncIndex = 0;
             scriptTags.each(function(i, link) {
               var tag = this;
@@ -419,7 +430,8 @@ module.exports = function(app, db) {
                   compressedJs.code = inlinedJs;
                 }
 
-                $(tag).text(compressedJs.code);
+                //remove the </script to encode it
+                $(tag).text(replaceAllClosingScriptTags(compressedJs.code));
 
                 if (++asyncIndex == scriptTags.length) {
                   callback(false);
@@ -872,12 +884,33 @@ module.exports = function(app, db) {
       });
     };
 
+    var optimizePngLossless = function(callback) {
+      find.file(/\.png$/, stagingPath, function(pngImages) {
+        var asyncIndex = 0;
+        for (var i = 0; i < pngImages.length; i++) {
+          var image = pngImages[i];
+          cmd.get('nice optipng ' + image + ' &> /dev/null', function() {
+            if (++asyncIndex == pngImages.length) {
+              callback(false);
+            }
+          });
+        }
+        if (pngImages.length <= 0) {
+          callback(false);
+        }
+      });
+    };
+
 
     if (!app.config.optimize.images) {
       app.log("ALERT: not optimizing images", "debug");
       callback(false);
     } else {
       // optimizePng(function(err) {
+      //   if (err) {
+      //     callback(err);
+      //   } else {
+      // optimizePngLossless(function(err) {
       //   if (err) {
       //     callback(err);
       //   } else {
@@ -895,6 +928,9 @@ module.exports = function(app, db) {
         }
 
       });
+      //   }
+      // });
+
       //   }
       // });
     }

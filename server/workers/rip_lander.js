@@ -160,9 +160,65 @@ module.exports = function(app, db) {
       }
     }
 
+    var findResourcesInFile = function(filepath, callback) {
+      //parse this file and find any jpg, jpeg, png, gif resources
+      // fs.readFile(filepath, function(err, fileData) {
+      //   if (err) {
+      //     callback({ code: "CouldNotReadFile", err: err });
+      //   } else {
+
+      //     //get all the paths from the javsacript file
+
+
+      //     /* / <any> / <any> / <any> .jpg */
+      //     var regex = /df/g;
+
+      //     var matches = regex.exec(fileData);
+      //     console.log("\n\n!! Matches : " + JSON.stringify(matches));
+
+      //   }
+      // });
+
+      //see if resources were ripped
+
+
+      //console log and test that we find the missing resources
+
+      callback(false);
+    };
+
+    var getLostResources = function() {
+      //search js files for resources not include and get them
+      // find.file(/\.js$/, stagingPath, function(jsFiles) {
+      //   var asyncIndex = 0;
+      //   if (jsFiles.length > 0) {
+      //     for (var i = 0; i < jsFiles.length; i++) {
+      //       var image = jsFiles[i];
+      //       //jpegtran -copy none -optimize -outfile pic4.jpg pic4.jpg
+      //       findResourcesInFile(jsFiles[i], function(err) {
+      //         if (++asyncIndex == jsFiles.length) {
+      //           callback(false);
+      //         }
+      //       });
+      //     }
+      //   } else {
+      //     callback(false);
+      //   }
+      // });
+      callback(false);
+    };
+
     scraper.scrape(options).then(function(result) {
       var urlEndpoint = { filename: result[0].filename };
-      callback(false, stagingPath, stagingDir, urlEndpoint);
+
+      //get lost resources
+      getLostResources(function(err) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(false, stagingPath, stagingDir, urlEndpoint);
+        }
+      });
     }).catch(function(err) {
       callback(err);
     });
