@@ -2,8 +2,8 @@ define(["app",
     "assets/js/apps/landerds/groups/add_new_lander/views/loading_view",
     "assets/js/apps/landerds/groups/add_new_lander/views/landers_list_view",
     "assets/js/apps/landerds/groups/add_new_lander/views/add_new_lander_layout_view",
-    "assets/js/apps/landerds/groups/dao/deployed_lander_model",
-    "assets/js/apps/landerds/groups/dao/lander_collection"
+    "assets/js/apps/landerds/domains/dao/deployed_lander_model",
+    "assets/js/apps/landerds/landers/dao/lander_collection"
   ],
   function(Landerds, LoadingView, LandersListView, AddLanderToGroupsLayout, DeployedLanderModel) {
     Landerds.module("GroupsApp.Groups.AddNewLander", function(AddNewLander, Landerds, Backbone, Marionette, $, _) {
@@ -64,7 +64,7 @@ define(["app",
           var loadingView = new LoadingView();
           addLanderToGroupsLayout.landersListRegion.show(loadingView);
 
-          var deferredLandersCollection = Landerds.request("groups:landersCollection");
+          var deferredLandersCollection = Landerds.request("landers:landersCollection");
 
           $.when(deferredLandersCollection).done(function(landersCollection) {
 

@@ -43,7 +43,7 @@ module.exports = function(app, db) {
         } else {
           module.optimizeCss(htmlFiles, function() {
             app.log("done with css", "debug");
-            module.optimizeJsInline(stagingPath, htmlFiles, function() {
+            module.optimizeInlinedJs(stagingPath, htmlFiles, function() {
               app.log("done with js", "debug");
               module.optimizeHtml(htmlFiles, function() {
                 app.log("done with html", "debug");
@@ -468,6 +468,99 @@ module.exports = function(app, db) {
 
           // inline all JS and uglify it when inlining
           inlineAllJsInHtmlFileAndWrite(htmlFiles[i], function(err) {
+            if (err) {
+              htmlFileObj.optimizationErrors.push({
+                type: "js",
+                code: err.code
+              });
+            }
+
+            if (++asyncIndex == htmlFiles.length) {
+              callback(false);
+            }
+          });
+        }
+      } else {
+        callback(false);
+      }
+    },
+
+    module.optimizeInlinedJs = function(stagingPath, htmlFiles, callback) {
+
+      var optimizeAllInlineJsInHtmlFileAndWrite = function(htmlFileObj, callback) {
+
+        var htmlFilePath = htmlFileObj.filename;
+
+        //load it in cheerio, get all script tags that dont have the class "ds-no-modify"
+        var $ = cheerio.load(fs.readFileSync(htmlFilePath), { decodeEntities: false });
+
+        //get all javascript source itself from the file and concat it together into a var
+        var scriptTags = $('script:not(#loadcss)');
+
+        //inline //loop script tags and inline if has source
+        var optimizeAllInlineJs = function(callback) {
+          if (scriptTags.length > 0) {
+
+            var replaceAllClosingScriptTags = function(inlinedJs) {
+              //search this text for </ and replace with \x3C
+              if (inlinedJs) {
+                return inlinedJs.replace(/<\/script>/g, '\x3C/script>');
+              } else {
+                return inlinedJs;
+              }
+            };
+
+            var asyncIndex = 0;
+            scriptTags.each(function(i, link) {
+              var tag = this;
+              var src = $(tag).attr("src");
+
+              if (src) {
+                var inlinedJs = $(tag).text();
+                if (inlinedJs) {
+                  //now compress:
+                  var compressedJs = {};
+                  try {
+                    compressedJs = UglifyJS.minify(inlinedJs, { fromString: true });
+                  } catch (e) {
+                    //use the regular
+                    compressedJs.code = inlinedJs;
+                  }
+
+                  //remove the </script to encode it
+                  $(tag).text(replaceAllClosingScriptTags(compressedJs.code));
+                }
+              }
+
+              if (++asyncIndex == scriptTags.length) {
+                callback(false);
+              }
+
+            });
+            
+          } else {
+            callback(false);
+          }
+        };
+
+
+        optimizeAllInlineJs(function(err) {
+          fs.writeFile(htmlFilePath, $.html(), function(err) {
+            if (err) {
+              callback({ code: "CouldNotWriteFinishedOptimizedFile", err: err });
+            } else {
+              callback(false);
+            }
+          });
+        });
+      };
+
+      if (htmlFiles.length > 0) {
+        var asyncIndex = 0;
+        for (var i = 0; i < htmlFiles.length; i++) {
+
+          // inline all JS and uglify it when inlining
+          optimizeAllInlineJsInHtmlFileAndWrite(htmlFiles[i], function(err) {
             if (err) {
               htmlFileObj.optimizationErrors.push({
                 type: "js",
