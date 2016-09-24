@@ -187,7 +187,7 @@ module.exports = function(app, db) {
       callback(false);
     };
 
-    var getLostResources = function() {
+    var getLostResources = function(callback) {
       //search js files for resources not include and get them
       // find.file(/\.js$/, stagingPath, function(jsFiles) {
       //   var asyncIndex = 0;

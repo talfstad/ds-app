@@ -322,7 +322,6 @@ module.exports = function(app, db) {
           isObj = true;
           filePath = filePath.filename;
         }
-
         //workers only do work if there are no errors on this endpoint
         if (isObj) {
           if (inFilePathOrObj.optimizationErrors.length > 0) {
@@ -341,7 +340,7 @@ module.exports = function(app, db) {
               if (err) {
                 callback({ code: "CouldNotReadLocalFile", err: err });
               } else {
-                callback(false, fileData, inFilePathOrObj);
+                callback(false, fileData.toString(), inFilePathOrObj);
               }
             });
           } else {
@@ -402,7 +401,11 @@ module.exports = function(app, db) {
 
             var replaceAllClosingScriptTags = function(inlinedJs) {
               //search this text for </ and replace with \x3C
-              return inlinedJs.replace(/<\/script>/g, '\x3C/script>');
+              if (inlinedJs) {
+                return inlinedJs.replace(/<\/script>/g, '\x3C/script>');
+              } else {
+                return inlinedJs;
+              }
             };
 
             var asyncIndex = 0;
@@ -412,9 +415,13 @@ module.exports = function(app, db) {
 
               readSrcFile(src, link, function(err, link, fileData) {
                 //returns fileData only if there was a src attribute
+
                 var inlinedJs;
 
-                if (fileData) {
+                if (err) {
+                  inlinedJs = "";
+                } else if (fileData) {
+
                   inlinedJs = fileData;
                   $(tag).removeAttr("src"); //remove src attr since we're inlining
                 } else {
