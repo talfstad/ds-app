@@ -1,5 +1,5 @@
 define(["app",
-    "tpl!assets/js/apps/landerds/groups/remove_group/templates/remove_group_layout.tpl"
+    "tpl!assets/js/apps/landerds/groups/delete_group/templates/delete_group_layout.tpl"
   ],
   function(Landerds, RemoveGroupsLayout) {
 
@@ -26,7 +26,7 @@ define(["app",
         },
 
         confirmedRemoveGroups: function(lander) {
-          this.trigger("removeGroupConfirm");
+          this.trigger("unattachGroupConfirm");
         },
 
         onRender: function() {

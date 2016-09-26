@@ -26,16 +26,17 @@ RUN sudo apt-get install -y git
 RUN sudo apt-get install -y libjpeg-progs #jpegtran
 RUN sudo apt-get install -y gifsicle #gifsicle
 RUN sudo apt-get install -y pngcrush #pngcrush
-RUN sudo apt-get install -y optipng #png optimize
+#RUN sudo apt-get install -y optipng #png optimize
 
 #Install java >= 1.5 for yuicompressor
 #RUN sudo apt-get install -y default-jre
 
+RUN sudo npm install phantomjs -g
 
 # use changes to package.json to force Docker not to use the cache
 # when we change our application's nodejs dependencies:
 ADD package.json /tmp/package.json
-RUN cd /tmp && npm install phantomjs -g && npm install
+RUN cd /tmp && npm install
 RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
 
 # Bundle app source
