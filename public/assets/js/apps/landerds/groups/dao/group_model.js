@@ -24,6 +24,15 @@ define(["app",
         var domainListCollection = new DomainListCollection(domainListAttributes);
         this.set("domains", domainListCollection);
 
+        //when lander changes its deploy status update the topbar totals
+        deployedLanderCollection.on("add change:deploy_status", function(deployedLanderModel) {
+          me.setDeployStatus();
+        });
+
+        this.on("change:deploy_status", function() {
+          Landerds.trigger("landers:updateTopbarTotals");
+        });
+
         JobsGuiBaseModel.prototype.initialize.apply(this);
 
         //when job is destroyed must look to see if there are any more
@@ -47,116 +56,26 @@ define(["app",
 
           me.set("deploy_status", deployStatus);
 
-          //on start remove the created job model and replace with the job model on the updater.
-          //this allows us to have one job model across multiple things. (camps, domains, etc)
-          //no events should fire it should just be quick and dirty ;)
-          //must remove it at the correct index and put the new one in the correct index
-          if (jobModelToReplace) {
-            var index = activeJobCollection.indexOf(jobModelToReplace);
-            activeJobCollection.remove(jobModelToReplace, { silent: true })
-            activeJobCollection.add(actualAddedJobModel, { at: index, silent: true });
-          }
-
-
-          //create undeploy for each lander for each domain on gui, then when undeploy finishes for deployed lander
-          //it will remove the landers_with_groups entry from db then when thats all done
-          //delete groups will see that and call delete group and finish job, 
-          //which will clean up the groups_with_domains
-
-          deployedLanderCollection.each(function(deployedLander) {
-
-            var deployedLanderActiveJobs = deployedLander.get("activeJobs");
-
-            domainListCollection.each(function(domain) {
-
-              var domainListActiveJobs = domain.get("activeJobs");
-
-              var domain_id = domain.get("domain_id");
-              var lander_id = deployedLander.get("lander_id");
-              var group_id = me.get("id");
-              var action = "undeployLanderFromDomain";
-
-              //check to see if we need to make a job
-              var jobAlreadyAdded = false;
-              domainListActiveJobs.each(function(activeJob) {
-                if (activeJob.get("domain_id") == domain_id &&
-                  activeJob.get("group_id") == group_id &&
-                  activeJob.get("lander_id") == lander_id &&
-                  activeJob.get("action") == action) {
-                  jobAlreadyAdded = true;
-                }
-              });
-
-              if (!jobAlreadyAdded) {
-                var jobAttributes = {
-                  'domain_id': domain_id,
-                  'lander_id': lander_id,
-                  'group_id': group_id,
-                  'action': action,
-                  'alternate_action': 'undeployDomainFromLander',
-                  'deploy_status': 'undeploying'
-                };
-
-                var jobModel = new JobModel(jobAttributes);
-
-                deployedLanderActiveJobs.add(jobModel);
-                domainListActiveJobs.add(jobModel);
-
-                Landerds.trigger("job:start", jobModel);
-              }
-            });
-          });
-
         });
 
         activeJobCollection.on("finishedState", function(jobModel) {
 
           if (jobModel.get("action") === "deleteGroup") {
-
-            //hack to get it to not send DELETE XHR
-            delete jobModel.attributes.id;
-            jobModel.destroy();
-
-            //destroy only if we dont have any other jobs for this
-            //1. if we have a deploy to do
-            var moreJobsToDo = false;
-            if (activeJobCollection.length > 0) {
-              moreJobsToDo = true;
-            }
-
-            setDeployStatusForGroups();
-
-            if (!moreJobsToDo) {
-              me.trigger("notifySuccessDeleteGroups");
-
-              //triggers destroy to the server to get rid of this lander from group
-              me.destroy();
-            }
-          } else {
-
-            //finished with this job so destroy the jobModel
-            //hack to get it to not send DELETE XHR
-            delete jobModel.attributes.id;
-            jobModel.destroy();
+            //destroy the lander model
+            delete me.attributes.id;
+            me.destroy();
           }
+
+          //finished with this job so destroy the jobModel
+          //hack to get it to not send DELETE XHR
+          delete jobModel.attributes.id;
+          jobModel.destroy();
 
           //trigger to start the next job on the list
           Landerds.trigger("job:startNext", activeJobCollection);
 
         });
 
-
-        activeJobCollection.on("errorState", function(jobModel) {
-          //change deploy status back to deployed
-          me.set("deploy_status", "deployed");
-
-          me.trigger("notifyErrorDeleteDomain", jobModel.get("error"));
-
-          //hack to not delete job from server
-          delete jobModel.attributes.id;
-          jobModel.destroy();
-
-        });
 
         this.startActiveJobs();
 
@@ -170,24 +89,16 @@ define(["app",
 
               activeJobCollection.each(function(activeJob) {
 
-                activeGroupCollection.each(function(activeGroup) {
-                  var isOnGroup = false;
-                  var domains = activeGroup.get("domains");
-                  domains.each(function(idx, domain) {
-                    if (domain.get("domain_id") == activeJob.get("domain_id")) {
-                      isOnGroup = true;
-                    }
-                  });
-
-                  if (isOnGroup) {
-                    activeGroupActiveJobs = activeGroup.get("activeJobs");
-                    activeGroupActiveJobs.add(activeJob);
+                var domains = me.get("domains");
+                domains.each(function(domain) {
+                  if (domain.get("domain_id") == activeJob.get("domain_id")) {
+                    domainActiveJobs = domain.get("activeJobs");
+                    domainActiveJobs.add(activeJob);
                   }
                 });
               });
 
             }
-
           });
         };
 

@@ -43,20 +43,20 @@ define(["app",
           } else {
             var domainId = selectedRow.attr("data-domain-id");
 
-            var domain = this.getRegion("domainsListRegion").currentView.datatablesCollection.find(function(m) {
+            var domainModel = this.getRegion("domainsListRegion").currentView.datatablesCollection.find(function(m) {
               var id = m.get('domain_id') || m.get('id')
               return id == domainId
             });
 
-            this.startDeployingLandersToNewDomain(domain);
+            this.startDeployingLandersToNewDomain(domainModel);
             //add a row to the deployed domains thats deploying and trigger a start on the deployToDomain job
             this.$el.modal("hide");
           }
         },
 
-        startDeployingLandersToNewDomain: function(domain) {
+        startDeployingLandersToNewDomain: function(domainModel) {
           // triggers add row to deployed domains and starts job 
-          this.trigger("addDomainToGroup", domain.attributes);
+          this.trigger("addDomainToGroup", domainModel);
         },
 
         onRender: function() {

@@ -12,8 +12,6 @@ define(["app",
 
         showAddNewLander: function(groupModel) {
 
-          var group_id = groupModel.get("id");
-
           var addLanderToGroupsLayout = new AddLanderToGroupsLayout({
             model: groupModel
           });
@@ -23,39 +21,36 @@ define(["app",
           Landerds.rootRegion.currentView.modalRegion.show(addLanderToGroupsLayout);
 
           //on add save the camp to db
-          addLanderToGroupsLayout.on("addLanderToGroups", function(landerAttributes) {
-
-            //taking a lander model and making it a deployed lander model
-            landerAttributes.lander_id = landerAttributes.id;
-            landerAttributes.group_id = group_id;
-
-            //callback
-            var addedLanderToGroupsSuccessCallback = function(deployedLanderModel) {
-
-              //save this lander to landers_with_groups
-              var deployLanderToGroupsDomainsAttrs = {
-                deployed_lander_model: deployedLanderModel,
-                group_model: groupModel
-              };
-
-              // triggers add row to deployed domains and starts job 
-              Landerds.trigger("groups:deployLanderToGroupsDomains", deployLanderToGroupsDomainsAttrs);
-
-            };
-            var addedLanderToGroupsErrorCallback = function(err, two, three) {
-
-            };
-
-            //add the group to the domain first, on success close dialog
-            var deployedLanderModel = new DeployedLanderModel(landerAttributes);
-            deployedLanderModel.unset("id");
+          addLanderToGroupsLayout.on("addLanderToGroups", function(landerModel) {
             
-            // create the model for activeGroup model. make sure it saves to
-            // /api/active_groups
-            deployedLanderModel.save({}, {
-              success: addedLanderToGroupsSuccessCallback,
-              error: addedLanderToGroupsErrorCallback
+            //setting in group for server to ADD GROUP
+            groupModel.set({
+              "action": "lander",
+              "lander_id": landerModel.get("id")
             });
+
+            //add the lander to the group
+            var deployedLanders = groupModel.get("deployedLanders");
+
+            //delete deployedDomain jobs
+            var deployedDomains = landerModel.get("deployedDomains");
+            deployedDomains.each(function(deployedDomain) {
+              deployedDomain.unset("activeJobs");
+            });
+
+            var newDeployedLanderModel = new DeployedLanderModel({
+              name: landerModel.get("name"),
+              deployment_folder_name: landerModel.get("deployment_folder_name"),
+              modified: landerModel.get("modified"),
+              lander_id: landerModel.get("id"),
+              urlEndpoints: landerModel.get("urlEndpoints"),
+              endpoint_load_times: landerModel.get("endpoint_load_times"),
+              deployedDomains: deployedDomains
+            });
+
+            deployedLanders.add(newDeployedLanderModel);
+
+            Landerds.trigger("groups:deployNewInGroup", groupModel);
 
           });
 

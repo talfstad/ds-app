@@ -22,7 +22,6 @@
 	right: 1px;
 }
 
-
 .groups-lander-links .domains-select-container .select2-selection {
 	/*border-radius: 4px 0px 0px 4px;*/
 	outline: none;
@@ -39,4 +38,8 @@
 
 .groups-lander-links .select2-container--default .select2-selection--single .select2-selection__arrow b {
 	border-color: #3f9532 transparent transparent transparent;
+}
+
+.domains-region .alert {
+	border: none !important;
 }

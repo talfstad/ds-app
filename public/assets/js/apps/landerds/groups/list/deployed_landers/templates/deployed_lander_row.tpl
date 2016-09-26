@@ -6,11 +6,11 @@
 <td class="absorbing-column">  
 <div class="row groups-lander-links" style="margin-left: 0;">
     
-      <div class="domain-action-buttons">
+      <div class="domain-action-buttons mr10">
 
         <% if(deploy_status === "deployed") { %>        
         
-        <div style="float: right; margin-right: 10px; font-size: 16px">
+        <div style="float: right; font-size: 16px">
           <a class="goto-edit-lander" href="#">
           <span class="fa fa-edit"></span>
         </a>
@@ -24,9 +24,13 @@
        
         <% } else { %>
         
-        <span style="font-size: 13px; margin-right: 20px">
+        <span style="font-size: 13px; margin-right: 10px">
           <%= deploy_status_gui %>
         </span>
+
+        <a class="goto-edit-lander" href="#">
+          <span class="fa fa-edit"></span>
+        </a>
 
         <% } %>
 

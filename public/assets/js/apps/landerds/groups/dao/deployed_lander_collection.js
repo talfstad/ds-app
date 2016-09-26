@@ -1,5 +1,5 @@
 define(["app",
-    "assets/js/apps/landerds/groups/dao/deployed_lander_model"
+    "assets/js/apps/landerds/domains/dao/deployed_lander_model"
   ],
   function(Landerds, DeployedLanderModel) {
 

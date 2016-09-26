@@ -39,8 +39,8 @@ define(["app",
         },
 
         onBeforeRender: function() {
-          var me = this;
           DeployedRowBaseView.prototype.onBeforeRender.apply(this);
+
         },
 
         onDestroy: function() {

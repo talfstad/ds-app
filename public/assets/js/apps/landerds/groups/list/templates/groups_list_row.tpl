@@ -8,11 +8,9 @@
         
           <div class="alert-working-badge widget-menu domain-lander-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
             <span class="open_sidemenu_r label">
-        
-          <div class="text-alert">
-            <span style="position: relative; top: 2px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>  
-           <span class="deploy-status-text">Working</span>
-           </div>
+              <div class="text-alert">
+                <span style="position: relative; top: 2px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>  <span style="padding-left: 2px" class="deploy-status-text">Working</span>
+              </div>
             </span>
           </div>
 

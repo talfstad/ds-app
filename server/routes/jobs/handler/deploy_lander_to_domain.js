@@ -126,10 +126,12 @@ module.exports = function(app, db) {
 
                 //get the list and 
                 addNewLanders(function(err, newLanders) {
-                  if (err) {                    
+                  if (err) {
                     callback(err);
                   } else {
 
+                    console.log("active group id : " + active_group_id);
+                    console.log("newLanders : " + JSON.stringify(newLanders));
                     //if not modified then we arent redeploying, so just deploy the NEW lander that was added
                     // ## TODO put this on the front end for landers
                     // if (!landerData.modified && newLanders.length > 0) {
@@ -159,7 +161,7 @@ module.exports = function(app, db) {
                           for (var i = 0; i < list.length; i++) {
 
                             //if the master job id domain and lander ids are equal its a slave
-                            if(registeredMasterJobAttributes.lander_id == list[i].lander_id) {
+                            if (registeredMasterJobAttributes.lander_id == list[i].lander_id) {
                               list[i].master_job_id = masterJobId;
                             }
 
@@ -196,8 +198,13 @@ module.exports = function(app, db) {
                         });
 
                       } else {
+                        app.log("light save", "debug");
                         //just a light save, no optimization needed. no job added to optimize
-                        callback(false, [{ active_group_id: active_group_id }]);
+                        if (active_group_id) {
+                          callback(false, [{ active_group_id: active_group_id }]);
+                        } else {
+                          callback(false, []);
+                        }
                       }
                     }
                   }

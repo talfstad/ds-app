@@ -1,4 +1,4 @@
-define(["app", 
+define(["app",
     "assets/js/apps/landerds/groups/list/list_controller",
     "assets/js/common/login/common_login",
     "assets/js/apps/landerds/groups/right_sidebar/sidebar_controller",
@@ -74,6 +74,9 @@ define(["app",
 
         showRemoveGroups: function(model) {
           RemoveGroupsController.showRemoveGroups(model);
+        },
+        deployNewInGroup: function(attr) {
+          ListController.deployNewInGroup(attr);
         }
 
       };
@@ -84,6 +87,10 @@ define(["app",
 
       Landerds.on("groups:opensidebar", function(model) {
         groupsAppAPI.openSidebar(model);
+      });
+
+      Landerds.on("groups:deployNewInGroup", function(attr) {
+        groupsAppAPI.deployNewInGroup(attr);
       });
 
       Landerds.on("groups:closesidebar", function() {

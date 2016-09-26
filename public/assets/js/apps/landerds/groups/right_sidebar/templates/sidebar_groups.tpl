@@ -21,6 +21,6 @@
     </div>
   </div>
   <div class="panel-footer">
-    <button type="button" class="remove-group-button btn btn-danger btn-gradient dark"><span class="fa fa-trash pr5"></span>Delete Groups</button>
+    <button type="button" class="remove-group-button btn btn-danger btn-gradient dark"><span class="fa fa-trash pr5"></span>Delete Group</button>
   </div>
 </div>

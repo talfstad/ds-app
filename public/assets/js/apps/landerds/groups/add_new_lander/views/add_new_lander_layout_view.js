@@ -42,14 +42,14 @@ define(["app",
 
           } else {
             var landerId = selectedRow.attr("data-lander-id");
-            var lander = this.getRegion("landersListRegion").currentView.datatablesCollection.get(landerId)
-            this.startDeployingNewLander(lander);
+            var landerModel = this.getRegion("landersListRegion").currentView.datatablesCollection.get(landerId)
+            this.startDeployingNewLander(landerModel);
             this.$el.modal("hide");
           }
         },
 
-        startDeployingNewLander: function(lander) {
-          this.trigger("addLanderToGroups", lander.attributes);
+        startDeployingNewLander: function(landerModel) {
+          this.trigger("addLanderToGroups", landerModel);
         },
 
         onRender: function() {

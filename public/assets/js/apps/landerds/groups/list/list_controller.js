@@ -272,123 +272,153 @@ define(["app",
           });
         },
 
-        // deployGroupLandersToDomain: function(attr) {
+        deployNewInGroup: function(groupModel) {
+          var domainsInGroupCollection = groupModel.get("domains");
 
-        //   var groupModel = attr.group_model;
-        //   var domainListModel = attr.domain_list_model;
+          //trigger a deploy to correctly deploy the new stuff
 
-        //   var domainList = groupModel.get("domains");
+          //get a list of the new landers (deployed landers without ID)
+          var listOfNewDeployJobs = [];
+          var deployedLanders = groupModel.get("deployedLanders");
+          deployedLanders.each(function(deployedLander) {
 
-        //   if (!domainListModel) {
-        //     return false;
-        //   }
+            var modified = deployedLander.get("modified");
+            var deployedDomains = deployedLander.get("deployedDomains");
+            var isNewDeployedLander = (!deployedLander.get("id"));
 
-        //   var group_id = groupModel.get("id");
+            if (modified && isNewDeployedLander && domainsInGroupCollection.length > 0) {
+              //add redeploy jobs here for new deployed landers and lander will get deployed
+              deployedDomains.each(function(deployedDomain) {
+                listOfNewDeployJobs.push({
+                  lander_id: deployedLander.get("lander_id"),
+                  domain_id: deployedDomain.get("domain_id"),
+                  action: "deployLanderToDomain",
+                  deploy_status: "deploying"
+                });
+              });
+            }
 
-        //   var deployedDomainModelActiveJobs = domainListModel.get("activeJobs");
+            //adding new jobs not deployed yet
+            domainsInGroupCollection.each(function(domain) {
+              //if not already deployed push it
+              //check deployedLanders deployed domains for this domain, if not exist push
+              var isDeployed = false;
 
-        //   var deployedLandersCollection = groupModel.get("deployedLanders");
-        //   deployedLandersCollection.each(function(deployedLanderModel) {
+              deployedDomains.each(function(deployedDomain) {
+                if (deployedDomain.get("domain_id") == domain.get("domain_id")) {
+                  isDeployed = true;
+                }
+              });
 
-        //     //if there are any landers set deploy status to deploying
-        //     domainListModel.set("deploy_status", "deploying");
+              if (!isDeployed) {
+                listOfNewDeployJobs.push({
+                  lander_id: deployedLander.get("lander_id"),
+                  domain_id: domain.get("domain_id"),
+                  action: "deployLanderToDomain",
+                  deploy_status: "deploying",
+                  new: true
+                });
+              }
 
-        //     var deployedLanderModelActiveJobs = deployedLanderModel.get("activeJobs");
+            });
+          });
 
+          //follow the deployToDomain pattern used in landers/domains
+          var onAfterRedeployCallback = function(responseJobList) {
 
-        //     //create deploy job for domain and add it to the domain and the lander model
-        //     var jobAttributes = {
-        //       action: "deployLanderToDomain",
-        //       lander_id: deployedLanderModel.get("lander_id") || deployedLanderModel.get("id"),
-        //       domain_id: domainListModel.get("domain_id") || domainListModel.get("id"),
-        //       group_id: group_id,
-        //       deploy_status: "deploying"
-        //     };
-        //     var jobModel = new JobModel(jobAttributes);
-
-        //     deployedLanderModelActiveJobs.add(jobModel);
-
-        //     deployedDomainModelActiveJobs.add(jobModel);
-
-        //     Landerds.trigger("job:start", jobModel);
-
-        //   });
-
-        //   if (deployedLandersCollection.length <= 0) {
-        //     domainListModel.set("deploy_status", "deployed");
-        //   }
-
-        //   domainList.add(domainListModel);
-
-
-        // },
-
-
-        // deployLanderToGroupsDomains: function(attr) {
-        //   var groupModel = attr.group_model;
-        //   var deployedLanderModel = attr.deployed_lander_model;
-
-        //   var deployedLanders = groupModel.get("deployedLanders");
-
-        //   if (!deployedLanderModel) {
-        //     return false;
-        //   }
-
-        //   var group_id = groupModel.get("id");
-
-        //   var deployedLanderModelActiveJobs = deployedLanderModel.get("activeJobs");
-
-        //   //now we have lander model, we can create our jobs
-        //   var domainListCollection = groupModel.get("domains");
-
-        //   //notification that deployment may take up to 20 minutes
-        //   if (domainListCollection.length > 1) {
-        //     // Notification("Deploying Landing Pages", "May take up to 20 minutes", "success", "stack_top_right");
-        //   } else {
-        //     // Notification("Deploying Landing Page", "May take up to 20 minutes", "success", "stack_top_right");
-        //   }
-
-        //   domainListCollection.each(function(deployedDomainModel) {
-
-        //     //if there are any domains set deploy status to deploying
-        //     deployedLanderModel.set("deploy_status", "deploying");
-
-        //     var deployedDomainModelActiveJobs = deployedDomainModel.get("activeJobs");
+            //add the jobs to deployed lander, if deployed domain is in domains add it to that too
+            var deployedLanderCollection = groupModel.get("deployedLanders");
+            var domainsInGroupCollection = groupModel.get("domains");
+            //set the active_group_id if we have one. MUST do this outside of the 
+            //add job loop incase there are not any landers to deploy
+            $.each(responseJobList, function(idx, responseJobAttr) {
+              if (responseJobAttr.active_group_id) {
+                if (groupModel.get("action") == "lander") {
+                  //find the one lander without an id
+                  deployedLanderCollection.each(function(deployedLander) {
+                    if (!deployedLander.get("id")) {
+                      deployedLander.set("id", responseJobAttr.active_group_id);
+                    }
+                  });
+                } else if (groupModel.get("action") == "domain") {
+                  //find the one domain without an id
+                  domainsInGroupCollection.each(function(domain) {
+                    if (!domain.get("id")) {
+                      domain.set("id", responseJobAttr.active_group_id);
+                    }
+                  });
+                }
+              }
+            });
 
 
-        //     //create deploy job for domain and add it to the domain and the lander model
-        //     var jobAttributes = {
-        //       action: "deployLanderToDomain",
-        //       lander_id: deployedLanderModel.get("lander_id"),
-        //       domain_id: deployedDomainModel.get("domain_id"),
-        //       group_id: group_id,
-        //       deploy_status: "deploying"
-        //     };
-        //     var jobModel = new JobModel(jobAttributes);
+            //create job models for each deployed lander and add them!
+            deployedLanderCollection.each(function(deployedLanderModel) {
+              $.each(responseJobList, function(idx, responseJobAttr) {
 
-        //     deployedLanderModelActiveJobs.add(jobModel);
+                if (deployedLanderModel.get("lander_id") == responseJobAttr.lander_id) {
 
-        //     deployedDomainModelActiveJobs.add(jobModel);
+                  //set the ID for the deployed domain row if it's new
+                  if (responseJobAttr.new && responseJobAttr.deployed_row_id) {
+                    deployedLanderModel.set("id", responseJobAttr.deployed_row_id);
+                  }
 
-        //     Landerds.trigger("job:start", jobModel);
+                  //create new individual job model for
+                  var activeJobs = deployedLanderModel.get("activeJobs");
+                  var newDeployJob = new JobModel(responseJobAttr);
 
-        //   });
+                  //remove active any deploy or undeploy jobs for this deployed domain
+                  activeJobs.each(function(job) {
+                    if (job.get("action") == "deployLanderToDomain" ||
+                      job.get("action") == "undeployLanderFromDomain") {
+                      //remove from updater and destroy job
+                      job.set("canceled", true);
+                      Landerds.updater.remove(this);
+                      delete job.attributes.id;
+                      job.destroy();
+                    }
+                  });
+                  //if adding a deploy job it cant just be a save
+                  activeJobs.add(newDeployJob);
 
-        //   if (domainListCollection.length <= 0) {
-        //     deployedLanderModel.set("deploy_status", "deployed");
-        //   }
+                  //also add the job to any active groups that have this domain_id
+                  domainsInGroupCollection.each(function(domain) {
+                    if (domain.get("domain_id") == newDeployJob.get("domain_id")) {
+                      var domainActiveJobs = domain.get("activeJobs");
+                      domainActiveJobs.add(newDeployJob);
+                    }
+                  });
 
-        //   deployedLanders.add(deployedLanderModel);
+                  //call start for each job 
+                  Landerds.trigger("job:start", newDeployJob);
+                }
+              });
+            });
+          };
 
-        // },
+          var deployNewInGroupJob = new JobModel({
+            action: "deployLanderToDomain",
+            list: listOfNewDeployJobs,
+            addActiveGroupModel: groupModel,
+            neverAddToUpdater: true
+          });
 
+          var deployNewInGroupAttributes = {
+            jobModel: deployNewInGroupJob,
+            onSuccess: onAfterRedeployCallback
+          };
+
+          Landerds.trigger("job:start", deployNewInGroupAttributes);
+
+
+        },
 
         addGroup: function(model) {
           this.addRow(model);
           this.expandAndShowRow(model);
         }
 
-        
+
       }, BaseListController);
     });
 

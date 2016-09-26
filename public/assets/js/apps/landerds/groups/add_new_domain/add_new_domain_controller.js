@@ -12,8 +12,6 @@ define(["app",
 
         showAddNewDomain: function(groupModel) {
 
-          var group_id = groupModel.get("id");
-
           var deployLanderToDomainLayout = new AddNewDomainLayoutView({
             model: groupModel
           });
@@ -21,47 +19,34 @@ define(["app",
           deployLanderToDomainLayout.render();
 
           Landerds.rootRegion.currentView.modalRegion.show(deployLanderToDomainLayout);
-          
 
-          deployLanderToDomainLayout.on("addDomainToGroup", function(domainAttributes) {
 
-            //taking a lander model and making it a deployed lander model
-            domainAttributes.domain_id = domainAttributes.id;
-            domainAttributes.group_id = group_id;
-            
-            //callback
-            var addedDomainToGroupSuccessCallback = function(domainListModel) {
+          deployLanderToDomainLayout.on("addDomainToGroup", function(domainModel) {
 
-              //save this lander to landers_with_groups
-              var deployGroupLandersToDomainAttrs = {
-                domain_list_model: domainListModel,
-                group_model: groupModel
-              };
-
-              // triggers add row to deployed domains and starts job 
-              Landerds.trigger("groups:deployGroupLandersToDomain", deployGroupLandersToDomainAttrs);
-
-            };
-            var addedDomainToGroupErrorCallback = function(err, two, three) {
-
-            };
-
-            //add the group to the domain first, on success close dialog
-            var domainListModel = new DomainListModel(domainAttributes);
-            domainListModel.unset("id");
-
-            // create the model for activeGroup model. make sure it saves to
-            domainListModel.save({}, {
-              success: addedDomainToGroupSuccessCallback,
-              error: addedDomainToGroupErrorCallback
+            //setting in group for server to ADD GROUP
+            groupModel.set({
+              "action": "domain",
+              "domain_id": domainModel.get("id")
             });
+
+            //add the domain to the group
+            var domainCollection = groupModel.get("domains");
+
+            var newDomainModel = new DomainListModel({
+              domain_id: domainModel.get("id"),
+              domain: domainModel.get("domain")
+            });
+
+            domainCollection.add(newDomainModel);
+
+            Landerds.trigger("groups:deployNewInGroup", groupModel);
 
           });
 
           //show loading
           var loadingView = new LoadingView();
           deployLanderToDomainLayout.domainsListRegion.show(loadingView)
-        
+
           var deferredDomainsCollection = Landerds.request("domains:domainsCollection");
 
           $.when(deferredDomainsCollection).done(function(domainsCollection) {

@@ -83,7 +83,8 @@
     background: #fafafa;
 }
 
-.domain-group-notification, .domain-lander-notification {
+.domain-group-notification,
+.domain-lander-notification {
     position: absolute;
     bottom: 0;
     right: 0;
@@ -454,14 +455,17 @@ tr.warning input[type=select] {
 .deployed-domains-region .alert {
     border: none !important;
 }
+
 .domains-region > tbody > tr > td {
-    line-height: 24px;
+    line-height: 28px;
 }
+
 .deployed-landers-region .alert {
     border: none !important;
 }
+
 .deployed-landers-region > tbody > tr > td {
-    line-height: 24px;
+    line-height: 28px;
 }
 
 .table > tbody > tr > td.absorbing-column {
@@ -471,7 +475,6 @@ tr.warning input[type=select] {
 .table > tbody > tr > td.absorbing-column > .domain-link {
     margin-left: 15px;
 }
-
 
 .breadcrumb > li {
     font-size: 16px;
@@ -484,7 +487,6 @@ tr.warning input[type=select] {
 .file-caption {
     padding-bottom: 29px;
 }
-
 
 .group-name-row {
     border: none !important;

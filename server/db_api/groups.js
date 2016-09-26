@@ -128,12 +128,13 @@ module.exports = function(app, db) {
     addActiveGroupToDomain: function(user, modelAttributes, callback) {
 
       var user_id = user.id;
+      var group_id = modelAttributes.group_id || modelAttributes.id;
 
       db.getConnection(function(err, connection) {
         if (err) {
           callback(err);
         } else {
-          connection.query("CALL add_domain_to_group(?, ?, ?)", [modelAttributes.domain_id, modelAttributes.group_id, user_id], function(err, docs) {
+          connection.query("CALL add_domain_to_group(?, ?, ?)", [modelAttributes.domain_id, group_id, user_id], function(err, docs) {
             if (err) {
               callback(err);
             } else {
@@ -151,11 +152,13 @@ module.exports = function(app, db) {
     addActiveGroupToLander: function(user, modelAttributes, callback) {
       var user_id = user.id;
 
+      var group_id = modelAttributes.group_id || modelAttributes.id;
+
       db.getConnection(function(err, connection) {
         if (err) {
           callback(err);
         } else {
-          connection.query("CALL add_group_to_lander(?, ?, ?)", [modelAttributes.lander_id, modelAttributes.group_id, user_id], function(err, docs) {
+          connection.query("CALL add_group_to_lander(?, ?, ?)", [modelAttributes.lander_id, group_id, user_id], function(err, docs) {
             if (err) {
               callback(err);
             } else {
@@ -199,27 +202,6 @@ module.exports = function(app, db) {
     getAll: function(user, callback) {
 
       var user_id = user.id;
-
-      var getActiveJobsForDeployedDomain = function(deployedDomain, group, callback) {
-        //get all jobs attached to lander and make sure only select those. list is:
-        // 1. deployLanderToDomain
-        // 2. undeployLanderFromDomain
-        db.getConnection(function(err, connection) {
-          if (err) {
-            callback(err);
-          } else {
-            connection.query("SELECT id,action,processing,deploy_status,done,error,lander_id,domain_id,group_id,created_on FROM jobs WHERE user_id = ? AND group_id = ? AND domain_id = ? AND processing = ? AND (done IS NULL OR done = ?)", [user_id, group.id, deployedDomain.domain_id, true, 0],
-              function(err, dbActiveJobs) {
-                if (err) {
-                  callback(err);
-                } else {
-                  callback(false, dbActiveJobs);
-                }
-                connection.release();
-              });
-          }
-        });
-      };
 
       var getDomainsForGroup = function(group, callback) {
         db.getConnection(function(err, connection) {
@@ -265,14 +247,13 @@ module.exports = function(app, db) {
 
       var getActiveJobsForDeployedLander = function(lander, group, callback) {
         var lander_id = lander.lander_id || lander.id;
-        var group_id = group.id;
 
         //get all jobs attached to lander and make sure only select those. list is:
         db.getConnection(function(err, connection) {
           if (err) {
             callback(err);
           }
-          connection.query("SELECT id,action,processing,deploy_status,done,error,lander_id,domain_id,group_id,created_on FROM jobs WHERE user_id = ? AND lander_id = ? AND group_id = ? AND processing = ? AND (done IS NULL OR done = ?)", [user_id, lander_id, group_id, true, 0],
+          connection.query("SELECT DISTINCT jobs.id,action,processing,deploy_status,done,error,lander_id,jobs.domain_id,created_on FROM groups_with_domains b INNER JOIN jobs ON jobs.domain_id = b.domain_id WHERE jobs.user_id = ? AND lander_id = ? AND processing = ? AND (done = ?)", [user_id, lander_id, true, false],
             function(err, dbActiveJobs) {
               callback(false, dbActiveJobs);
               connection.release();
@@ -300,7 +281,7 @@ module.exports = function(app, db) {
       };
 
       var getExtraNestedForDeployedLander = function(lander, group, callback) {
-        getEndpointsForDeployedLander(lander, function(err, endpoints) {
+        module.getEndpointsForDeployedLander(user, lander, function(err, endpoints) {
           if (err) {
             callback(err);
           } else {
@@ -309,14 +290,16 @@ module.exports = function(app, db) {
               if (err) {
                 callback(err);
               } else {
+
                 lander.activeJobs = activeJobs;
-                callback(false);
+              
+                module.getDeployedDomainsForDeployedLander(user, lander, function(err, deployedDomains) {
+                  lander.deployedDomains = deployedDomains;
+                  callback(false);
+                });
               }
-
             });
-
           }
-
         });
       };
 
@@ -332,7 +315,7 @@ module.exports = function(app, db) {
                 } else {
                   var idx = 0;
                   for (var i = 0; i < dbLandersOnGroup.length; i++) {
-                    module.getExtraNestedForDeployedLander(user, dbLandersOnGroup[i], group, function(err) {
+                    getExtraNestedForDeployedLander(dbLandersOnGroup[i], group, function(err) {
                       if (err) {
                         callback(err);
                       } else {
@@ -354,22 +337,23 @@ module.exports = function(app, db) {
 
       var getExtraNestedForGroup = function(group, callback) {
 
-        getDeployedLandersForGroup(group, function(err, landers) {
+        getDomainsForGroup(group, function(err, dbDomains) {
           if (err) {
             callback(err);
           } else {
-            group.deployedLanders = landers;
-            getDomainsForGroup(group, function(err, dbDomains) {
+            group.domains = dbDomains;
+
+            getDeployedLandersForGroup(group, function(err, landers) {
               if (err) {
                 callback(err);
               } else {
-                group.domains = dbDomains;
+                group.deployedLanders = landers;
                 callback(false);
               }
             });
           }
-
         });
+
       };
 
       var getAllGroupsDb = function(callback) {

@@ -110,7 +110,7 @@ define(["app",
         });
 
         activeJobCollection.on("finishedState", function(jobModel, updaterResponse) {
-          var deployStatus = "deployed";
+
           if (jobModel.get("action") === "ripLander" || jobModel.get("action") === "addLander") {
 
             if (updaterResponse.extra.new_lander) {
