@@ -13,7 +13,8 @@ define(["app",
 
         events: {
           'click .redeploy-all-locations': "redeploy",
-          'click .save-button': "save"
+          'click .save-button': "save",
+          'click .edit-button': "edit"
         },
 
         modelEvents: {
@@ -29,9 +30,16 @@ define(["app",
           this.model.set("originalValueDeploymentFolderName", this.model.get("deployment_folder_name"));
         },
 
+        edit: function(e) {
+          var me = this;
+          if (e) e.preventDefault();
+          
+          Landerds.trigger("landers:showEdit", this.model);
+        },
+
         save: function(e) {
           var me = this;
-          if(e) e.preventDefault();
+          if (e) e.preventDefault();
           if (!this.model.get("deploymentFolderInvalid")) {
 
             this.model.set({
@@ -47,7 +55,7 @@ define(["app",
 
         redeploy: function(e) {
           var me = this;
-          if(e) e.preventDefault();
+          if (e) e.preventDefault();
           if (!this.model.get("deploymentFolderInvalid")) {
 
             this.model.set({

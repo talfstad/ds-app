@@ -1,4 +1,4 @@
-<button type="button" style="width: 85px;" class="disabled lander-edit btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Edit</button>
+<button type="button" style="width: 85px;" class="edit-button btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Edit</button>
 
 <button type="button" style="width: 85px; padding: 9px 3px" class="<% if(saving_lander) { %>disabled<% } %> duplicate-lander-button btn btn-default btn-gradient dark"><span class="fa fa-copy pr5"></span>Copy</button>
 
