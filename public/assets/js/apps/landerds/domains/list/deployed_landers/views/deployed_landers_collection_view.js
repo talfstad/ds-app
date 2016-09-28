@@ -48,9 +48,9 @@ define(["app",
         //pass the deployed list its rendered index for # column
         childViewOptions: function(model) {
           model.set('viewIndex', parseInt(this.collection.indexOf(model)) + 1);
-          model.set('domain', this.collection.domain);
-          model.set('domain_id', this.collection.domain_id);
-          model.set('activeGroups', this.collection.activeGroups);
+          model.set('domain', this.collection.domain_model.get("domain"));
+          model.set('domain_id', this.collection.domain_model.get("domain_id"));
+          model.set('activeGroups', this.collection.domain_model.get("activeGroups"));
         }
 
       });

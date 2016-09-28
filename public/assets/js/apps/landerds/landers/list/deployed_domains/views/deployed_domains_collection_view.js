@@ -48,10 +48,10 @@ define(["app",
         //pass the deployed list its rendered index for # column
         childViewOptions: function(model) {
           model.set('viewIndex', parseInt(this.collection.indexOf(model)) + 1);
-          model.set('urlEndpoints', this.collection.urlEndpoints);
-          model.set('landerName', this.collection.landerName);
-          model.set('activeGroups', this.collection.activeGroups);
-          model.set('deployment_folder_name', this.collection.deployment_folder_name);
+          model.set('urlEndpoints', this.collection.lander_model.get("urlEndpoints"));
+          model.set('landerName', this.collection.lander_model.get("landerName"));
+          model.set('activeGroups', this.collection.lander_model.get("activeGroups"));
+          model.set('deployment_folder_name', this.collection.lander_model.get("deployment_folder_name"));
 
           //return options ONLY used by our empty view.
           return {

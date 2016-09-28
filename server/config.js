@@ -37,7 +37,7 @@ module.exports = {
     optimize: {
       images: false
     },
-    noGzipArr: ['mp4'],
+    noGzipArr: ['mp4', 'mp3'],
     logLevel: 'all'
   },
 
@@ -78,7 +78,7 @@ module.exports = {
     optimize: {
       images: true
     },
-    noGzipArr: ['mp4'],
+    noGzipArr: ['mp4', 'mp3'],
     logLevel: 'all'
   }
 };

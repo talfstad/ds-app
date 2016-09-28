@@ -39,7 +39,7 @@ define(["app",
         //pass the deployed list its rendered index for # column
         childViewOptions: function(model) {
           model.set('viewIndex', parseInt(this.collection.indexOf(model)) + 1);
-          model.set("domain", this.collection.domain);
+          model.set("domain", this.collection.domain_model.get("domain"));
         },
 
         childView: ActiveGroupsRowView,

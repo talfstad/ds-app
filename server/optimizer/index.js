@@ -485,7 +485,10 @@ module.exports = function(app, db) {
       }
     },
 
+    //optimize all inlined JS and all local JS files
     module.optimizeInlinedJs = function(stagingPath, htmlFiles, callback) {
+
+
 
       var optimizeAllInlineJsInHtmlFileAndWrite = function(htmlFileObj, callback) {
 
@@ -501,25 +504,74 @@ module.exports = function(app, db) {
         var optimizeAllInlineJs = function(callback) {
           if (scriptTags.length > 0) {
 
-            var replaceAllClosingScriptTags = function(inlinedJs) {
-              //search this text for </ and replace with \x3C
-              if (inlinedJs) {
-                return inlinedJs.replace(/<\/script>/g, '\x3C/script>');
-              } else {
-                return inlinedJs;
-              }
-            };
 
-            var asyncIndex = 0;
-            scriptTags.each(function(i, link) {
-              var tag = this;
+
+            var minimizeScriptsJsIfInlineOrLocal = function(tag, callback) {
               var src = $(tag).attr("src");
+              var srcLocalFilePath = stagingPath + "/" + src;
+
+              var compressedJs = {};
 
               if (src) {
+                var readFileIfLocal = function(callback) {
+
+
+                  var isExternal = function(href) {
+                    return /(^\/\/)|(:\/\/)/.test(href);
+                  };
+
+                  if (!isExternal(src)) {
+
+                    fs.exists(srcLocalFilePath, function(exists) {
+                      if (exists) {
+                        fs.readFile(srcLocalFilePath, function(err, fileData) {
+                          if (err) {
+                            callback({ code: "CouldNotReadLocalFile", err: err }, false);
+                          } else {
+                            callback(false, fileData.toString());
+                          }
+                        });
+                      } else {
+                        callback({ code: "LocalFileDoesNotExist", err: {} }, false);
+                      }
+                    });
+                  } else {
+                    callback(false, false);
+                  }
+                };
+
+                //minimize if local file
+                readFileIfLocal(function(err, localFileData) {
+                  if (localFileData) {
+                    //compress the local file and write it back
+                    try {
+                      compressedJs = UglifyJS.minify(localFileData, { fromString: true });
+                    } catch (e) {
+                      compressedJs.code = localFileData;
+                    }
+
+                    //write over the original
+                    fs.writeFileSync(srcLocalFilePath, compressedJs.code);
+                    callback(false);
+                  } else {
+                    callback(false);
+                  }
+                });
+              } else {
+                //inlined
                 var inlinedJs = $(tag).text();
+
+                var replaceAllClosingScriptTags = function(inlinedJs) {
+                  //search this text for </ and replace with \x3C
+                  if (inlinedJs) {
+                    return inlinedJs.replace(/<\/script>/g, '\x3C/script>');
+                  } else {
+                    return inlinedJs;
+                  }
+                };
+
                 if (inlinedJs) {
                   //now compress:
-                  var compressedJs = {};
                   try {
                     compressedJs = UglifyJS.minify(inlinedJs, { fromString: true });
                   } catch (e) {
@@ -529,15 +581,24 @@ module.exports = function(app, db) {
 
                   //remove the </script to encode it
                   $(tag).text(replaceAllClosingScriptTags(compressedJs.code));
+                  callback(false);
+                } else {
+                  callback(false);
                 }
               }
+            };
 
-              if (++asyncIndex == scriptTags.length) {
-                callback(false);
-              }
 
+            var asyncIndex = 0;
+            scriptTags.each(function(i, link) {
+              var tag = this;
+              minimizeScriptsJsIfInlineOrLocal(tag, function(err) {
+                if (++asyncIndex == scriptTags.length) {
+                  callback(false);
+                }
+              });
             });
-            
+
           } else {
             callback(false);
           }
@@ -569,7 +630,7 @@ module.exports = function(app, db) {
             }
 
             if (++asyncIndex == htmlFiles.length) {
-              callback(false);
+                callback(false);
             }
           });
         }

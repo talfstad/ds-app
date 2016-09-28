@@ -46,8 +46,6 @@ module.exports = function(app, db) {
         // unzip(sourcePathZip, { dir: stagingPath }, function(err) {
         cmd.get("unzip " + sourcePathZip + " -d " + stagingPath + " &> /dev/null", function(output) {
 
-          console.log("UNZIP OUTPUT: " + output);
-
           var usingStagingPath = stagingPath;
           //if only 1 folder in unzipped file use the folder as root instead of
           //the original. (this fixes if people put their lander in a folder and compress the folder)
@@ -55,16 +53,30 @@ module.exports = function(app, db) {
             if (err) {
               cleanupAndError(err);
             } else {
-              if (files.length == 1) {
-                var dirName = files[0];
-                var innerDirPath = stagingPath + "/" + dirName;
 
-                var isDirectory = fs.lstatSync(innerDirPath).isDirectory();
-                if (isDirectory) {
+              if (files.length < 3) {
+                //check if no macosx folder, and only 1 folder no non folders
+                var innerDirToUse = false;
+                var noHtmlFilesInRoot = true;
+                _.each(files, function(dirName) {
+                  var innerDirPath = stagingPath + "/" + dirName;
+                  var isDirectory = fs.lstatSync(innerDirPath).isDirectory();
 
+                  if (!isDirectory) {
+                    noHtmlFilesInRoot = false;
+                  }
+
+                  if (dirName != "__MACOSX" && isDirectory) {
+                    innerDirToUse = dirName;
+                  }
+                });
+
+                if (innerDirToUse && noHtmlFilesInRoot) {
+
+                  var innerDirPath = stagingPath + "/" + innerDirToUse;
 
                   //remove spaces from directory #rename it
-                  var newDirName = dirName.replace(/\s+/g, '');
+                  var newDirName = innerDirToUse.replace(/\s+/g, '');
                   var newDirPath = stagingPath + "/" + newDirName;
                   //just rename sync since its way easier than callback bs
                   fs.renameSync(innerDirPath, newDirPath);
@@ -73,7 +85,6 @@ module.exports = function(app, db) {
 
                   //set stagingDir to include this file
                   usingStagingPath = newDirPath;
-                  usingInnerDirectory = true;
                 }
               }
 

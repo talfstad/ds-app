@@ -158,7 +158,7 @@ define(["app",
                   var activeGroupCollection = domainView.model.get("activeGroups");
                   //set landername to be used by group models dialog
 
-                  activeGroupCollection.domain = domainView.model.get("domain");
+                  activeGroupCollection.domain_model = domainView.model;
 
                   var activeGroupView = new ActiveGroupsView({
                     collection: activeGroupCollection
@@ -184,7 +184,7 @@ define(["app",
 
                   //set the domain for child views
                   deployedLandersCollection.domain = domainView.model.get("domain");
-                  deployedLandersCollection.domain_id = domainView.model.get("id");
+                  deployedLandersCollection.domain_model = domainView.model;
                   deployedLandersCollection.activeGroups = activeGroupCollection;
 
                   var deployedLandersView = new DeployedLandersView({
