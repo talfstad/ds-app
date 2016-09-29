@@ -3,7 +3,7 @@ module.exports = function(app, db) {
   var module = {};
 
   var uuid = require("uuid");
-  var scraper = require('website-scraper');
+  var scraper = require('../../node_modules_custom/website-scraper');
   var fs = require('fs');
   var path = require('path');
   var find = require('find');
@@ -54,17 +54,17 @@ module.exports = function(app, db) {
 
                 var removeNonIndexHtmlFiles = function(callback) {
                   //remove html files that aren't index.html since this is a rip
-                  find.file(/\.html$/, stagingPath, function(htmlFilePaths) {
-                    //create htmlFilesToDelete obj for saving
-                    for (var i = 0; i < htmlFilePaths.length; i++) {
-                      if (path.basename(htmlFilePaths[i]) != "index.html") {
-                        app.log("deleting staging html file (because not index.html): " + htmlFilePaths[i], "debug");
-                        fs.unlinkSync(htmlFilePaths[i]);
-                      }
-                    }
+                  // find.file(/\.html$/, stagingPath, function(htmlFilePaths) {
+                  //   //create htmlFilesToDelete obj for saving
+                  //   for (var i = 0; i < htmlFilePaths.length; i++) {
+                  //     if (path.basename(htmlFilePaths[i]) != "index.html") {
+                  //       app.log("deleting staging html file (because not index.html): " + htmlFilePaths[i], "debug");
+                  //       fs.unlinkSync(htmlFilePaths[i]);
+                  //     }
+                  //   }
                     callback(false);
-                  });
-                }
+                  // });
+                };
 
                 removeNonIndexHtmlFiles(function() {
                   var deleteStaging = true;
@@ -136,22 +136,23 @@ module.exports = function(app, db) {
         selector: 'link[rel*="icon"]',
         attr: 'href'
       }],
-      subdirectories: [{
-        directory: 'images',
-        extensions: ['.png', '.jpg', '.jpeg', '.gif']
-      }, {
-        directory: 'js',
-        extensions: ['.js']
-      }, {
-        directory: 'videos',
-        extensions: ['.mp4']
-      }, {
-        directory: 'css',
-        extensions: ['.css']
-      }, {
-        directory: 'fonts',
-        extensions: ['.ttf', '.woff', '.eot', '.svg']
-      }],
+      // subdirectories: [{
+      //   directory: 'images',
+      //   extensions: ['.png', '.jpg', '.jpeg', '.gif']
+      // }, {
+      //   directory: 'js',
+      //   extensions: ['.js']
+      // }, {
+      //   directory: 'videos',
+      //   extensions: ['.mp4']
+      // }, {
+      //   directory: 'css',
+      //   extensions: ['.css']
+      // }, {
+      //   directory: 'fonts',
+      //   extensions: ['.ttf', '.woff', '.eot', '.svg']
+      // }],
+      filenameGenerator: 'bySiteStructure',
       directory: stagingPath,
       request: {
         headers: {
