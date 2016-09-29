@@ -7,6 +7,7 @@ module.exports = function(app, db) {
   var fs = require('fs');
   var path = require('path');
   var find = require('find');
+  var url_parser = require('url');
 
 
   module.ripLander = function(user, attr, callback) {
@@ -52,39 +53,23 @@ module.exports = function(app, db) {
                 cleanupAndError(err);
               } else {
 
-                var removeNonIndexHtmlFiles = function(callback) {
-                  //remove html files that aren't index.html since this is a rip
-                  // find.file(/\.html$/, stagingPath, function(htmlFilePaths) {
-                  //   //create htmlFilesToDelete obj for saving
-                  //   for (var i = 0; i < htmlFilePaths.length; i++) {
-                  //     if (path.basename(htmlFilePaths[i]) != "index.html") {
-                  //       app.log("deleting staging html file (because not index.html): " + htmlFilePaths[i], "debug");
-                  //       fs.unlinkSync(htmlFilePaths[i]);
-                  //     }
-                  //   }
-                    callback(false);
-                  // });
-                };
-
-                removeNonIndexHtmlFiles(function() {
-                  var deleteStaging = true;
-                  //rip and add lander both call this to finish the add lander process           
-                  db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, stagingDir, landerData, function(err, data) {
-                    if (err) {
-                      db.log.rip.error(err, user, stagingDir, landerData, function(err) {
-                        //callback to user that we logged the error and are going to help figure it out
+                var deleteStaging = true;
+                //rip and add lander both call this to finish the add lander process           
+                db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, stagingDir, landerData, function(err, data) {
+                  if (err) {
+                    db.log.rip.error(err, user, stagingDir, landerData, function(err) {
+                      //callback to user that we logged the error and are going to help figure it out
+                      cleanupAndError(err);
+                    });
+                  } else {
+                    db.jobs.updateDeployStatus(user, myJobId, 'not_deployed', function(err) {
+                      if (err) {
                         cleanupAndError(err);
-                      });
-                    } else {
-                      db.jobs.updateDeployStatus(user, myJobId, 'not_deployed', function(err) {
-                        if (err) {
-                          cleanupAndError(err);
-                        } else {
-                          callback(false, [myJobId]);
-                        }
-                      });
-                    }
-                  });
+                      } else {
+                        callback(false, [myJobId]);
+                      }
+                    });
+                  }
                 });
               }
             });
@@ -97,6 +82,8 @@ module.exports = function(app, db) {
   module.scrape = function(landerData, callback) {
 
     var url = landerData.lander_url;
+
+    var host = url_parser.parse(url).host;
 
     //create a staging area
     var stagingDir = uuid.v4();
@@ -136,22 +123,10 @@ module.exports = function(app, db) {
         selector: 'link[rel*="icon"]',
         attr: 'href'
       }],
-      // subdirectories: [{
-      //   directory: 'images',
-      //   extensions: ['.png', '.jpg', '.jpeg', '.gif']
-      // }, {
-      //   directory: 'js',
-      //   extensions: ['.js']
-      // }, {
-      //   directory: 'videos',
-      //   extensions: ['.mp4']
-      // }, {
-      //   directory: 'css',
-      //   extensions: ['.css']
-      // }, {
-      //   directory: 'fonts',
-      //   extensions: ['.ttf', '.woff', '.eot', '.svg']
-      // }],
+      urlFilter: function(url) {
+        //if our base url to rip is in the url return true
+        return (url.includes(host));
+      },
       filenameGenerator: 'bySiteStructure',
       directory: stagingPath,
       request: {
@@ -159,67 +134,13 @@ module.exports = function(app, db) {
           'User-Agent': 'Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 4 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19'
         }
       }
-    }
-
-    var findResourcesInFile = function(filepath, callback) {
-      //parse this file and find any jpg, jpeg, png, gif resources
-      // fs.readFile(filepath, function(err, fileData) {
-      //   if (err) {
-      //     callback({ code: "CouldNotReadFile", err: err });
-      //   } else {
-
-      //     //get all the paths from the javsacript file
-
-
-      //     /* / <any> / <any> / <any> .jpg */
-      //     var regex = /df/g;
-
-      //     var matches = regex.exec(fileData);
-      //     console.log("\n\n!! Matches : " + JSON.stringify(matches));
-
-      //   }
-      // });
-
-      //see if resources were ripped
-
-
-      //console log and test that we find the missing resources
-
-      callback(false);
-    };
-
-    var getLostResources = function(callback) {
-      //search js files for resources not include and get them
-      // find.file(/\.js$/, stagingPath, function(jsFiles) {
-      //   var asyncIndex = 0;
-      //   if (jsFiles.length > 0) {
-      //     for (var i = 0; i < jsFiles.length; i++) {
-      //       var image = jsFiles[i];
-      //       //jpegtran -copy none -optimize -outfile pic4.jpg pic4.jpg
-      //       findResourcesInFile(jsFiles[i], function(err) {
-      //         if (++asyncIndex == jsFiles.length) {
-      //           callback(false);
-      //         }
-      //       });
-      //     }
-      //   } else {
-      //     callback(false);
-      //   }
-      // });
-      callback(false);
     };
 
     scraper.scrape(options).then(function(result) {
-      var urlEndpoint = { filename: result[0].filename };
 
-      //get lost resources
-      getLostResources(function(err) {
-        if (err) {
-          callback(err);
-        } else {
-          callback(false, stagingPath, stagingDir, urlEndpoint);
-        }
-      });
+      var urlEndpoint = { filename: result[0].filename };
+      callback(false, stagingPath, stagingDir, urlEndpoint);
+
     }).catch(function(err) {
       callback(err);
     });

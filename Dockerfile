@@ -36,11 +36,16 @@ RUN sudo npm install phantomjs -g
 # use changes to package.json to force Docker not to use the cache
 # when we change our application's nodejs dependencies:
 ADD package.json /tmp/package.json
+
 RUN cd /tmp && npm install
+
 RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
 
 # Bundle app source
 ADD . /opt/app
+
+# npm install the custom modules
+RUN cd /opt/app/node_modules_custom/website-scraper && npm install
 
 WORKDIR /opt/app/server
 

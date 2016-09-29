@@ -3,7 +3,7 @@ module.exports = function(app, passport) {
   var db = require("../../db_api")(app);
 
   var uuid = require("uuid");
-  var scraper = require('website-scraper');
+  var scraper = require('../../../node_modules_custom/website-scraper');
 
   var module = {
 
