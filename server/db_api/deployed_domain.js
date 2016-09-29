@@ -54,7 +54,6 @@ module.exports = function(app, db) {
         });
 
       } catch (e) {
-        console.log("ERROR GETTING LOAD TIME!!! T READ THIS!!!: " + JSON.stringify(e));
         var responseObj = {
           load_time: "N/A"
         };

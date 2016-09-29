@@ -43,8 +43,8 @@
               </div>
             </div>
             <div class="section row" style="margin-top: 12px">
-              <label for="landerUrl" class="text-align-right field-label col-md-3 text-center">Browser:</label>
-              <div class="col-md-9 mt10">
+              <label for="landerUrl" class="text-align-right field-label col-md-3 text-center">Version:</label>
+              <div class="col-md-9" style="margin-top: 12px">
                 <div class="radio-custom radio-primary mb5">
                   <input checked type="radio" id="desktop-browser" name="browser" value="desktop">
                   <label for="desktop-browser">Desktop</label>

@@ -130,8 +130,7 @@ module.exports = function(app, db) {
                     callback(err);
                   } else {
 
-                    console.log("active group id : " + active_group_id);
-                    console.log("newLanders : " + JSON.stringify(newLanders));
+                    app.log("active group id : " + active_group_id, "debug");
                     //if not modified then we arent redeploying, so just deploy the NEW lander that was added
                     // ## TODO put this on the front end for landers
                     // if (!landerData.modified && newLanders.length > 0) {

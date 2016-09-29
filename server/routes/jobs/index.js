@@ -38,7 +38,7 @@ module.exports = function(app, passport) {
           });
 
         } catch (e) {
-          console.log("ERROR no handler for this job action" + e);
+          app.log("ERROR no handler for this job action" + e, "debug");
           res.json({
             error: {
               code: "NoHandlerForJob"
