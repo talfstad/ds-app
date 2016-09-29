@@ -40,13 +40,31 @@ module.exports = function(app, db) {
   return {
 
     addOptimizePushSave: function(deleteStagingOrJobId, user, localStagingPath, s3_folder_name, landerData, callback) {
-      var jobId;
+      var jobId, maxDepth, endpointName;
       //if not bool its a job id
-      if (deleteStagingOrJobId != true && deleteStagingOrJobId != false) {
-        jobId = deleteStagingOrJobId;
-      } else {
+      if (typeof deleteStagingOrJobId == "object") {
+        var options = deleteStagingOrJobId;
+
+        //TODO: use these options to:
+        //    . not optimize anything except endpointName if it has a value
+        //    . if endpointName has value only add this as endpoint to show
+        //    . edit feature will still show all the files, but the entry point is what we preview
+        //    . on add lander, only optimize the endpointName (TODO)
+
+        app.log("OPTIMIZE PASSED OPTIONS" + JSON.stringify(options), "debug");
+
+        var deleteStaging = options.deleteStaging;
+        maxDepth = options.maxDepth;
+        endpointName = options.endpointName;
         jobId = false;
+      } else {
+        if (deleteStagingOrJobId != true && deleteStagingOrJobId != false) {
+          jobId = deleteStagingOrJobId;
+        } else {
+          jobId = false;
+        }
       }
+
 
       var deleteStaging;
       if (deleteStagingOrJobId == true) {

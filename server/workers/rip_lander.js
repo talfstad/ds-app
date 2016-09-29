@@ -24,7 +24,8 @@ module.exports = function(app, db) {
       lander_url: url,
       deploy_status: attr.deploy_status,
       created_on: attr.lander_created_on,
-      browser: attr.browser
+      browser: attr.browser,
+      rip_depth: 0
     };
 
     var cleanupAndError = function(err) {
@@ -65,9 +66,20 @@ module.exports = function(app, db) {
                   cleanupAndError(err);
                 } else {
 
-                  var deleteStaging = true;
+                  var endpoint = path.basename(url);
+                  console.log("EXT: " + path.extname(endpoint) )
+                  if (path.extname(endpoint) != ".html") {
+                    endpoint = "index.html";
+                  }
+
+                  var options = {
+                    deleteStaging: true,
+                    endpoint: endpoint,
+                    ripDepth: landerData.rip_depth
+                  };
+
                   //rip and add lander both call this to finish the add lander process           
-                  db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, stagingDir, landerData, function(err, data) {
+                  db.landers.common.add_lander.addOptimizePushSave(options, user, stagingPath, stagingDir, landerData, function(err, data) {
                     if (err) {
                       db.log.rip.error(err, user, stagingDir, landerData, function(err) {
                         //callback to user that we logged the error and are going to help figure it out
@@ -95,7 +107,7 @@ module.exports = function(app, db) {
   module.scrape = function(landerData, callback) {
 
     var url = landerData.lander_url;
-
+    var ripDepth = landerData.rip_depth;
     var browser = landerData.browser;
 
     //default mobile
@@ -106,7 +118,6 @@ module.exports = function(app, db) {
     }
 
     var host = url_parser.parse(url).host;
-
     //create a staging area
     var stagingDir = uuid.v4();
     var stagingPath = "staging/" + stagingDir;
@@ -145,6 +156,7 @@ module.exports = function(app, db) {
         selector: 'link[rel*="icon"]',
         attr: 'href'
       }],
+      recursive: (ripDepth > 0 && ripDepth < 2 ? true : false),
       urlFilter: function(url) {
         //if our base url to rip is in the url return true
         return (url.includes(host));
@@ -157,6 +169,15 @@ module.exports = function(app, db) {
         }
       }
     };
+
+    if (options.recursive) {
+      //rip depth can only be 0 or 1
+      if (ripDepth > 0 && ripDepth < 2) {
+        options.maxDepth = ripDepth
+      } else {
+        options.maxDepth = 0;
+      }
+    }
 
     scraper.scrape(options).then(function(result) {
 
