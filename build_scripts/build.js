@@ -140,7 +140,7 @@ rimraf('./built', function(err) {
         var rsync = new Rsync()
           .source('.')
           .destination('built')
-          .exclude(['built', 'built.zip', 'node_modules', '.ebignore', 'server/staging', '.elasticbeanstalk', 'CONFIG', '.jsbeautifyrc', '.gitignore', '.git', '.gitattributes', 'build_scripts'])
+          .exclude(['node_modules_custom/website-scraper/node_modules', 'built', 'built.zip', 'node_modules', '.ebignore', 'server/staging', '.elasticbeanstalk', 'CONFIG', '.jsbeautifyrc', '.gitignore', '.git', '.gitattributes', 'build_scripts'])
           .flags('a') //archive mode
           .execute(function(err, stdout, stderr) {
 

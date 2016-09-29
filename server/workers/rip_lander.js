@@ -23,7 +23,8 @@ module.exports = function(app, db) {
       name: attr.name,
       lander_url: url,
       deploy_status: attr.deploy_status,
-      created_on: attr.lander_created_on
+      created_on: attr.lander_created_on,
+      browser: attr.browser
     };
 
     var cleanupAndError = function(err) {
@@ -41,39 +42,51 @@ module.exports = function(app, db) {
       if (err) {
         cleanupAndError(err);
       } else {
-        db.jobs.updateDeployStatus(user, myJobId, 'initializing:rip_optimizing', function(err) {
-          if (err) {
-            cleanupAndError(err);
-          } else {
-
-            app.log("staging: " + stagingDir + " " + stagingPath, "debug");
-
-            db.landers.addS3FolderDeploymentFolderToLander(user, lander_id, stagingDir, function(err) {
-              if (err) {
-                cleanupAndError(err);
-              } else {
-
-                var deleteStaging = true;
-                //rip and add lander both call this to finish the add lander process           
-                db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, stagingDir, landerData, function(err, data) {
-                  if (err) {
-                    db.log.rip.error(err, user, stagingDir, landerData, function(err) {
-                      //callback to user that we logged the error and are going to help figure it out
-                      cleanupAndError(err);
-                    });
-                  } else {
-                    db.jobs.updateDeployStatus(user, myJobId, 'not_deployed', function(err) {
-                      if (err) {
-                        cleanupAndError(err);
-                      } else {
-                        callback(false, [myJobId]);
-                      }
-                    });
-                  }
-                });
-              }
+        var removeQueryAttributes = function(callback) {
+          find.file(/\.html/, stagingPath, function(htmlFiles) {
+            _.each(htmlFiles, function(htmlFile) {
+              var correctedFilename = htmlFile.replace(/\?.*/g, ''); //remove from ? to end of url
+              fs.renameSync(htmlFile, correctedFilename);
             });
-          }
+            callback(false);
+          });
+        };
+
+        removeQueryAttributes(function() {
+          db.jobs.updateDeployStatus(user, myJobId, 'initializing:rip_optimizing', function(err) {
+            if (err) {
+              cleanupAndError(err);
+            } else {
+
+              app.log("staging: " + stagingDir + " " + stagingPath, "debug");
+
+              db.landers.addS3FolderDeploymentFolderToLander(user, lander_id, stagingDir, function(err) {
+                if (err) {
+                  cleanupAndError(err);
+                } else {
+
+                  var deleteStaging = true;
+                  //rip and add lander both call this to finish the add lander process           
+                  db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, stagingDir, landerData, function(err, data) {
+                    if (err) {
+                      db.log.rip.error(err, user, stagingDir, landerData, function(err) {
+                        //callback to user that we logged the error and are going to help figure it out
+                        cleanupAndError(err);
+                      });
+                    } else {
+                      db.jobs.updateDeployStatus(user, myJobId, 'not_deployed', function(err) {
+                        if (err) {
+                          cleanupAndError(err);
+                        } else {
+                          callback(false, [myJobId]);
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
         });
       }
     });
@@ -82,6 +95,15 @@ module.exports = function(app, db) {
   module.scrape = function(landerData, callback) {
 
     var url = landerData.lander_url;
+
+    var browser = landerData.browser;
+
+    //default mobile
+    var userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1";
+    if (browser == "desktop") {
+      app.log("ripping desktop version", "debug");
+      userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36";
+    }
 
     var host = url_parser.parse(url).host;
 
@@ -131,7 +153,7 @@ module.exports = function(app, db) {
       directory: stagingPath,
       request: {
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 4 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19'
+          'User-Agent': userAgent
         }
       }
     };

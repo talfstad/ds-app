@@ -76,13 +76,16 @@ define(["app",
             var newLanderData = Backbone.Syphon.serialize(this);
 
             //just a very small amount of validation, all really done on server
-            if (newLanderData.landerName != "" && newLanderData.landerUrl != "") {
+            if (newLanderData.landerName != "" && newLanderData.landerUrl != "" && newLanderData.browser) {
 
               //1. set the new values into the job model
-              this.model.set("name", newLanderData.landerName);
-              this.model.set("lander_url", newLanderData.landerUrl);
-              this.model.set("alertInvalidInputs", false);
-
+              this.model.set({
+                "name": newLanderData.landerName,
+                "lander_url": newLanderData.landerUrl,
+                "browser": newLanderData.browser,
+                "alertInvalidInputs": false
+              });
+              
               me.trigger("ripLanderConfirmed");
 
             } else {
