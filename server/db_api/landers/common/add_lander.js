@@ -1,5 +1,4 @@
 module.exports = function(app, db) {
-
   var htmlFileOptimizer = require("../../../optimizer")(app, db);
   var dbAws = require('../../aws')(app, db);
   var dbCommon = require('../../common')(app, db);
@@ -7,7 +6,7 @@ module.exports = function(app, db) {
   var fs = require('fs');
   var path = require('path');
   var psi = require('psi');
-
+  var cheerio = require('cheerio');
   var dbJobs = require('../../jobs')(app, db);
 
 
@@ -39,11 +38,11 @@ module.exports = function(app, db) {
 
   return {
 
-    addOptimizePushSave: function(deleteStagingOrJobId, user, localStagingPath, s3_folder_name, landerData, callback) {
-      var jobId, maxDepth, endpointName;
+    addOptimizePushSave: function(deleteStagingOrJobIdOrOptions, user, localStagingPath, s3_folder_name, landerData, callback) {
+      var jobId, endpointName, deleteStaging, options = {};
       //if not bool its a job id
-      if (typeof deleteStagingOrJobId == "object") {
-        var options = deleteStagingOrJobId;
+      if (typeof deleteStagingOrJobIdOrOptions == "object") {
+        options = deleteStagingOrJobIdOrOptions;
 
         //TODO: use these options to:
         //    . not optimize anything except endpointName if it has a value
@@ -52,26 +51,24 @@ module.exports = function(app, db) {
         //    . on add lander, only optimize the endpointName (TODO)
 
         app.log("OPTIMIZE PASSED OPTIONS" + JSON.stringify(options), "debug");
-
-        var deleteStaging = options.deleteStaging;
-        maxDepth = options.maxDepth;
-        endpointName = options.endpointName;
+        deleteStaging = options.deleteStaging;
         jobId = false;
       } else {
-        if (deleteStagingOrJobId != true && deleteStagingOrJobId != false) {
-          jobId = deleteStagingOrJobId;
+        if (deleteStagingOrJobIdOrOptions != true && deleteStagingOrJobIdOrOptions != false) {
+          jobId = deleteStagingOrJobIdOrOptions;
         } else {
           jobId = false;
         }
       }
 
-
-      var deleteStaging;
-      if (deleteStagingOrJobId == true) {
-        deleteStaging = true;
-      } else {
-        deleteStaging = false;
+      if (!deleteStaging) {
+        if (deleteStagingOrJobIdOrOptions == true) {
+          deleteStaging = true;
+        } else {
+          deleteStaging = false;
+        }
       }
+
 
       var cleanupStagingAndCallbackExternalInterrupt = function(err) {
         deleteStagingAreaIfFlag(localStagingPath, function() {
@@ -323,7 +320,111 @@ module.exports = function(app, db) {
             });
           };
 
+          var makeRootLinksRelative = function(callback) {
+            var isExternal = function(href) {
+              return /(^\/\/)|(:\/\/)/.test(href);
+            };
+            //only for add lander
+            if (!options.endpoint) {
 
+              find.file(/\.html$/, localStagingPath, function(allHtmlFiles) {
+                console.log("IN THE THING TREVOR: " + JSON.stringify(allHtmlFiles));
+                if (allHtmlFiles.length > 0) {
+                  var changeAnchorLinks = function(fromPath, $) {
+                    $('a').each(function(idx, el) {
+                      var href = $(this).attr('href');
+
+                      if (href && !isExternal(href)) {
+                        var resourcePath = path.join(fromPath, href);
+                        if (/^\//.test(href)) {
+                          //use lcoalstatgin path as root
+                          resourcePath = path.join(localStagingPath, href);
+                        }
+                        var relativePath = path.relative(fromPath, resourcePath);
+                        console.log("changing from: " + href + " to: " + relativePath)
+                        $(this).attr('href', relativePath);
+                      }
+                    });
+                  };
+
+                  var changeCssLinks = function(fromPath, $) {
+                    $('link[rel=stylesheet]').each(function(idx, el) {
+                      var href = $(this).attr('href');
+
+                      if (href && !isExternal(href)) {
+                        var resourcePath = path.join(fromPath, href);
+                        if (/^\//.test(href)) {
+                          //use lcoalstatgin path as root
+                          resourcePath = path.join(localStagingPath, href);
+                        }
+                        var relativePath = path.relative(fromPath, resourcePath);
+
+                        console.log("css href changing from: " + href + " to: " + relativePath)
+                        $(this).attr('href', relativePath);
+                      }
+
+                    });
+                  };
+
+                  var changeJsLinks = function(fromPath, $) {
+                    $('script').each(function(idx, el) {
+                      var src = $(this).attr('src');
+
+                      if (src && !isExternal(src)) {
+                        var resourcePath = path.join(fromPath, src);
+                        if (/^\//.test(src)) {
+                          //use lcoalstatgin path as root
+                          resourcePath = path.join(localStagingPath, src);
+                        }
+                        var relativePath = path.relative(fromPath, resourcePath);
+
+                        console.log("js src changing from: " + src + " to: " + relativePath)
+                        $(this).attr('src', relativePath);
+                      }
+
+                    });
+                  };
+
+                  var changeImageLinks = function(fromPath, $) {
+                    $('img').each(function(idx, el) {
+                      var src = $(this).attr('src');
+
+                      if (src && !isExternal(src)) {
+                        var resourcePath = path.join(fromPath, src);
+                        if (/^\//.test(src)) {
+                          //use lcoalstatgin path as root
+                          resourcePath = path.join(localStagingPath, src);
+                        }
+                        var relativePath = path.relative(fromPath, resourcePath);
+
+                        console.log("changing from: " + src + " to: " + relativePath)
+                        $(this).attr('src', relativePath);
+                      }
+
+                    });
+                  };
+
+                  _.each(allHtmlFiles, function(htmlFile) {
+                    var relativeFrom = path.dirname(htmlFile);
+                    var $ = cheerio.load(fs.readFileSync(htmlFile), { decodeEntities: false });
+
+                    //image source, src for js, video src, (check rip default), fonts...
+                    changeAnchorLinks(relativeFrom, $);
+                    changeImageLinks(relativeFrom, $);
+                    changeCssLinks(relativeFrom, $);
+                    changeJsLinks(relativeFrom, $);
+
+                    fs.writeFileSync(htmlFile, $.html());
+                  });
+                  callback(false);
+                } else {
+                  callback(false);
+                }
+              });
+            } else {
+              callback(false);
+            }
+          };
 
           //before push lander make sure images are decoded
           decodeImagesAndOverwrite(function(err) {
@@ -338,98 +439,99 @@ module.exports = function(app, db) {
 
                   var directory = "/landers/" + s3_folder_name + "/original/";
 
-                  //get a lock to push the original 
-                  pushLanderToS3(directory, awsData, false, function(err) {
-                    if (err) {
-                      callback(err);
-                    } else {
-                      //3. optimize the staging directory
-                      htmlFileOptimizer.fullyOptimize(user, jobId, localStagingPath, function(err, endpoints) {
-                        if (err) {
-                          if (err.code == "ExternalInterrupt") {
-                            cleanupStagingAndCallbackExternalInterrupt(err);
-                          } else {
-                            callback(err);
-                          }
-                        } else {
-                          //4. push optimized to s3
-                          var directory = "/landers/" + s3_folder_name + "/optimized/";
+                  makeRootLinksRelative(function() {
 
-                          pushLanderToS3(directory, awsData, true, function(err) {
-                            if (err) {
-                              callback(err);
+                    //get a lock to push the original 
+                    pushLanderToS3(directory, awsData, false, function(err) {
+                      if (err) {
+                        callback(err);
+                      } else {
+
+                        var directory = "/landers/" + s3_folder_name + "/optimized/";
+                        var relativeToThis = "/" + user.user + "/landers/" + s3_folder_name + "/optimized";
+
+                        //3. optimize the staging directory
+                        user.options = options; //pass options into full optimize
+                        htmlFileOptimizer.fullyOptimize(user, jobId, localStagingPath, function(err, endpoints) {
+                          if (err) {
+                            if (err.code == "ExternalInterrupt") {
+                              cleanupStagingAndCallbackExternalInterrupt(err);
                             } else {
-
-                              //4. remove local staging
-                              deleteStagingAreaIfFlag(localStagingPath, function(err) {
-                                if (err) {
-                                  callback(err);
-                                } else {
-
-                                  //save
-                                  var asyncIndex = 0;
-                                  if (endpoints.length > 0) {
-                                    for (var i = 0; i < endpoints.length; i++) {
-                                      //strip off the staging part of the path so its web root
-
-                                      var urlEndpoints = [];
-                                      //save/update the urlEndpoints in db
-                                      runPageSpeedScores(endpoints[i], function(err, endpoint, originalPagespeed, optimizedPagespeed) {
-                                        if (err) {
-                                          app.log("PAGESPEED ERROR: " + JSON.stringify(err), "debug");
-                                          callback(err);
-                                        } else {
-
-                                          app.log("is update: " + isUpdate + " ENDPOINT ADDING: " + JSON.stringify(endpoint), "debug");
-
-                                          addUpdateEndpointsToLander(originalPagespeed, optimizedPagespeed, endpoint, isUpdate, function(err, endpoint) {
-                                            if (err) {
-                                              app.log("endpoitns to lander  ERROR: " + JSON.stringify(err), "debug");
-                                              callback(err);
-                                            } else {
-                                              urlEndpoints.push(endpoint);
-
-                                              if (++asyncIndex == endpoints.length) {
-                                                //done adding endpoints
-                                                var returnData = {
-                                                  id: landerData.id,
-                                                  created_on: landerData.created_on,
-                                                  s3_folder_name: s3_folder_name,
-                                                  url_endpoints_arr: urlEndpoints
-                                                };
-
-                                                callback(false, returnData);
-                                              }
-                                            }
-                                          });
-                                        }
-                                      });
-                                    }
-                                  } else {
-                                    var returnData = {
-                                      id: landerData.id,
-                                      created_on: landerData.created_on,
-                                      s3_folder_name: s3_folder_name,
-                                      url_endpoints_arr: []
-                                    };
-                                    callback(false, returnData);
-                                  }
-                                }
-                              });
+                              callback(err);
                             }
-                          });
-                        }
-                      });
-                    }
+                          } else {
+                            //4. push optimized to s3
+                            pushLanderToS3(directory, awsData, true, function(err) {
+                              if (err) {
+                                callback(err);
+                              } else {
+
+                                //4. remove local staging
+                                deleteStagingAreaIfFlag(localStagingPath, function(err) {
+                                  if (err) {
+                                    callback(err);
+                                    return;
+                                  } else {
+
+                                    //save
+                                    var asyncIndex = 0;
+                                    if (endpoints.length > 0) {
+                                      for (var i = 0; i < endpoints.length; i++) {
+                                        //strip off the staging part of the path so its web root
+
+                                        var urlEndpoints = [];
+                                        //save/update the urlEndpoints in db
+                                        runPageSpeedScores(endpoints[i], function(err, endpoint, originalPagespeed, optimizedPagespeed) {
+                                          if (err) {
+                                            app.log("PAGESPEED ERROR: " + JSON.stringify(err), "debug");
+                                            callback(err);
+                                          } else {
+
+                                            app.log("is update: " + isUpdate + " ENDPOINT ADDING: " + JSON.stringify(endpoint), "debug");
+
+                                            addUpdateEndpointsToLander(originalPagespeed, optimizedPagespeed, endpoint, isUpdate, function(err, endpoint) {
+                                              if (err) {
+                                                app.log("endpoints to lander  ERROR: " + JSON.stringify(err), "debug");
+                                                callback(err);
+                                              } else {
+                                                urlEndpoints.push(endpoint);
+
+                                                if (++asyncIndex == endpoints.length) {
+                                                  //done adding endpoints
+                                                  var returnData = {
+                                                    id: landerData.id,
+                                                    created_on: landerData.created_on,
+                                                    s3_folder_name: s3_folder_name,
+                                                    url_endpoints_arr: urlEndpoints
+                                                  };
+
+                                                  callback(false, returnData);
+                                                }
+                                              }
+                                            });
+                                          }
+                                        });
+                                      }
+                                    } else {
+                                      var returnData = {
+                                        id: landerData.id,
+                                        created_on: landerData.created_on,
+                                        s3_folder_name: s3_folder_name,
+                                        url_endpoints_arr: []
+                                      };
+                                      callback(false, returnData);
+                                    }
+                                  }
+                                });
+                              }
+                            });
+                          }
+                        });
+                      }
+                    });
                   });
-
-
-
-
-
                 }
               });
-
             }
           });
         }

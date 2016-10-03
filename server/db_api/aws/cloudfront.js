@@ -110,8 +110,7 @@ module.exports = function(app, db) {
       var timestamp = moment().format();
 
       var s3_id = 'domain-' + bucketName;
-      var s3_domain = bucketName + '.s3.amazonaws.com';
-
+      var s3_domain = bucketName + '.s3-website-us-west-2.amazonaws.com'; //us-west-2 default region !!
       app.log("s3 domain name: " + s3_domain, "debug");
 
       var params = {

@@ -17,7 +17,6 @@ module.exports = function(app, db) {
     var lander_id = attr.lander_id;
     var url = attr.lander_url;
 
-
     var landerData = {
       id: lander_id,
       name: attr.name,
@@ -25,6 +24,7 @@ module.exports = function(app, db) {
       deploy_status: attr.deploy_status,
       created_on: attr.lander_created_on,
       browser: attr.browser,
+      depth: attr.depth,
       rip_depth: 0
     };
 
@@ -67,7 +67,6 @@ module.exports = function(app, db) {
                 } else {
 
                   var endpoint = path.basename(url);
-                  console.log("EXT: " + path.extname(endpoint) )
                   if (path.extname(endpoint) != ".html") {
                     endpoint = "index.html";
                   }
@@ -75,7 +74,7 @@ module.exports = function(app, db) {
                   var options = {
                     deleteStaging: true,
                     endpoint: endpoint,
-                    ripDepth: landerData.rip_depth
+                    depth: landerData.depth
                   };
 
                   //rip and add lander both call this to finish the add lander process           
@@ -107,7 +106,7 @@ module.exports = function(app, db) {
   module.scrape = function(landerData, callback) {
 
     var url = landerData.lander_url;
-    var ripDepth = landerData.rip_depth;
+    var depth = landerData.depth;
     var browser = landerData.browser;
 
     //default mobile
@@ -118,6 +117,7 @@ module.exports = function(app, db) {
     }
 
     var host = url_parser.parse(url).host;
+    host = host.replace('www.', '');
     //create a staging area
     var stagingDir = uuid.v4();
     var stagingPath = "staging/" + stagingDir;
@@ -156,12 +156,12 @@ module.exports = function(app, db) {
         selector: 'link[rel*="icon"]',
         attr: 'href'
       }],
-      recursive: (ripDepth > 0 && ripDepth < 2 ? true : false),
+      recursive: (depth > 0 && depth < 3 ? true : false),
       urlFilter: function(url) {
         //if our base url to rip is in the url return true
         return (url.includes(host));
       },
-      filenameGenerator: 'bySiteStructure',
+      filenameGenerator: 'bySiteStructure', //need this incase of javascript dynamic image specification, etc.
       directory: stagingPath,
       request: {
         headers: {
@@ -171,12 +171,13 @@ module.exports = function(app, db) {
     };
 
     if (options.recursive) {
-      //rip depth can only be 0 or 1
-      if (ripDepth > 0 && ripDepth < 2) {
-        options.maxDepth = ripDepth
+        //rip depth can only be 0 or 1 or 2
+      if (depth > 0 && depth < 3) {
+        options.maxDepth = depth
       } else {
         options.maxDepth = 0;
       }
+      app.log("ripping recursively to depth = " + depth, "debug");
     }
 
     scraper.scrape(options).then(function(result) {

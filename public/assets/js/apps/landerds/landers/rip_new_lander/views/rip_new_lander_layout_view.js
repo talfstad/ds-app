@@ -83,6 +83,7 @@ define(["app",
                 "name": newLanderData.landerName,
                 "lander_url": newLanderData.landerUrl,
                 "browser": newLanderData.browser,
+                "depth": newLanderData.depth,
                 "alertInvalidInputs": false
               });
               

@@ -19,60 +19,75 @@ module.exports = function(app, db) {
   //optimizer has an optimize function that takes an HTML file path, optimized file output path,
   module.fullyOptimize = function(user, jobId, stagingPath, callback) {
 
-    app.log("fully optimized called: " + stagingPath, "debug");
+    var options = user.options || {};
+    var htmlFiles = [];
 
     //pass all html files over to optimize css
     var optimizationErrors = [];
 
+    //lots of endpoints from an add lander
     find.file(/\.html$/, stagingPath, function(htmlFilePaths) {
       //create htmlFiles obj for saving
-      var htmlFiles = [];
       for (var i = 0; i < htmlFilePaths.length; i++) {
-        var fileObj = {
-          filename: htmlFilePaths[i],
-          optimizationErrors: []
-        }
-        htmlFiles.push(fileObj);
-      }
-
-      //check if external interrupt on the heavy optimization stuff like images and gzip
-      //and before we start
-      dbApi.checkIfExternalInterrupt(user, jobId, function(err, isInterrupt) {
-        if (isInterrupt) {
-          callback({ code: "ExternalInterrupt" });
+        //match the path to the endpoint if endpoint set
+        if (options.endpoint) {
+          var searchEndpoint = stagingPath + "/" + options.endpoint;
+         
+          var regex = new RegExp(searchEndpoint);
+          if (regex.test(htmlFilePaths[i])) {
+            var fileObj = {
+              filename: htmlFilePaths[i],
+              optimizationErrors: []
+            };
+            htmlFiles.push(fileObj);
+          }
         } else {
-          module.optimizeCss(htmlFiles, function() {
-            app.log("done with css", "debug");
-            module.optimizeInlinedJs(stagingPath, htmlFiles, function() {
-              app.log("done with js", "debug");
-              module.optimizeHtml(htmlFiles, function() {
-                app.log("done with html", "debug");
+          var fileObj = {
+            filename: htmlFilePaths[i],
+            optimizationErrors: []
+          };
+          htmlFiles.push(fileObj);
+        }
+      }
+    });
 
-                dbApi.checkIfExternalInterrupt(user, jobId, function(err, isInterrupt) {
-                  if (isInterrupt) {
-                    callback({ code: "ExternalInterrupt" });
-                  } else {
-                    module.optimizeImages(stagingPath, function() {
-                      app.log("done with images", "debug");
+    //check if external interrupt on the heavy optimization stuff like images and gzip
+    //and before we start
+    dbApi.checkIfExternalInterrupt(user, jobId, function(err, isInterrupt) {
+      if (isInterrupt) {
+        callback({ code: "ExternalInterrupt" });
+      } else {
+        module.optimizeCss(htmlFiles, function() {
+          app.log("done with css", "debug");
+          module.optimizeInlinedJs(stagingPath, htmlFiles, function() {
+            app.log("done with js", "debug");
+            module.optimizeHtml(htmlFiles, function() {
+              app.log("done with html", "debug");
 
-                      dbApi.checkIfExternalInterrupt(user, jobId, function(err, isInterrupt) {
-                        if (isInterrupt) {
-                          callback({ code: "ExternalInterrupt" });
-                        } else {
-                          module.gzipStagingFiles(stagingPath, function() {
-                            app.log("done gzipping", "debug");
-                            callback(false, htmlFiles, optimizationErrors);
-                          });
-                        }
-                      });
+              dbApi.checkIfExternalInterrupt(user, jobId, function(err, isInterrupt) {
+                if (isInterrupt) {
+                  callback({ code: "ExternalInterrupt" });
+                } else {
+                  module.optimizeImages(stagingPath, function() {
+                    app.log("done with images", "debug");
+
+                    dbApi.checkIfExternalInterrupt(user, jobId, function(err, isInterrupt) {
+                      if (isInterrupt) {
+                        callback({ code: "ExternalInterrupt" });
+                      } else {
+                        module.gzipStagingFiles(stagingPath, function() {
+                          app.log("done gzipping", "debug");
+                          callback(false, htmlFiles, optimizationErrors);
+                        });
+                      }
                     });
-                  }
-                });
+                  });
+                }
               });
             });
           });
-        }
-      });
+        });
+      }
     });
   };
 
@@ -292,11 +307,6 @@ module.exports = function(app, db) {
     },
 
     module.optimizeJsInline = function(stagingPath, htmlFiles, callback) {
-
-      var getMissingResources = function(jsFiles) {
-        //search js files for resouces, check that they exist if they dont go download them
-
-      };
 
       var readExternalFile = function(href, callback) {
         //worker can do work no matter what because its just reading
@@ -630,7 +640,7 @@ module.exports = function(app, db) {
             }
 
             if (++asyncIndex == htmlFiles.length) {
-                callback(false);
+              callback(false);
             }
           });
         }
@@ -741,7 +751,6 @@ module.exports = function(app, db) {
 
         }
 
-        // call uglify on the file
         try {
 
           var result = UglifyJS.minify(jsFilePath, {});
