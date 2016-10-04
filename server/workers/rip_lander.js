@@ -24,8 +24,7 @@ module.exports = function(app, db) {
       deploy_status: attr.deploy_status,
       created_on: attr.lander_created_on,
       browser: attr.browser,
-      depth: attr.depth,
-      rip_depth: 0
+      depth: attr.depth
     };
 
     var cleanupAndError = function(err) {
