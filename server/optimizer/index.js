@@ -135,8 +135,8 @@ module.exports = function(app, db) {
                       // search output for custom error and get the JSON
                       // app.log("critical output: " + output, "debug");
                       if (output) {
-                        var err = JSON.parse(output.replace(/(.*%startErr%\s+)(.*)(\s+%endErr%.*)/, "$2"));
-                        if (!err.noErr) {
+                        var err = output.replace(/(.*%startErr%\s+)(.*)(\s+%endErr%.*)/, "$2").trim();
+                        if (err != "noError") {
                           callback({ code: "CouldNotCriticalCss", err: err });
                         } else {
                           callback(false);

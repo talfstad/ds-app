@@ -16,9 +16,8 @@
     ignore: ['@font-face', /url\(/]
   }, function(err, output) {
     if (err) {
-      console.log(" %startErr% " + JSON.stringify(err) + " %endErr% ");
+      console.log(" %startErr% " + err + " %endErr% ");
     } else {
-      console.log(" %startErr% " + JSON.stringify({noErr: true}) + " %endErr% ");
+      console.log(" %startErr% noError %endErr% ");
     }
-
   });
