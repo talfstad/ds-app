@@ -633,7 +633,7 @@ module.exports = function(app, db) {
             s3Options: {
               accessKeyId: credentials.accessKeyId,
               secretAccessKey: credentials.secretAccessKey,
-              region: app.config.awsRegion,
+              region: app.config.awsRegion
             }
           });
 
