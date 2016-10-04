@@ -43,6 +43,7 @@ module.exports = function(app, db) {
       if (err) {
         cleanupAndError(err);
       } else {
+
         var removeQueryAttributes = function(callback) {
           find.file(/\.html/, stagingPath, function(htmlFiles) {
             _.each(htmlFiles, function(htmlFile) {
@@ -66,14 +67,9 @@ module.exports = function(app, db) {
                   cleanupAndError(err);
                 } else {
 
-                  var endpoint = path.basename(url);
-                  if (path.extname(endpoint) != ".html") {
-                    endpoint = "index.html";
-                  }
-
                   var options = {
                     deleteStaging: true,
-                    endpoint: endpoint,
+                    endpoint: urlEndpoint.filename,
                     depth: landerData.depth
                   };
 
@@ -171,7 +167,7 @@ module.exports = function(app, db) {
     };
 
     if (options.recursive) {
-        //rip depth can only be 0 or 1 or 2
+      //rip depth can only be 0 or 1 or 2
       if (depth > 0 && depth < 3) {
         options.maxDepth = depth
       } else {

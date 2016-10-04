@@ -28,66 +28,63 @@ module.exports = function(app, db) {
     //lots of endpoints from an add lander
     find.file(/\.html$/, stagingPath, function(htmlFilePaths) {
       //create htmlFiles obj for saving
-      for (var i = 0; i < htmlFilePaths.length; i++) {
-        //match the path to the endpoint if endpoint set
-        if (options.endpoint) {
-          var searchEndpoint = stagingPath + "/" + options.endpoint;
-         
-          var regex = new RegExp(searchEndpoint);
-          if (regex.test(htmlFilePaths[i])) {
-            var fileObj = {
-              filename: htmlFilePaths[i],
-              optimizationErrors: []
-            };
-            htmlFiles.push(fileObj);
-          }
-        } else {
+      if (!options.endpoint) {
+        for (var i = 0; i < htmlFilePaths.length; i++) {
+          //match the path to the endpoint if endpoint set
           var fileObj = {
             filename: htmlFilePaths[i],
             optimizationErrors: []
           };
           htmlFiles.push(fileObj);
+
         }
-      }
-    });
-
-    //check if external interrupt on the heavy optimization stuff like images and gzip
-    //and before we start
-    dbApi.checkIfExternalInterrupt(user, jobId, function(err, isInterrupt) {
-      if (isInterrupt) {
-        callback({ code: "ExternalInterrupt" });
       } else {
-        module.optimizeCss(htmlFiles, function() {
-          app.log("done with css", "debug");
-          module.optimizeInlinedJs(stagingPath, htmlFiles, function() {
-            app.log("done with js", "debug");
-            module.optimizeHtml(htmlFiles, function() {
-              app.log("done with html", "debug");
+        var fileObj = {
+          filename: stagingPath + options.endpoint,
+          optimizationErrors: []
+        };
+        htmlFiles.push(fileObj);
+      }
 
-              dbApi.checkIfExternalInterrupt(user, jobId, function(err, isInterrupt) {
-                if (isInterrupt) {
-                  callback({ code: "ExternalInterrupt" });
-                } else {
-                  module.optimizeImages(stagingPath, function() {
-                    app.log("done with images", "debug");
 
-                    dbApi.checkIfExternalInterrupt(user, jobId, function(err, isInterrupt) {
-                      if (isInterrupt) {
-                        callback({ code: "ExternalInterrupt" });
-                      } else {
-                        module.gzipStagingFiles(stagingPath, function() {
-                          app.log("done gzipping", "debug");
-                          callback(false, htmlFiles, optimizationErrors);
-                        });
-                      }
+      //check if external interrupt on the heavy optimization stuff like images and gzip
+      //and before we start
+      dbApi.checkIfExternalInterrupt(user, jobId, function(err, isInterrupt) {
+        if (isInterrupt) {
+          callback({ code: "ExternalInterrupt" });
+        } else {
+          module.optimizeCss(htmlFiles, function() {
+            app.log("done with css", "debug");
+            module.optimizeInlinedJs(stagingPath, htmlFiles, function() {
+              app.log("done with js", "debug");
+              module.optimizeHtml(htmlFiles, function() {
+                app.log("done with html", "debug");
+
+                dbApi.checkIfExternalInterrupt(user, jobId, function(err, isInterrupt) {
+                  if (isInterrupt) {
+                    callback({ code: "ExternalInterrupt" });
+                  } else {
+                    module.optimizeImages(stagingPath, function() {
+                      app.log("done with images", "debug");
+
+                      dbApi.checkIfExternalInterrupt(user, jobId, function(err, isInterrupt) {
+                        if (isInterrupt) {
+                          callback({ code: "ExternalInterrupt" });
+                        } else {
+                          module.gzipStagingFiles(stagingPath, function() {
+                            app.log("done gzipping", "debug");
+                            callback(false, htmlFiles, optimizationErrors);
+                          });
+                        }
+                      });
                     });
-                  });
-                }
+                  }
+                });
               });
             });
           });
-        });
-      }
+        }
+      });
     });
   };
 

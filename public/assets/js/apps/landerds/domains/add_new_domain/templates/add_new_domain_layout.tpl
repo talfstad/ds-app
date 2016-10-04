@@ -25,7 +25,7 @@
               <label for="domainName" class="text-align-right field-label col-md-3 text-center">Domain Name:</label>
               <div class="col-md-9">
                 <label for="domainName" class="field prepend-icon">
-                  <input placeholder="www." type="text" name="domainName" id="domain-name" class="domain-name gui-input" value="">
+                  <input placeholder="http://" type="text" name="domainName" id="domain-name" class="domain-name gui-input" value="">
                   <label for="domainName" class="field-icon">
                     <i class="fa fa-map-marker"></i>
                   </label>

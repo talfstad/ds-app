@@ -49,8 +49,6 @@ module.exports = function(app, db) {
         //    . if endpointName has value only add this as endpoint to show
         //    . edit feature will still show all the files, but the entry point is what we preview
         //    . on add lander, only optimize the endpointName (TODO)
-
-        app.log("OPTIMIZE PASSED OPTIONS" + JSON.stringify(options), "debug");
         deleteStaging = options.deleteStaging;
         jobId = false;
       } else {
@@ -328,7 +326,6 @@ module.exports = function(app, db) {
             if (!options.endpoint) {
 
               find.file(/\.html$/, localStagingPath, function(allHtmlFiles) {
-                console.log("IN THE THING TREVOR: " + JSON.stringify(allHtmlFiles));
                 if (allHtmlFiles.length > 0) {
                   var changeAnchorLinks = function(fromPath, $) {
                     $('a').each(function(idx, el) {
@@ -341,7 +338,6 @@ module.exports = function(app, db) {
                           resourcePath = path.join(localStagingPath, href);
                         }
                         var relativePath = path.relative(fromPath, resourcePath);
-                        console.log("changing from: " + href + " to: " + relativePath)
                         $(this).attr('href', relativePath);
                       }
                     });
@@ -358,8 +354,6 @@ module.exports = function(app, db) {
                           resourcePath = path.join(localStagingPath, href);
                         }
                         var relativePath = path.relative(fromPath, resourcePath);
-
-                        console.log("css href changing from: " + href + " to: " + relativePath)
                         $(this).attr('href', relativePath);
                       }
 
@@ -377,8 +371,6 @@ module.exports = function(app, db) {
                           resourcePath = path.join(localStagingPath, src);
                         }
                         var relativePath = path.relative(fromPath, resourcePath);
-
-                        console.log("js src changing from: " + src + " to: " + relativePath)
                         $(this).attr('src', relativePath);
                       }
 
@@ -396,8 +388,6 @@ module.exports = function(app, db) {
                           resourcePath = path.join(localStagingPath, src);
                         }
                         var relativePath = path.relative(fromPath, resourcePath);
-
-                        console.log("changing from: " + src + " to: " + relativePath)
                         $(this).attr('src', relativePath);
                       }
 

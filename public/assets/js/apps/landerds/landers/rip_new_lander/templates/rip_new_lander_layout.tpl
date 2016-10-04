@@ -60,15 +60,15 @@
               <div class="col-md-9" style="margin-top: 12px">
                 <div class="radio-custom radio-primary mb5">
                   <input checked type="radio" id="depth-0" name="depth" value="0">
-                  <label for="depth-0">This landing page only</label>
+                  <label for="depth-0">1 Level: This landing page only</label>
                 </div>
                 <div class="pt10 radio-custom radio-primary mb5">
                   <input type="radio" id="depth-1" name="depth" value="1">
-                  <label for="depth-1">1 Level: This landing page and all of its links</label>
+                  <label for="depth-1">2 Levels: This landing page and all of its direct links</label>
                 </div>
                 <div class="pt10 radio-custom radio-primary mb5">
                   <input type="radio" id="depth-2" name="depth" value="2">
-                  <label for="depth-2">2 Levels: This landing page all of its links, and all of those links</label>
+                  <label for="depth-2">3 Levels: This landing page, all of its direct links, and all of Level 2's links</label>
                 </div>
               </div>
             </div>

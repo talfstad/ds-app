@@ -169,9 +169,24 @@ module.exports = function(app, db) {
                 Id: s3_id,
                 /* required */
                 OriginPath: path,
-                S3OriginConfig: {
-                  OriginAccessIdentity: '' /* required */
-                }
+                CustomOriginConfig: {
+                  HTTPPort: 80,
+                  /* required */
+                  HTTPSPort: 443,
+                  /* required */
+                  OriginProtocolPolicy: 'http-only'
+                  /* required */
+                  // OriginSslProtocols: {
+                  //   Items: [ /* required */
+                  //     'SSLv3 | TLSv1 | TLSv1.1 | TLSv1.2',
+                  //     /* more items */
+                  //   ],
+                  //   Quantity: 0 /* required */
+                  // }
+                },
+                // S3OriginConfig: {
+                //   OriginAccessIdentity: '' /* required */
+                // }
               }
               /* more items */
             ]
