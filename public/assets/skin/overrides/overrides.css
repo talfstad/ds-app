@@ -487,3 +487,14 @@ body.sb-l-o #topbar.affix,
 .deployed-row-td {
     font-size: 14px; line-height: 28px !important;
 }
+
+.section-divider span {
+    background: #F2F2F2 !important;
+}
+
+#rip-advanced-settings {
+    display: none;
+}
+#toggle-advanced-rip-settings:hover,#toggle-advanced-rip-settings:focus {
+    text-decoration: none !important;
+}

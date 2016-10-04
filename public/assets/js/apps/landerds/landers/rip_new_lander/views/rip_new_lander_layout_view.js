@@ -25,6 +25,7 @@ define(["app",
 
         events: {
           "click .rip-new-lander-confirm": "confirmedRipNewLander",
+          "click #toggle-advanced-rip-settings": "toggleAdvancedSettings",
           "keyup input": "ifEnterSubmit"
         },
 
@@ -32,6 +33,23 @@ define(["app",
           if (e.keyCode == 13) {
             this.$el.find("button[type='submit']").click();
           }
+        },
+
+        toggleAdvancedSettings: function(e) {
+          if (e) e.preventDefault();
+
+          var ripAdvancedSettings = this.$el.find("#rip-advanced-settings");
+          var advancedSettingsText = this.$el.find("#toggle-advanced-rip-settings");
+
+          if (ripAdvancedSettings.css("display") == "none") {
+            ripAdvancedSettings.fadeIn("fast");
+            advancedSettingsText.html("<i style='position: relative' class='mr5 fa fa-arrow-circle-up'></i> Hide Advanced Settings");
+          } else {
+            ripAdvancedSettings.fadeOut("fast", function() {
+              advancedSettingsText.html("<i style='position: relative' class='mr5 fa fa-arrow-circle-down'></i> Show Advanced Settings");
+            });
+          }
+
         },
 
         modelEvents: {
@@ -86,7 +104,7 @@ define(["app",
                 "depth": newLanderData.depth,
                 "alertInvalidInputs": false
               });
-              
+
               me.trigger("ripLanderConfirmed");
 
             } else {
