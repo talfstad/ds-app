@@ -1,10 +1,12 @@
 define(["app", "assets/js/apps/user/login/login_view",
     "assets/js/apps/user/login/login_layout",
+    "assets/js/apps/user/login/reset_password_view",
+    "assets/js/apps/user/login/models/reset_password_model",
     "assets/js/common/logout/common_logout",
     "assets/js/apps/landerds/entry_point/entry_app",
     "syphon"
   ],
-  function(Landerds, LoginView, LoginLayout, Logout) {
+  function(Landerds, LoginView, LoginLayout, ResetPasswordView, ResetPasswordModel, Logout) {
     Landerds.module("UserApp.Login", function(Login, Landerds, Backbone, Marionette, $, _) {
 
       Login.Controller = {
@@ -49,7 +51,7 @@ define(["app", "assets/js/apps/user/login/login_view",
             this.model.set(loginFormData);
 
             if (this.model.isValid(true)) {
-              
+
               this.model.set("alertLoading", true);
 
               this.model.save({}, {
@@ -70,6 +72,90 @@ define(["app", "assets/js/apps/user/login/login_view",
               //error
             }
           })
+        },
+
+        showResetPassword: function() {
+          Landerds.UserApp.Login.Controller.showLayout();
+          var resetPasswordModel = new ResetPasswordModel.ResetPasswordModel();
+
+          var resetPasswordView = new ResetPasswordView.showForgotPassword({
+            model: resetPasswordModel
+          });
+          Landerds.loginLayout.content.show(resetPasswordView);
+
+
+          resetPasswordView.on("reset:form:submit", function() {
+            var successResetCallback = function(model, message, other) {
+              resetPasswordView.showCheckEmailMessage(model.attributes);
+              Landerds.execute("show:login");
+            };
+            var errorResetCallback = function(model, message, other) {
+              //something happened on submit that is out of our control
+              //TODO: growl here or something to let the user know
+            };
+
+            var loginFormData = Backbone.Syphon.serialize(this);
+            this.model.set(loginFormData);
+
+            if (this.model.isValid(true)) {
+              this.model.save({}, {
+                success: successResetCallback,
+                error: errorResetCallback
+              });
+            }
+          });
+        },
+
+        showResetPasswordStep2: function(code) {
+          Landerds.UserApp.Login.Controller.showLayout();
+
+          var codeValid = function() {
+            var resetPasswordModel = new ResetPasswordModel.ResetPasswordModelStep2({
+              code: code
+            });
+
+            var resetPasswordViewStep2 = new ResetPasswordView.showForgotPasswordStep2({
+              model: resetPasswordModel
+            });
+            Landerds.loginLayout.content.show(resetPasswordViewStep2);
+
+            resetPasswordViewStep2.on("reset:form:submit", function() {
+
+              var successResetCallback = function(model, message, other) {
+                resetPasswordViewStep2.showSuccessfulReset();
+                Landerds.execute("show:login");
+              };
+
+              var loginFormData = Backbone.Syphon.serialize(this);
+              this.model.set(loginFormData);
+
+              if (this.model.isValid(true)) {
+                this.model.save({}, {
+                  success: successResetCallback
+                });
+              }
+            });
+          };
+
+          var codeInvalid = function() {
+            Landerds.trigger("show:resetPassword");
+          }
+
+          var checkCodeModel = new ResetPasswordModel.Check();
+
+          //validate code
+          checkCodeModel.save({
+            code: code
+          }, {
+            success: function(data) {
+              if (data.attributes.isValid) {
+                codeValid();
+              } else {
+                codeInvalid();
+              }
+            }
+          });
+
         }
 
       }

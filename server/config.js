@@ -2,6 +2,7 @@ module.exports = {
 
   dev: {
     id: 1,
+    subdomain: "test",
     port: 3000,
     dbConnectionInfo: {
       host: 'landerds-app.cynwtdt18kyi.us-west-2.rds.amazonaws.com',
@@ -19,6 +20,9 @@ module.exports = {
       pass: 'Wewillrockyou1986!',
       logErrors: false
     },
+    resetPasswordCodeLifespanMinutes: 10,
+    adminEmail: "trevor@buildcave.com",
+    adminEmailPassword: "Wewillrockyou1986!",
     cookieSecret: 'landerdssecretkeytobechangedlatermaybe123!#',
     sessionSecret: 'landerdssecretkeytobechangedlatermaybe123!#',
     cookieMaxAge: (1000 * 60 * 60 * 24 * 365),
@@ -44,6 +48,7 @@ module.exports = {
   prod: {
     id: 1,
     port: 3000,
+    subdomain: "test",
     dbConnectionInfo: {
       host: 'landerds-app.cynwtdt18kyi.us-west-2.rds.amazonaws.com',
       user: 'buildcave',
@@ -60,6 +65,9 @@ module.exports = {
       pass: 'Wewillrockyou1986!',
       logErrors: false
     },
+    resetPasswordCodeLifespanMinutes: 10,
+    adminEmail: "trevor@buildcave.com",
+    adminEmailPassword: "Wewillrockyou1986!",
     cookieSecret: 'landerdssecretkeytobechangedlatermaybe123!#',
     sessionSecret: 'landerdssecretkeytobechangedlatermaybe123!#',
     cookieMaxAge: (1000 * 60 * 60 * 24 * 365),

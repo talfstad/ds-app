@@ -1,0 +1,3 @@
+update columns in one table to be columns in another table:
+
+update user_settings a left join wp_users b on a.user_id = b.id set a.user_email = b.user_email;

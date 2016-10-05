@@ -8,7 +8,7 @@
     <div class="login-links">
       <a href="#" class="notification active" title="Sign In">Sign In</a>
       <span class="text-white"> | </span>
-      <a href="login/reset" title="Forgot Password">Forgot Password</a>
+      <a class="forgot-password" href="#" title="Forgot Password">Forgot Password</a>
     </div>
   </div>
 </div>

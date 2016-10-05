@@ -1,12 +1,12 @@
 module.exports = function(app, passport) {
-
+  var hasher = require('wordpress-hash-node');
   var Puid = require('puid');
   var puid = new Puid(true);
-  var bcrypt = require("bcrypt-nodejs");
   var validator = require('validator');
   var db = require("../db_api")(app);
   var _ = require("underscore-node");
   var fs = require("fs");
+  var sendEmail = require("../utils/send_email")(app);
 
   app.post("/api/login", passport.authenticate(), function(req, res) {
     //this is only executed if login succeeded
@@ -73,4 +73,82 @@ module.exports = function(app, passport) {
     });
   });
 
+  app.post("/api/login/request/reset", function(req, res) {
+    var email = req.body.email;
+    db.users.requestResetPassword(email, function(err, code) {
+      if (err) {
+        res.json({
+          emailSent: false,
+          error: err
+        });
+      } else {
+        var link = "https://" + app.config.subdomain + ".landerds.com/login/reset/" + code;
+        var filePath = __dirname + "/../html_email_templates/reset_password_template.tpl";
+
+        fs.readFile(filePath, 'utf8', function(err, file) {
+          if (err) {
+            res.json({
+              emailSent: false,
+              error: err
+            });
+          } else {
+            var tpl = _.template(file);
+            var message = tpl({ reset_password_link: link });
+
+            var subject = "LanderDS Password Reset";
+            sendEmail(app.config.adminEmail, app.config.adminEmailPassword, email, subject, message, function(err) {
+              if (err) {
+                res.json({
+                  emailSent: false,
+                  error: err
+                });
+              } else {
+                res.json({
+                  emailSent: true
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  });
+
+  app.post("/api/login/reset/check", function(req, res) {
+    var code = req.body.code;
+    db.users.checkPasswordResetCode(code, app.config.resetPasswordCodeLifespanMinutes, function(error, isValid) {
+      if (!isValid) {
+        res.json({
+          error: error,
+          isValid: false
+        });
+      } else {
+        res.json({
+          success: "Code is valid.",
+          isValid: true
+        });
+      }
+    });
+  });
+
+  app.post("/api/login/reset/password", function(req, res) {
+    var code = req.body.code;
+    var password = req.body.password;
+
+    var hash = hasher.HashPassword(password);
+    console.log("hash: " + hash + " pasword: " + password);
+
+    //TODO: validate password length/complexity/same as old password
+    db.users.resetPassword(code, hash, function(error) {
+      if (error) {
+        res.json({
+          error: error
+        });
+      } else {
+        res.json({
+          success: true
+        });
+      }
+    });
+  });
 };
