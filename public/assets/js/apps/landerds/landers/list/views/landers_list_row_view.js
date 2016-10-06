@@ -29,7 +29,49 @@ define(["app",
 
         events: {
           "click button.deploy-to-domain": "showDeployLanderToDomain",
-          "click button.add-to-group": "showAddToGroup"
+          "click button.add-to-group": "showAddToGroup",
+          "blur .editable-lander-name": "saveEditedLanderName",
+          "click .editable-lander-name": "stopPropagation",
+          "keydown .editable-lander-name": "updateInputWidth"
+        },
+
+        stopPropagation: function(e) {
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        },
+
+        updateInputWidth: function(e) {
+          //also checks for ENTER KEY submits if enter pressed
+          var me = this;
+          setTimeout(function() {
+            if (e) {
+              if (e.keyCode == 13) {
+                me.saveEditedLanderName(e);
+              } else {
+                $(e.currentTarget).css("width", (($(e.currentTarget).val().length + 2) * 8) + 'px');
+              }
+            } else {
+              me.$el.find(".editable-lander-name").each(function(i, el) {
+                $(el).css("width", (($(el).val().length + 2) * 8) + 'px');
+              });
+            }
+          }, 20);
+        },
+
+        saveEditedLanderName: function(e) {
+          if (e) e.preventDefault();
+          var me = this;
+
+          var newLanderName = $(e.currentTarget).val();
+
+          if (newLanderName != "" && newLanderName != this.model.get("name")) {
+            this.trigger("saveLanderName", newLanderName);
+          } else {
+            $(e.currentTarget).val(this.model.get("name"));
+            this.updateInputWidth();
+          }
         },
 
         modelEvents: {
@@ -116,11 +158,10 @@ define(["app",
           var me = this;
 
           this.alertDeployStatus();
-
           this.reAlignTableHeader();
+          this.updateInputWidth();
 
-          //if deleting need to show delet state (which is disabling the whole thing)
-
+          //if deleting need to show delete state (which is disabling the whole thing)
           var deployStatus = this.model.get("deploy_status");
           var rootDeployStatus = deployStatus.split(":")[0];
           if (rootDeployStatus === "deleting" || rootDeployStatus == "initializing") {

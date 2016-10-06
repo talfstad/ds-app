@@ -503,15 +503,11 @@ body.sb-l-o #topbar.affix,
     border: none;
     background-color: transparent;
     font-size: 15px;
+    line-height: normal;
     font-weight: 600;
     outline: none;
-    width: 90%;
 }
 
-
-
-
-
-
-
-
+.fw500 {
+    font-weight: 500 !important;
+}

@@ -3,8 +3,8 @@
     <div class="panel">
       <div class="panel-heading">
         <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#list-collection" href="#accord<%= id %>">
-          <%= name %>
-
+          <input class="editable-lander-name fw500" type="text" value="<%= name %>">
+          
           <div class="alert-working-badge widget-menu domain-group-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
             <span class="open_sidemenu_r label">
         

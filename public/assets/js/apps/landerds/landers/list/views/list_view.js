@@ -20,8 +20,20 @@ define(["app",
           this.listenTo(this, "landers:sort", this.triggerSort);
         },
 
-        onRenderCollection: function() {
-          
+        childEvents: {
+          "saveLanderName": "saveLanderName"
+        },
+
+        saveLanderName: function(childView, landerName) {
+          var landerModel = childView.model;
+          //save this lander name to the DB
+          landerModel.set("name", landerName);
+          landerModel.save({}, {
+            success: function(model, two, three) {
+              //when the landername changes change the name, resort, goto page, open
+              landerModel.trigger("resortAndExpandModelView");
+            }
+          });
         },
 
         triggerSort: function() {
