@@ -28,6 +28,18 @@ define(["app",
             model: landerModel
           });
 
+          jsSnippetsLayoutView.on("saveLanderName", function(landerName) {
+
+            //save this lander name to the DB
+            this.model.set("name", landerName);
+            this.model.save({}, {
+              success: function(model, two, three) {
+                //when the landername changes change the name, resort, goto page, open
+                landerModel.trigger("resortAndExpandModelView");
+              }
+            });
+          });
+
           //set to global
           this.jsSnippetsLayoutView = jsSnippetsLayoutView;
 
@@ -156,7 +168,7 @@ define(["app",
                 if (isAvailable) {
 
                   model.set("availableEndpointId", currentShowingEndpoint.get("id"));
-                  
+
                 } else {
                   model.set("availableEndpointId", null);
                 }

@@ -24,7 +24,6 @@ define(["app",
         regions: {
           'leftNavSnippetListRegion': ".snippets-list-region",
           'snippetDetailRegion': ".snippet-detail-region",
-          'snippetTotalsRegion': ".snippet-totals-region"
         },
 
         events: {

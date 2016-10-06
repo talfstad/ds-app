@@ -39,8 +39,7 @@ define(["app",
                 //when the landername changes change the name, resort, goto page, open
                 landerModel.trigger("resortAndExpandModelView");
               }
-            })
-
+            });
           });
 
           jsSnippetsLayoutView.render();

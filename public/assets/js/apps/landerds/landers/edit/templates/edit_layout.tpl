@@ -11,7 +11,7 @@
         <ul class="nav nav-list nav-list-topbar mb0 pull-left">
           <li role="presentation" class="active">
             <a href="#resources" aria-controls="resources" role="tab" data-toggle="tab"><span class="fa fa-file-code-o pr5"></span> JS Snippets</a>
-          </li> 
+          </li>
           <!-- <li role="presentation">
             <a href="#file-edit" aria-controls="file-edit" role="tab" data-toggle="tab"><span class="fa fa-folder-open pr5"></span> Resources</a>
           </li>  -->
@@ -38,7 +38,6 @@
               </header>
               <!-- End: Sidebar Header -->
               <!-- Start: Sidebar Menu -->
-              <div class="snippet-totals-region"></div>
               <div class="snippets-list-region sidebar-menu-container">
               </div>
               <div class="create-snippet-container">
