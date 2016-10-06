@@ -35,8 +35,9 @@ define(["app",
             //save this lander name to the DB
             this.model.set("name", landerName);
             this.model.save({}, {
-              success: function(one, two, three) {
-
+              success: function(model, two, three) {
+                //when the landername changes change the name, resort, goto page, open
+                landerModel.trigger("resortAndExpandModelView");
               }
             })
 

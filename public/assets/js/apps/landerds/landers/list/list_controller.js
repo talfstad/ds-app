@@ -163,7 +163,8 @@ define(["app",
                   });
 
                   landerView.on("renderAndShowThisViewsPage", function() {
-                    me.showRow(landerView.model);
+                    me.filteredCollection.sortFiltered();
+                    me.expandAndShowRow(landerView.model);
                   });
 
                   //handles changes, use css its way faster
@@ -390,7 +391,6 @@ define(["app",
                 deployedDomainModel.set("deploy_status", "deploying");
 
               }
-
             });
           }
         },

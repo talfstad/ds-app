@@ -34,6 +34,7 @@ define(["app",
 
         modelEvents: {
           "change:deploy_status": "alertDeployStatus",
+          "resortAndExpandModelView": "renderAndShowThisViewsPage",
           "landerFinishAdded": "renderAndShowThisViewsPage"
         },
 

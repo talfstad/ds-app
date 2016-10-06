@@ -29,7 +29,7 @@ module.exports = function(app, db) {
       if (err) {
         callback({
           error: { code: "InvalidLanderInputs" },
-          deployment_folder_name: err.deployment_folder_name
+          deployment_folder_name: err.deployment_folder_name,
           old_deployment_folder_name: err.deployment_folder_name
         });
       } else {
