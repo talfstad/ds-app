@@ -48,7 +48,7 @@ module.exports = {
   prod: {
     id: 1,
     port: 3000,
-    subdomain: "test",
+    subdomain: "panel",
     dbConnectionInfo: {
       host: 'landerds-app.cynwtdt18kyi.us-west-2.rds.amazonaws.com',
       user: 'buildcave',

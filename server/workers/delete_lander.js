@@ -34,11 +34,7 @@ module.exports = function(app, db) {
           app.log("trying to delete path: " + folderPathToDelete, "debug");
 
           db.aws.s3.deleteDir(credentials, aws_root_bucket, folderPathToDelete, function(err) {
-            if (err) {
-              callback({ code: "CouldNotDeleteS3Folder" });
-            } else {
-              callback(false);
-            }
+            callback(false);
           });
         };
 
