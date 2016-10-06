@@ -5,7 +5,6 @@ define(["app",
     "assets/js/apps/landerds/landers/dao/js_snippet_model",
     "assets/js/apps/landerds/landers/edit/views/edit_detail_view",
     "assets/js/common/filtered_paginated/filtered_paginated_collection",
-    "assets/js/apps/landerds/landers/edit/views/edit_totals_view",
     "assets/js/apps/landerds/landers/right_sidebar/js_snippets/dao/active_js_snippet_model",
     "assets/js/apps/landerds/landers/edit/views/empty_snippets_detail_view",
     "assets/js/apps/landerds/landers/edit/views/create_new_snippet_view",
@@ -13,7 +12,7 @@ define(["app",
   ],
   function(Landerds, JsSnippetsLayoutView, LoadingView,
     LeftNavSnippetsView, SnippetModel, JsSnippetDetailView, FilteredPaginatedCollection,
-    JsSnippetTotalsView, ActiveSnippetModel, EmptySnippetsDetailView, CreateNewSnippetView) {
+    ActiveSnippetModel, EmptySnippetsDetailView, CreateNewSnippetView) {
     Landerds.module("LandersApp.Landers.Edit", function(Edit, Landerds, Backbone, Marionette, $, _) {
 
       Edit.Controller = {
@@ -30,6 +29,18 @@ define(["app",
 
           //set to global
           this.jsSnippetsLayoutView = jsSnippetsLayoutView;
+
+          jsSnippetsLayoutView.on("saveLanderName", function(landerName) {
+
+            //save this lander name to the DB
+            this.model.set("name", landerName);
+            this.model.save({}, {
+              success: function(one, two, three) {
+
+              }
+            })
+
+          });
 
           jsSnippetsLayoutView.render();
 
@@ -59,272 +70,264 @@ define(["app",
 
             filteredSnippetCollection.urlEndpoints = landerModel.get("urlEndpoints");
 
-            var jsSnippetTotalsView = new JsSnippetTotalsView({
-              snippet_collection: filteredSnippetCollection
+
+            jsSnippetsLayoutView.on("showCreateNewSnippetView", function() {
+              //remove 'active' from all snippets
+              filteredSnippetCollection.original.each(function(snippet) {
+                snippet.set("active", false);
+              });
+
+              //create a new snippet view and show it!
+              var newSnippetModel = new SnippetModel();
+
+              var createNewSnippetView = new CreateNewSnippetView({
+                model: newSnippetModel
+              });
+
+              createNewSnippetView.on("saveNewSnippet", function() {
+                this.model.set("savingNewSnippet", true);
+
+                //now save it to the server
+                this.model.save({}, {
+                  success: function(savedModel) {
+                    //add to snippet list collection
+                    filteredSnippetCollection.add(savedModel);
+                    //trigger finishing on success
+                    savedModel.set("savingNewSnippet", "finished");
+                    //select it
+                    leftNavSnippetsView.trigger("childview:showSnippet", savedModel);
+                  }
+                });
+              });
+
+              createNewSnippetView.on("cancelNewSnippet", function() {
+                //once removed, show the first model if we have one, or the default view
+                var firstModel = filteredSnippetCollection.models[0];
+                if (!firstModel) {
+                  me.showEmptySnippetsDetailView();
+                } else {
+                  leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
+                }
+              });
+
+              me.jsSnippetsLayoutView.snippetDetailRegion.show(createNewSnippetView);
+
             });
 
-            // jsSnippetsLayoutView.on("showCreateNewSnippetView", function() {
-            //   //remove 'active' from all snippets
-            //   filteredSnippetCollection.original.each(function(snippet) {
-            //     snippet.set("active", false);
-            //   });
-
-            //   //create a new snippet view and show it!
-            //   var newSnippetModel = new SnippetModel();
-
-            //   var createNewSnippetView = new CreateNewSnippetView({
-            //     model: newSnippetModel
-            //   });
-
-            //   createNewSnippetView.on("saveNewSnippet", function() {
-            //     this.model.set("savingNewSnippet", true);
-
-            //     //now save it to the server
-            //     this.model.save({}, {
-            //       success: function(savedModel) {
-            //         //add to snippet list collection
-            //         filteredSnippetCollection.add(savedModel);
-            //         //update totals
-            //         jsSnippetTotalsView.trigger("updateSnippetTotals");
-            //         //trigger finishing on success
-            //         savedModel.set("savingNewSnippet", "finished");
-            //         //select it
-            //         leftNavSnippetsView.trigger("childview:showSnippet", savedModel);
-            //       }
-            //     });
-            //   });
-
-            //   createNewSnippetView.on("cancelNewSnippet", function() {
-            //     //once removed, show the first model if we have one, or the default view
-            //     var firstModel = filteredSnippetCollection.models[0];
-            //     if (!firstModel) {
-            //       me.showEmptySnippetsDetailView();
-            //     } else {
-            //       leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
-            //     }
-            //   });
-
-            //   me.jsSnippetsLayoutView.snippetDetailRegion.show(createNewSnippetView);
-
-            // });
-
-            // //create left nav list of snippets
+            //create left nav list of snippets
             var leftNavSnippetsView = new LeftNavSnippetsView({
               collection: filteredSnippetCollection
             });
 
-            // jsSnippetsLayoutView.on("jsSnippets:filterList", function(filterVal) {
-            //   filteredSnippetCollection.filter(filterVal);
-            // });
+            jsSnippetsLayoutView.on("jsSnippets:filterList", function(filterVal) {
+              filteredSnippetCollection.filter(filterVal);
+            });
 
-            // leftNavSnippetsView.on("childview:showSnippet", function(childViewOrModel) {
-            //   var model = childViewOrModel.model || childViewOrModel;
-            //   //1. set all active = false for collection
-            //   jsSnippetCollection.each(function(snippet) {
-            //     snippet.set("active", false);
-            //   });
-            //   model.set("active", true);
+            leftNavSnippetsView.on("childview:showSnippet", function(childViewOrModel) {
+              var model = childViewOrModel.model || childViewOrModel;
+              //1. set all active = false for collection
+              jsSnippetCollection.each(function(snippet) {
+                snippet.set("active", false);
+              });
+              model.set("active", true);
 
-            //   //2. figure out the available urlEndpoints
-            //   var availableUrlEndpoints = [];
-            //   var showingSnippetId = model.get("snippet_id");
+              //2. figure out the available urlEndpoints
+              var availableUrlEndpoints = [];
+              var showingSnippetId = model.get("snippet_id");
 
-            //   var urlEndpointCollection = landerModel.get("urlEndpoints");
+              var urlEndpointCollection = landerModel.get("urlEndpoints");
 
-            //   var currentShowingEndpoint = urlEndpointCollection.get(landerModel.get("currentPreviewEndpointId"));
+              var currentShowingEndpoint = urlEndpointCollection.get(landerModel.get("currentPreviewEndpointId"));
 
-            //   //snippet available for endpoint?
-            //   var isAvailable = true;
-            //   var activeSnippetCollection = currentShowingEndpoint.get("activeSnippets");
-            //   activeSnippetCollection.each(function(snippet) {
-            //     if (snippet.get("snippet_id") == showingSnippetId) {
-            //       isAvailable = false;
-            //     }
-            //   });
+              //snippet available for endpoint?
+              var isAvailable = true;
+              var activeSnippetCollection = currentShowingEndpoint.get("activeSnippets");
+              activeSnippetCollection.each(function(snippet) {
+                if (snippet.get("snippet_id") == showingSnippetId) {
+                  isAvailable = false;
+                }
+              });
 
-            //   //set initial saving
-            //   model.set("saving_lander", landerModel.get("saving_lander"));
-            //   //update if change
-            //   landerModel.on("change:saving_lander", function(landerModel, val) {
-            //     model.set("saving_lander", val);
-            //   });
+              //set initial saving
+              model.set("saving_lander", landerModel.get("saving_lander"));
+              //update if change
+              landerModel.on("change:saving_lander", function(landerModel, val) {
+                model.set("saving_lander", val);
+              });
 
-            //   if (!currentShowingEndpoint) {
-            //     //if no endpoint just set saving_lander so we disable it
-            //     model.set("availableEndpointId", null);
-            //   } else {
-            //     if (isAvailable) {
+              if (!currentShowingEndpoint) {
+                //if no endpoint just set saving_lander so we disable it
+                model.set("availableEndpointId", null);
+              } else {
+                if (isAvailable) {
 
-            //       model.set("availableEndpointId", currentShowingEndpoint.get("id"));
-                  
-            //     } else {
-            //       model.set("availableEndpointId", null);
-            //     }
-            //   }
+                  model.set("availableEndpointId", currentShowingEndpoint.get("id"));
 
-            //   //3. show the new detail view with the model that was clicked
-            //   var newSnippetDetailView = new JsSnippetDetailView({
-            //     model: model
-            //   });
+                } else {
+                  model.set("availableEndpointId", null);
+                }
+              }
 
-            //   newSnippetDetailView.on("addSnippetToUrlEndpoint", function(attr) {
-            //     var snippetModel = attr.model;
-            //     var urlEndpointId = attr.urlEndpointId;
-            //     var landerId = me.jsSnippetsLayoutView.model.get("id");
-            //     //1. show that we are addingToPage, set addingToPage=true causes render
-            //     snippetModel.set("addingToPage", true);
+              //3. show the new detail view with the model that was clicked
+              var newSnippetDetailView = new JsSnippetDetailView({
+                model: model
+              });
 
-            //     //create an active snippet model for this
-            //     var newActiveSnippetModel = new ActiveSnippetModel({
-            //       "name": snippetModel.get("name"),
-            //       "snippet_id": snippetModel.get("snippet_id"),
-            //       "id": snippetModel.get("id"),
-            //       "action": "addSnippetToUrlEndpoint",
-            //       "urlEndpointId": urlEndpointId,
-            //       "lander_id": landerId
-            //     });
+              newSnippetDetailView.on("addSnippetToUrlEndpoint", function(attr) {
+                var snippetModel = attr.model;
+                var urlEndpointId = attr.urlEndpointId;
+                var landerId = me.jsSnippetsLayoutView.model.get("id");
+                //1. show that we are addingToPage, set addingToPage=true causes render
+                snippetModel.set("addingToPage", true);
 
-            //     //set no optimize on save false when add snippet!
-            //     landerModel.set({
-            //       saving_lander: true
-            //     });
+                //create an active snippet model for this
+                var newActiveSnippetModel = new ActiveSnippetModel({
+                  "name": snippetModel.get("name"),
+                  "snippet_id": snippetModel.get("snippet_id"),
+                  "id": snippetModel.get("id"),
+                  "action": "addSnippetToUrlEndpoint",
+                  "urlEndpointId": urlEndpointId,
+                  "lander_id": landerId
+                });
 
-            //     newActiveSnippetModel.save({}, {
-            //       success: function(activeSnippetModel, two, three) {
+                //set no optimize on save false when add snippet!
+                landerModel.set({
+                  saving_lander: true
+                });
 
-            //         landerModel.set({
-            //           saving_lander: false,
-            //           no_optimize_on_save: false
-            //         });
+                newActiveSnippetModel.save({}, {
+                  success: function(activeSnippetModel, two, three) {
 
-            //         // add it to the colleciton
-            //         var urlEndpointCollection = landerModel.get("urlEndpoints");
-            //         var endpointToAddTo = urlEndpointCollection.get(urlEndpointId);
+                    landerModel.set({
+                      saving_lander: false,
+                      no_optimize_on_save: false
+                    });
 
-            //         var endpointsActiveSnippetCollection = endpointToAddTo.get("activeSnippets");
+                    // add it to the colleciton
+                    var urlEndpointCollection = landerModel.get("urlEndpoints");
+                    var endpointToAddTo = urlEndpointCollection.get(urlEndpointId);
 
-            //         endpointsActiveSnippetCollection.add(newActiveSnippetModel);
+                    var endpointsActiveSnippetCollection = endpointToAddTo.get("activeSnippets");
 
-            //         Landerds.trigger("landers:updateToModified");
+                    endpointsActiveSnippetCollection.add(newActiveSnippetModel);
 
-            //         Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerModel);
-            //         //set addingToPage to 'finished' to show the finished message and remove
-            //         snippetModel.set("addingToPage", "finished");
+                    Landerds.trigger("landers:updateToModified");
 
-            //         // trigger a render by changing a value that triggers it
-            //         leftNavSnippetsView.trigger("childview:showSnippet", snippetModel);
-            //       },
-            //       error: function() {
+                    Landerds.trigger("landers:sidebar:showSidebarActiveSnippetsView", landerModel);
+                    //set addingToPage to 'finished' to show the finished message and remove
+                    snippetModel.set("addingToPage", "finished");
 
-            //       }
-            //     });
+                    // trigger a render by changing a value that triggers it
+                    leftNavSnippetsView.trigger("childview:showSnippet", snippetModel);
+                  },
+                  error: function() {
 
-            //   });
+                  }
+                });
 
-            //   newSnippetDetailView.on("saveCode", function(code) {
+              });
 
-            //     var snippetModel = this.model;
+              newSnippetDetailView.on("saveCode", function(code) {
 
-            //     snippetModel.set({
-            //       "code": code,
-            //       "action": "saveCode"
-            //     });
+                var snippetModel = this.model;
 
-            //     snippetModel.set("savingCode", true);
+                snippetModel.set({
+                  "code": code,
+                  "action": "saveCode"
+                });
 
-            //     snippetModel.save({}, {
-            //       success: function(savedModel, affectedLanderIds, three) {
-            //         savedModel.set("originalSnippetCode", savedModel.get("code"));
-            //         savedModel.set("savingCode", "finished");
+                snippetModel.set("savingCode", true);
 
-            //         //set all landers in the response object (affectedLanderIds) to modified because they
-            //         //are modified in the db
-            //         Landerds.trigger("landers:updateAffectedLanderIdsToModified", affectedLanderIds);
-            //       },
-            //       error: function() {
+                snippetModel.save({}, {
+                  success: function(savedModel, affectedLanderIds, three) {
+                    savedModel.set("originalSnippetCode", savedModel.get("code"));
+                    savedModel.set("savingCode", "finished");
 
-            //       }
-            //     });
-            //   });
+                    //set all landers in the response object (affectedLanderIds) to modified because they
+                    //are modified in the db
+                    Landerds.trigger("landers:updateAffectedLanderIdsToModified", affectedLanderIds);
+                  },
+                  error: function() {
 
-            //   newSnippetDetailView.on("deleteSnippet", function() {
-            //     var snippetModel = this.model;
+                  }
+                });
+              });
 
-            //     //starting delete snippet
-            //     snippetModel.set("deletingSnippet", true);
+              newSnippetDetailView.on("deleteSnippet", function() {
+                var snippetModel = this.model;
 
-            //     snippetModel.destroy({
-            //       success: function(deletedModel, affectedLanders) {
+                //starting delete snippet
+                snippetModel.set("deletingSnippet", true);
 
-            //         //  . remove active snippets from landers
-            //         Landerds.trigger("landers:updateAffectedLanderIdsRemoveActiveSnippets", affectedLanders);
+                snippetModel.destroy({
+                  success: function(deletedModel, affectedLanders) {
 
-            //         jsSnippetTotalsView.trigger("updateSnippetTotals");
+                    //  . remove active snippets from landers
+                    Landerds.trigger("landers:updateAffectedLanderIdsRemoveActiveSnippets", affectedLanders);
 
-            //         //once removed, show the first model if we have one, or the default view
-            //         var firstModel = filteredSnippetCollection.models[0];
-            //         if (!firstModel) {
-            //           me.showEmptySnippetsDetailView();
-            //         } else {
-            //           //set alert delete to finished on this model so
-            //           //when we show the new model it shows delete successful message
-            //           firstModel.set("deletingSnippet", "finished");
+                    //once removed, show the first model if we have one, or the default view
+                    var firstModel = filteredSnippetCollection.models[0];
+                    if (!firstModel) {
+                      me.showEmptySnippetsDetailView();
+                    } else {
+                      //set alert delete to finished on this model so
+                      //when we show the new model it shows delete successful message
+                      firstModel.set("deletingSnippet", "finished");
 
-            //           leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
-            //         }
-            //       }
-            //     });
+                      leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
+                    }
+                  }
+                });
 
-            //   });
+              });
 
 
-            //   newSnippetDetailView.on("saveEditInfo", function(attr) {
-            //     var snippetModel = attr.model;
-            //     var name = attr.name;
-            //     var description = attr.description;
+              newSnippetDetailView.on("saveEditInfo", function(attr) {
+                var snippetModel = attr.model;
+                var name = attr.name;
+                var description = attr.description;
 
-            //     var loadBeforeDom = attr.loadBeforeDom;
+                var loadBeforeDom = attr.loadBeforeDom;
 
-            //     snippetModel.set({
-            //       "name": name,
-            //       "description": description,
-            //       "load_before_dom": loadBeforeDom,
-            //       "action": "saveEditInfo"
-            //     });
+                snippetModel.set({
+                  "name": name,
+                  "description": description,
+                  "load_before_dom": loadBeforeDom,
+                  "action": "saveEditInfo"
+                });
 
-            //     snippetModel.set("savingEditInfo", true);
+                snippetModel.set("savingEditInfo", true);
 
-            //     snippetModel.save({}, {
-            //       success: function(savedModel, two, three) {
+                snippetModel.save({}, {
+                  success: function(savedModel, two, three) {
 
-            //         //sort it now that the name probably changed
-            //         filteredSnippetCollection.sort();
+                    //sort it now that the name probably changed
+                    filteredSnippetCollection.sort();
 
-            //         //get the actual snippet model and change the name/description of it
-            //         //those models are different than the actual snippet models
-            //         Landerds.trigger("landers:updateAllActiveSnippetNames", savedModel);
+                    //get the actual snippet model and change the name/description of it
+                    //those models are different than the actual snippet models
+                    Landerds.trigger("landers:updateAllActiveSnippetNames", savedModel);
 
-            //         savedModel.set("showEditInfo", false);
-            //         savedModel.set("savingEditInfo", "finished");
+                    savedModel.set("showEditInfo", false);
+                    savedModel.set("savingEditInfo", "finished");
 
-            //       },
-            //       error: function() {
+                  },
+                  error: function() {
 
-            //       }
-            //     })
-            //   });
+                  }
+                })
+              });
 
-            //   jsSnippetsLayoutView.snippetDetailRegion.show(newSnippetDetailView);
+              jsSnippetsLayoutView.snippetDetailRegion.show(newSnippetDetailView);
 
-            // });
+            });
 
 
             //show actual views
             jsSnippetsLayoutView.leftNavSnippetListRegion.show(leftNavSnippetsView)
-            jsSnippetsLayoutView.snippetTotalsRegion.show(jsSnippetTotalsView);
 
             defer.resolve({
-              filteredSnippetCollection: filteredSnippetCollection,
+              filteredFileCollection: filteredSnippetCollection,
               leftNavSnippetsView: leftNavSnippetsView
             });
 
@@ -353,14 +356,14 @@ define(["app",
             var leftNavSnippetsView = attr.leftNavSnippetsView;
 
             //show initial snippets detail view/info/tutorial
-            // var firstModel = filteredSnippetCollection.models[0];
-            // if (firstModel) {
-            //   firstModel.set("active", true);
-            //   firstModel.set("editing", false);
-            //   leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
-            // } else {
-            //   me.showEmptySnippetsDetailView();
-            // }
+            var firstModel = filteredSnippetCollection.models[0];
+            if (firstModel) {
+              firstModel.set("active", true);
+              firstModel.set("editing", false);
+              leftNavSnippetsView.trigger("childview:showSnippet", firstModel);
+            } else {
+              me.showEmptySnippetsDetailView();
+            }
 
           });
         },
@@ -386,27 +389,25 @@ define(["app",
 
           $.when(deferInitEditModal).done(function(attr) {
 
-            // var filteredFileCollection = attr.filteredFileCollection;
-            // var leftNavView = attr.leftNavView;
-            
-            // var leftNavSnippetsView = attr.leftNavView;
+            var filteredFileCollection = attr.filteredFileCollection;
+            var leftNavView = attr.leftNavView;
+
+            var leftNavSnippetsView = attr.leftNavView;
 
             // TODO show a blank page to start typing (new file default)
 
-            // var modelToEdit = filteredFileCollection.get(snippet_id);
-            // modelToEdit.set("active", true);
-            // if (showDescription) {
-            //   modelToEdit.set("editing", false);
-            // } else {
-            //   modelToEdit.set("editing", true);
-            // }
+            var modelToEdit = filteredFileCollection.get(snippet_id);
+            modelToEdit.set("active", true);
+            if (showDescription) {
+              modelToEdit.set("editing", false);
+            } else {
+              modelToEdit.set("editing", true);
+            }
 
-            // leftNavSnippetsView.trigger("childview:showSnippet", modelToEdit);
+            leftNavSnippetsView.trigger("childview:showSnippet", modelToEdit);
 
           });
-
         },
-
       }
     });
 

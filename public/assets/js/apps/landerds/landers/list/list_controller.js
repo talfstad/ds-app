@@ -398,6 +398,18 @@ define(["app",
         redeployLanders: function(landerModel) {
 
           var onAfterRedeployCallback = function(responseJobList) {
+            if (responseJobList.error && responseJobList.deployment_folder_name) {
+              landerModel.set({
+                deployment_folder_name: responseJobList.deployment_folder_name,
+                originalValueDeploymentFolderName: responseJobList.deployment_folder_name,
+                saving_lander: false,
+                modified: false
+              });
+              landerModel.trigger("reset_deployment_name_text");
+
+              Notification("", "Duplicate Deployment Folder", "danger", "stack_top_right");
+              return;
+            }
 
             var activeGroupCollection = landerModel.get("activeGroups");
             var deployedDomainCollection = landerModel.get("deployedDomains");

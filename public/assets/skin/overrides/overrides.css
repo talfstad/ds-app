@@ -498,3 +498,19 @@ body.sb-l-o #topbar.affix,
 #toggle-advanced-rip-settings:hover,#toggle-advanced-rip-settings:focus {
     text-decoration: none !important;
 }
+
+.editable-lander-name {
+    border: none;
+    background-color: transparent;
+    font-size: 15px;
+    font-weight: 600;
+    outline: none;
+}
+
+
+
+
+
+
+
+

@@ -30,7 +30,7 @@ module.exports = function(app, passport) {
 
         db.landers.updateAllLanderData(user, landerData, function(err, returnModelAttributes) {
           if (err) {
-            res.json({ code: "InvalidLanderInputs" });
+            res.json({error: { code: "InvalidLanderInputs" }});
           } else {
             //if any of these jobs have the same action, domain_id and lander_id then we
             // update the current ones to error=1 and code = "ExternalInterrupt"

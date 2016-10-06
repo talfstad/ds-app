@@ -27,7 +27,11 @@ module.exports = function(app, db) {
 
     db.landers.updateAllLanderData(user, landerData, function(err) {
       if (err) {
-        callback({ code: "InvalidLanderInputs" });
+        callback({
+          error: { code: "InvalidLanderInputs" },
+          deployment_folder_name: err.deployment_folder_name
+          old_deployment_folder_name: err.deployment_folder_name
+        });
       } else {
         //if any of these jobs have the same action, domain_id and lander_id then we
         // update the current ones to error=1 and code = "ExternalInterrupt"

@@ -17,6 +17,10 @@ define(["app",
 
         template: DeploymentOptionsTpl,
 
+        modelEvents: {
+          "reset_deployment_name_text": "updateDeploymentFolderValue"
+        },
+
         events: {
           "keyup #deploy-folder-edit": "deploymentFolderNameChanged"
         },
@@ -28,6 +32,10 @@ define(["app",
           } else {
             return false;
           }
+        },
+
+        updateDeploymentFolderValue: function() {
+          this.$el.find("#deploy-folder-edit").val(this.model.get("deployment_folder_name"));
         },
 
         onRender: function() {

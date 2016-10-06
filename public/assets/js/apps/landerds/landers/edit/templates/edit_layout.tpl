@@ -2,7 +2,9 @@
   <div class=" modal-content">
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title"><%= name %></h4>
+      <div>
+        <input class='editable-lander-name' type='text' value='<%= name %>'/>
+      </div>
     </div>
     <header class="settings-topbar clearfix ph10">
       <div class="topbar-left">

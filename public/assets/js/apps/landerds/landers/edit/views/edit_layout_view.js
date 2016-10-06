@@ -28,7 +28,19 @@ define(["app",
         },
 
         events: {
-          "click .create-snippet-button": "showCreateNewSnippetView"
+          "click .create-snippet-button": "showCreateNewSnippetView",
+          "blur .editable-lander-name": "saveEditedLanderName"
+        },
+
+        saveEditedLanderName: function(e) {
+          if (e) e.preventDefault();
+          var me = this;
+
+          var newLanderName = $(e.currentTarget).val();
+
+          if (newLanderName != "" && newLanderName != this.model.get("name")) {
+            this.trigger("saveLanderName", newLanderName);
+          }
         },
 
         showCreateNewSnippetView: function(e) {
