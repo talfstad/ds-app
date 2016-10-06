@@ -40,6 +40,8 @@ define(["app",
 
           if (newLanderName != "" && newLanderName != this.model.get("name")) {
             this.trigger("saveLanderName", newLanderName);
+          } else {
+            $(e.currentTarget).val(this.model.get("name"));
           }
         },
 
