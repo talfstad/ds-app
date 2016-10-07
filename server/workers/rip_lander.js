@@ -3,6 +3,7 @@ module.exports = function(app, db) {
   var module = {};
   var uuid = require("uuid");
   var scraper = require('../../node_modules_custom/website-scraper');
+  // var scraper = require('website-scraper');
   var fs = require('fs');
   var path = require('path');
   var find = require('find');
@@ -52,7 +53,8 @@ module.exports = function(app, db) {
           });
         };
 
-        removeQueryAttributes(function() {
+        removeQueryAttributes(function(err) {
+
           db.jobs.updateDeployStatus(user, myJobId, 'initializing:rip_optimizing', function(err) {
             if (err) {
               cleanupAndError(err);
@@ -150,12 +152,28 @@ module.exports = function(app, db) {
         selector: 'link[rel*="icon"]',
         attr: 'href'
       }],
+      subdirectories: [{
+        directory: 'images',
+        extensions: ['.png', '.jpg', '.jpeg', '.gif']
+      }, {
+        directory: 'js',
+        extensions: ['.js']
+      }, {
+        directory: 'videos',
+        extensions: ['.mp4']
+      }, {
+        directory: 'css',
+        extensions: ['.css']
+      }, {
+        directory: 'fonts',
+        extensions: ['.ttf', '.woff', '.eot', '.svg']
+      }],
       recursive: (depth > 0 && depth < 3 ? true : false),
       urlFilter: function(url) {
         //if our base url to rip is in the url return true
         return (url.includes(host));
       },
-      filenameGenerator: 'bySiteStructure', //need this incase of javascript dynamic image specification, etc.
+      // filenameGenerator: 'bySiteStructure', //need this incase of javascript dynamic image specification, etc.
       directory: stagingPath,
       request: {
         headers: {
@@ -174,54 +192,17 @@ module.exports = function(app, db) {
       app.log("ripping recursively to depth = " + depth, "debug");
     }
 
-    var requestOptions = {
-      encoding: 'binary',
-      strictSSL: false,
-      jar: true,
-      gzip: true,
-      headers: {
-        'User-Agent': userAgent
-      }
-    };
-
     scraper.scrape(options).then(function(result) {
-      // console.log("RESULT: " + JSON.stringify(result))
-      var urlEndpoint = { filename: result[0].filename };
+      var filename = result[0].filename.replace(/\.php$/, ".html"); //if we have a php endpoint replace
+      var correctedFilename = filename.replace(/\?.*/g, ''); //remove from ? to end of url
 
+      console.log("urlEndpoint: " + filename);
       //find all html files, map them to original url and get the resource.
-      find.file(/\.html$|\.php$/, stagingPath, function(files) {
-        var urlParsed = url_parser.parse(url);
-        var urlBase = url.replace(urlParsed.path, ''); //replaces path + search
 
-        var idx = 0;
-        _.each(files, function(file) {
-          //replace the scraped resource with the original
+      callback(false, stagingPath, stagingDir, correctedFilename);
 
-          var urlToGet = urlBase + file.replace(stagingPath, '');
-          
-          //if the url is a / url with no endpoint, make the urlToGet be / if its
-          //filename is equal to the defaultFilename (index.html)
-          if (url.replace(urlParsed.search, '') == urlToGet.replace('index.html', '')) {
-            urlToGet = url; //get the original
-          }
-
-          var getRequest = function(file, gettingUrl, callback) {
-            // get the original html files and rewrite them
-            request(gettingUrl, requestOptions, function(err, response, body) {
-              fs.writeFileSync(file, body);
-              callback();
-            });
-          };
-
-          getRequest(file, urlToGet, function() {
-            if (++idx == files.length) {
-              console.log("replaced all files");
-              callback(false, stagingPath, stagingDir, urlEndpoint.filename);
-            }
-          });
-        });
-      });
     }).catch(function(err) {
+      console.log("ERROR SCRAPING");
       callback(err);
     });
   };

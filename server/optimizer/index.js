@@ -36,16 +36,14 @@ module.exports = function(app, db) {
             optimizationErrors: []
           };
           htmlFiles.push(fileObj);
-
         }
       } else {
         var fileObj = {
-          filename: stagingPath + options.endpoint,
+          filename: stagingPath.replace(/\/$/,'') + "/" + options.endpoint,
           optimizationErrors: []
         };
         htmlFiles.push(fileObj);
       }
-
 
       //check if external interrupt on the heavy optimization stuff like images and gzip
       //and before we start

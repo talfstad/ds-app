@@ -322,98 +322,94 @@ module.exports = function(app, db) {
             var isExternal = function(href) {
               return /(^\/\/)|(:\/\/)/.test(href);
             };
-            //only for add lander
-            if (!options.endpoint) {
 
-              find.file(/\.html$/, localStagingPath, function(allHtmlFiles) {
-                if (allHtmlFiles.length > 0) {
-                  var changeAnchorLinks = function(fromPath, $) {
-                    $('a').each(function(idx, el) {
-                      var href = $(this).attr('href');
+            find.file(/\.html$/, localStagingPath, function(allHtmlFiles) {
+              if (allHtmlFiles.length > 0) {
+                var changeAnchorLinks = function(fromPath, $) {
+                  $('a').each(function(idx, el) {
+                    var href = $(this).attr('href');
 
-                      if (href && !isExternal(href)) {
-                        var resourcePath = path.join(fromPath, href);
-                        if (/^\//.test(href)) {
-                          //use lcoalstatgin path as root
-                          resourcePath = path.join(localStagingPath, href);
-                        }
-                        var relativePath = path.relative(fromPath, resourcePath);
-                        $(this).attr('href', relativePath);
+                    if (href && !isExternal(href)) {
+                      var resourcePath = path.join(fromPath, href);
+                      if (/^\//.test(href)) {
+                        //use lcoalstatgin path as root
+                        resourcePath = path.join(localStagingPath, href);
                       }
-                    });
-                  };
-
-                  var changeCssLinks = function(fromPath, $) {
-                    $('link[rel=stylesheet]').each(function(idx, el) {
-                      var href = $(this).attr('href');
-
-                      if (href && !isExternal(href)) {
-                        var resourcePath = path.join(fromPath, href);
-                        if (/^\//.test(href)) {
-                          //use lcoalstatgin path as root
-                          resourcePath = path.join(localStagingPath, href);
-                        }
-                        var relativePath = path.relative(fromPath, resourcePath);
-                        $(this).attr('href', relativePath);
-                      }
-
-                    });
-                  };
-
-                  var changeJsLinks = function(fromPath, $) {
-                    $('script').each(function(idx, el) {
-                      var src = $(this).attr('src');
-
-                      if (src && !isExternal(src)) {
-                        var resourcePath = path.join(fromPath, src);
-                        if (/^\//.test(src)) {
-                          //use lcoalstatgin path as root
-                          resourcePath = path.join(localStagingPath, src);
-                        }
-                        var relativePath = path.relative(fromPath, resourcePath);
-                        $(this).attr('src', relativePath);
-                      }
-
-                    });
-                  };
-
-                  var changeImageLinks = function(fromPath, $) {
-                    $('img').each(function(idx, el) {
-                      var src = $(this).attr('src');
-
-                      if (src && !isExternal(src)) {
-                        var resourcePath = path.join(fromPath, src);
-                        if (/^\//.test(src)) {
-                          //use lcoalstatgin path as root
-                          resourcePath = path.join(localStagingPath, src);
-                        }
-                        var relativePath = path.relative(fromPath, resourcePath);
-                        $(this).attr('src', relativePath);
-                      }
-
-                    });
-                  };
-
-                  _.each(allHtmlFiles, function(htmlFile) {
-                    var relativeFrom = path.dirname(htmlFile);
-                    var $ = cheerio.load(fs.readFileSync(htmlFile), { decodeEntities: false });
-
-                    //image source, src for js, video src, (check rip default), fonts...
-                    changeAnchorLinks(relativeFrom, $);
-                    changeImageLinks(relativeFrom, $);
-                    changeCssLinks(relativeFrom, $);
-                    changeJsLinks(relativeFrom, $);
-
-                    fs.writeFileSync(htmlFile, $.html());
+                      var relativePath = path.relative(fromPath, resourcePath);
+                      $(this).attr('href', relativePath);
+                    }
                   });
-                  callback(false);
-                } else {
-                  callback(false);
-                }
-              });
-            } else {
-              callback(false);
-            }
+                };
+
+                var changeCssLinks = function(fromPath, $) {
+                  $('link[rel=stylesheet]').each(function(idx, el) {
+                    var href = $(this).attr('href');
+
+                    if (href && !isExternal(href)) {
+                      var resourcePath = path.join(fromPath, href);
+                      if (/^\//.test(href)) {
+                        //use lcoalstatgin path as root
+                        resourcePath = path.join(localStagingPath, href);
+                      }
+                      var relativePath = path.relative(fromPath, resourcePath);
+                      $(this).attr('href', relativePath);
+                    }
+
+                  });
+                };
+
+                var changeJsLinks = function(fromPath, $) {
+                  $('script').each(function(idx, el) {
+                    var src = $(this).attr('src');
+
+                    if (src && !isExternal(src)) {
+                      var resourcePath = path.join(fromPath, src);
+                      if (/^\//.test(src)) {
+                        //use lcoalstatgin path as root
+                        resourcePath = path.join(localStagingPath, src);
+                      }
+                      var relativePath = path.relative(fromPath, resourcePath);
+                      $(this).attr('src', relativePath);
+                    }
+
+                  });
+                };
+
+                var changeImageLinks = function(fromPath, $) {
+                  $('img').each(function(idx, el) {
+                    var src = $(this).attr('src');
+
+                    if (src && !isExternal(src)) {
+                      var resourcePath = path.join(fromPath, src);
+                      if (/^\//.test(src)) {
+                        //use lcoalstatgin path as root
+                        resourcePath = path.join(localStagingPath, src);
+                      }
+                      var relativePath = path.relative(fromPath, resourcePath);
+                      $(this).attr('src', relativePath);
+                    }
+
+                  });
+                };
+
+                _.each(allHtmlFiles, function(htmlFile) {
+                  var relativeFrom = path.dirname(htmlFile);
+                  var $ = cheerio.load(fs.readFileSync(htmlFile), { decodeEntities: false });
+
+                  //image source, src for js, video src, (check rip default), fonts...
+                  changeAnchorLinks(relativeFrom, $);
+                  changeImageLinks(relativeFrom, $);
+                  changeCssLinks(relativeFrom, $);
+                  changeJsLinks(relativeFrom, $);
+
+                  fs.writeFileSync(htmlFile, $.html());
+                });
+                callback(false);
+              } else {
+                callback(false);
+              }
+            });
+
           };
 
           //before push lander make sure images are decoded
