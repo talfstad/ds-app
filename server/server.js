@@ -30,9 +30,6 @@ app.config = config[env];
 var logger = require("./utils/debug_log")(app);
 app.log = logger;
 
-app.log("ATTENTION: running in dev mode", "debug");
-
-
 var db = require("./db_api")(app);
 
 //gzip
@@ -72,16 +69,21 @@ http.createServer(app).listen(app.config.port, function() {
   console.log('Express server listening on port ' + app.config.port);
 });
 
-process.on("uncaughtException", function(err) {
-  
-  console.log("FATAL ERROR: \n" + JSON.stringify(err));
-  
-  db.log.fatal.error(err, function(err) {
-    if (err) {
-      console.log("error logging fatal: " + JSON.stringify(err));
-    }
+if (env != "dev") {
+  process.on("uncaughtException", function(err) {
+
+    console.log("FATAL ERROR: \n" + JSON.stringify(err));
+
+    db.log.fatal.error(err, function(err) {
+      if (err) {
+        console.log("error logging fatal: " + JSON.stringify(err));
+      }
+    });
+
   });
-  
-});
+} else if (env == "dev") {
+  app.log("ATTENTION: running in dev mode", "debug");
+}
+
 
 module.exports = app;

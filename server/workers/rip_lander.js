@@ -1,14 +1,13 @@
 module.exports = function(app, db) {
 
   var module = {};
-
   var uuid = require("uuid");
   var scraper = require('../../node_modules_custom/website-scraper');
   var fs = require('fs');
   var path = require('path');
   var find = require('find');
   var url_parser = require('url');
-
+  var request = require('request');
 
   module.ripLander = function(user, attr, callback) {
 
@@ -68,7 +67,7 @@ module.exports = function(app, db) {
 
                   var options = {
                     deleteStaging: true,
-                    endpoint: urlEndpoint.filename,
+                    endpoint: urlEndpoint,
                     depth: landerData.depth
                   };
 
@@ -175,11 +174,53 @@ module.exports = function(app, db) {
       app.log("ripping recursively to depth = " + depth, "debug");
     }
 
+    var requestOptions = {
+      encoding: 'binary',
+      strictSSL: false,
+      jar: true,
+      gzip: true,
+      headers: {
+        'User-Agent': userAgent
+      }
+    };
+
     scraper.scrape(options).then(function(result) {
-
+      // console.log("RESULT: " + JSON.stringify(result))
       var urlEndpoint = { filename: result[0].filename };
-      callback(false, stagingPath, stagingDir, urlEndpoint);
 
+      //find all html files, map them to original url and get the resource.
+      find.file(/\.html$|\.php$/, stagingPath, function(files) {
+        var urlParsed = url_parser.parse(url);
+        var urlBase = url.replace(urlParsed.path, ''); //replaces path + search
+
+        var idx = 0;
+        _.each(files, function(file) {
+          //replace the scraped resource with the original
+
+          var urlToGet = urlBase + file.replace(stagingPath, '');
+          
+          //if the url is a / url with no endpoint, make the urlToGet be / if its
+          //filename is equal to the defaultFilename (index.html)
+          if (url.replace(urlParsed.search, '') == urlToGet.replace('index.html', '')) {
+            urlToGet = url; //get the original
+          }
+
+          var getRequest = function(file, gettingUrl, callback) {
+            // get the original html files and rewrite them
+            request(gettingUrl, requestOptions, function(err, response, body) {
+              fs.writeFileSync(file, body);
+              callback();
+            });
+          };
+
+          getRequest(file, urlToGet, function() {
+            if (++idx == files.length) {
+              console.log("replaced all files");
+              callback(false, stagingPath, stagingDir, urlEndpoint.filename);
+            }
+          });
+        });
+      });
     }).catch(function(err) {
       callback(err);
     });
