@@ -2,8 +2,8 @@
   <div class="panel-group">
     <div class="panel">
       <div class="panel-heading">
-        <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#list-collection" href="#accord<%= id %>">
-          <input class="editable-lander-name fw500" type="text" value="<%= name %>">
+        <div class="list-row-item accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#list-collection" href="#accord<%= id %>">
+          <input readonly class="editable-lander-name fw500" type="text" value="<%= name %>">
           
           <div class="alert-working-badge widget-menu domain-group-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
             <span class="open_sidemenu_r label">
@@ -14,14 +14,6 @@
            </div>
             </span>
           </div>
-          <!-- <div class="alert-modified-badge widget-menu domain-group-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
-            <span class="open_sidemenu_r label">
-        
-          <div class="text-warning">
-           <span>Outdated</span>
-           </div>
-            </span>
-          </div> -->
           <div class="alert-deleting-badge widget-menu domain-group-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
             <span class="open_sidemenu_r label">
         
@@ -35,7 +27,7 @@
         <div class="widget-menu domain-group-notification">
            <span class="fs11" title="created on <%= created_on_gui %>"><%= created_on_gui %></span>
         </div>
-         </a>
+         </div>
        
         <ul class="nav panel-tabs">
           <li class="group-tab-handle-region" data-tab-target="groups-tab-id-<%= id %>"></li>

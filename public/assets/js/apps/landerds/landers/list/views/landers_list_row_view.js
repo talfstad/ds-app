@@ -31,14 +31,18 @@ define(["app",
           "click button.deploy-to-domain": "showDeployLanderToDomain",
           "click button.add-to-group": "showAddToGroup",
           "blur .editable-lander-name": "saveEditedLanderName",
-          "click .editable-lander-name": "stopPropagation",
+          "click .editable-lander-name": "stopPropagationIfReadonly",
           "keydown .editable-lander-name": "updateInputWidth"
         },
 
-        stopPropagation: function(e) {
+        stopPropagationIfReadonly: function(e) {
           if (e) {
             e.preventDefault();
-            e.stopPropagation();
+
+            //stop propagation if this is not readonly so we can just edit it
+            if(!$(e.currentTarget).attr("readonly")) {
+              e.stopPropagation();
+            }
           }
         },
 
@@ -192,6 +196,9 @@ define(["app",
 
               me.trigger('childCollapsed');
 
+              //allow input to be editable
+              me.$el.find(".editable-lander-name").attr('readonly','');
+
               //close right sidebar if closing all domain accordions
               if ($(e.currentTarget).find("a[data-currently-hovering='true']").length > 0) {
                 Landerds.trigger('landers:closesidebar');
@@ -208,6 +215,9 @@ define(["app",
               me.reAlignTableHeader();
 
               me.trigger('childExpanded');
+
+              //dont allow lander name to be edited
+              me.$el.find(".editable-lander-name").removeAttr('readonly');
 
               //collapse ALL others so we get an accordian effect !IMPORTANT for design
               $("#list-collection .collapse").collapse("hide");

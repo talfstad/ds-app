@@ -87,6 +87,7 @@
 .domain-lander-notification {
     position: absolute;
     bottom: 0;
+    top: 0;
     right: 0;
     min-width: 122px;
     margin-right: 300px;
