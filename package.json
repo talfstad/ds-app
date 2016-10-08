@@ -33,6 +33,7 @@
     "html-minifier": "*",
     "method-override": "*",
     "mkdirp": "*",
+    "mkpath": "^1.0.0",
     "moment": "*",
     "morgan": "*",
     "multer": "*",
