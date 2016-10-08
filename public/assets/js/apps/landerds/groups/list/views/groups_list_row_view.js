@@ -27,6 +27,36 @@ define(["app",
         emptyView: DeployedListEmptyView,
         childViewContainer: "table.deployed-groups-region",
 
+        events: {
+          "blur .editable-lander-name": "saveEditedGroupName",
+          "click .editable-lander-name": "stopPropagationIfReadonly",
+          "keydown .editable-lander-name": "updateNameInputWidth"
+        },
+
+        updateNameInputWidth: function(e) {
+          var me = this;
+          if (e) {
+            if (e.keyCode == 13) {
+              me.saveEditedGroupName(e);
+            }
+          }
+          this.updateInputWidth(e);
+        },
+
+        saveEditedGroupName: function(e) {
+          if (e) e.preventDefault();
+          var me = this;
+
+          var newGroupName = $(e.currentTarget).val();
+
+          if (newGroupName != "" && newGroupName != this.model.get("name")) {
+            this.trigger("saveGroupName", newGroupName);
+          } else {
+            $(e.currentTarget).val(this.model.get("name"));
+            this.updateInputWidth();
+          }
+        },
+
         modelEvents: {
           "notifySuccessDeleteGroups": "notifySuccessDeleteGroups",
           "notifySuccessChangeGroupsName": "notifySuccessChangeGroupsName",
@@ -78,13 +108,15 @@ define(["app",
           // this.model.trigger("reset");
         },
 
+        onDomRefresh: function() {
+          this.updateInputWidth();
+        },
 
         onRender: function() {
 
           var me = this;
 
           this.alertDeployStatus();
-
           this.reAlignTableHeader();
 
           //if deleting need to show delet state (which is disabling the whole thing)
@@ -116,6 +148,9 @@ define(["app",
 
               me.trigger('childCollapsed');
 
+              //allow input to be editable
+              me.$el.find(".editable-lander-name").attr('readonly', '');
+
               //close right sidebar if closing all domain accordions
               if ($(e.currentTarget).find("a[data-currently-hovering='true']").length > 0) {
                 Landerds.trigger('groups:closesidebar');
@@ -130,6 +165,9 @@ define(["app",
               me.reAlignTableHeader();
 
               me.trigger('childExpanded');
+
+              //dont allow lander name to be edited
+              me.$el.find(".editable-lander-name").removeAttr('readonly');
 
               //collapse ALL others so we get an accordian effect !IMPORTANT for design
               $("#list-collection .collapse").collapse("hide");

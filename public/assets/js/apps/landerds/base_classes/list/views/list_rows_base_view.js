@@ -20,6 +20,58 @@ define(["app",
         this.trigger("renderAndShowThisViewsPage");
       },
 
+      stopPropagationIfReadonly: function(e) {
+        if (e) {
+          e.preventDefault();
+
+          //stop propagation if this is not readonly so we can just edit it
+          if (!$(e.currentTarget).attr("readonly")) {
+            e.stopPropagation();
+          }
+        }
+      },
+
+      updateInputWidth: function(e) {
+        //also checks for ENTER KEY submits if enter pressed
+        var me = this;
+        if (e) {
+          var letterToAdd = e.key; //just care about this chars length
+          var textInput = $(e.currentTarget);
+          var measureWidth = textInput.parent().find(".measure-width");
+          var text = textInput.val() + letterToAdd;
+          //get 1 or more spaces, filter to only more than 1 space
+          var spacesCount = 0;
+          if ((/\S\s$/).test(text)) {
+            //matches any character other than white space followed by 1 white space
+            spacesCount = 1;
+          }
+
+          var oneOrMoreSpacesArr = text.match(/[ ]+/g);
+          if (oneOrMoreSpacesArr) {
+            $.each(oneOrMoreSpacesArr, function(i, spaces) {
+              spacesCount += (spaces.length - 1);
+            });
+          }
+          measureWidth.text(text);
+          textInput.css("width", measureWidth.width() + (spacesCount * 8) + 3 + "px");
+        } else {
+          me.$el.find(".editable-lander-name").each(function(i, el) {
+            var textInput = $(el);
+            var measureWidth = textInput.parent().find(".measure-width");
+            var text = textInput.val();
+            var spacesCount = 0;
+            var oneOrMoreSpacesArr = text.match(/[ ]+/g);
+            if (oneOrMoreSpacesArr) {
+              $.each(oneOrMoreSpacesArr, function(i, spaces) {
+                spacesCount += (spaces.length - 1);
+              });
+            }
+            measureWidth.text(text);
+            textInput.css("width", measureWidth.width() + (spacesCount * 8) + 3 + "px");
+          });
+        }
+      },
+
       onBeforeRender: function() {
         var lastUpdatedRawMysqlDateTime = this.model.get("created_on");
         var timezoneName = new jstz().timezone_name;
@@ -28,7 +80,10 @@ define(["app",
       },
 
       expandAccordion: function() {
-        this.$el.find("a:first").click();
+        var me = this;
+        setTimeout(function() {
+          me.$el.find("a:first").click();
+        }, 20);
       },
 
       reAlignTableHeader: function(noTimeout) {

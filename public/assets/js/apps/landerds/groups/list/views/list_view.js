@@ -20,10 +20,20 @@ define(["app",
           this.listenTo(this, "groups:sort", this.triggerSort);
         },
 
-        onRenderCollection: function() {
-          // this.attachHtml = function(collectionView, childView, index) {
-          //   collectionView.$el.prepend(childView.el);
-          // }
+        childEvents: {
+          "saveGroupName": "saveGroupName"
+        },
+
+        saveGroupName: function(childView, landerName) {
+          var groupModel = childView.model;
+          //save this lander name to the DB
+          groupModel.set("name", landerName);
+          groupModel.save({}, {
+            success: function(model, two, three) {
+              //when the landername changes change the name, resort, goto page, open
+              groupModel.trigger("resortAndExpandModelView");
+            }
+          });
         },
 
         triggerSort: function() {

@@ -518,3 +518,15 @@ body.sb-l-o #topbar.affix,
 .list-row-item {
     cursor: pointer;
 }
+
+div.list-row-item:hover, 
+div.list-row-item:hover input, 
+div.list-row-item:focus, 
+div.list-row-item.active input,
+div.list-row-item:focus input {
+    color: #222;
+    text-decoration: none;
+}
+ {
+
+}

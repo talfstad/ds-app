@@ -1,11 +1,9 @@
 <div class="panel-group">
   <div class="panel">
     <div class="panel-heading">
-      <a class="accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#list-collection" href="#accord<%= id %>">
-        <span class="group-name-text">
-          <%= name %>
-        </span>
-        
+      <div class="list-row-item accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#list-collection" href="#accord<%= id %>">
+          <input readonly class="editable-lander-name fw500" type="text" value="<%= name %>">
+          <span class="measure-width" style="display:none;"><%= name %></span>
           <div class="alert-working-badge widget-menu domain-lander-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
             <span class="open_sidemenu_r label">
               <div class="text-alert">
@@ -17,7 +15,7 @@
           <div class="widget-menu domain-lander-notification">
             <span class="fs11"><%= created_on_gui %></span>
           </div>
-      </a>
+      </div>
       <ul class="nav panel-tabs">
         <li class="domain-tab-handle-region" data-tab-target="domains-tab-id-<%= id %>"></li>
         <li class="lander-tab-handle-region" data-tab-target="landers-tab-id-<%= id %>"></li>

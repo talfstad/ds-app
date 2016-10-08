@@ -32,36 +32,17 @@ define(["app",
           "click button.add-to-group": "showAddToGroup",
           "blur .editable-lander-name": "saveEditedLanderName",
           "click .editable-lander-name": "stopPropagationIfReadonly",
-          "keydown .editable-lander-name": "updateInputWidth"
+          "keydown .editable-lander-name": "updateNameInputWidth"
         },
 
-        stopPropagationIfReadonly: function(e) {
+        updateNameInputWidth: function(e) {
+          var me = this;
           if (e) {
-            e.preventDefault();
-
-            //stop propagation if this is not readonly so we can just edit it
-            if(!$(e.currentTarget).attr("readonly")) {
-              e.stopPropagation();
+            if (e.keyCode == 13) {
+              me.saveEditedLanderName(e);
             }
           }
-        },
-
-        updateInputWidth: function(e) {
-          //also checks for ENTER KEY submits if enter pressed
-          var me = this;
-          setTimeout(function() {
-            if (e) {
-              if (e.keyCode == 13) {
-                me.saveEditedLanderName(e);
-              } else {
-                $(e.currentTarget).css("width", (($(e.currentTarget).val().length + 2) * 8) + 'px');
-              }
-            } else {
-              me.$el.find(".editable-lander-name").each(function(i, el) {
-                $(el).css("width", (($(el).val().length + 2) * 8) + 'px');
-              });
-            }
-          }, 20);
+          this.updateInputWidth(e);
         },
 
         saveEditedLanderName: function(e) {
@@ -157,13 +138,16 @@ define(["app",
           ListRowsBaseView.prototype.onBeforeRender.apply(this);
         },
 
+        onDomRefresh: function() {
+          this.updateInputWidth();
+        },
+
         onRender: function() {
 
           var me = this;
 
           this.alertDeployStatus();
           this.reAlignTableHeader();
-          this.updateInputWidth();
 
           //if deleting need to show delete state (which is disabling the whole thing)
           var deployStatus = this.model.get("deploy_status");
@@ -197,7 +181,7 @@ define(["app",
               me.trigger('childCollapsed');
 
               //allow input to be editable
-              me.$el.find(".editable-lander-name").attr('readonly','');
+              me.$el.find(".editable-lander-name").attr('readonly', '');
 
               //close right sidebar if closing all domain accordions
               if ($(e.currentTarget).find("a[data-currently-hovering='true']").length > 0) {

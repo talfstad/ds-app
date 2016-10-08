@@ -191,10 +191,15 @@ module.exports = function(app, db) {
         }
 
         //validate inputs
+        if (!deployment_folder_name) {
+          callback({ code: "InvalidDeploymentFolderInput" });
+          return;
+        }
         if (!deployment_folder_name.match(/^[a-z0-9\-]+$/i)) {
           callback({ code: "InvalidDeploymentFolderInput" });
           return;
         }
+
 
         var checkIfDeploymentFolderExists = function(currentDeploymentFolder, callback) {
 

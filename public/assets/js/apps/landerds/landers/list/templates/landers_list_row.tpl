@@ -4,6 +4,7 @@
       <div class="panel-heading">
         <div class="list-row-item accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#list-collection" href="#accord<%= id %>">
           <input readonly class="editable-lander-name fw500" type="text" value="<%= name %>">
+          <span class="measure-width" style="display:none;"><%= name %></span>
           
           <div class="alert-working-badge widget-menu domain-group-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
             <span class="open_sidemenu_r label">
@@ -14,6 +15,7 @@
            </div>
             </span>
           </div>
+          
           <div class="alert-deleting-badge widget-menu domain-group-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
             <span class="open_sidemenu_r label">
         
