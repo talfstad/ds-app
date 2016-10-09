@@ -67,6 +67,7 @@ define(["app",
             me.filteredCollection = FilteredPaginatedCollection({
               collection: landersCollection,
               paginated: true,
+              page_size: Landerds.loginModel.get("landers_rows_per_page"),
               filterFunction: function(filterCriterion) {
                 var criterion = filterCriterion.toLowerCase();
                 return function(lander) {
@@ -90,6 +91,7 @@ define(["app",
             var landersListView = new ListView({
               collection: me.filteredCollection
             });
+            landersListView.trigger("landers:sort");
 
             landersListView.on("childview:showAwsTutorial", function() {
               Landerds.trigger("help:showAwsTutorial");

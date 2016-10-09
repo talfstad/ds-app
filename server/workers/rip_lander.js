@@ -184,11 +184,6 @@ module.exports = function(app, db) {
 
     scraper.scrape(options).then(function(result) {
       var filename = result[0].filename.replace(/^\//, ''); //if we have a php endpoint replace
-      var correctedFilename = filename.replace(/\.php$/, ".html").replace(/\?.*/g, ''); //remove from ? to end of url
-      correctedFilename = correctedFilename.replace(/\?.*/g, ''); //remove from ? to end of url
-
-      fs.renameSync(stagingPath + "/" + filename, stagingPath + "/" + correctedFilename);
-
       console.log("urlEndpoint: " + filename);
 
       //find all html files, map them to original url and get the resource.
@@ -314,9 +309,9 @@ module.exports = function(app, db) {
       };
 
 
-      getResourcesInJs(function() {
-        callback(false, stagingPath, stagingDir, correctedFilename);
-      });
+      // getResourcesInJs(function() {
+        callback(false, stagingPath, stagingDir, filename);
+      // });
 
 
     }).catch(function(err) {

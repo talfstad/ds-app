@@ -4,59 +4,60 @@
       </header>
       <header id="topbar" class="ph10">
         
-        <div class="dropdown pull-left">
+        <div class="admin-form dropdown pull-left">
           <button data-toggle="dropdown" role="button" aria-expanded="false" type="button" class="rows-per-page ml10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
             <span class="fa fa-caret-down"></span>
             <span><span class="rows-per-page-number">10</span> Rows Per Page</span>
           </button>
-          <ul class="dropdown-menu dropdown-menu-left pt5" role="menu">
+          <ul class="page-size-dropdown dropdown-menu dropdown-menu-left pt5" role="menu">
             <li>
-              <a class="pl5 radio-custom radio-primary" href="#">
-                <input checked data-sort-by="domain-name" value="10" id="10-pages-radio" type="radio" name="pages-radio">
-                <label class="ml5" for="10-pages-radio">10 Rows Per Page</label>
-              </a>
+              <label for="10-pages-radio" class="block option option-primary" style="line-height: 40px; margin-right: 0">
+                <input value="10" id="10-pages-radio" type="radio" name="pages-radio">
+                <span class="mb10 mt10 ml10 radio"></span>
+                <span class="fs13 fw600">10 Rows Per Page</span>
+              </label>
             </li>
             <li>
-              <a class="pl5 radio-custom radio-primary" href="#">
-                <input value="20" data-sort-by="domain-name" id="20-pages-radio" type="radio" name="pages-radio">
-                <label class="ml5" for="20-pages-radio">20 Rows Per Page</label>
-              </a>
+              <label for="20-pages-radio" class="block option option-primary" style="line-height: 40px; margin-right: 0">
+                <input value="20" id="20-pages-radio" type="radio" name="pages-radio">
+                <span class="mb10 mt10 ml10 radio"></span>
+                <span class="fs13 fw600">20 Rows Per Page</span>
+              </label>
             </li>
             <li>
-              <a class="pl5 radio-custom radio-primary" href="#">
-                <input value="50" data-sort-by="created-on" id="50-pages-radio" type="radio" name="pages-radio">
-                <label class="ml5" for="50-pages-radio">50 Rows Per Page</label>
-              </a>
+              <label for="50-pages-radio" class="block option option-primary" style="line-height: 40px; margin-right: 0">
+                <input value="50" id="50-pages-radio" type="radio" name="pages-radio">
+                <span class="mb10 mt10 ml10 radio"></span>
+                <span class="fs13 fw600">50 Rows Per Page</span>
+              </label>
             </li>
           </ul>
         </div>
 
-        <div class="dropdown pull-left">
+        <div class="admin-form dropdown pull-left">
           <button data-toggle="dropdown" style="text-align: left" role="button" aria-expanded="false" type="button" class="ml10 w210 pl10 pt5 pb5 btn btn-default btn-gradient dark">
             <span class="fa fa-caret-down pr5"></span>
             Sort By: 
             <span class="sortbyname">Domain Name</span> 
             <span class="sortbyorder">Asc</span>
           </button>
+
           <ul class="topbar dropdown-menu dropdown-menu-left pt5" role="menu">
             <li>
-              <a class="pl5 radio-custom radio-primary" href="#">
-                <input checked data-sortby-name="Domain Name" data-sort-by="domain-name" type="radio" id="domain-name" name="sort-radio">
-                <label class="ml5" for="domain-name">Domain Name</label>
-              </a>
+              <label for="domain-name" class="block option option-primary" style="line-height: 40px; margin-right: 0">
+                <input data-sortby-name="Domain Name" data-sort-by="domain-name" type="radio" name="sort-radio" id="domain-name">
+                <span class="mb10 mt10 ml10 radio"></span>
+                <span class="ml5 fs13 fw600">Domain Name</span>
+              </label>
             </li>
             <li>
-              <a class="pl5 radio-custom radio-primary" href="#">
-                <input data-sortby-name="Created On" data-sort-by="created-on" type="radio" id="created-on" name="sort-radio">
-                <label class="ml5" for="created-on">Created On</label>
-              </a>
+              <label for="created-on" class="block option option-primary" style="line-height: 40px; margin-right: 0">
+                  <input data-sortby-name="Created On" data-sort-by="created-on" type="radio" name="sort-radio" id="created-on">
+                  <span class="mb10 mt10 ml10 radio"></span>
+                  <span class="ml5 fs13 fw600">Created On</span>
+              </label>
             </li>
-            <!-- <li>
-              <a class="pl5 radio-custom radio-primary" href="#">
-                <input data-sortby-name="Deployed" data-sort-by="deployed" type="radio" id="deployed" name="sort-radio">
-                <label class="ml5" for="deployed">Deployed</label>
-              </a>
-            </li> -->
+           
             <li class="divider">
             </li>
             <div class="ptn pb5 p10">
@@ -67,7 +68,7 @@
             </div>
           </ul>
         </div>
-        
+
         <ul class="nav nav-list nav-list-topbar pull-left">
           <form class="navbar-form navbar-search pull-left mtn mbn" role="search">
             <div class=" mt10 form-group">

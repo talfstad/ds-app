@@ -207,7 +207,7 @@ module.exports = function(app, db) {
       //insert a new domain 
       var user_id = user.id;
       var domain = newDomainAttributes.domain;
-      var cloudfront_domain = newDomainAttributes.cloudfrontDomainName;
+      var cloudfront_domain = newDomainAttributes.cloudfront_domain;
       var cloudfront_id = newDomainAttributes.cloudfrontId;
       var nameservers = newDomainAttributes.nameservers.join();
       var hosted_zone_id = newDomainAttributes.hostedZoneId;

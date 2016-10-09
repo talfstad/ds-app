@@ -64,6 +64,7 @@ define(["app",
             me.filteredCollection = FilteredPaginatedCollection({
               collection: groupCollection,
               paginated: true,
+              page_size: Landerds.loginModel.get("groups_rows_per_page"),
               filterFunction: function(filterCriterion) {
                 var criterion = filterCriterion.toLowerCase();
                 return function(lander) {
@@ -78,6 +79,7 @@ define(["app",
             var groupListView = new ListView({
               collection: me.filteredCollection
             });
+            groupListView.trigger("groups:sort");
 
             groupListView.on("childview:showAwsTutorial", function() {
               Landerds.trigger("help:showAwsTutorial");

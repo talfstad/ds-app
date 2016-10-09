@@ -152,7 +152,7 @@ define(["app",
               me.$el.find(".editable-lander-name").attr('readonly', '');
 
               //close right sidebar if closing all domain accordions
-              if ($(e.currentTarget).find("a[data-currently-hovering='true']").length > 0) {
+              if ($(e.currentTarget).find("div[data-currently-hovering='true']").length > 0) {
                 Landerds.trigger('groups:closesidebar');
               }
 

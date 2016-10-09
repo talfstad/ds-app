@@ -53,7 +53,7 @@ define(["app",
             });
           }
           measureWidth.text(text);
-          textInput.css("width", measureWidth.width() + (spacesCount * 8) + 3 + "px");
+          textInput.css("width", measureWidth.width() + (spacesCount * 4) + 3 + "px");
         } else {
           me.$el.find(".editable-lander-name").each(function(i, el) {
             var textInput = $(el);
@@ -67,7 +67,7 @@ define(["app",
               });
             }
             measureWidth.text(text);
-            textInput.css("width", measureWidth.width() + (spacesCount * 8) + 3 + "px");
+            textInput.css("width", measureWidth.width() + (spacesCount * 4) + 3 + "px");
           });
         }
       },
@@ -82,7 +82,7 @@ define(["app",
       expandAccordion: function() {
         var me = this;
         setTimeout(function() {
-          me.$el.find("a:first").click();
+          me.$el.find(".panel-heading").first().children().first().click();
         }, 20);
       },
 

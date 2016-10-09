@@ -64,6 +64,7 @@ define(["app",
 
             me.filteredCollection = FilteredPaginatedCollection({
               collection: landersCollection,
+              page_size: Landerds.loginModel.get("domains_rows_per_page"),
               paginated: true,
               filterFunction: function(filterCriterion) {
                 var criterion = filterCriterion.toLowerCase();
@@ -84,6 +85,7 @@ define(["app",
             var domainsListView = new ListView({
               collection: me.filteredCollection
             });
+            domainsListView.trigger("domains:sort");
 
             domainsListView.on("childview:showAwsTutorial", function() {
               Landerds.trigger("help:showAwsTutorial");

@@ -56,50 +56,6 @@ define(["app",
         onDomRefresh: function() {
           var me = this;
 
-
-          $('input[type=radio][name=pages-radio]').change(function(e) {
-            e.preventDefault();
-            //pages changed update the button text
-            var newPageSize = $(e.currentTarget).val();
-            me.$el.find("button.rows-per-page span.rows-per-page-number").text(newPageSize);
-            //call to change pagelength in collection
-            me.trigger("domains:changepagesize", newPageSize);
-          });
-
-          var updateSortbyButtonText = function() {
-            var sortbyname = me.$el.find("input[name=sort-radio]:checked").attr("data-sortby-name");
-            var sortbyorder = me.$el.find(".sort-order-button-group a.active").attr('data-sortby-order');
-            me.$el.find("button span.sortbyname").text(sortbyname);
-            me.$el.find("button span.sortbyorder").text(sortbyorder);
-          };
-
-          $("ul.topbar li input").click(function(e) {
-            updateSortbyButtonText();
-            Landerds.trigger('domains:closesidebar');
-            me.trigger("domains:sort");
-          });
-
-          // Prevents a dropdown menu from closing when
-          // a btn-group nav menu it contains is clicked
-          $('.dropdown-menu').click(function(e) {
-            e.stopPropagation();
-          });
-
-          $('.dropdown-menu .btn-group-nav a').on('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            // Remove active class from btn-group > btns and toggle tab content
-            $(this).siblings('a').removeClass('active').end().addClass('active');
-
-            //set button text
-            updateSortbyButtonText();
-
-            Landerds.trigger('domains:closesidebar');
-            me.trigger("domains:sort");
-          });
-
-
           $("body").removeClass("external-page");
           var Body = $("body");
 
@@ -109,7 +65,6 @@ define(["app",
               top: 60
             }
           });
-
 
           var typeWatchoptions = {
             callback: function(value) {
@@ -121,7 +76,66 @@ define(["app",
           }
 
           $(".navbar-search input").typeWatch(typeWatchoptions);
+        },
 
+        onRender: function() {
+          var me = this;
+
+          var updateSortbyButtonText = function() {
+            var sortbyname = me.$el.find("input[name=sort-radio]:checked").attr("data-sortby-name");
+            var sortby = me.$el.find("input[name=sort-radio]:checked").attr("data-sort-by");
+            var sortbyorder = me.$el.find(".sort-order-button-group a.active").attr('data-sortby-order');
+            me.$el.find("button span.sortbyname").text(sortbyname);
+            me.$el.find("button span.sortbyorder").text(sortbyorder);
+            Landerds.loginModel.set("domains_sort_by", sortby);
+            Landerds.loginModel.set("domains_sort_order", sortbyorder.toLowerCase());
+          };
+
+          var setPageSizeText = function(newPageSize) {
+            me.$el.find("button.rows-per-page span.rows-per-page-number").text(newPageSize);
+            Landerds.loginModel.set("domains_rows_per_page", newPageSize);
+          };
+
+          this.$el.find("ul.topbar li label").click(function(e) {
+            updateSortbyButtonText();
+            Landerds.loginModel.saveUserSettings();
+            me.trigger("domains:sort");
+          });
+
+          this.$el.find('.dropdown-menu .btn-group-nav a').on('click', function(e) {
+            e.preventDefault();
+            // Remove active class from btn-group > btns and toggle tab content
+            $(this).siblings('a').removeClass('active').end().addClass('active');
+            //set button text
+            updateSortbyButtonText();
+            Landerds.loginModel.saveUserSettings();
+            me.trigger("domains:sort");
+          });
+
+          this.$el.find('input[type=radio][name=pages-radio]').change(function(e) {
+            e.preventDefault();
+            //pages changed update the button text
+            var newPageSize = $(e.currentTarget).val();
+            Landerds.loginModel.set("domains_rows_per_page", newPageSize);
+            Landerds.loginModel.saveUserSettings();
+
+            setPageSizeText(newPageSize);
+
+            //call to change page length in collection
+            me.trigger("domains:changepagesize", newPageSize);
+          });
+
+          //set the correct sort by, rows per page, sort order
+          var sortEl = this.$el.find("#" + Landerds.loginModel.get("domains_sort_by"));
+          sortEl.attr("checked", true);
+          var sortOrderEl = this.$el.find("a[data-sort-order='" + Landerds.loginModel.get("domains_sort_order") + "']")
+          sortOrderEl.siblings().removeClass("active");
+          sortOrderEl.addClass("active");
+          updateSortbyButtonText();
+
+          var rowPerPageEl = this.$el.find("#" + Landerds.loginModel.get("domains_rows_per_page") + "-pages-radio");
+          rowPerPageEl.attr("checked", true);
+          setPageSizeText(Landerds.loginModel.get("domains_rows_per_page"));
         }
       });
     });

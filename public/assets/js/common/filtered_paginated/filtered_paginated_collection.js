@@ -20,7 +20,7 @@ define(["app",
         filtered.state = {
           paginated: options.paginated,
           currentPage: 1,
-          pageSize: 10
+          pageSize: options.page_size || 10
         };
 
 
@@ -350,6 +350,8 @@ define(["app",
         };
 
         filtered.sortFiltered = function() {
+          filtered.currentFilteredCollection = filtered.models;
+          
           //set original data
           filtered.set(filtered.currentFilteredCollection);
           filtered.sort();
@@ -357,7 +359,6 @@ define(["app",
           original.set(filtered.currentFilteredCollection);
           original.sort();
 
-          filtered.currentFilteredCollection = filtered.models;
           var items = filtered.paginate(filtered.currentFilteredCollection);
 
           filtered.reset(items);

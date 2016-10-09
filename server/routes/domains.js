@@ -108,7 +108,7 @@ module.exports = function(app, passport) {
                       });
                     } else {
                       //store this for adding to domain table later
-                      newDomainData.cloudfrontDomainName = cloudfrontDomainName;
+                      newDomainData.cloudfront_domain = cloudfrontDomainName;
                       newDomainData.cloudfrontId = cloudfrontId;
 
                       if (domainInformation.isSubdomain) {

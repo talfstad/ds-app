@@ -209,13 +209,33 @@ module.exports = function(app, db) {
       });
     },
 
+    saveUserSettings: function(user, attr, callback) {
+      var user_id = user.id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          callback(err);
+        } else {
+          var arr = [attr.landers_rows_per_page, attr.landers_rows_per_page, attr.groups_rows_per_page, attr.landers_sort_by, attr.landers_sort_order, attr.groups_sort_by, attr.groups_sort_order, attr.domains_sort_by, attr.domains_sort_order, user_id];
+          connection.query("UPDATE user_settings set landers_rows_per_page=?,landers_rows_per_page=?,groups_rows_per_page=?,landers_sort_by=?,landers_sort_order=?,groups_sort_by=?,groups_sort_order=?,domains_sort_by=?,domains_sort_order=? WHERE user_id = ?;", arr, function(err, docs) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(false);
+            }
+            connection.release();
+          });
+        }
+      });
+    },
+
     getUserSettings: function(user, callback) {
       var user_id = user.id;
       db.getConnection(function(err, connection) {
         if (err) {
           callback(err);
         } else {
-          connection.query("SELECT aws_access_key_id, aws_secret_access_key, aws_root_bucket FROM user_settings WHERE user_id = ?;", [user_id], function(err, docs) {
+          connection.query("SELECT user_id, aws_access_key_id, aws_secret_access_key, aws_root_bucket, landers_rows_per_page,domains_rows_per_page,groups_rows_per_page,landers_sort_by,landers_sort_order,groups_sort_by,groups_sort_order,domains_sort_by,domains_sort_order FROM user_settings WHERE user_id = ?;", [user_id], function(err, docs) {
             if (!err) {
               var access_key_id = null;
               var secret_access_key = null;
@@ -231,7 +251,7 @@ module.exports = function(app, db) {
                 if (docs[0].aws_root_bucket) {
                   aws_root_bucket = docs[0].aws_root_bucket;
                 }
-                callback(false, access_key_id, secret_access_key, aws_root_bucket)
+                callback(false, docs[0]);
               } else {
                 callback("Unable to get user settings for user: " + user, null);
               }

@@ -10,7 +10,6 @@ module.exports = function(app, passport) {
 
   app.post("/api/login", passport.authenticate(), function(req, res) {
     //this is only executed if login succeeded
-
     var user = req.user;
     db.users.getUserSettings(user, function(error, access_key_id, secret_access_key, aws_root_bucket) {
       if (error) {
@@ -25,26 +24,35 @@ module.exports = function(app, passport) {
           aws_root_bucket: aws_root_bucket
         });
       }
-    }); //getAmazonAPIKeys
+    });
 
+  });
+
+  app.post("/api/user-settings", function(req, res) {
+    var attr = req.body;
+    var user = req.user;
+    //save the user settings and return
+    db.users.saveUserSettings(user, attr, function(err) {
+      if (err) {
+        res.json({error: true});
+      } else {
+        res.json({});
+      }
+    });
   });
 
   app.get('/api/login', function(req, res) {
     var user = req.user;
 
     if (req.user) {
-      db.users.getUserSettings(user, function(error, access_key_id, secret_access_key, aws_root_bucket) {
-        if (error) {
+      db.users.getUserSettings(user, function(err, attr) {
+        if (err) {
           res.json({});
         } else {
-          res.json({
-            user_id: req.user.id,
-            username: req.user.user,
-            logged_in: true,
-            aws_access_key_id: access_key_id,
-            aws_secret_access_key: secret_access_key,
-            aws_root_bucket: aws_root_bucket
-          });
+          attr.logged_in = true;
+          attr.username = req.user.user,
+
+          res.json(attr);
         }
       }); //getAmazonAPIKeys
     } else {
@@ -59,17 +67,6 @@ module.exports = function(app, passport) {
     req.logout();
     res.json({
       logged_in: false
-    });
-  });
-
-
-  app.post("/update_amazon_api_keys", function(req, res) {
-    var access_key_id = req.body.access_key_id;
-    var secret_access_key = req.body.secret_access_key;
-    var user = req.user;
-    db.users.addAmazonAPIKeys(access_key_id, secret_access_key, user, function(error) {
-      booleanName = "updatedAmazonAPIKeys";
-      res.json({});
     });
   });
 
