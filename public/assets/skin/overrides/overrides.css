@@ -528,10 +528,28 @@ div.list-row-item:focus input {
     text-decoration: none;
 }
 
-
 .admin-form .dropdown-menu label:hover {
     background-color: #f5f5f5 !important;
 }
 .page-size-dropdown{
     width: 185px;
 }
+
+.note-editor.note-frame {
+    border: none !important;
+}
+
+.note-editable {
+    border: none !important;
+}
+
+.note-editor .btn {
+    font-size: 12px !important;
+}
+
+.note-editor .modal-footer p {
+    display: none !important;
+}
+
+
+

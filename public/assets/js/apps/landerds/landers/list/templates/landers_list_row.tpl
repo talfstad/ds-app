@@ -33,17 +33,13 @@
        
         <ul class="nav panel-tabs">
           <li class="notes-tab-handle-region" data-tab-target="notes-tab-id-<%= id %>">
-            <a href="#notes-tab-id-<%= id %>" data-toggle="tab" class="notes-status-tab-handle"><span class="open_sidemenu_r">
-              <span style="position: relative; top: 2px;" class="fs18 fa fa-sticky-note"></span>
+            <a href="#notes-tab-id-<%= id %>" data-toggle="tab" class="notes-status-tab-handle">
+              <span class="open_sidemenu_r">
+                <span style="position: relative; top: 2px;" class="fs18 fa fa-sticky-note"></span>
 
-              <span style="font-size: 12px; line-height: 29px; margin-left: 4px;">Notes </span>
-            </span>
-            <div class="add-link-plus-container">
-              <a class="add-link-plus" href="#" style="position: relative; top: 2px; display: none">
-                <i style="font-size: 18px !important; color: #555;" class="fa fa-plus text-info fs12 pl5 pr5"></i>
-              </a>
-              </div>
-              </a>
+                <span style="font-size: 12px; line-height: 29px; margin-left: 4px;">Notes </span>
+              </span>
+            </a>
           </li>
           <li class="group-tab-handle-region" data-tab-target="groups-tab-id-<%= id %>"></li>
           <li class="deploy-status-region" data-tab-target="domains-tab-id-<%= id %>"></li>
@@ -92,26 +88,12 @@
           </div>
 
           <div class="tab-pane" role="tabpanel" id="notes-tab-id-<%= id %>">
-            <div class="panel-menu clearfix">
-              <div class="row" style="margin-left: 0px; margin-right: 0px;">
-                <div style="margin-left: 5px; font-weight: 600; padding-top: 10px; float: left;" class="clearfix">
-                <span style="width: 20px">#</span>
-                <span style="margin-left: 15px">Group</span>
+              <div class="panel-body pn of-h" style="border-top: none;">
+                <div class="summernote" style="height: 300px">This is the
+                  <b>Summernote</b> Editor...
                 </div>
               </div>
-             </div>
-
-            <div class="panel-body">
-             
-
-
-
-             
-            </div>
-
           </div>
-
-
         </div>
       </div>
     </div>

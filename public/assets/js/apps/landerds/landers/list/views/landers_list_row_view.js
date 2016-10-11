@@ -8,6 +8,7 @@ define(["app",
     "assets/js/apps/landerds/landers/list/active_groups/views/active_groups_collection_view",
     "assets/js/apps/landerds/landers/list/deployed_domains/views/deployed_domains_collection_view",
     "assets/js/apps/landerds/base_classes/list/views/list_rows_base_view",
+    "summernote",
     "bootstrap",
   ],
   function(Landerds, LandersListItemTpl, DeployedListChildView, DeployedListEmptyView, SidebarModel,
@@ -176,6 +177,12 @@ define(["app",
               $(e.currentTarget).attr("data-currently-hovering", false);
             });
 
+            this.$el.find(".notes-tab-handle-region").hover(function(e) {
+              $(e.currentTarget).attr("data-currently-hovering", true);
+            }, function(e) {
+              $(e.currentTarget).attr("data-currently-hovering", false);
+            });
+
             this.$el.on('hide.bs.collapse', function(e) {
 
               me.trigger('childCollapsed');
@@ -214,6 +221,8 @@ define(["app",
               $(e.currentTarget).find("div[id^='domains-tab']").removeClass("active");
               $(e.currentTarget).find("li.group-tab-handle-region").removeClass("active");
               $(e.currentTarget).find("div[id^='groups-tab']").removeClass("active");
+              $(e.currentTarget).find("li.notes-tab-handle-region").removeClass("active");
+              $(e.currentTarget).find("div[id^='notes-tab']").removeClass("active");
               //show the correct tab
               var currentTab = $(e.currentTarget).find("li[data-currently-hovering='true']");
               var currentTabData = $("#" + currentTab.attr("data-tab-target"));
@@ -222,7 +231,7 @@ define(["app",
                 currentTab.addClass("active");
                 currentTabData.addClass("active");
                 currentTab.find(".add-link-plus").css("display", "inline");
-
+                currentTab.find("a[href^='#notes-tab']").trigger("show.bs.tab") //trigger the show event
               } else {
                 //no tab show domains tab
                 var tabHandle = $(e.currentTarget).find("li.deploy-status-region");
@@ -230,7 +239,6 @@ define(["app",
                 tabHandle.addClass("active");
                 $(e.currentTarget).find("div[id^='domains-tab']").addClass("active");
                 tabHandle.find(".add-link-plus").css("display", "inline");
-
               }
 
               $(e.currentTarget).find(".accordion-toggle").addClass('active');
@@ -252,6 +260,28 @@ define(["app",
             });
           }
 
+          this.$el.find("a[href^='#notes-tab']").on("show.bs.tab", function(e) {
+            //if lander model doesnt have notes object
+
+              //show loading for the tab
+
+              //get the data from the server
+
+              //put the text/image there and show
+
+            //else just show the current note object
+
+
+
+
+            //has to be shown on the dom to init summernote
+            me.$el.find('.summernote').summernote({
+              height: 300, //set editable area's height
+              focus: false, //set focus editable area after Initialize summernote
+              oninit: function() {},
+              onChange: function(contents, $editable) {},
+            });
+          });
         }
       });
     });

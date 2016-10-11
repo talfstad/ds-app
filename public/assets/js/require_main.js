@@ -30,7 +30,8 @@ requirejs.config({
     "fancybox": "vendor/bower_installed/fancybox/source/jquery.fancybox",
     highcharts: "vendor/bower_installed/highcharts/highcharts",
     "highcharts-more": "vendor/bower_installed/highcharts/highcharts-more",
-    "solid-gauge": "vendor/bower_installed/highcharts/modules/solid-gauge"
+    "solid-gauge": "vendor/bower_installed/highcharts/modules/solid-gauge",
+    "summernote": "vendor/bower_installed/summernote/dist/summernote.min"
   },
   shim: {
     highcharts: {
