@@ -90,7 +90,7 @@
     top: 0;
     right: 0;
     min-width: 122px;
-    margin-right: 300px;
+    margin-right: 410px;
 }
 
 .accordion-toggle.active .domain-group-notification span {
@@ -491,4 +491,8 @@ tr.warning input[type=select] {
 
 .group-name-row {
     border: none !important;
+}
+
+.notes-status-tab-handle {
+    color: #666 !important;
 }

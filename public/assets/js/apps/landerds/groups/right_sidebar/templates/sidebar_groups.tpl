@@ -11,11 +11,7 @@
   </div>
   <div class="admin-form panel-body pn pb25" style="font-size: 13px">
     <div class="name-and-optimizations-region">
-      <h5 class="title-divider mt20 mb10">Group Name
-  <a style="float: right" href="#">
-                <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
-              </a>
-            </h5>
+      <h5 class="title-divider mt20 mb10">Group Notes</h5>
       <input name="name" style="width: 193px; border-radius: 4px 0 0 4px; float: left;" class="form-control group-name-edit" type="text" value="<%= name %>">
       <button type="button" style="border-left: none; line-height: 1.4; border-radius: 0 4px 4px 0;" class="btn disabled btn-default btn-gradient dark update-group-name-button"><span class="fa fa-save pr5"></span>Save</button>
     </div>

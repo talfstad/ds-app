@@ -42,7 +42,7 @@
             <span class="sortbyorder">Asc</span>
           </button>
 
-          <ul class="topbar dropdown-menu dropdown-menu-left pt5" role="menu">
+          <ul class="sort topbar dropdown-menu dropdown-menu-left pt5" role="menu">
             <li>
               <label for="lander-name" class="block option option-primary" style="line-height: 40px; margin-right: 0">
                 <input data-sortby-name="Lander Name" data-sort-by="lander-name" type="radio" name="sort-radio" id="lander-name">
@@ -70,9 +70,25 @@
         </div>
         
         <ul class="nav nav-list nav-list-topbar pull-left">
-          <form class="navbar-form navbar-search pull-left mtn mbn" role="search">
-            <div class=" mt10 form-group">
-              <input type="text" class="list-search w250 form-control" placeholder="Search Lander Name..." value="">
+          <form class="admin-form navbar-form navbar-search pull-left mtn mbn" role="search">
+            <div class="search-dropdown dropdown pull-left mt10 form-group">
+              <input data-toggle="dropdown" aria-expanded="false" type="text" class="list-search w250 form-control" placeholder="Search Landers..." value="">
+              <ul class="search-dropdown-menu topbar dropdown-menu dropdown-menu-left pt5" role="menu">
+                <li style="width: 100%;">
+                  <label for="search-lander-name" class="block option option-primary" style="line-height: 40px; margin-right: 0">
+                    <input checked type="checkbox" name="search-lander" id="search-lander-name">
+                    <span class="mb10 mt10 ml10 checkbox"></span>
+                    <span class="ml5 fs13 fw600">Search Name</span>
+                  </label>
+                </li>
+                <li class="mb10" style="width: 100%;">
+                  <label for="search-lander-notes" class="block option option-primary" style="line-height: 40px; margin-right: 0">
+                      <input type="checkbox" name="search-lander" id="search-lander-notes">
+                      <span class="mb10 mt10 ml10 checkbox"></span>
+                      <span class="ml5 fs13 fw600">Search Notes</span>
+                  </label>
+                </li>
+              </ul>
             </div>
           </form>
         </ul>
@@ -105,7 +121,8 @@
         <div style="float: left; margin-left: 15px; margin-bottom: 10px">Landing Page Name</div>
         <div style="float: right; margin-right: 95px; margin-bottom: 10px">Deployed Domains</div>
         <div style="float: right; margin-right: 50px; margin-bottom: 10px">Groups on Lander</div>
-        <div style="float: right; margin-right: 75px; margin-bottom: 10px">Created On</div>
+        <div style="float: right; margin-right: 75px; margin-bottom: 10px">Notes</div>
+        <div style="float: right; margin-right: 78px; margin-bottom: 10px">Created On</div>
         
 
         </div>

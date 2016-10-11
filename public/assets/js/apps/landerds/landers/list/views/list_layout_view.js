@@ -24,7 +24,44 @@ define(["app",
         events: {
           "click .add-new-lander-button": "showAddNewLander",
           "click .rip-and-deploy-button": "showRipNewLander",
-          "click .toggle-help-info": "triggerToggleHelpInfo"
+          "click .toggle-help-info": "triggerToggleHelpInfo",
+          "click #search-lander-name": "updateSearchOptions",
+          "click #search-lander-notes": "updateSearchOptions"
+        },
+
+        updateSearchOptions: function(e) {
+
+          var me = this;
+          var currentTarget = $(e.currentTarget);
+
+          //if not checked make sure at least one is or check this one back
+          if (!currentTarget.is(':checked')) {
+            var searchEls = this.$el.find("input[name=search-lander]");
+            var allowUnCheck = false;
+
+            $.each(searchEls, function(idx, el) {
+              //if not the current el
+              el = $(el);
+              //if one of these is checked we can allow uncheck
+
+              if (el.is(':checked') && el.attr("id") !== currentTarget.attr("id")) {
+                allowUnCheck = true;
+              }
+            });
+
+            //update the value in the model and make sure the focus goes back to search box
+            me.$el.find(".list-search").focus();
+
+            if (!allowUnCheck) {
+              //update the value in the model and make sure the focus goes back to search box
+              //if dont allow check revert it
+              e.preventDefault();
+              return false;
+            }
+          } else {
+            //update the value in the model and make sure the focus goes back to search box
+            me.$el.find(".list-search").focus();
+          }
         },
 
         toggleHelpInfo: function(e) {
@@ -100,6 +137,39 @@ define(["app",
         onRender: function() {
           var me = this;
 
+          this.$el.find(".search-dropdown").on('hide.bs.dropdown', function(e) {
+            var isInRect = function(rect) {
+              rect.left;
+              rect.right;
+              rect.top;
+              rect.bottom;
+
+              var x = window.event.clientX;
+              var y = window.event.clientY;
+
+              if (x < rect.right && x > rect.left && y > rect.top && y < rect.bottom) {
+                return false;
+              } else {
+                return true;
+              }
+            };
+
+            //dont close it unless not clicking within current box or search
+            var curentTarget = $(e.currentTarget);
+            var dropdownRect = me.$el.find("ul.search-dropdown-menu")[0].getBoundingClientRect();
+            var searchRect = me.$el.find("input.list-search")[0].getBoundingClientRect();
+
+            if (window.event) {
+              if (!isInRect(dropdownRect) || !isInRect(searchRect)) {
+                return false;
+              } else {
+                return true;
+              }
+            } else {
+              return false;
+            }
+          });
+
           var updateSortbyButtonText = function() {
             var sortbyname = me.$el.find("input[name=sort-radio]:checked").attr("data-sortby-name");
             var sortby = me.$el.find("input[name=sort-radio]:checked").attr("data-sort-by");
@@ -115,7 +185,7 @@ define(["app",
             Landerds.loginModel.set("landers_rows_per_page", newPageSize);
           };
 
-          this.$el.find("ul.topbar li label").change(function(e) {
+          this.$el.find("ul.sort.topbar li label").change(function(e) {
             updateSortbyButtonText();
             Landerds.loginModel.saveUserSettings();
             me.trigger("landers:sort");
