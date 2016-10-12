@@ -15,9 +15,6 @@
                <span class="deploy-status-gui" style="padding-left: 5px"><%= deploy_status_gui %></span>
               </button>
             </div>
-
-          
-
           </div>
           
           <div class="alert-deleting-badge widget-menu domain-group-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">

@@ -5,6 +5,6 @@
     out: "require_main.built.js",
     wrapShim: true,
     preserveLicenseComments: false,
-    findNestedDependencies: true
-    // optimize: "none"
+    findNestedDependencies: true,
+    optimize: "uglify"
 });
