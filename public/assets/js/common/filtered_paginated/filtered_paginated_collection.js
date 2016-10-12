@@ -33,7 +33,7 @@ define(["app",
 
         var applyFilter = function(filterCriterion, filterStrategy, collection) {
           var collection = collection || original;
-          var criterion;
+          var criterion = filterCriterion || "";
           if (filterStrategy == "filter") {
             criterion = filterCriterion.trim();
           } else {
@@ -41,10 +41,9 @@ define(["app",
           }
 
           var items = [];
+          filtered.state.currentFilter = criterion;
+
           if (criterion) {
-
-            filtered.state.currentFilter = filterCriterion;
-
             if (filterStrategy == "filter") {
               if (!filtered.filterFunction) {
                 throw ("Attempted to use 'filter' function, but none was defined");
@@ -102,7 +101,7 @@ define(["app",
         };
 
         filtered.resetWithOriginals = function(criterion) {
-          criterion = "";
+          criterion = criterion || "";
           var items = applyFilter(criterion, "filter");
 
           filtered.reset(items);
@@ -110,20 +109,23 @@ define(["app",
         };
 
         filtered.showPageWithModel = function(model) {
+          //dont show if not in the filtered collection
           filtered.resetWithOriginals(filtered.state.currentFilter);
           //1. get page number that this model is on
           var pageSize = filtered.state.gui.get("page_size");
-          var itemIndex = original.indexOf(model) + 1;
+          var itemIndex = filtered.indexOf(model) + 1;
           //2. goto that page!
-          var pageToGoto;
-          if ((itemIndex / pageSize) % 1 == 0) {
-            //is integer is last on page so leave it
-            pageToGoto = Math.floor(itemIndex / pageSize);
-          } else {
-            pageToGoto = Math.floor(itemIndex / pageSize) + 1;
-          }
+          if (itemIndex > 0) {
+            var pageToGoto;
+            if ((itemIndex / pageSize) % 1 == 0) {
+              //is integer is last on page so leave it
+              pageToGoto = Math.floor(itemIndex / pageSize);
+            } else {
+              pageToGoto = Math.floor(itemIndex / pageSize) + 1;
+            }
 
-          filtered.gotoPage(pageToGoto);
+            filtered.gotoPage(pageToGoto);
+          }
         };
 
         filtered.showEmpty = function(showEmpty) {
@@ -133,7 +135,7 @@ define(["app",
             original_backup.add(original.models);
 
             //empty original
-            original.reset(undefined, {silent: true});
+            original.reset(undefined, { silent: true });
 
             var criterion = "";
             var items = applyFilter(criterion, "filter");
@@ -211,20 +213,20 @@ define(["app",
             var deployStatus = model.get("deploy_status").split(":")[0];
 
             var modifiedAttr = model.get("modified");
-            
-              if (deployStatus === "not_deployed") {
-                notDeployedTotal++;
-              } else if (deployStatus === "deploying") {
-                deployingTotal++;
-              } else if (deployStatus === "undeploying") {
-                undeployingTotal++;
-              } else if (deployStatus === "initializing") {
-                //deploying total all this does is triggers the working in topbar
-                deployingTotal++;
-              } else if (deployStatus === "deleting") {
-                deleting++;
-              }
-          
+
+            if (deployStatus === "not_deployed") {
+              notDeployedTotal++;
+            } else if (deployStatus === "deploying") {
+              deployingTotal++;
+            } else if (deployStatus === "undeploying") {
+              undeployingTotal++;
+            } else if (deployStatus === "initializing") {
+              //deploying total all this does is triggers the working in topbar
+              deployingTotal++;
+            } else if (deployStatus === "deleting") {
+              deleting++;
+            }
+
           });
           filtered.state.gui.set("total_not_deployed", notDeployedTotal);
           filtered.state.gui.set('total_undeploying', undeployingTotal);
@@ -350,18 +352,14 @@ define(["app",
         };
 
         filtered.sortFiltered = function() {
-          filtered.currentFilteredCollection = filtered.models;
-          
-          //set original data
-          filtered.set(filtered.currentFilteredCollection);
-          filtered.sort();
 
-          original.set(filtered.currentFilteredCollection);
-          original.sort();
-
-          var items = filtered.paginate(filtered.currentFilteredCollection);
+          filtered.original.sort();
+          //filter it
+          var items = applyFilter(filtered._currentCriterion, filtered._currentFilter);
+          // filtered.currentFilteredCollection = items;
 
           filtered.reset(items);
+
           return filtered;
         };
 
@@ -370,7 +368,7 @@ define(["app",
         // and end up with the new filtered result set
         original.on("reset", function() {
           var items = applyFilter(filtered._currentCriterion, filtered._currentFilter);
-          filtered.currentFilteredCollection = items;
+          // filtered.currentFilteredCollection = items;
           // reset the filtered collection with the new items
           filtered.reset(items);
         });

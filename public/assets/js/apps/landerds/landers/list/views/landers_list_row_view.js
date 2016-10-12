@@ -110,16 +110,13 @@ define(["app",
 
             if (deployStatus == "initializing:add") {
               //change the gui working from working to something else
-              deploy_status_gui = "Lander Initializing";
+              deploy_status_gui = "Initializing";
             } else if (deployStatus == "initializing:add_optimizing") {
-              deploy_status_gui = "Lander Optimizing";
+              deploy_status_gui = "Optimizing";
             } else if (deployStatus == "initializing:add_finishing") {
               deploy_status_gui = "Lander Finishing";
             }
-
           }
-
-
 
           this.model.set("deploy_status_gui", deploy_status_gui);
 
