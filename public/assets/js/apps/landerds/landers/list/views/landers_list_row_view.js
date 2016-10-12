@@ -157,29 +157,52 @@ define(["app",
             this.disableAccordionPermanently();
           } else {
 
+            var onHoverTabsHighlightRow = function(e, highlight) {
+              var currentTarget = $(e.currentTarget);
+              if (highlight) {
+                // currentTarget.parent().find("li a").css("color","#222")
+                currentTarget.parent().parent().find("div.list-row-item").css("color", "#222");
+              } else {
+                // currentTarget.parent().find("li a").css("color","")
+                currentTarget.parent().parent().find("div.list-row-item").css("color", "");
+              }
+            };
+
             //add/remove hovering attribute so we can correctly animate closing of the right sidebar
             this.$el.find(".accordion-toggle").hover(function(e) {
-                $(e.currentTarget).attr("data-currently-hovering", true);
+                //add hover attributes to row tabs
+                var currentTarget = $(e.currentTarget);
+                currentTarget.parent().find("ul.nav.panel-tabs > li > a:last").css("color", "#222");
+                currentTarget.attr("data-currently-hovering", true);
               },
               function(e) {
-                $(e.currentTarget).attr("data-currently-hovering", false);
+                var currentTarget = $(e.currentTarget);
+                currentTarget.parent().find("ul.nav.panel-tabs > li > a:last").css("color", "");
+                currentTarget.attr("data-currently-hovering", false);
               });
 
             this.$el.find(".group-tab-handle-region").hover(function(e) {
-              $(e.currentTarget).attr("data-currently-hovering", true);
+              onHoverTabsHighlightRow(e, true);
+              var currentTarget = $(e.currentTarget);
+              currentTarget.attr("data-currently-hovering", true);
             }, function(e) {
+              onHoverTabsHighlightRow(e, false);
               $(e.currentTarget).attr("data-currently-hovering", false);
             });
 
             this.$el.find(".deploy-status-region").hover(function(e) {
+              onHoverTabsHighlightRow(e, true);
               $(e.currentTarget).attr("data-currently-hovering", true);
             }, function(e) {
+              onHoverTabsHighlightRow(e, false);
               $(e.currentTarget).attr("data-currently-hovering", false);
             });
 
             this.$el.find(".notes-tab-handle-region").hover(function(e) {
+              onHoverTabsHighlightRow(e, true);
               $(e.currentTarget).attr("data-currently-hovering", true);
             }, function(e) {
+              onHoverTabsHighlightRow(e, false);
               $(e.currentTarget).attr("data-currently-hovering", false);
             });
 
@@ -263,11 +286,11 @@ define(["app",
           this.$el.find("a[href^='#notes-tab']").on("show.bs.tab", function(e) {
             //if lander model doesnt have notes object
 
-              //show loading for the tab
+            //show loading for the tab
 
-              //get the data from the server
+            //get the data from the server
 
-              //put the text/image there and show
+            //put the text/image there and show
 
             //else just show the current note object
 
@@ -276,7 +299,7 @@ define(["app",
 
             //has to be shown on the dom to init summernote
             me.$el.find('.summernote').summernote({
-              height: 300, //set editable area's height
+              height: 330, //set editable area's height
               focus: false, //set focus editable area after Initialize summernote
               oninit: function() {},
               onChange: function(contents, $editable) {},

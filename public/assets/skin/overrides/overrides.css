@@ -504,7 +504,6 @@ body.sb-l-o #topbar.affix,
     line-height: normal;
     font-weight: 600;
     outline: none;
-    color: rgb(102, 102, 102);
 }
 
 .editable-lander-name[readonly] {
@@ -516,6 +515,7 @@ body.sb-l-o #topbar.affix,
 }
 
 .list-row-item {
+    color: rgb(102, 102, 102);
     cursor: pointer;
 }
 
@@ -551,5 +551,12 @@ div.list-row-item:focus input {
     display: none !important;
 }
 
+#list-collection .panel-tabs > li > a {
+    color: #666;
+}
 
+#list-collection .panel-tabs > li > a:hover,
+#list-collection .panel-tabs > li.active a {
+    color: #222 !important;
+}
 

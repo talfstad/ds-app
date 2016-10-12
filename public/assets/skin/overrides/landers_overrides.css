@@ -431,17 +431,17 @@ tr.warning input[type=select] {
 }
 
 .group-status-tab-handle {
-    color: #666 !important;
+    /*color: #666 !important;*/
     width: 145px !important;
 }
 
 .domain-status-tab-handle {
-    color: #666 !important;
+    /*color: #666 !important;*/
     width: 145px !important;
 }
 
 .lander-status-tab-handle {
-    color: #666 !important;
+    /*color: #666 !important;*/
     width: 145px !important;
 }
 
@@ -493,6 +493,6 @@ tr.warning input[type=select] {
     border: none !important;
 }
 
-.notes-status-tab-handle {
+/*.notes-status-tab-handle {
     color: #666 !important;
-}
+}*/
