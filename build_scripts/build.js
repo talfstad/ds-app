@@ -22,6 +22,7 @@ var purifyCss = require('purify-css');
 var cheerio = require('cheerio');
 var fs = require('fs');
 var critcialCss = require('critical');
+var nodecp = require('node-cp');
 
 //optimize Single HTML endpoint. not ideal for optimizing a whole directories worth
 var optimizeCss = function(options, callback) {
@@ -172,13 +173,50 @@ rimraf('./built', function(err) {
                   htmlOptimizeOptions.content = tplFiles.concat(jsFiles);
 
                   optimizeCss(htmlOptimizeOptions, function() {
-                    //zip the archive for deployment
-                    zipFolder('built', { saveTo: 'built.zip' }, function(err) {
-                      if (err) {
-                        console.log("err: " + err);
-                      } else {
-                        console.log("build finished.")
-                      }
+                    //copy necessary files to dist
+                    mkdirp('built/dist/public/assets/js', function(err) {
+                      mkdirp('built/dist/public/vendor/bower_installed/summernote/dist', function(err) {
+
+                        var copy = function(source, dest, callback) {
+                          nodecp(source, dest, function(err, files) {
+                            callback(err, files);
+                          });
+                        };
+
+                        copy('built/server', 'built/dist/server', function(err, files) {
+                          copy('built/Dockerfile', 'built/dist', function(err, files) {
+                            copy('built/Dockerrun.aws.json', 'built/dist', function(err, files) {
+                              copy('built/public/style.css', 'built/dist/public', function(err, files) {
+                                copy('built/package.json', 'built/dist', function(err, files) {
+                                  copy('built/.ebextensions', 'built/dist', function(err, files) {
+                                    copy('built/node_modules_custom', 'built/dist/node_modules_custom', function(err, files) {
+                                      copy('built/public/vendor/bower_installed/requirejs', 'built/dist/public/vendor/bower_installed/requirejs', function(err, files) {
+                                        copy('built/public/vendor/bower_installed/summernote/dist/font', 'built/dist/public/vendor/bower_installed/summernote/dist/font', function(err, files) {
+                                          copy('built/public/assets/fonts', 'built/dist/public/assets/fonts', function(err, files) {
+                                            copy('built/public/assets/img', "built/dist/public/assets/img", function(err, files) {
+                                              copy('built/public/assets/js/require_main.js', "built/dist/public/assets/js", function(err, files) {
+                                                //zip the archive for deployment
+                                                // zipFolder('built/dist', { saveTo: 'built.zip' }, function(err) {
+                                                //   if (err) {
+                                                //     console.log("err: " + err);
+                                                //   } else {
+                                                //     console.log("build finished.")
+                                                //   }
+                                                // });
+                                                console.log("done");
+                                              });
+                                            });
+                                          });
+                                        });
+                                      });
+                                    });
+                                  });
+                                });
+                              });
+                            });
+                          });
+                        });
+                      });
                     });
                   });
                 });
