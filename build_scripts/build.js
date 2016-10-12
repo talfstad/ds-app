@@ -196,14 +196,13 @@ rimraf('./built', function(err) {
                                             copy('built/public/assets/img', "built/dist/public/assets/img", function(err, files) {
                                               copy('built/public/assets/js/require_main.js', "built/dist/public/assets/js", function(err, files) {
                                                 //zip the archive for deployment
-                                                // zipFolder('built/dist', { saveTo: 'built.zip' }, function(err) {
-                                                //   if (err) {
-                                                //     console.log("err: " + err);
-                                                //   } else {
-                                                //     console.log("build finished.")
-                                                //   }
-                                                // });
-                                                console.log("done");
+                                                 zipFolder('built/dist', { saveTo: 'built.zip' }, function(err) {
+                                                   if (err) {
+                                                     console.log("err: " + err);
+                                                   } else {
+                                                     console.log("build finished.")
+                                                   }
+                                                 });
                                               });
                                             });
                                           });
