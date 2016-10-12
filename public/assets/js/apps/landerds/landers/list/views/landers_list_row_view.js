@@ -150,6 +150,17 @@ define(["app",
           this.alertDeployStatus();
           this.reAlignTableHeader();
 
+          this.$el.find(".row-deploy-status-button").hover(function(e) {
+              var currentTarget = $(e.currentTarget);
+              currentTarget.find(".glyphicon").removeClass("glyphicon-refresh").removeClass("glyphicon-refresh-animate").addClass("glyphicon-remove-sign").addClass("text-danger");
+              me.$el.find(".list-row-item").css("cursor","pointer");
+            },
+            function(e) {
+              var currentTarget = $(e.currentTarget);
+              currentTarget.find(".glyphicon").removeClass("glyphicon-remove-sign").addClass("glyphicon-refresh").addClass("glyphicon-refresh-animate").removeClass("text-danger");
+              me.$el.find(".list-row-item").css("cursor","not-allowed");
+            });
+
           //if deleting need to show delete state (which is disabling the whole thing)
           var deployStatus = this.model.get("deploy_status");
           var rootDeployStatus = deployStatus.split(":")[0];

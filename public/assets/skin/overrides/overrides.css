@@ -15,7 +15,6 @@ body {
 #nestable-contextual {
     max-width: none;
 }
-
 .topbar.dropdown-menu {
     margin-top: 10px;
     border-top-color: #3498db !important;
@@ -531,7 +530,7 @@ div.list-row-item:focus input {
 .admin-form .dropdown-menu label:hover {
     background-color: #f5f5f5 !important;
 }
-.page-size-dropdown{
+.page-size-dropdown {
     width: 185px;
 }
 
@@ -559,4 +558,18 @@ div.list-row-item:focus input {
 #list-collection .panel-tabs > li.active a {
     color: #222 !important;
 }
+
+.row-deploy-status .btn-default.light:hover,
+.row-deploy-status .btn-default.light:active,
+.row-deploy-status .btn-default.light:focus {
+    background: transparent;    
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+.note-btn-group button {
+    color: #222 !important;
+}
+
+
 

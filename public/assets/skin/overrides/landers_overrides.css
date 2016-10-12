@@ -422,8 +422,9 @@ tr.warning input[type=select] {
     margin-left: 60px;
 }
 
-.disabled-link {
-    cursor: not-allowed;
+.disabled-link,
+.disabled-link input {
+    cursor: not-allowed !important;
 }
 
 .inactive-link {

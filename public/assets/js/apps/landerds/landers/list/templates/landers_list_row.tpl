@@ -6,14 +6,18 @@
           <input readonly class="editable-lander-name fw500" type="text" value="<%= name %>">
           <span class="measure-width" style="display:none;"><%= name %></span>
           
-          <div class="alert-working-badge widget-menu domain-group-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
-            <span class="open_sidemenu_r label">
-        
-          <div class="text-alert">
-            <span style="position: relative; top: 2px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>  
-           <span class="deploy-status-gui" style="padding-left: 5px"><%= deploy_status_gui %></span>
-           </div>
-            </span>
+          <div class="alert-working-badge widget-menu domain-group-notification" style="display: none; right: 140px; min-width: 100px">
+            
+            <div class="row-deploy-status btn-group">
+              <button type="button" style="border: none;" class="row-deploy-status-button pt5 pb5 pl10 pr10 btn text-alert btn-default light">
+                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+                </span>  
+               <span class="deploy-status-gui" style="padding-left: 5px"><%= deploy_status_gui %></span>
+              </button>
+            </div>
+
+          
+
           </div>
           
           <div class="alert-deleting-badge widget-menu domain-group-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">

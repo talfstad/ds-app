@@ -143,6 +143,9 @@ define(["app",
 
         this.$el.find(".accordion-toggle").off();
 
+        this.$el.find(".notes-tab-handle-region").off();
+        this.$el.find(".notes-tab-handle-region a").attr("data-toggle", "");
+
         this.$el.off();
         this.$el.find(".nav.panel-tabs").off();
 
