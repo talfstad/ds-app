@@ -74,7 +74,7 @@ define(["app",
             });
 
             landersListLayout.on("updateSearchFunction", function(searchCriteria, two, three) {
-              if (searchCriteria.searchLander && searchCriteria.searchNotes) {
+              if (searchCriteria.searchName && searchCriteria.searchNotes) {
                 me.filteredCollection.filterFunction = me.landerNameAndNotesFilter;
               } else if (searchCriteria.searchNotes) {
                 me.filteredCollection.filterFunction = me.landerNotesFilter;

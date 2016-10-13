@@ -76,7 +76,7 @@
               <ul class="search-dropdown-menu topbar dropdown-menu dropdown-menu-left pt5" role="menu">
                 <li style="width: 100%;">
                   <label for="search-lander-name" class="block option option-primary" style="line-height: 40px; margin-right: 0">
-                    <input checked type="checkbox" class="search-filter-option" name="searchLander" id="search-lander-name">
+                    <input checked type="checkbox" class="search-filter-option" name="searchName" id="search-lander-name">
                     <span class="mb10 mt10 ml10 checkbox"></span>
                     <span class="ml5 fs13 fw600">Search Name</span>
                   </label>

@@ -36,7 +36,11 @@ define(["app",
             this.model.set("showAwsHelp", true);
           }
 
-          this.model.set('filterVal', $('.list-search').val());
+          var listSearchEl = $('.list-search');
+          this.model.set('filterVal', listSearchEl.val());
+          var navbarSearchFormEl = $('.navbar-search');
+
+          this.model.set(Backbone.Syphon.serialize(navbarSearchFormEl));
 
         },
 
