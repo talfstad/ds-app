@@ -36,7 +36,7 @@ define(["app",
 
           //if not checked make sure at least one is or check this one back
           if (!currentTarget.is(':checked')) {
-            var searchEls = this.$el.find("input[name=search-lander]");
+            var searchEls = this.$el.find("input.search-filter-option");
             var allowUnCheck = false;
 
             $.each(searchEls, function(idx, el) {
@@ -62,6 +62,10 @@ define(["app",
             //update the value in the model and make sure the focus goes back to search box
             me.$el.find(".list-search").focus();
           }
+          var searchCriteria = Backbone.Syphon.serialize(me.$el.find("form.navbar-search"));
+          this.trigger("updateSearchFunction", searchCriteria);
+          var searchVal = this.$el.find("input.list-search").val();
+          me.filterLanders(searchVal || "");
         },
 
         toggleHelpInfo: function(e) {

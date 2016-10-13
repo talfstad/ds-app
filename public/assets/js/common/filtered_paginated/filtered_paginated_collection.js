@@ -23,7 +23,6 @@ define(["app",
           pageSize: options.page_size || 10
         };
 
-
         if (filtered.state.paginated) {
           filtered.state.gui = new PaginatedModel;
         }

@@ -63,18 +63,23 @@ define(["app",
           var deferredLandersCollection = Landerds.request("landers:landersCollection");
 
           $.when(deferredLandersCollection).done(function(landersCollection) {
+            
+            var defaultSearchFilter = me.landerNameFilter;
 
             me.filteredCollection = FilteredPaginatedCollection({
               collection: landersCollection,
               paginated: true,
               page_size: Landerds.loginModel.get("landers_rows_per_page"),
-              filterFunction: function(filterCriterion) {
-                var criterion = filterCriterion.toLowerCase();
-                return function(lander) {
-                  if (lander.get('name').toLowerCase().indexOf(criterion) !== -1) {
-                    return lander;
-                  }
-                };
+              filterFunction: defaultSearchFilter
+            });
+
+            landersListLayout.on("updateSearchFunction", function(searchCriteria, two, three) {
+              if (searchCriteria.searchLander && searchCriteria.searchNotes) {
+                me.filteredCollection.filterFunction = me.landerNameAndNotesFilter;
+              } else if (searchCriteria.searchNotes) {
+                me.filteredCollection.filterFunction = me.landerNotesFilter;
+              } else {
+                me.filteredCollection.filterFunction = me.landerNameFilter;
               }
             });
 

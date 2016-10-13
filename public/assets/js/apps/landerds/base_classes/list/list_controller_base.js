@@ -22,6 +22,34 @@ define(["app",
         }
       },
 
+      landerNameAndNotesFilter: function(filterCriterion) {
+        var criterion = filterCriterion.toLowerCase();
+        return function(lander) {
+          if (lander.get('name').toLowerCase().indexOf(criterion) !== -1 ||
+            lander.get('notes_search').toLowerCase().indexOf(criterion) !== -1) {
+            return lander;
+          }
+        };
+      },
+
+      landerNotesFilter: function(filterCriterion) {
+        var criterion = filterCriterion.toLowerCase();
+        return function(lander) {
+          if (lander.get('notes_search').toLowerCase().indexOf(criterion) !== -1) {
+            return lander;
+          }
+        };
+      },
+
+      landerNameFilter: function(filterCriterion) {
+        var criterion = filterCriterion.toLowerCase();
+        return function(lander) {
+          if (lander.get('name').toLowerCase().indexOf(criterion) !== -1) {
+            return lander;
+          }
+        };
+      },
+
       //add the lander model to the list
       addRow: function(model) {
         Landerds.trigger('landers:closesidebar');

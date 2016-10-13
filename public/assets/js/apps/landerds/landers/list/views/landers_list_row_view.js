@@ -213,8 +213,13 @@ define(["app",
               callbacks: {
                 onInit: function() {},
                 onChange: function(contents, $editable) {
-                  me.model.set("notes", contents);
-                  me.disableSaveNotesIfNotChanged()
+                  var editableEl = me.summernoteEl.parent().find(".note-editable");
+                  if (editableEl.attr("contenteditable") == "true") {
+                    me.model.set("notes", contents);
+                    var notes_search = editableEl.text();
+                    me.model.set("notes_search", notes_search);
+                    me.disableSaveNotesIfNotChanged();
+                  }
                 },
                 onKeydown: function(e) {}
               },
