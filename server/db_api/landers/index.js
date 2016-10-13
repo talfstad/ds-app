@@ -29,6 +29,26 @@ module.exports = function(app, db) {
       });
     },
 
+    getLanderNotes: function(user, lander_id, callback) {
+      var user_id = user.id;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          callback(err);
+        } else {
+          connection.query("SELECT notes FROM landers WHERE user_id = ? AND id = ?", [user_id, lander_id],
+            function(err, dbLanderNotes) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, dbLanderNotes[0].notes);
+              }
+              connection.release();
+            });
+        }
+      });
+    },
+
     getDeployedLandersByLanderId: function(user, lander_id, callback) {
       var user_id = user.id;
 
@@ -746,7 +766,7 @@ module.exports = function(app, db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT id,name,modified,s3_folder_name,deploy_root,deployment_folder_name,old_deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
+            connection.query("SELECT id,notes_search,name,modified,s3_folder_name,deploy_root,deployment_folder_name,old_deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
               if (err) {
                 callback(err);
               } else {
@@ -784,7 +804,7 @@ module.exports = function(app, db) {
               }
             }
 
-            var queryString = "SELECT id,name,modified,s3_folder_name,deploy_root,deployment_folder_name,old_deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ? " + queryIds;
+            var queryString = "SELECT id,notes_search,name,modified,s3_folder_name,deploy_root,deployment_folder_name,old_deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ? " + queryIds;
 
             connection.query(queryString, [user_id], function(err, dblanders) {
               if (err) {

@@ -571,5 +571,19 @@ div.list-row-item:focus input {
     color: #222 !important;
 }
 
+.note-editor.note-frame .note-editing-area .note-editable[contenteditable="false"] {
+    background: #fff !important;
+}
+
+.save-notes-container {
+    float: right;
+    position: relative;
+    margin-top: 10px !important;
+    margin-right: 10px !important;
+}
+
+
+
+
 
 

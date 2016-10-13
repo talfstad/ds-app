@@ -21,6 +21,8 @@ define(["app",
           ListRowsBaseView.prototype.initialize.apply(this);
         },
 
+        summernoteEl: null,
+
         className: "bs-component accordion-group",
 
         template: LandersListItemTpl,
@@ -63,7 +65,8 @@ define(["app",
         modelEvents: {
           "change:deploy_status": "alertDeployStatus",
           "resortAndExpandModelView": "renderAndShowThisViewsPage",
-          "landerFinishAdded": "renderAndShowThisViewsPage"
+          "landerFinishAdded": "renderAndShowThisViewsPage",
+          "setNotesInEditor": "setNotesInEditor"
         },
 
         regions: {
@@ -132,6 +135,23 @@ define(["app",
           Landerds.trigger("landers:showAddToGroup", this.model);
         },
 
+        setNotesInEditor: function() {
+          if (this.summernoteEl) {
+            this.summernoteEl.summernote('code', this.model.get("notes") || "");
+            this.summernoteEl.parent().find(".note-statusbar").css("display", "block");
+            this.summernoteEl.summernote('enable');
+            this.disableSaveNotesIfNotChanged();
+          }
+        },
+
+        disableSaveNotesIfNotChanged: function() {
+          if (this.model.get("notes") == this.model.get("server_notes")) {
+            this.$el.find(".save-lander-notes").attr("disabled", true);
+          } else {
+            this.$el.find(".save-lander-notes").attr("disabled", false);
+          }
+        },
+
         onBeforeRender: function() {
           ListRowsBaseView.prototype.onBeforeRender.apply(this);
         },
@@ -147,15 +167,80 @@ define(["app",
           this.alertDeployStatus();
           this.reAlignTableHeader();
 
+          var destroySummernoteEditor = function() {
+            me.summernoteEl.summernote('destroy');
+            me.summernoteEl = null;
+          };
+
+          var initSummernoteEditor = function() {
+            if (me.summernoteEl) {
+              destroySummernoteEditor();
+            }
+            var loadingHtml = '<p style="text-align: center; "><br></p><h1 style="text-align: center; "><br><br><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></h1>';
+
+            me.summernoteEl = me.$el.find('.summernote');
+            
+            var saveNotes = function(context) {
+              var ui = $.summernote.ui;
+
+              // create button
+              var button = ui.button({
+                contents: '<i class="fa fa-save"/> Save Notes',
+                click: function() {
+
+
+                }
+              });
+
+              var returnButton = button.render().addClass("save-lander-notes");
+              return returnButton; // return button as jquery object 
+            };
+
+            //has to be shown on the dom to init summernote
+            me.summernoteEl.summernote({
+              height: 330, //set editable area's height
+              focus: false, //set focus editable area after Initialize summernote
+
+              callbacks: {
+                onInit: function() {},
+                onChange: function(contents, $editable) {
+                  me.model.set("notes", contents);
+                  me.disableSaveNotesIfNotChanged()
+                },
+                onKeydown: function(e) {}
+              },
+              toolbar: $.extend($.summernote.options.toolbar, [
+                ['insert', ['saveNotes']]
+              ]),
+              buttons: $.extend($.summernote.options.buttons, {
+                saveNotes: saveNotes
+              })
+            });
+
+            me.$el.find(".save-lander-notes").parent().addClass("save-notes-container");
+
+            if (me.model.get("notes")) {
+              me.summernoteEl.summernote('code', me.model.get("notes"));
+              me.summernoteEl.parent().find(".note-statusbar").css("display", "block");
+              me.summernoteEl.summernote('enable');
+              me.disableSaveNotesIfNotChanged();
+            } else {
+              me.summernoteEl.summernote('code',loadingHtml);
+              me.summernoteEl.summernote('disable');
+              me.summernoteEl.parent().find(".note-statusbar").css("display", "none");
+              me.trigger("getLanderNotes");
+            }
+          };
+
           this.$el.find(".row-deploy-status-button").hover(function(e) {
               var currentTarget = $(e.currentTarget);
               currentTarget.find(".glyphicon").removeClass("glyphicon-refresh").removeClass("glyphicon-refresh-animate").addClass("glyphicon-remove-sign").addClass("text-danger");
-              me.$el.find(".list-row-item").css("cursor","pointer");
+              me.$el.find(".list-row-item").css("cursor", "pointer");
             },
             function(e) {
               var currentTarget = $(e.currentTarget);
               currentTarget.find(".glyphicon").removeClass("glyphicon-remove-sign").addClass("glyphicon-refresh").addClass("glyphicon-refresh-animate").removeClass("text-danger");
-              me.$el.find(".list-row-item").css("cursor","not-allowed");
+              me.$el.find(".list-row-item").css("cursor", "not-allowed");
             });
 
           //if deleting need to show delete state (which is disabling the whole thing)
@@ -218,6 +303,8 @@ define(["app",
 
               me.trigger('childCollapsed');
 
+              destroySummernoteEditor();
+
               //allow input to be editable
               me.$el.find(".editable-lander-name").attr('readonly', '');
 
@@ -235,6 +322,8 @@ define(["app",
             this.$el.on('show.bs.collapse', function(e) {
 
               me.reAlignTableHeader();
+
+              initSummernoteEditor();
 
               me.trigger('childExpanded');
 
@@ -291,28 +380,9 @@ define(["app",
             });
           }
 
-          this.$el.find("a[href^='#notes-tab']").on("show.bs.tab", function(e) {
-            //if lander model doesnt have notes object
-
-            //show loading for the tab
-
-            //get the data from the server
-
-            //put the text/image there and show
-
-            //else just show the current note object
-
-
-
-
-            //has to be shown on the dom to init summernote
-            me.$el.find('.summernote').summernote({
-              height: 330, //set editable area's height
-              focus: false, //set focus editable area after Initialize summernote
-              oninit: function() {},
-              onChange: function(contents, $editable) {},
-            });
-          });
+          // this.$el.find("a[href^='#notes-tab']").on("show.bs.tab", function(e) {
+          //   // initSummernoteEditor();
+          // });
         }
       });
     });

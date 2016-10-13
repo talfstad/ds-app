@@ -11,8 +11,17 @@ define(["app",
 
       urlRoot: "/api/landers",
 
+      landerNotesModel: null,
 
       initialize: function() {
+        var landerNotesModelClass = Backbone.Model.extend({
+          urlRoot: "/api/landers/notes"
+        });
+
+        this.landerNotesModel = new landerNotesModelClass({
+          id: this.get("id")
+        });
+
         var me = this;
 
         this.set("originalValueOptimized", this.get("optimized"));
@@ -100,7 +109,7 @@ define(["app",
                 me.set("deploy_status", "deleting");
               } else if (jobModel.get("action") == "savingLander") {
                 me.set("saving_lander", true);
-              } else if(jobModel.get("action") == "addLander") {
+              } else if (jobModel.get("action") == "addLander") {
                 me.set("deploy_status", jobModel.get("deploy_status"));
               } else {
                 me.set("deploy_status", "deploying");
@@ -218,12 +227,22 @@ define(["app",
           deployedDomainsCollection.trigger("activeGroupsChanged");
         });
 
-
         deployedDomainsCollection.on("destroy", function(domainModel) {
           me.setDeployStatus();
         });
 
         this.setDeployStatus();
+      },
+
+      getLanderNotes: function() {
+        var me = this;
+        this.landerNotesModel.fetch({
+          success: function(model) {
+            me.set("notes", model.get("notes"));
+            me.set("server_notes", model.get("notes"));
+            me.trigger("setNotesInEditor");
+          }
+        })
       },
 
       setDeployStatus: function() {

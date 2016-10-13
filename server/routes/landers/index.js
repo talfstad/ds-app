@@ -145,7 +145,6 @@ module.exports = function(app, passport) {
 
   app.get('/api/landers/download', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
-
     //get which one to download?
     //?version=optimized&id=s3_folder_name
     var version = req.query.version;
@@ -165,5 +164,18 @@ module.exports = function(app, passport) {
     } else {
       res.json({ error: 'No valid Version to get' });
     }
+  });
+
+  app.get('/api/landers/notes/:id', passport.isAuthenticated(), function(req, res) {
+    var user = req.user;
+    var lander_id = req.params['id'];
+
+    db.landers.getLanderNotes(user, lander_id, function(err, dbLanderNotes) {
+      if (err) {
+        res.json({error: {code: "CouldNotGetNotes"}});
+      } else {
+        res.json({notes: dbLanderNotes});
+      }
+    });
   });
 }

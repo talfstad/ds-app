@@ -22,7 +22,6 @@ define(["app",
         }
       },
 
-
       //add the lander model to the list
       addRow: function(model) {
         Landerds.trigger('landers:closesidebar');

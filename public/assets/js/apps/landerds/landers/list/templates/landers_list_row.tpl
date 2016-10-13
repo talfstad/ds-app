@@ -90,9 +90,7 @@
 
           <div class="tab-pane" role="tabpanel" id="notes-tab-id-<%= id %>">
               <div class="panel-body pn of-h" style="border-top: none;">
-                <div class="summernote" style="height: 300px">This is the
-                  <b>Summernote</b> Editor...
-                </div>
+                <div class="summernote"></div>
               </div>
           </div>
         </div>

@@ -164,6 +164,11 @@ define(["app",
                     model: landerView.model
                   });
 
+                  landerView.on("getLanderNotes", function() {
+                    var model = this.model;
+                    model.getLanderNotes();
+                  });
+
                   landerView.on("renderAndShowThisViewsPage", function() {
                     me.filteredCollection.sortFiltered();
                     me.expandAndShowRow(landerView.model);
