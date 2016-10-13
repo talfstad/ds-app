@@ -582,6 +582,12 @@ div.list-row-item:focus input {
     margin-right: 10px !important;
 }
 
+.saved-lander-alert {
+    display: block;
+    float: left;
+    margin: 5px 10px 0 0;
+    font-size: 18px;
+}
 
 
 

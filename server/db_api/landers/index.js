@@ -152,6 +152,33 @@ module.exports = function(app, db) {
       });
     },
 
+    updateNotes: function(user, attr, callback) {
+      var user_id = user.id;
+      var notes = attr.notes;
+      var lander_id = attr.id;
+      var notes_search = attr.notes_search;
+
+      //update multiple landers modified = 0
+      var updateNotesDb = function() {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          } else {
+            connection.query("UPDATE landers SET notes = ?, notes_search = ? WHERE id = ? AND user_id = ?", [notes, notes_search, lander_id, user_id],
+              function(err, user_ids) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false);
+                }
+                connection.release();
+              });
+          }
+        });
+      };
+      updateNotesDb();
+    },
+
     //save optimzations and modified
     updateAllLanderData: function(user, attr, callback) {
       var user_id = user.id;
@@ -176,7 +203,7 @@ module.exports = function(app, db) {
                   connection.release();
                 });
             }
-          })
+          });
         };
 
         var asyncIndex = 0;

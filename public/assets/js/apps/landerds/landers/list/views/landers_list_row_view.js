@@ -179,7 +179,7 @@ define(["app",
             var loadingHtml = '<p style="text-align: center; "><br></p><h1 style="text-align: center; "><br><br><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></h1>';
 
             me.summernoteEl = me.$el.find('.summernote');
-            
+
             var saveNotes = function(context) {
               var ui = $.summernote.ui;
 
@@ -187,8 +187,17 @@ define(["app",
               var button = ui.button({
                 contents: '<i class="fa fa-save"/> Save Notes',
                 click: function() {
-
-
+                  me.model.saveLanderNotes(function() {
+                    //disable save notes
+                    me.disableSaveNotesIfNotChanged();
+                    //flash success check next to button
+                    var landerNotesButton = me.$el.find(".save-lander-notes");
+                    var successEl = $("<i class='fa fa-check-circle text-success saved-lander-alert'></i>");
+                    landerNotesButton.parent().prepend(successEl);
+                    successEl.fadeOut('slow', function() {
+                      successEl.remove();
+                    });
+                  });
                 }
               });
 
@@ -225,7 +234,7 @@ define(["app",
               me.summernoteEl.summernote('enable');
               me.disableSaveNotesIfNotChanged();
             } else {
-              me.summernoteEl.summernote('code',loadingHtml);
+              me.summernoteEl.summernote('code', loadingHtml);
               me.summernoteEl.summernote('disable');
               me.summernoteEl.parent().find(".note-statusbar").css("display", "none");
               me.trigger("getLanderNotes");

@@ -172,10 +172,22 @@ module.exports = function(app, passport) {
 
     db.landers.getLanderNotes(user, lander_id, function(err, dbLanderNotes) {
       if (err) {
-        res.json({error: {code: "CouldNotGetNotes"}});
+        res.json({ error: { code: "CouldNotGetNotes" } });
       } else {
-        res.json({notes: dbLanderNotes});
+        res.json({ notes: dbLanderNotes });
       }
     });
+  });
+
+  app.put('/api/landers/notes/:id', passport.isAuthenticated(), function(req, res) {
+    var user = req.user;
+    var landerData = req.body;
+    var notes = landerData.notes;
+    var notes_search = landerData.notes_search;
+    //save lander data
+    db.landers.updateNotes(user, landerData, function(err) {
+      res.json({});
+    });
+
   });
 }

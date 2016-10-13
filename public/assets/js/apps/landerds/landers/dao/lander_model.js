@@ -234,6 +234,18 @@ define(["app",
         this.setDeployStatus();
       },
 
+      saveLanderNotes: function(callback) {
+        var me = this;
+        this.landerNotesModel.set("notes", this.get("notes"));
+        this.landerNotesModel.set("notes_search", $(this.get("notes")).text());
+        this.landerNotesModel.save({}, {
+          success: function(model) {
+            me.set("server_notes", me.get("notes"));
+            if (typeof callback == 'function') callback();
+          }
+        });
+      },
+
       getLanderNotes: function() {
         var me = this;
         this.landerNotesModel.fetch({
