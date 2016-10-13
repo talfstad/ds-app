@@ -1,13 +1,14 @@
 define(["app",
     "tpl!assets/js/apps/landerds/landers/list/templates/landers_list.tpl",
+    "assets/js/apps/landerds/base_classes/list/views/list_layout_view",
     "fancytree",
     "typewatch",
     "bootstrap"
   ],
-  function(Landerds, landersListTpl) {
+  function(Landerds, landersListTpl, ListLayoutView) {
     Landerds.module("LandersApp.Landers.List", function(List, Landerds, Backbone, Marionette, $, _) {
 
-      List.Layout = Marionette.LayoutView.extend({
+      List.Layout = ListLayoutView.extend({
 
         template: landersListTpl,
         tagName: "section",
@@ -25,47 +26,17 @@ define(["app",
           "click .add-new-lander-button": "showAddNewLander",
           "click .rip-and-deploy-button": "showRipNewLander",
           "click .toggle-help-info": "triggerToggleHelpInfo",
-          "click #search-lander-name": "updateSearchOptions",
-          "click #search-lander-notes": "updateSearchOptions"
+          "click input.search-filter-option": "updateSearchOptions",
         },
 
         updateSearchOptions: function(e) {
-
           var me = this;
-          var currentTarget = $(e.currentTarget);
+          ListLayoutView.prototype.updateSearchOptions.apply(this, [e]);
 
-          //if not checked make sure at least one is or check this one back
-          if (!currentTarget.is(':checked')) {
-            var searchEls = this.$el.find("input.search-filter-option");
-            var allowUnCheck = false;
-
-            $.each(searchEls, function(idx, el) {
-              //if not the current el
-              el = $(el);
-              //if one of these is checked we can allow uncheck
-
-              if (el.is(':checked') && el.attr("id") !== currentTarget.attr("id")) {
-                allowUnCheck = true;
-              }
-            });
-
-            //update the value in the model and make sure the focus goes back to search box
-            me.$el.find(".list-search").focus();
-
-            if (!allowUnCheck) {
-              //update the value in the model and make sure the focus goes back to search box
-              //if dont allow check revert it
-              e.preventDefault();
-              return false;
-            }
-          } else {
-            //update the value in the model and make sure the focus goes back to search box
-            me.$el.find(".list-search").focus();
-          }
           var searchCriteria = Backbone.Syphon.serialize(me.$el.find("form.navbar-search"));
           this.trigger("updateSearchFunction", searchCriteria);
           var searchVal = this.$el.find("input.list-search").val();
-          me.filterLanders(searchVal || "");
+          this.filterLanders(searchVal || "");
         },
 
         toggleHelpInfo: function(e) {
@@ -142,29 +113,13 @@ define(["app",
           var me = this;
 
           this.$el.find(".search-dropdown").on('hide.bs.dropdown', function(e) {
-            var isInRect = function(rect) {
-              rect.left;
-              rect.right;
-              rect.top;
-              rect.bottom;
-
-              var x = window.event.clientX;
-              var y = window.event.clientY;
-
-              if (x < rect.right && x > rect.left && y > rect.top && y < rect.bottom) {
-                return false;
-              } else {
-                return true;
-              }
-            };
-
             //dont close it unless not clicking within current box or search
             var curentTarget = $(e.currentTarget);
             var dropdownRect = me.$el.find("ul.search-dropdown-menu")[0].getBoundingClientRect();
             var searchRect = me.$el.find("input.list-search")[0].getBoundingClientRect();
 
             if (window.event) {
-              if (!isInRect(dropdownRect) || !isInRect(searchRect)) {
+              if (!me.isInRect(dropdownRect) || !me.isInRect(searchRect)) {
                 return false;
               } else {
                 return true;

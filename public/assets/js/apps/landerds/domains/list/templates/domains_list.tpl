@@ -70,9 +70,25 @@
         </div>
 
         <ul class="nav nav-list nav-list-topbar pull-left">
-          <form class="navbar-form navbar-search pull-left mtn mbn" role="search">
-            <div class=" mt10 form-group">
-              <input type="text" class="list-search w250 form-control" placeholder="Search Domain Name..." value="">
+          <form class="admin-form navbar-form navbar-search pull-left mtn mbn" role="search">
+            <div class="search-dropdown dropdown pull-left mt10 form-group">
+              <input data-toggle="dropdown" aria-expanded="false" type="text" class="list-search w250 form-control" placeholder="Search Domains..." value="">
+              <ul class="search-dropdown-menu topbar dropdown-menu dropdown-menu-left pt5" role="menu">
+                <li style="width: 100%;">
+                  <label for="search-domain" class="block option option-primary" style="line-height: 40px; margin-right: 0">
+                    <input checked type="checkbox" class="search-filter-option" name="searchDomain" id="search-domain">
+                    <span class="mb10 mt10 ml10 checkbox"></span>
+                    <span class="ml5 fs13 fw600">Search Domain</span>
+                  </label>
+                </li>
+                <li class="mb10" style="width: 100%;">
+                  <label for="search-notes" class="block option option-primary" style="line-height: 40px; margin-right: 0">
+                      <input type="checkbox" class="search-filter-option" name="searchNotes" id="search-notes">
+                      <span class="mb10 mt10 ml10 checkbox"></span>
+                      <span class="ml5 fs13 fw600">Search Notes</span>
+                  </label>
+                </li>
+              </ul>
             </div>
           </form>
         </ul>
@@ -97,7 +113,8 @@
         <div style="float: left; margin-left: 15px; margin-bottom: 10px">Domain Name</div>
         <div style="float: right; margin-right: 95px; margin-bottom: 10px">Deployed Landers</div>
         <div style="float: right; margin-right: 45px; margin-bottom: 10px">Groups on Domain</div>
-        <div style="float: right; margin-right: 85px; margin-bottom: 10px">Created On</div>
+        <div style="float: right; margin-right: 75px; margin-bottom: 10px">Notes</div>
+        <div style="float: right; margin-right: 90px; margin-bottom: 10px">Created On</div>
         
 
         </div>

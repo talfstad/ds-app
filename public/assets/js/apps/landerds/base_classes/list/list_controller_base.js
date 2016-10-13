@@ -22,7 +22,7 @@ define(["app",
         }
       },
 
-      landerNameAndNotesFilter: function(filterCriterion) {
+      nameAndNotesFilter: function(filterCriterion) {
         var criterion = filterCriterion.toLowerCase();
         return function(lander) {
           if (lander.get('name').toLowerCase().indexOf(criterion) !== -1 ||
@@ -32,7 +32,17 @@ define(["app",
         };
       },
 
-      landerNotesFilter: function(filterCriterion) {
+      domainAndNotesFilter: function(filterCriterion) {
+        var criterion = filterCriterion.toLowerCase();
+        return function(lander) {
+          if (lander.get('domain').toLowerCase().indexOf(criterion) !== -1 ||
+            lander.get('notes_search').toLowerCase().indexOf(criterion) !== -1) {
+            return lander;
+          }
+        };
+      },
+
+      notesFilter: function(filterCriterion) {
         var criterion = filterCriterion.toLowerCase();
         return function(lander) {
           if (lander.get('notes_search').toLowerCase().indexOf(criterion) !== -1) {
@@ -41,10 +51,19 @@ define(["app",
         };
       },
 
-      landerNameFilter: function(filterCriterion) {
+      nameFilter: function(filterCriterion) {
         var criterion = filterCriterion.toLowerCase();
         return function(lander) {
           if (lander.get('name').toLowerCase().indexOf(criterion) !== -1) {
+            return lander;
+          }
+        };
+      },
+
+      domainFilter: function(filterCriterion) {
+        var criterion = filterCriterion.toLowerCase();
+        return function(lander) {
+          if (lander.get('domain').toLowerCase().indexOf(criterion) !== -1) {
             return lander;
           }
         };

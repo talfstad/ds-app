@@ -34,6 +34,51 @@ module.exports = function(app, db) {
       });
     },
 
+    getDomainNotes: function(aws_root_bucket, domain_id, callback) {
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          callback(err);
+        } else {
+          connection.query("SELECT notes FROM domains WHERE aws_root_bucket = ? AND id = ?", [aws_root_bucket, domain_id],
+            function(err, dbDomainNotes) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, dbDomainNotes[0].notes || "");
+              }
+              connection.release();
+            });
+        }
+      });
+    },
+
+    updateNotes: function(aws_root_bucket, attr, callback) {
+      var notes = attr.notes;
+      var domain_id = attr.id;
+      var notes_search = attr.notes_search;
+
+      //update multiple landers modified = 0
+      var updateNotesDb = function() {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          } else {
+            connection.query("UPDATE domains SET notes = ?, notes_search = ? WHERE id = ? AND aws_root_bucket = ?", [notes, notes_search, domain_id, aws_root_bucket],
+              function(err, user_ids) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false);
+                }
+                connection.release();
+              });
+          }
+        });
+      };
+      updateNotesDb();
+    },
+
     isDuplicateDeleteDomainJob: function(domain_id, callback) {
 
       var duplicateJobTest = function(callback) {
@@ -401,7 +446,7 @@ module.exports = function(app, db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT id,domain,cloudfront_domain,nameservers,aws_root_bucket,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM domains WHERE aws_root_bucket = ?", [rootBucket], function(err, dbdomains) {
+            connection.query("SELECT id,notes_search,domain,cloudfront_domain,nameservers,aws_root_bucket,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM domains WHERE aws_root_bucket = ?", [rootBucket], function(err, dbdomains) {
               if (err) {
                 callback(err);
               } else {

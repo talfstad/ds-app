@@ -188,6 +188,5 @@ module.exports = function(app, passport) {
     db.landers.updateNotes(user, landerData, function(err) {
       res.json({});
     });
-
   });
 }

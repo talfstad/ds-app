@@ -6,6 +6,8 @@ define(["app",
   function(Landerds, Notification, moment) {
     var ListRowsBaseView = Marionette.LayoutView.extend({
 
+      summernoteEl: null, 
+
       initialize: function() {
         var me = this;
         this.listenTo(this.model, "view:expand", function() {
@@ -13,11 +15,109 @@ define(["app",
         });
       },
 
+      destroySummernoteEditor: function() {
+        var me = this;
+        me.summernoteEl.summernote('destroy');
+        me.summernoteEl = null;
+      },
+
+      initSummernoteEditor: function() {
+        var me = this;
+        if (me.summernoteEl) {
+          me.destroySummernoteEditor();
+        }
+        var loadingHtml = '<p style="text-align: center; "><br></p><h1 style="text-align: center; "><br><br><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></h1>';
+
+        me.summernoteEl = me.$el.find('.summernote');
+
+        var saveNotes = function(context) {
+          var ui = $.summernote.ui;
+
+          // create button
+          var button = ui.button({
+            contents: '<i class="fa fa-save"/> Save Notes',
+            click: function() {
+              me.model.saveNotes(function() {
+                //disable save notes
+                me.disableSaveNotesIfNotChanged();
+                //flash success check next to button
+                var landerNotesButton = me.$el.find(".save-notes");
+                var successEl = $("<i class='fa fa-check-circle text-success saved-lander-alert'></i>");
+                landerNotesButton.parent().prepend(successEl);
+                successEl.fadeOut('slow', function() {
+                  successEl.remove();
+                });
+              });
+            }
+          });
+
+          var returnButton = button.render().addClass("save-notes");
+          return returnButton; // return button as jquery object 
+        };
+
+        //has to be shown on the dom to init summernote
+        me.summernoteEl.summernote({
+          height: 330, //set editable area's height
+          focus: false, //set focus editable area after Initialize summernote
+
+          callbacks: {
+            onInit: function() {},
+            onChange: function(contents, $editable) {
+              var editableEl = me.summernoteEl.parent().find(".note-editable");
+              if (editableEl.attr("contenteditable") == "true") {
+                me.model.set("notes", contents);
+                var notes_search = editableEl.text();
+                me.model.set("notes_search", notes_search);
+                me.disableSaveNotesIfNotChanged();
+              }
+            },
+            onKeydown: function(e) {}
+          },
+          toolbar: $.extend($.summernote.options.toolbar, [
+            ['insert', ['saveNotes']]
+          ]),
+          buttons: $.extend($.summernote.options.buttons, {
+            saveNotes: saveNotes
+          })
+        });
+
+        me.$el.find(".save-notes").parent().addClass("save-notes-container");
+
+        if (me.model.get("notes")) {
+          me.summernoteEl.summernote('code', me.model.get("notes"));
+          me.summernoteEl.parent().find(".note-statusbar").css("display", "block");
+          me.summernoteEl.summernote('enable');
+          me.disableSaveNotesIfNotChanged();
+        } else {
+          me.summernoteEl.summernote('code', loadingHtml);
+          me.summernoteEl.summernote('disable');
+          me.summernoteEl.parent().find(".note-statusbar").css("display", "none");
+          me.trigger("getNotes");
+        }
+      },
+
       //if this is called from the model it means view is rendered so call for a show page
       //thing which will render the collection again and show the page again.
       //if view doesnt exist this wont run bc no need to render if not rendered
       renderAndShowThisViewsPage: function() {
         this.trigger("renderAndShowThisViewsPage");
+      },
+
+      setNotesInEditor: function() {
+        if (this.summernoteEl) {
+          this.summernoteEl.summernote('code', this.model.get("notes") || "");
+          this.summernoteEl.parent().find(".note-statusbar").css("display", "block");
+          this.summernoteEl.summernote('enable');
+          this.disableSaveNotesIfNotChanged();
+        }
+      },
+
+      disableSaveNotesIfNotChanged: function() {
+        if (this.model.get("notes") == this.model.get("server_notes")) {
+          this.$el.find(".save-notes").attr("disabled", true);
+        } else {
+          this.$el.find(".save-notes").attr("disabled", false);
+        }
       },
 
       stopPropagationIfReadonly: function(e) {

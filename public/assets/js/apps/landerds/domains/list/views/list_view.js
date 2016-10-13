@@ -20,12 +20,6 @@ define(["app",
           this.listenTo(this, "domains:sort", this.triggerSort);
         },
 
-        onRenderCollection: function() {
-          // this.attachHtml = function(collectionView, childView, index) {
-          //   collectionView.$el.prepend(childView.el);
-          // }
-        },
-
         triggerSort: function() {
           var me = this;
 

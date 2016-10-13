@@ -29,7 +29,8 @@ define(["app",
 
         modelEvents: {
           "notifyErrorDeleteDomain": "notifyErrorDeleteDomain",
-          "change:deploy_status": "alertDeployStatus"
+          "change:deploy_status": "alertDeployStatus",
+          "setNotesInEditor": "setNotesInEditor"
         },
 
         regions: {
@@ -130,8 +131,17 @@ define(["app",
               $(e.currentTarget).attr("data-currently-hovering", false);
             });
 
+            this.$el.find(".notes-tab-handle-region").hover(function(e) {
+              onHoverTabsHighlightRow(e, true);
+              $(e.currentTarget).attr("data-currently-hovering", true);
+            }, function(e) {
+              onHoverTabsHighlightRow(e, false);
+              $(e.currentTarget).attr("data-currently-hovering", false);
+            });
+
             this.$el.on('hide.bs.collapse', function(e) {
               me.trigger('childCollapsed');
+              me.destroySummernoteEditor();
 
               //close right sidebar if closing all domain accordions
               if ($(e.currentTarget).find("a[data-currently-hovering='true']").length > 0) {
@@ -139,7 +149,6 @@ define(["app",
               }
 
               //hide the tab
-
               $(e.currentTarget).find("li.active").removeClass("active");
               $(e.currentTarget).find(".accordion-toggle").removeClass('active');
               $(e.currentTarget).find(".add-link-plus").hide();
@@ -149,6 +158,7 @@ define(["app",
               me.trigger('childExpanded');
 
               me.reAlignTableHeader();
+              me.initSummernoteEditor();
 
               //collapse ALL others so we get an accordian effect !IMPORTANT for design
               $("#list-collection .collapse").collapse("hide");
@@ -161,6 +171,9 @@ define(["app",
               $(e.currentTarget).find("div[id^='landers-tab']").removeClass("active");
               $(e.currentTarget).find("li.group-tab-handle-region").removeClass("active");
               $(e.currentTarget).find("div[id^='groups-tab']").removeClass("active");
+              $(e.currentTarget).find("li.notes-tab-handle-region").removeClass("active");
+              $(e.currentTarget).find("div[id^='notes-tab']").removeClass("active");
+
               //show the correct tab
               var currentTab = $(e.currentTarget).find("li[data-currently-hovering='true']");
               var currentTabData = $("#" + currentTab.attr("data-tab-target"));
@@ -169,6 +182,7 @@ define(["app",
                 currentTab.addClass("active");
                 currentTabData.addClass("active");
                 currentTab.find(".add-link-plus").css("display", "inline");
+                currentTab.find("a[href^='#notes-tab']").trigger("show.bs.tab") //trigger the show event
               } else {
                 //no tab show domains tab
                 var tabHandle = $(e.currentTarget).find("li.lander-tab-handle-region");

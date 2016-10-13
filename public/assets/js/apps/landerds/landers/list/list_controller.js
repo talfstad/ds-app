@@ -64,7 +64,7 @@ define(["app",
 
           $.when(deferredLandersCollection).done(function(landersCollection) {
             
-            var defaultSearchFilter = me.landerNameFilter;
+            var defaultSearchFilter = me.nameFilter;
 
             me.filteredCollection = FilteredPaginatedCollection({
               collection: landersCollection,
@@ -75,11 +75,11 @@ define(["app",
 
             landersListLayout.on("updateSearchFunction", function(searchCriteria, two, three) {
               if (searchCriteria.searchName && searchCriteria.searchNotes) {
-                me.filteredCollection.filterFunction = me.landerNameAndNotesFilter;
+                me.filteredCollection.filterFunction = me.nameAndNotesFilter;
               } else if (searchCriteria.searchNotes) {
-                me.filteredCollection.filterFunction = me.landerNotesFilter;
+                me.filteredCollection.filterFunction = me.notesFilter;
               } else {
-                me.filteredCollection.filterFunction = me.landerNameFilter;
+                me.filteredCollection.filterFunction = me.nameFilter;
               }
             });
 
@@ -169,9 +169,9 @@ define(["app",
                     model: landerView.model
                   });
 
-                  landerView.on("getLanderNotes", function() {
+                  landerView.on("getNotes", function() {
                     var model = this.model;
-                    model.getLanderNotes();
+                    model.getNotes();
                   });
 
                   landerView.on("renderAndShowThisViewsPage", function() {

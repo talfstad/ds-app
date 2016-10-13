@@ -7,11 +7,21 @@ define(["app",
     var DomainModel = JobsGuiBaseModel.extend({
       urlRoot: "/api/domains",
 
+      domainNotesModel: null,
+
       //init has 3 steps.
       //1. initialize the activeJobs collection in parent class
       //2. now do stuff for this specific type
       //3. start the jobs from the parent class
       initialize: function() {
+        var domainNotesModelClass = Backbone.Model.extend({
+          urlRoot: "/api/domains/notes"
+        });
+
+        this.domainNotesModel = new domainNotesModelClass({
+          id: this.get("id")
+        });
+
         var me = this;
 
         var activeGroupAttributes = this.get("activeGroups");
@@ -131,6 +141,28 @@ define(["app",
 
       },
 
+      saveNotes: function(callback) {
+        var me = this;
+        this.domainNotesModel.set("notes", this.get("notes"));
+        this.domainNotesModel.set("notes_search", this.get("notes_search"));
+        this.domainNotesModel.save({}, {
+          success: function(model) {
+            me.set("server_notes", me.get("notes"));
+            if (typeof callback == 'function') callback();
+          }
+        });
+      },
+
+      getNotes: function() {
+        var me = this;
+        this.domainNotesModel.fetch({
+          success: function(model) {
+            me.set("notes", model.get("notes"));
+            me.set("server_notes", model.get("notes"));
+            me.trigger("setNotesInEditor");
+          }
+        });
+      },
 
       setDeployStatus: function() {
         var me = this;

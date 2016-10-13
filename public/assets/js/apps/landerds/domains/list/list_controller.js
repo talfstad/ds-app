@@ -62,17 +62,22 @@ define(["app",
 
           $.when(deferredLandersCollection).done(function(landersCollection) {
 
+            var defaultSearchFilter = me.domainFilter;
+
             me.filteredCollection = FilteredPaginatedCollection({
               collection: landersCollection,
               page_size: Landerds.loginModel.get("domains_rows_per_page"),
               paginated: true,
-              filterFunction: function(filterCriterion) {
-                var criterion = filterCriterion.toLowerCase();
-                return function(lander) {
-                  if (lander.get('domain').toLowerCase().indexOf(criterion) !== -1) {
-                    return lander;
-                  }
-                };
+              filterFunction: defaultSearchFilter
+            });
+
+            domainsListLayout.on("updateSearchFunction", function(searchCriteria, two, three) {
+              if (searchCriteria.searchDomain && searchCriteria.searchNotes) {
+                me.filteredCollection.filterFunction = me.domainAndNotesFilter;
+              } else if (searchCriteria.searchNotes) {
+                me.filteredCollection.filterFunction = me.notesFilter;
+              } else {
+                me.filteredCollection.filterFunction = me.domainFilter;
               }
             });
 
@@ -155,6 +160,11 @@ define(["app",
 
                   var groupTabHandleView = new GroupsTabHandleView({
                     model: domainView.model
+                  });
+
+                  domainView.on("getNotes", function() {
+                    var model = this.model;
+                    model.getNotes();
                   });
 
                   var activeGroupCollection = domainView.model.get("activeGroups");

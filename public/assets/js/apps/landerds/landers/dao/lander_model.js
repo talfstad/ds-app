@@ -234,7 +234,7 @@ define(["app",
         this.setDeployStatus();
       },
 
-      saveLanderNotes: function(callback) {
+      saveNotes: function(callback) {
         var me = this;
         this.landerNotesModel.set("notes", this.get("notes"));
         this.landerNotesModel.set("notes_search", this.get("notes_search"));
@@ -246,7 +246,7 @@ define(["app",
         });
       },
 
-      getLanderNotes: function() {
+      getNotes: function() {
         var me = this;
         this.landerNotesModel.fetch({
           success: function(model) {
@@ -254,7 +254,7 @@ define(["app",
             me.set("server_notes", model.get("notes"));
             me.trigger("setNotesInEditor");
           }
-        })
+        });
       },
 
       setDeployStatus: function() {

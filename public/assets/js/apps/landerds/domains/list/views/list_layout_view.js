@@ -1,17 +1,20 @@
 define(["app",
-    "tpl!assets/js/apps/landerds/domains/list/templates/landers_list.tpl",
+    "tpl!assets/js/apps/landerds/domains/list/templates/domains_list.tpl",
+    "assets/js/apps/landerds/base_classes/list/views/list_layout_view",
     "fancytree",
     "typewatch",
     "bootstrap"
   ],
-  function(Landerds, landersListTpl) {
+  function(Landerds, landersListTpl, ListLayoutView) {
     Landerds.module("DomainsApp.Domains.List", function(List, Landerds, Backbone, Marionette, $, _) {
 
-      List.Layout = Marionette.LayoutView.extend({
+      List.Layout = ListLayoutView.extend({
 
         template: landersListTpl,
         tagName: "section",
         id: "content_wrapper",
+
+        toggle: false,
 
         regions: {
           landersCollectionRegion: "#domains-region",
@@ -21,7 +24,18 @@ define(["app",
 
         events: {
           "click .add-new-domain-button": "showAddNewDomain",
-          "click .toggle-help-info": "triggerToggleHelpInfo"
+          "click .toggle-help-info": "triggerToggleHelpInfo",
+          "click input.search-filter-option": "updateSearchOptions"
+        },
+
+        updateSearchOptions: function(e) {
+          var me = this;
+          ListLayoutView.prototype.updateSearchOptions.apply(this, [e]);
+
+          var searchCriteria = Backbone.Syphon.serialize(me.$el.find("form.navbar-search"));
+          this.trigger("updateSearchFunction", searchCriteria);
+          var searchVal = this.$el.find("input.list-search").val();
+          this.filterDomains(searchVal || "");
         },
 
         toggleHelpInfo: function(e) {
@@ -37,7 +51,7 @@ define(["app",
           return this.toggle;
         },
 
-        triggerToggleHelpInfo: function(e){
+        triggerToggleHelpInfo: function(e) {
           if (e) e.preventDefault();
 
           this.trigger("toggleInfo", this.toggle);
@@ -80,6 +94,23 @@ define(["app",
 
         onRender: function() {
           var me = this;
+
+          this.$el.find(".search-dropdown").on('hide.bs.dropdown', function(e) {
+            //dont close it unless not clicking within current box or search
+            var curentTarget = $(e.currentTarget);
+            var dropdownRect = me.$el.find("ul.search-dropdown-menu")[0].getBoundingClientRect();
+            var searchRect = me.$el.find("input.list-search")[0].getBoundingClientRect();
+
+            if (window.event) {
+              if (!me.isInRect(dropdownRect) || !me.isInRect(searchRect)) {
+                return false;
+              } else {
+                return true;
+              }
+            } else {
+              return false;
+            }
+          });
 
           var updateSortbyButtonText = function() {
             var sortbyname = me.$el.find("input[name=sort-radio]:checked").attr("data-sortby-name");

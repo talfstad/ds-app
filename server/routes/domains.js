@@ -96,7 +96,7 @@ module.exports = function(app, passport) {
                   //save the bucket link
                   newDomainData.path = path;
                   newDomainData.rootBucket = rootBucket;
-                  
+
                   //2. create a cloud front for domain
                   db.aws.cloudfront.makeCloudfrontDistribution(credentials, domain, "/" + path, rootBucket, function(err, cloudfrontDomainName, cloudfrontId) {
                     if (err) {
@@ -140,7 +140,7 @@ module.exports = function(app, passport) {
                       } else {
                         //3. create the route 53 for that if not subdomain
                         db.aws.route53.createHostedZone(credentials, domain, cloudfrontDomainName, function(err, nameservers, hostedZoneId) {
-                          if (err) {                            
+                          if (err) {
                             //error so remove CF distro
                             db.aws.cloudfront.deleteDistribution(credentials, cloudfrontId, function(err) {
                               res.json({
@@ -169,20 +169,10 @@ module.exports = function(app, passport) {
                   });
                 }
               });
-
             }
           });
         }
       });
-
-
-
-
-
-
-
-
-
     }
   });
 
@@ -197,8 +187,28 @@ module.exports = function(app, passport) {
 
   });
 
-  app.delete('/api/domains', passport.isAuthenticated(), function(req, res) {
+  app.get('/api/domains/notes/:id', passport.isAuthenticated(), function(req, res) {
+    var user = req.user;
+    var domain_id = req.params['id'];
 
+    db.domains.getDomainNotes(user.aws_root_bucket, domain_id, function(err, dbDomainNotes) {
+      if (err) {
+        res.json({ error: { code: "CouldNotGetNotes" } });
+      } else {
+        res.json({ notes: dbDomainNotes });
+      }
+    });
+  });
+
+  app.put('/api/domains/notes/:id', passport.isAuthenticated(), function(req, res) {
+    var user = req.user;
+    var domainData = req.body;
+    var notes = domainData.notes;
+    var notes_search = domainData.notes_search;
+    //save lander data
+    db.domains.updateNotes(user.aws_root_bucket, domainData, function(err) {
+      res.json({});
+    });
   });
 
   return module;
