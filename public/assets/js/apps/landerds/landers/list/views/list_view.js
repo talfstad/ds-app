@@ -43,7 +43,7 @@ define(["app",
           var sortOrder = $(".btn-group-nav a.active").attr("data-sort-order");
 
           if (sortKey === "lander-name") {
-            me.collection.comparator = function(a, b) {
+            me.collection.original.comparator = function(a, b) {
 
               var aLanderName = a.get("name").toLowerCase();
               var bLanderName = b.get("name").toLowerCase();
@@ -72,7 +72,7 @@ define(["app",
 
           } else if (sortKey === "last-updated") {
 
-            me.collection.comparator = function(a, b) {
+            me.collection.original.comparator = function(a, b) {
 
               var aLastUpdated = moment(new Date(a.get("created_on"))).unix();
               var bLastUpdated = moment(new Date(b.get("created_on"))).unix();
@@ -98,7 +98,7 @@ define(["app",
 
             me.collection.sortFiltered();
           } else if (sortKey === "deployed") {
-            me.collection.comparator = function(a, b) {
+            me.collection.original.comparator = function(a, b) {
 
             };
             me.collection.sortFiltered();

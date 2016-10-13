@@ -1,4 +1,4 @@
-<header class="snippets-header">
+<header class="edit-header">
   <div class="snippet-name-container">
     <div class="snippet-name">
       <h4>No Javascript Snippets Available</h4>

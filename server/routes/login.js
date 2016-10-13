@@ -11,10 +11,14 @@ module.exports = function(app, passport) {
   app.post("/api/login", passport.authenticate(), function(req, res) {
     //this is only executed if login succeeded
     var user = req.user;
-    db.users.getUserSettings(user, function(error, access_key_id, secret_access_key, aws_root_bucket) {
+    db.users.getUserSettings(user, function(error, attr) {
       if (error) {
         res.json({});
       } else {
+        var aws_access_key_id = attr.aws_access_key_id;
+        var aws_secret_access_key = attr.aws_secret_access_key;
+        var aws_root_bucket = attr.aws_root_bucket;
+
         res.json({
           user_id: req.user.id,
           username: req.user.user,

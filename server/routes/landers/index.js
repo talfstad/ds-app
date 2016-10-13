@@ -140,7 +140,6 @@ module.exports = function(app, passport) {
         }
       }
     });
-
   });
 
   app.get('/api/landers/download', passport.isAuthenticated(), function(req, res) {

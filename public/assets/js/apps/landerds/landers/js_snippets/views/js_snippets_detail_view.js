@@ -332,8 +332,8 @@ define(["app",
 
         onRender: function() {
           var me = this;
-          var modalWidth = parseInt($(".modal-dialog").css("width"));
-          var modalHeight = parseInt($(".modal-dialog").css("height"));
+          var modalWidth = parseInt($(".modal-dialog.snippets-modal").css("width"));
+          var modalHeight = parseInt($(".modal-dialog.snippets-modal").css("height"));
 
           var descriptionWidth = modalWidth - 229 - 4 //value is the width of the left nav - 3
           me.$el.find(".snippets-header").css("width", descriptionWidth);

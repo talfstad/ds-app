@@ -17,7 +17,11 @@ module.exports = function(app, passport) {
       var me = this;
       var username = user.user;
 
-      db.users.getUserSettings(user, function(err, aws_access_key_id, aws_secret_access_key, aws_root_bucket) {
+      db.users.getUserSettings(user, function(err, attr) {
+        var aws_access_key_id = attr.aws_access_key_id;
+        var aws_secret_access_key = attr.aws_secret_access_key;
+        var aws_root_bucket = attr.aws_root_bucket;
+
         db.landers.getAll(user, function(err, landers) {
           if (err) {
             callback(err);
@@ -80,7 +84,11 @@ module.exports = function(app, passport) {
       var me = this;
       var username = user.user;
 
-      db.users.getUserSettings(user, function(err, aws_access_key_id, aws_secret_access_key, aws_root_bucket) {
+      db.users.getUserSettings(user, function(err, attr) {
+        var aws_access_key_id = attr.aws_access_key_id;
+        var aws_secret_access_key = attr.aws_secret_access_key;
+        var aws_root_bucket = attr.aws_root_bucket;
+        
         db.landers.getAll(user, function(err, landers) {
           if (err) {
             callback(err);

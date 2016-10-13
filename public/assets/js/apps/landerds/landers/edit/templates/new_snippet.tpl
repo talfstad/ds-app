@@ -1,4 +1,4 @@
-<header class="snippets-header">
+<header class="edit-header">
   <div class="snippet-name-container">
     <div class="snippet-name">
       <h4>Create a new Javascript Snippet</h4>

@@ -43,7 +43,7 @@ define(["app",
           var sortOrder = $(".btn-group-nav a.active").attr("data-sort-order");
 
           if (sortKey === "group-name") {
-            me.collection.comparator = function(a, b) {
+            me.collection.original.comparator = function(a, b) {
 
               var aGroupName = a.get("name").toLowerCase();
               var bGroupName = b.get("name").toLowerCase();
@@ -72,7 +72,7 @@ define(["app",
 
           } else if (sortKey === "created-on") {
 
-            me.collection.comparator = function(a, b) {
+            me.collection.original.comparator = function(a, b) {
 
               var aCreatedOn = moment(new Date(a.get("created_on"))).unix();
               var bCreatedOn = moment(new Date(b.get("created_on"))).unix();

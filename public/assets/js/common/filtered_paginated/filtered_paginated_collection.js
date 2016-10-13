@@ -353,6 +353,7 @@ define(["app",
         filtered.sortFiltered = function() {
 
           filtered.original.sort();
+          filtered.comparator = filtered.original.comparator;
           //filter it
           var items = applyFilter(filtered._currentCriterion, filtered._currentFilter);
           // filtered.currentFilteredCollection = items;
