@@ -23,8 +23,8 @@ module.exports = function(app, passport) {
           user_id: req.user.id,
           username: req.user.user,
           logged_in: true,
-          aws_access_key_id: access_key_id,
-          aws_secret_access_key: secret_access_key,
+          aws_access_key_id: aws_access_key_id,
+          aws_secret_access_key: aws_secret_access_key,
           aws_root_bucket: aws_root_bucket
         });
       }

@@ -488,6 +488,13 @@ module.exports = function(app, db) {
       var lander_name = landerData.name;
       var lander_url = landerData.lander_url;
       var s3_folder_name = landerData.s3_folder_name;
+      var notes = "";
+      var notes_search = "";
+      if (lander_url) {
+        notes = '<p>This lander was ripped from: <a href="' + lander_url + '">' + lander_url + '</a>&nbsp;</p><p><br></p>';
+        notes_search = 'This lander was ripped from: ' + lander_url;
+      }
+      var notes
 
       var urlEndpoints = landerData.urlEndpoints;
       if (!urlEndpoints) urlEndpoints = [];
@@ -498,15 +505,17 @@ module.exports = function(app, db) {
         if (err) {
           callback(err)
         } else {
-          connection.query("CALL save_new_lander(?, ?, ?, ?)", [lander_name, lander_url, s3_folder_name, user_id],
+          connection.query("CALL save_new_lander_with_notes(?, ?, ?, ?, ?, ?)", [lander_name, lander_url, notes, notes_search, s3_folder_name, user_id],
             function(err, docs) {
               if (err) {
+                console.log("error ! : " + JSON.stringify(err));
                 callback(err);
               } else {
                 //TODO loop url endpoints and save them here
                 //for each endpoint call insert into urlEndpoints here and do a idx counter to determine when to callback
                 landerData.id = docs[0][0]["LAST_INSERT_ID()"];
-
+                landerData.notes = notes;
+                landerData.notes_search = notes_search;
                 landerData.created_on = docs[1][0].created_on;
 
                 if (urlEndpoints.length > 0) {

@@ -9,6 +9,8 @@ module.exports = function(app, db) {
     //validate the name and url
     var name = jobModelAttributes.name;
     var url = jobModelAttributes.lander_url;
+    
+    if (url) url = url.trim();
 
     if (validUrl.isHttpUri(url) || validUrl.isHttpsUri(url)) {
 

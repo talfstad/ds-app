@@ -299,22 +299,20 @@ module.exports = function(app, db) {
             var originalUrl = 'http://' + awsData.aws_root_bucket + '.s3-website-us-west-2.amazonaws.com/' + user.user + '/landers/' + s3_folder_name + '/original/' + filePath;
             var optimizedUrl = 'http://' + awsData.aws_root_bucket + '.s3-website-us-west-2.amazonaws.com/' + user.user + '/landers/' + s3_folder_name + '/optimized/' + filePath;
 
-
             app.log("getting pagespeed for: " + originalUrl, "debug");
             getPagespeedScore(originalUrl, function(err, originalPagespeed) {
               if (err) {
-                callback(err);
-              } else {
-                app.log("getting optimized pagespeed for: " + optimizedUrl, "debug");
-
-                getPagespeedScore(optimizedUrl, function(err, optimizedPagespeed) {
-                  if (err) {
-                    callback(err)
-                  } else {
-                    callback(false, endpoint, originalPagespeed, optimizedPagespeed);
-                  }
-                });
+                originalPagespeed = 0;
               }
+              app.log("getting optimized pagespeed for: " + optimizedUrl, "debug");
+
+              getPagespeedScore(optimizedUrl, function(err, optimizedPagespeed) {
+                if (err) {
+                  optimizedPagespeed = 0;
+                }
+                callback(false, endpoint, originalPagespeed, optimizedPagespeed);
+              });
+
             });
           };
 
