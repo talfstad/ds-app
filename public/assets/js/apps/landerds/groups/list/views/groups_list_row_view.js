@@ -62,7 +62,8 @@ define(["app",
           "notifySuccessChangeGroupsName": "notifySuccessChangeGroupsName",
           "notifyErrorDeleteGroups": "notifyErrorDeleteGroups",
           "resortAndExpandModelView": "renderAndShowThisViewsPage",
-          "change:deploy_status": "alertDeployStatus"
+          "change:deploy_status": "alertDeployStatus",
+          "setNotesInEditor": "setNotesInEditor"
         },
 
         regions: {
@@ -163,9 +164,18 @@ define(["app",
               $(e.currentTarget).attr("data-currently-hovering", false);
             });
 
+            this.$el.find(".notes-tab-handle-region").hover(function(e) {
+              onHoverTabsHighlightRow(e, true);
+              $(e.currentTarget).attr("data-currently-hovering", true);
+            }, function(e) {
+              onHoverTabsHighlightRow(e, false);
+              $(e.currentTarget).attr("data-currently-hovering", false);
+            });
+
             this.$el.on('hide.bs.collapse', function(e) {
 
               me.trigger('childCollapsed');
+              me.destroySummernoteEditor();
 
               //allow input to be editable
               me.$el.find(".editable-lander-name").attr('readonly', '');
@@ -181,9 +191,10 @@ define(["app",
             });
 
             this.$el.on('show.bs.collapse', function(e) {
-              me.reAlignTableHeader();
-
               me.trigger('childExpanded');
+              
+              me.reAlignTableHeader();
+              me.initSummernoteEditor();
 
               //dont allow lander name to be edited
               me.$el.find(".editable-lander-name").removeAttr('readonly');
@@ -199,6 +210,9 @@ define(["app",
               $(e.currentTarget).find("div[id^='landers-tab']").removeClass("active");
               $(e.currentTarget).find("li.domain-tab-handle-region").removeClass("active");
               $(e.currentTarget).find("div[id^='domains-tab']").removeClass("active");
+              $(e.currentTarget).find("li.notes-tab-handle-region").removeClass("active");
+              $(e.currentTarget).find("div[id^='notes-tab']").removeClass("active");
+              
               //show the correct tab
               var currentTab = $(e.currentTarget).find("li[data-currently-hovering='true']");
               var currentTabData = $("#" + currentTab.attr("data-tab-target"));
@@ -207,6 +221,7 @@ define(["app",
                 currentTab.addClass("active");
                 currentTabData.addClass("active");
                 currentTab.find(".add-link-plus").css("display", "inline");
+                currentTab.find("a[href^='#notes-tab']").trigger("show.bs.tab") //trigger the show event
               } else {
                 //no tab show landers tab
                 var tabHandle = $(e.currentTarget).find("li.lander-tab-handle-region");

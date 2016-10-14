@@ -8,8 +8,18 @@ define(["app",
     var GroupModel = JobsGuiBaseModel.extend({
       urlRoot: '/api/groups',
 
+      groupNotesModel: null,
+
       initialize: function() {
         var me = this;
+
+        var groupNotesModelClass = Backbone.Model.extend({
+          urlRoot: "/api/groups/notes"
+        });
+
+        this.groupNotesModel = new groupNotesModelClass({
+          id: this.get("id")
+        });
 
         //init deployed landers and domains 
         var domainListAttributes = this.get("domains");
@@ -114,6 +124,29 @@ define(["app",
         });
 
         this.setDeployStatus();
+      },
+
+      saveNotes: function(callback) {
+        var me = this;
+        this.groupNotesModel.set("notes", this.get("notes"));
+        this.groupNotesModel.set("notes_search", this.get("notes_search"));
+        this.groupNotesModel.save({}, {
+          success: function(model) {
+            me.set("server_notes", me.get("notes"));
+            if (typeof callback == 'function') callback();
+          }
+        });
+      },
+
+      getNotes: function() {
+        var me = this;
+        this.groupNotesModel.fetch({
+          success: function(model) {
+            me.set("notes", model.get("notes"));
+            me.set("server_notes", model.get("notes"));
+            me.trigger("setNotesInEditor");
+          }
+        });
       },
 
       setDeployStatus: function() {

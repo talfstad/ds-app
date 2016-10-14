@@ -65,7 +65,7 @@ module.exports = function(app, db) {
             callback(err);
           } else {
             connection.query("UPDATE domains SET notes = ?, notes_search = ? WHERE id = ? AND aws_root_bucket = ?", [notes, notes_search, domain_id, aws_root_bucket],
-              function(err, user_ids) {
+              function(err) {
                 if (err) {
                   callback(err);
                 } else {

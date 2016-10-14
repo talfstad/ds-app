@@ -225,7 +225,6 @@ define(["app",
                     domainView.reAlignTableHeader();
                   });
 
-
                   landerTabHandleView.on("reAlignHeader", function() {
                     domainView.reAlignTableHeader();
                   });

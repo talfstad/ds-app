@@ -130,6 +130,30 @@ module.exports = function(app, passport) {
     });
   });
 
+  app.get('/api/groups/notes/:id', passport.isAuthenticated(), function(req, res) {
+    var user = req.user;
+    var domain_id = req.params['id'];
+
+    db.groups.getGroupNotes(user, domain_id, function(err, dbDomainNotes) {
+      if (err) {
+        res.json({ error: { code: "CouldNotGetNotes" } });
+      } else {
+        res.json({ notes: dbDomainNotes });
+      }
+    });
+  });
+
+  app.put('/api/groups/notes/:id', passport.isAuthenticated(), function(req, res) {
+    var user = req.user;
+    var domainData = req.body;
+    var notes = domainData.notes;
+    var notes_search = domainData.notes_search;
+    //save lander data
+    db.groups.updateNotes(user, domainData, function(err) {
+      res.json({});
+    });
+  });
+
   return module;
 
 }

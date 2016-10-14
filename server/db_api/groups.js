@@ -32,6 +32,52 @@ module.exports = function(app, db) {
       });
     },
 
+    getGroupNotes: function(user, group_id, callback) {
+      var user_id = user.id
+      db.getConnection(function(err, connection) {
+        if (err) {
+          callback(err);
+        } else {
+          connection.query("SELECT notes FROM groups WHERE user_id = ? AND id = ?", [user_id, group_id],
+            function(err, dbGroupNotes) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, dbGroupNotes[0].notes || "");
+              }
+              connection.release();
+            });
+        }
+      });
+    },
+
+    updateNotes: function(user, attr, callback) {
+      var user_id = user.id;
+      var notes = attr.notes;
+      var domain_id = attr.id;
+      var notes_search = attr.notes_search;
+
+      //update multiple landers modified = 0
+      var updateNotesDb = function() {
+        db.getConnection(function(err, connection) {
+          if (err) {
+            callback(err);
+          } else {
+            connection.query("UPDATE groups SET notes = ?, notes_search = ? WHERE id = ? AND user_id = ?", [notes, notes_search, domain_id, user_id],
+              function(err) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false);
+                }
+                connection.release();
+              });
+          }
+        });
+      };
+      updateNotesDb();
+    },
+
     addNewGroup: function(user, newGroupAttributes, callback) {
 
       //insert a new group 
@@ -292,7 +338,7 @@ module.exports = function(app, db) {
               } else {
 
                 lander.activeJobs = activeJobs;
-              
+
                 module.getDeployedDomainsForDeployedLander(user, lander, function(err, deployedDomains) {
                   lander.deployedDomains = deployedDomains;
                   callback(false);
@@ -361,7 +407,7 @@ module.exports = function(app, db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT id,name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM groups WHERE user_id = ?", [user_id],
+            connection.query("SELECT id,name,notes_search,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM groups WHERE user_id = ?", [user_id],
               function(err, dbGroups) {
                 if (err) {
                   callback(err);

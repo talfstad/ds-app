@@ -59,19 +59,24 @@ define(["app",
           //request groups collection
           var deferredGroupCollection = Landerds.request("groups:groupCollection");
 
+          var defaultSearchFilter = me.nameFilter;
+
           $.when(deferredGroupCollection).done(function(groupCollection) {
 
             me.filteredCollection = FilteredPaginatedCollection({
               collection: groupCollection,
               paginated: true,
               page_size: Landerds.loginModel.get("groups_rows_per_page"),
-              filterFunction: function(filterCriterion) {
-                var criterion = filterCriterion.toLowerCase();
-                return function(lander) {
-                  if (lander.get('name').toLowerCase().indexOf(criterion) !== -1) {
-                    return lander;
-                  }
-                };
+              filterFunction: defaultSearchFilter
+            });
+
+            groupListLayout.on("updateSearchFunction", function(searchCriteria, two, three) {
+              if (searchCriteria.searchName && searchCriteria.searchNotes) {
+                me.filteredCollection.filterFunction = me.nameAndNotesFilter;
+              } else if (searchCriteria.searchNotes) {
+                me.filteredCollection.filterFunction = me.notesFilter;
+              } else {
+                me.filteredCollection.filterFunction = me.nameFilter;
               }
             });
 
@@ -149,6 +154,11 @@ define(["app",
 
                   var domainTabHandleView = new DomainTabHandleView({
                     model: groupView.model
+                  });
+
+                  groupView.on("getNotes", function() {
+                    var model = this.model;
+                    model.getNotes();
                   });
 
                   groupView.on("renderAndShowThisViewsPage", function() {

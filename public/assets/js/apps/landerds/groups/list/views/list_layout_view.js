@@ -1,13 +1,14 @@
 define(["app",
     "tpl!assets/js/apps/landerds/groups/list/templates/groups_list.tpl",
+    "assets/js/apps/landerds/base_classes/list/views/list_layout_view",
     "fancytree",
     "typewatch",
     "bootstrap"
   ],
-  function(Landerds, groupListTpl) {
+  function(Landerds, groupListTpl, ListLayoutView) {
     Landerds.module("GroupsApp.Groups.List", function(List, Landerds, Backbone, Marionette, $, _) {
 
-      List.Layout = Marionette.LayoutView.extend({
+      List.Layout = ListLayoutView.extend({
 
         template: groupListTpl,
         tagName: "section",
@@ -21,7 +22,18 @@ define(["app",
 
         events: {
           "click .add-new-group-button": "showAddNewGroup",
-          "click .toggle-help-info": "triggerToggleHelpInfo"
+          "click .toggle-help-info": "triggerToggleHelpInfo",
+          "click input.search-filter-option": "updateSearchOptions"
+        },
+
+        updateSearchOptions: function(e) {
+          var me = this;
+          ListLayoutView.prototype.updateSearchOptions.apply(this, [e]);
+
+          var searchCriteria = Backbone.Syphon.serialize(me.$el.find("form.navbar-search"));
+          this.trigger("updateSearchFunction", searchCriteria);
+          var searchVal = this.$el.find("input.list-search").val();
+          this.filterGroups(searchVal || "");
         },
 
         toggleHelpInfo: function(e) {
@@ -81,6 +93,23 @@ define(["app",
 
         onRender: function() {
           var me = this;
+
+          this.$el.find(".search-dropdown").on('hide.bs.dropdown', function(e) {
+            //dont close it unless not clicking within current box or search
+            var curentTarget = $(e.currentTarget);
+            var dropdownRect = me.$el.find("ul.search-dropdown-menu")[0].getBoundingClientRect();
+            var searchRect = me.$el.find("input.list-search")[0].getBoundingClientRect();
+
+            if (window.event) {
+              if (!me.isInRect(dropdownRect) || !me.isInRect(searchRect)) {
+                return false;
+              } else {
+                return true;
+              }
+            } else {
+              return false;
+            }
+          });
 
           var updateSortbyButtonText = function() {
             var sortbyname = me.$el.find("input[name=sort-radio]:checked").attr("data-sortby-name");
