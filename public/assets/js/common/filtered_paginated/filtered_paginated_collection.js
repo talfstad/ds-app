@@ -112,7 +112,7 @@ define(["app",
           filtered.resetWithOriginals(filtered.state.currentFilter);
           //1. get page number that this model is on
           var pageSize = filtered.state.gui.get("page_size");
-          var itemIndex = filtered.indexOf(model) + 1;
+          var itemIndex = this.currentFilteredCollection.indexOf(model) + 1;
           //2. goto that page!
           if (itemIndex > 0) {
             var pageToGoto;
@@ -382,7 +382,6 @@ define(["app",
           var coll = new original.constructor();
           coll.add(models);
           var items = applyFilter(filtered._currentCriterion, filtered._currentFilter, coll);
-
           filtered.add(items);
         });
 

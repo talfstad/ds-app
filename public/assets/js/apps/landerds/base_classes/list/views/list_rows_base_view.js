@@ -6,7 +6,7 @@ define(["app",
   function(Landerds, Notification, moment) {
     var ListRowsBaseView = Marionette.LayoutView.extend({
 
-      summernoteEl: null, 
+      summernoteEl: null,
 
       initialize: function() {
         var me = this;
@@ -64,12 +64,10 @@ define(["app",
             onInit: function() {},
             onChange: function(contents, $editable) {
               var editableEl = me.summernoteEl.parent().find(".note-editable");
-              if (editableEl.attr("contenteditable") == "true") {
-                me.model.set("notes", contents);
-                var notes_search = editableEl.text();
-                me.model.set("notes_search", notes_search);
-                me.disableSaveNotesIfNotChanged();
-              }
+              me.model.set("notes", contents);
+              var notes_search = editableEl.text();
+              me.model.set("notes_search", notes_search);
+              me.disableSaveNotesIfNotChanged();
             },
             onKeydown: function(e) {}
           },
