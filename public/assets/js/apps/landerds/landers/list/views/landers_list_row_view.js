@@ -116,6 +116,8 @@ define(["app",
             } else if (deployStatus == "initializing:add_finishing") {
               deploy_status_gui = "Lander Finishing";
             }
+
+            this.$el.find(".row-deploy-status-button").addClass("add-lander");
           }
 
           this.model.set("deploy_status_gui", deploy_status_gui);
@@ -147,9 +149,7 @@ define(["app",
           this.alertDeployStatus();
           this.reAlignTableHeader();
 
-          
-
-          this.$el.find(".row-deploy-status-button").hover(function(e) {
+          this.$el.find(".row-deploy-status-button.add-lander").hover(function(e) {
               var currentTarget = $(e.currentTarget);
               currentTarget.find(".glyphicon").removeClass("glyphicon-refresh").removeClass("glyphicon-refresh-animate").addClass("glyphicon-remove-sign").addClass("text-danger");
               me.$el.find(".list-row-item").css("cursor", "pointer");

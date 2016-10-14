@@ -13,8 +13,8 @@ define(["app",
 
         events: {
           'click .redeploy-all-locations': "redeploy",
-          'click .save-button': "save",
-          'click .edit-button': "edit"
+          'click .save-button': "save"
+          // 'click .edit-button': "edit"
         },
 
         modelEvents: {

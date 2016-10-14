@@ -13,15 +13,15 @@
             </button>
           </div>
         </div>
-        <div class="alert-deleting-badge widget-menu domain-group-notification" style="display: none; right: 140px; top: 5px; min-width: 100px">
-          <span class="open_sidemenu_r label">
-        
-          <div class="text-danger">
-            <span style="position: relative; top: 2px" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
-          <span>Deleting</span>
+        <div class="alert-deleting-badge widget-menu domain-group-notification" style="display: none; right: 140px; min-width: 100px">
+          <div class="row-deploy-status btn-group">
+            <button type="button" style="border: none;" class="row-deploy-status-button pt5 pb5 pl10 pr10 btn text-danger btn-default light">
+              <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+                </span>
+              <span style="padding-left: 5px">Deleting</span>
+            </button>
+          </div>
         </div>
-        </span>
-      </div>
       <div class="widget-menu domain-group-notification">
         <span class="fs11" title="created on <%= created_on_gui %>"><%= created_on_gui %></span>
       </div>

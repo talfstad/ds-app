@@ -589,7 +589,13 @@ div.list-row-item:focus input {
     font-size: 18px;
 }
 
+.row-deploy-status-button {
+    pointer-events: none;
+}
 
+.row-deploy-status-button.add-lander {
+    pointer-events: all;
+}
 
 
 
