@@ -79,6 +79,11 @@ define(["app",
               top: 60
             }
           });
+   
+        },
+
+        onRender: function() {
+          var me = this;
 
           var typeWatchoptions = {
             callback: function(value) {
@@ -89,11 +94,15 @@ define(["app",
             captureLength: 1
           }
 
-          $(".navbar-search input").typeWatch(typeWatchoptions);
-        },
+          this.$el.find(".navbar-search input").typeWatch(typeWatchoptions);
 
-        onRender: function() {
-          var me = this;
+          this.$el.find(".searchclear").click(function(e) {
+            e.preventDefault();
+            var searchInputEl = me.$el.find(".list-search");
+            searchInputEl.val('');
+            searchInputEl.change();
+            searchInputEl.focus();
+          });
 
           this.$el.find(".search-dropdown").on('hide.bs.dropdown', function(e) {
             //dont close it unless not clicking within current box or search

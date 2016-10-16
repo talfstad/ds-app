@@ -73,6 +73,8 @@
           <form class="admin-form navbar-form navbar-search pull-left mtn mbn" role="search">
             <div class="search-dropdown dropdown pull-left mt10 form-group">
               <input data-toggle="dropdown" aria-expanded="false" type="text" class="list-search w250 form-control" placeholder="Search Groups..." value="">
+              <span class="searchclear glyphicon glyphicon-remove-circle"></span>
+              
               <ul class="search-dropdown-menu dropdown-menu dropdown-menu-left pt5" role="menu">
                 <li style="width: 100%;">
                   <label for="search-name" class="block option option-primary" style="line-height: 40px; margin-right: 0">

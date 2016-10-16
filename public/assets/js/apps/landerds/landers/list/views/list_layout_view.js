@@ -104,13 +104,19 @@ define(["app",
             highlight: false,
             captureLength: 1
           }
-
           $(".navbar-search input").typeWatch(typeWatchoptions);
 
         },
 
         onRender: function() {
           var me = this;
+
+          this.$el.find(".searchclear").click(function() {
+            var searchInputEl = me.$el.find(".list-search");
+            searchInputEl.val('');
+            searchInputEl.change();
+            searchInputEl.focus();
+          });
 
           this.$el.find(".search-dropdown").on('hide.bs.dropdown', function(e) {
             //dont close it unless not clicking within current box or search

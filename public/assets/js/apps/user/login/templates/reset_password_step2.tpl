@@ -2,7 +2,7 @@
 
     <div class="col-xs-6 pln">
       <a href="#" title="Return to Dashboard">
-        <img src="/assets/img/logos/landerds_logo_white1.png" title="Landerds Logo" class="img-responsive w250">
+        <img src="/assets/img/logos/LanderDSWhite3.png" title="Landerds Logo" class="img-responsive w250">
       </a>
     </div>
 

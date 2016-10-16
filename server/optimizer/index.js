@@ -39,7 +39,7 @@ module.exports = function(app, db) {
         }
       } else {
         var fileObj = {
-          filename: stagingPath.replace(/\/$/,'') + "/" + options.endpoint,
+          filename: stagingPath.replace(/\/$/, '') + "/" + options.endpoint,
           optimizationErrors: []
         };
         htmlFiles.push(fileObj);
@@ -1052,20 +1052,22 @@ module.exports = function(app, db) {
     var optimizePngLossless = function(callback) {
       find.file(/\.png$/, stagingPath, function(pngImages) {
         var asyncIndex = 0;
-        for (var i = 0; i < pngImages.length; i++) {
-          var image = pngImages[i];
-          cmd.get('nice optipng ' + image + ' &> /dev/null', function() {
-            if (++asyncIndex == pngImages.length) {
-              callback(false);
-            }
-          });
-        }
-        if (pngImages.length <= 0) {
+        if (pngImages.length > 0) {
+          for (var i = 0; i < pngImages.length; i++) {
+            var image = pngImages[i];
+            var optimizeCmd = 'nice optipng ' + image + ' &> /dev/null';
+            console.log("command: " + optimizeCmd);
+            cmd.get(optimizeCmd, function() {
+              if (++asyncIndex == pngImages.length) {
+                callback(false);
+              }
+            });
+          }
+        } else {
           callback(false);
         }
       });
     };
-
 
     if (!app.config.optimize.images) {
       app.log("ALERT: not optimizing images", "debug");
@@ -1079,20 +1081,19 @@ module.exports = function(app, db) {
       //   if (err) {
       //     callback(err);
       //   } else {
-      optimizeJpg(function(err) {
-        if (err) {
-          callback(err);
-        } else {
-          optimizeGif(function(err) {
+          optimizeJpg(function(err) {
             if (err) {
               callback(err);
             } else {
-              callback(false);
+              optimizeGif(function(err) {
+                if (err) {
+                  callback(err);
+                } else {
+                  callback(false);
+                }
+              });
             }
           });
-        }
-
-      });
       //   }
       // });
 
