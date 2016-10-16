@@ -156,23 +156,29 @@ define(["app",
             var optimizationErrors = currentEndpoint.get("optimization_errors") || [];
 
             //format the optimization errors for GUI output
-            var jsError = false,
-              cssError = false;
-
+            var optimization_errors_gui = {
+              pagespeedError: false,
+              jsError: false,
+              cssError: false
+            }
+           
             $.each(optimizationErrors, function(idx, error) {
               switch (error.type) {
                 case "css":
-                  cssError = true;
+                  optimization_errors_gui.cssError = true;
                   break;
                 case "js":
-                  jsError = true;
+                  optimization_errors_gui.jsError = true;
+                  break;
+                case "pagespeed":
+                  optimization_errors_gui.pagespeedError = true;
                   break;
               }
             });
 
             //set optimization errors for GUI
-            this.model.set("optimization_errors_gui", { jsError: jsError, cssError: cssError });
-          
+            this.model.set("optimization_errors_gui", optimization_errors_gui);
+
           }
 
 

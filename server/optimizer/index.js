@@ -1055,7 +1055,7 @@ module.exports = function(app, db) {
         if (pngImages.length > 0) {
           for (var i = 0; i < pngImages.length; i++) {
             var image = pngImages[i];
-            var optimizeCmd = 'nice optipng ' + image + ' &> /dev/null';
+            var optimizeCmd = 'nice optipng -o2 -strip all ' + image + ' &> /dev/null';
             console.log("command: " + optimizeCmd);
             cmd.get(optimizeCmd, function() {
               if (++asyncIndex == pngImages.length) {

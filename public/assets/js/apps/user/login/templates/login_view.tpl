@@ -12,7 +12,7 @@
     </div>
   </div>
 </div>
-<div class="panel panel-info mt10 br-n">
+<div class="panel panel-primary mt10 br-n">
   <div class="alert-loading spinner-full-container">
     <div class="modal-loading-container">
       <span class="spinner-large glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>

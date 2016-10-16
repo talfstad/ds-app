@@ -7,7 +7,7 @@
   <div id="optimized-lander-pagespeed" style="width: 125px; height: 100px; float: left"></div>
 </div>
 
-<% if(optimization_errors_gui.cssError || optimization_errors_gui.jsError) { %>
+<% if(optimization_errors_gui.cssError || optimization_errors_gui.jsError || optimization_errors_gui.pagespeedError) { %>
 <h5 class="title-divider text-muted mt20 mb10">Optimization Errors</h5>
 	<ul class="pl15">
 	<% if(optimization_errors_gui.cssError) { %>
@@ -17,6 +17,10 @@
 	<% if(optimization_errors_gui.jsError) { %>
 		<li class="text-danger ml5">Partially Optimized JS</li>
 		<p class="mt5">This error occurs when there is invalid JS on your lander.</p>
+	<% } %>
+	<% if(optimization_errors_gui.pagespeedError) { %>
+		<li class="text-danger ml5">Could not get Pagespeed</li>
+		<p class="mt5">This often occurs if a redirect happens before the page can be loaded.</p>
 	<% } %>
 	</ul>
 <% } %>

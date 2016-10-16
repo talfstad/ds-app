@@ -298,17 +298,26 @@ module.exports = function(app, db) {
 
             var originalUrl = 'http://' + awsData.aws_root_bucket + '.s3-website-us-west-2.amazonaws.com/' + user.user + '/landers/' + s3_folder_name + '/original/' + filePath;
             var optimizedUrl = 'http://' + awsData.aws_root_bucket + '.s3-website-us-west-2.amazonaws.com/' + user.user + '/landers/' + s3_folder_name + '/optimized/' + filePath;
-
+            var pagespeedError = false;
             app.log("getting pagespeed for: " + originalUrl, "debug");
             getPagespeedScore(originalUrl, function(err, originalPagespeed) {
               if (err) {
                 originalPagespeed = 0;
+                pagespeedError = true;
               }
+
               app.log("getting optimized pagespeed for: " + optimizedUrl, "debug");
 
               getPagespeedScore(optimizedUrl, function(err, optimizedPagespeed) {
                 if (err) {
                   optimizedPagespeed = 0;
+                  pagespeedError = true;
+                }
+                if (pagespeedError) {
+                  endpoint.optimizationErrors.push({
+                    type: 'pagespeed',
+                    code: 'couldNotGetPagespeed'
+                  });
                 }
                 callback(false, endpoint, originalPagespeed, optimizedPagespeed);
               });
