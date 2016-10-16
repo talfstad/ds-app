@@ -47,16 +47,8 @@
           </div>
           <!-- end section -->
         </div>
-        <div class="col-sm-5 br-l br-grey pl30">
-          <h3 class="mb25"> You'll Have Access To:</h3>
-          <p class="mb15">
-            <span class="fa fa-check text-success pr5"></span> No Configuration Deployment</p>
-          <p class="mb15">
-            <span class="fa fa-check text-success pr5"></span> Live Editing your Landers</p>
-          <p class="mb15">
-            <span class="fa fa-check text-success pr5"></span> 1 Click Lander Optimization</p>
-          <p class="mb15">
-            <span class="fa fa-check text-success pr5"></span> 1 Click Rip and Deploy</p>
+        <div class="col-sm-5 br-l br-grey pl20">
+          <img style="width: 295px; margin: 25px 0 10px" src="assets/img/logos/logintaglinecheck.png" />
         </div>
       </div>
     </div>
