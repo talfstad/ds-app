@@ -10,7 +10,7 @@ define(["app",
     "assets/js/apps/landerds/landers/add_new_lander/add_new_lander_controller",
     "assets/js/apps/landerds/landers/delete_lander/delete_lander_controller",
     "assets/js/apps/landerds/landers/duplicate_lander/duplicate_lander_controller",
-    "assets/js/apps/landerds/landers/rip_new_lander/rip_new_lander_controller",
+    "assets/js/apps/landerds/landers/rip_lander/rip_lander_controller",
     "assets/js/apps/landerds/landers/js_snippets/js_snippets_controller"
   ],
   function(Landerds, ListController, CommonLogin, SidemenuController, EditController, DeployToDomainController,
@@ -30,6 +30,13 @@ define(["app",
             ListController.showLanders(id);
             Landerds.trigger("header:active", "landers");
           });
+        },
+        
+        showCancelRipLander: function(model) {
+          RipNewLanderController.showCancelRipLander(model);
+        },
+        showCancelAddLander: function(model) {
+          AddNewLanderController.showCancelAddLander(model);
         },
         removeDeployedDomainModelFromCollection: function(model) {
           ListController.removeDeployedDomainModelFromCollection(model);
@@ -209,7 +216,12 @@ define(["app",
       Landerds.on("landers:addGroupToLander", function(attr) {
         landersAppAPI.addGroupToLander(attr);
       });
-
+      Landerds.on("landers:cancelRipLander", function(model) {
+        landersAppAPI.showCancelRipLander(model);
+      });
+      Landerds.on("landers:cancelAddLander", function(model) {
+        landersAppAPI.showCancelAddLander(model);
+      });
       Landerds.on("landers:showDeployToDomain", function(model) {
         landersAppAPI.showDeployToDomain(model);
       });

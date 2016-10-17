@@ -1,5 +1,5 @@
 define(["app",
-    "assets/js/apps/landerds/landers/rip_new_lander/views/rip_new_lander_layout_view",
+    "assets/js/apps/landerds/landers/rip_lander/views/rip_lander_layout_view",
     "assets/js/jobs/jobs_model",
   ],
   function(Landerds, RipNewLanderLayoutView, JobModel) {

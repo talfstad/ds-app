@@ -36,6 +36,21 @@ define(["app",
           "keydown .editable-lander-name": "updateNameInputWidth"
         },
 
+        showCancelLander: function(e) {
+          //only called when there is an active add job and there is only 1 job
+          if (e) e.preventDefault();
+          var activeJobs = this.model.get("activeJobs");
+          var addJob = activeJobs.first();
+          if (addJob) {
+            var addJobAction = addJob.get("action");
+            if (addJobAction == "ripLander") {
+              Landerds.trigger("landers:cancelRipLander", this.model);
+            } else if (addJobAction == "addLander") {
+              Landerds.trigger("landers:cancelAddLander", this.model);
+            }
+          }
+        },
+
         updateNameInputWidth: function(e) {
           var me = this;
           if (e) {
@@ -75,6 +90,7 @@ define(["app",
         },
 
         alertDeployStatus: function() {
+          var me = this;
           //show correct one
           var deployStatus = this.model.get("deploy_status");
           var rootDeployStatus = deployStatus.split(":")[0];
@@ -107,7 +123,6 @@ define(["app",
               deploy_status_gui = "Rip Finishing";
             }
 
-
             if (deployStatus == "initializing:add") {
               //change the gui working from working to something else
               deploy_status_gui = "Initializing";
@@ -117,7 +132,13 @@ define(["app",
               deploy_status_gui = "Lander Finishing";
             }
 
-            this.$el.find(".row-deploy-status-button").addClass("add-lander");
+            var rowDeployStatusEl = this.$el.find(".row-deploy-status-button");
+            rowDeployStatusEl.addClass("add-lander");
+            rowDeployStatusEl.off("click");
+            rowDeployStatusEl.on("click", function(e) {
+              //check if click in button retangle to cancel
+              me.showCancelLander();
+            });
           }
 
           this.model.set("deploy_status_gui", deploy_status_gui);

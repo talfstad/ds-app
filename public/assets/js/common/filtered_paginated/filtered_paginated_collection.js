@@ -23,6 +23,8 @@ define(["app",
           pageSize: options.page_size || 10
         };
 
+        filtered.preFilters = {};
+
         if (filtered.state.paginated) {
           filtered.state.gui = new PaginatedModel;
         }
@@ -59,6 +61,32 @@ define(["app",
           // store current criterion
           filtered._currentCriterion = criterion;
 
+          //if any prefilters, filter them here
+          if (filtered.preFilters.working) {
+            items = items.filter(function(lander) {
+              //if deploy status is not deployed and not not_deployed
+              if (lander.get('deploy_status') != 'deployed' &&
+                lander.get('deploy_status') != 'not_deployed') {
+                return lander;
+              }
+            });
+          }
+          if (filtered.preFilters.modified) {
+            items = items.filter(function(lander) {
+              //if deploy status is not deployed and not not_deployed
+              if (lander.get('modified')) {
+                return lander;
+              }
+            });
+          }
+          if (filtered.preFilters.deleting) {
+            items = items.filter(function(lander) {
+              //if deploy status is not deployed and not not_deployed
+              if (lander.get('deploy_status') == 'deleting') {
+                return lander;
+              }
+            });
+          }
 
           //where we paginate and return the first page
           filtered.currentFilteredCollection = items;
@@ -210,7 +238,6 @@ define(["app",
 
             //parent deploy status is before colon
             var deployStatus = model.get("deploy_status").split(":")[0];
-
             var modifiedAttr = model.get("modified");
 
             if (deployStatus === "not_deployed") {
@@ -226,6 +253,9 @@ define(["app",
               deleting++;
             }
 
+            if (modifiedAttr) {
+              modified++;
+            }
           });
           filtered.state.gui.set("total_not_deployed", notDeployedTotal);
           filtered.state.gui.set('total_undeploying', undeployingTotal);
@@ -361,6 +391,14 @@ define(["app",
           filtered.reset(items);
 
           return filtered;
+        };
+
+        filtered.addPreFilter = function(filter) {
+          filtered.preFilters[filter] = true;
+        };
+
+        filtered.removePreFilter = function(filter) {
+          filtered.preFilters[filter] = false;
         };
 
         // when the original collection is reset,

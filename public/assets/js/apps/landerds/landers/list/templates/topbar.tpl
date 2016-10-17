@@ -4,89 +4,43 @@
       <span style="position: relative; top: 1px" class="icon-landers_icon"></span>
       <span>Landing Pages</span>
     </li>
-    <li class="crumb-trail">Showing <%= showing_low %>-<%= showing_high %> of <%= showing_total %></li>
+    <li class="crumb-trail">Showing <span class="showing-low">0</span>-<span class="showing-high">0</span> of <span class="showing-total">0</span></li>
   </ol>
 
-  <div class="right-stats"> 
-    <% 
-      var lander = "Lander"
-      if(total_not_deployed > 1 || total_not_deployed < 1) {
-        var lander = "Landers"
-      } 
-      var totalLander = "Lander"
-      if(total > 1 || total < 1) {
-        totalLander = "Landers"
-      }
+  <div class="right-stats">
 
-      var totalWorkingLander = "Lander"
-      var total_working = parseInt(total_undeploying) + parseInt(total_deploying)
-      if(total_working > 1 || total_working < 1) {
-        totalWorkingLander = "Landers"
-      }
-
-      var initializingLanderText = "Lander"
-      if(total_initializing > 1 || total_initializing < 1){ 
-        initializingLanderText = "Landers"
-      }
-      var deletingLanderText = "Lander"
-      if(total_deleting > 1 || total_deleting < 1){
-        deletingLanderText = "Landers"
-      }
-      
-      var modifiedLanderText = "Lander"
-      if(total_modified > 1 || total_modified < 1){
-        modifiedLanderText = "Landers"
-      }
-
-      total_modified = 0;
-    %>
-
-      <% if(total_deleting > 0) { %>
-      
-      <div>
-        <span class="badge-danger badge"><%= total_deleting %></span> <%= deletingLanderText %> Deleting
+       <div class="total-deleting filter-landers" style="display: none;">
+        <div class="checkbox-custom checkbox-danger mb5" style="display: none;">
+          <input id="filter-deleting-checkbox" type="checkbox">
+          <label class="topbar-filter" for="filter-deleting-checkbox"></label>
+        </div>
+        <span class="deleting-checkbox-label">
+        <span class="total-deleting-badge badge-alert badge">0</span> <span class="deleting-lander-text">Landers</span> Deleting
+        </span>
       </div>
 
-      <% } %>
-
-      <!-- <% if(total_initializing > 0) { %>
-      
-      <div>
-        <span class="badge-alert badge"><%= total_initializing %></span> <%= initializingLanderText %> Initializing
+      <div class="total-working filter-landers" style="display: none;">
+        <div class="checkbox-custom checkbox-alert mb5" style="display: none;">
+          <input type="checkbox" id="filter-working-checkbox">
+          <label class="topbar-filter" for="filter-landers-checkbox"></label>
+        </div>
+        <span class="working-checkbox-label">
+        <span class="total-working-badge badge-alert badge">0</span> <span class="working-lander-text">Landers</span> Working
+        </span>
       </div>
 
-      <% } %> -->
-    
-      <!-- <% if(total_not_deployed > 0) { %>
-      
-      <div>
-        <span class="badge-primary badge"><%= total_not_deployed %></span> <%= lander %> Not Deployed
-      </div>
-      
-      <% } %> -->
-      
-      <% if(total_working > 0) { %>
-
-      <div>
-        <span class="badge-alert badge"><%= total_working %></span> <%= totalWorkingLander %> Working
-      </div>
-       <% } %>
-
-
-       <% if(total_modified > 0) { %>
-
-      <div>
-        <span class="badge-warning badge"><%= total_modified %></span> <%= modifiedLanderText %> Outdated
+      <div class="total-modified filter-landers" style="display: none;">
+        <div class="checkbox-custom checkbox-warning mb5" style="display: none;">
+          <input id="filter-modified-checkbox" type="checkbox">
+          <label class="topbar-filter" for="filter-modified-checkbox"></label>
+        </div>
+        <span class="modified-checkbox-label">
+        <span class="total-modified-badge badge-warning badge">0</span> <span class="total-modified-lander-text">Landers</span> Modified
+        </span>
       </div>
 
-       <% } %>
-   
-
-    <!-- <div>
-      <span class="badge-success badge">45</span> Deployed
-    </div> -->
-    <div>
-      <span class="badge-light badge"><%= total %></span> Total <%= totalLander %>
+    <div class="total-landers">
+      <span class="total-landers-badge badge-light badge">0</span> Total <span class="total-lander-text">Landers</span>
     </div>
   </div>
 </div>

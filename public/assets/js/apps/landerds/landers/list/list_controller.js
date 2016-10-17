@@ -63,7 +63,7 @@ define(["app",
           var deferredLandersCollection = Landerds.request("landers:landersCollection");
 
           $.when(deferredLandersCollection).done(function(landersCollection) {
-            
+
             var defaultSearchFilter = me.nameFilter;
 
             me.filteredCollection = FilteredPaginatedCollection({
@@ -132,9 +132,24 @@ define(["app",
               landersListLayout.landersCollectionRegion.show(landersListView);
             }
 
+            var filterCollection = function() {
+              var filterVal = $(".list-search").val() || "";
+              me.filteredCollection.filter(filterVal);
+            };
+
             //this is the pagination pages totals and lander count totals view
             var topbarView = new TopbarView({
               model: me.filteredCollection.state.gui
+            });
+
+            topbarView.on("landers:preFilter", function(filter) {
+              me.filteredCollection.addPreFilter(filter);
+              filterCollection();
+            });
+
+            topbarView.on("landers:removePreFilter", function(filter) {
+              me.filteredCollection.removePreFilter(filter);
+              filterCollection();
             });
 
             //on child expanded save for re-open on reset
@@ -287,9 +302,7 @@ define(["app",
             }
 
             var filterVal = $(".list-search").val() || "";
-            if (me.filteredCollection.length > 0) {
-              me.filteredCollection.filter(filterVal);
-            }
+            me.filteredCollection.filter(filterVal);
 
             if (me.childExpandedId) {
               var modelToExpand = me.filteredCollection.original.get(me.childExpandedId)

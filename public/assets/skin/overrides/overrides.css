@@ -15,6 +15,7 @@ body {
 #nestable-contextual {
     max-width: none;
 }
+
 .topbar.dropdown-menu {
     margin-top: 10px;
     border-top-color: #3498db !important;
@@ -518,9 +519,9 @@ body.sb-l-o #topbar.affix,
     cursor: pointer;
 }
 
-div.list-row-item:hover, 
-div.list-row-item:hover input, 
-div.list-row-item:focus, 
+div.list-row-item:hover,
+div.list-row-item:hover input,
+div.list-row-item:focus,
 div.list-row-item.active input,
 div.list-row-item:focus input {
     color: #222;
@@ -530,6 +531,7 @@ div.list-row-item:focus input {
 .admin-form .dropdown-menu label:hover {
     background-color: #f5f5f5 !important;
 }
+
 .page-size-dropdown {
     width: 185px;
 }
@@ -562,7 +564,7 @@ div.list-row-item:focus input {
 .row-deploy-status .btn-default.light:hover,
 .row-deploy-status .btn-default.light:active,
 .row-deploy-status .btn-default.light:focus {
-    background: transparent;    
+    background: transparent;
     box-shadow: none;
     -webkit-box-shadow: none;
 }
@@ -609,4 +611,12 @@ div.list-row-item:focus input {
     color: #ccc;
 }
 
+.filter-landers {
+    cursor: pointer;
+}
 
+label.topbar-filter {
+    position: relative; 
+    margin-right: 1px;
+    margin-bottom: 14px;
+}
