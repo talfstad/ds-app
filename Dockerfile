@@ -22,15 +22,13 @@ RUN sudo apt-get install -y unzip
 #git is a dependency for the npm install. not sure which package uses it but its @annoying
 RUN sudo apt-get install -y git
 
+#for installing packages
+RUN sudo apt-get install -y checkinstall
+
 #image compression
 RUN sudo apt-get install -y libjpeg-progs #jpegtran
 RUN sudo apt-get install -y gifsicle #gifsicle
 RUN sudo apt-get install -y pngcrush #pngcrush
-RUN sudo apt-get install -y optipng #png optimize
-
-#Install java >= 1.5 for yuicompressor
-#RUN sudo apt-get install -y default-jre
-
 RUN sudo npm install phantomjs -g
 
 # use changes to package.json to force Docker not to use the cache
@@ -43,6 +41,10 @@ RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
 
 # Bundle app source
 ADD . /opt/app
+
+#optipng 0.7.6
+RUN cd /opt/app && tar xvf optipng-0.7.6.tar.gz
+RUN cd /opt/app/optipng-0.7.6 && ./configure && make && checkinstall -y
 
 # npm install the custom modules
 RUN cd /opt/app/node_modules_custom/website-scraper && npm install

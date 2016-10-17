@@ -2,8 +2,16 @@
   <div class="panel">
     <div class="panel-heading">
       <div class="list-row-item accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#list-collection" href="#accord<%= id %>">
+
+        <% if(modified) { %>
+        <span style="position: relative; bottom: 1px;" class="pl5">
+          <i class="fa fa-circle text-warning fs12 pr5"></i>
+        </span>
+        <% } %>
+
         <input readonly class="editable-lander-name fw500" type="text" value="<%= name %>">
         <span class="measure-width" style="display:none;"><%= name %></span>
+
         <div class="alert-deleting-badge widget-menu domain-group-notification" style="display: none; right: 140px; min-width: 100px">
           <div class="row-deploy-status btn-group">
             <button type="button" style="border: none;" class="row-deploy-status-button pt5 pb5 pl10 pr10 btn text-danger btn-default light">

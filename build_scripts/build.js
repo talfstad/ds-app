@@ -187,22 +187,24 @@ rimraf('./built', function(err) {
                           copy('built/server', 'built/dist/server', function(err, files) {
                             copy('built/Dockerfile', 'built/dist', function(err, files) {
                               copy('built/Dockerrun.aws.json', 'built/dist', function(err, files) {
-                                copy('built/public/style.css', 'built/dist/public', function(err, files) {
-                                  copy('built/package.json', 'built/dist', function(err, files) {
-                                    copy('built/.ebextensions', 'built/dist/.ebextensions', function(err, files) {
-                                      copy('built/node_modules_custom', 'built/dist/node_modules_custom', function(err, files) {
-                                        copy('built/public/vendor/bower_installed/requirejs', 'built/dist/public/vendor/bower_installed/requirejs', function(err, files) {
-                                          copy('built/public/vendor/bower_installed/summernote/dist/font', 'built/dist/public/vendor/bower_installed/summernote/dist/font', function(err, files) {
-                                            copy('built/public/assets/fonts', 'built/dist/public/assets/fonts', function(err, files) {
-                                              copy('built/public/assets/img', "built/dist/public/assets/img", function(err, files) {
-                                                copy('built/public/assets/js/require_main.js', "built/dist/public/assets/js", function(err, files) {
-                                                  //zip the archive for deployment
-                                                  zipFolder('built/dist', { saveTo: 'built.zip' }, function(err) {
-                                                    if (err) {
-                                                      console.log("err: " + err);
-                                                    } else {
-                                                      console.log("build finished.")
-                                                    }
+                                copy('built/optipng-0.7.6.tar.gz', 'built/dist', function(err, files) {
+                                  copy('built/public/style.css', 'built/dist/public', function(err, files) {
+                                    copy('built/package.json', 'built/dist', function(err, files) {
+                                      copy('built/.ebextensions', 'built/dist/.ebextensions', function(err, files) {
+                                        copy('built/node_modules_custom', 'built/dist/node_modules_custom', function(err, files) {
+                                          copy('built/public/vendor/bower_installed/requirejs', 'built/dist/public/vendor/bower_installed/requirejs', function(err, files) {
+                                            copy('built/public/vendor/bower_installed/summernote/dist/font', 'built/dist/public/vendor/bower_installed/summernote/dist/font', function(err, files) {
+                                              copy('built/public/assets/fonts', 'built/dist/public/assets/fonts', function(err, files) {
+                                                copy('built/public/assets/img', "built/dist/public/assets/img", function(err, files) {
+                                                  copy('built/public/assets/js/require_main.js', "built/dist/public/assets/js", function(err, files) {
+                                                    //zip the archive for deployment
+                                                    zipFolder('built/dist', { saveTo: 'built.zip' }, function(err) {
+                                                      if (err) {
+                                                        console.log("err: " + err);
+                                                      } else {
+                                                        console.log("build finished.")
+                                                      }
+                                                    });
                                                   });
                                                 });
                                               });

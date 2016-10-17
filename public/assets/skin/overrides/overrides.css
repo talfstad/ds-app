@@ -617,7 +617,26 @@ div.list-row-item:focus input {
 }
 
 label.topbar-filter {
-    position: relative; 
+    position: relative;
     margin-right: 1px;
     margin-bottom: 14px;
+}
+
+#list-collection .panel-heading {
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+}
+
+#list-collection > .accordion-group:first-child .panel-heading {
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+#list-collection > .accordion-group:last-child .panel-heading {
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
 }
