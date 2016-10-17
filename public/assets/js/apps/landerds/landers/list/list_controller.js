@@ -58,7 +58,6 @@ define(["app",
 
           landersListLayout.topbarRegion.show(topbarView);
 
-
           //request landers collection
           var deferredLandersCollection = Landerds.request("landers:landersCollection");
 
@@ -163,7 +162,11 @@ define(["app",
                 me.childExpandedId = null;
               }
             });
-
+            landersListView.on("showPageWithModel", function(model) {
+              if (me.filteredCollection) {
+                me.filteredCollection.showPageWithModel(model);
+              }
+            });
 
             me.filteredCollection.on("reset", function(collection) {
 
@@ -174,6 +177,7 @@ define(["app",
               var filteredCollection = this;
 
               if (this.length > 0) {
+
                 landersListView.children.each(function(landerView) {
 
                   var domainTabHandleView = new DeployStatusView({

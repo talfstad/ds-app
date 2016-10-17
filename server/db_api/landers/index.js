@@ -233,6 +233,7 @@ module.exports = function(app, db) {
 
         //try saveModified first.
         var modified = attr.saveModified;
+        //set it to false if no saveModified
         if (!attr.modified) {
           modified = attr.modified;
         }
@@ -402,6 +403,30 @@ module.exports = function(app, db) {
 
 
 
+    },
+
+    updateName: function(user, attr, callback) {
+      var user_id = user.id;
+      var lander_id = attr.id;
+      var name = attr.name;
+
+      db.getConnection(function(err, connection) {
+        if (err) {
+          callback(err);
+        } else {
+          connection.query("UPDATE landers SET name = ? WHERE user_id = ? AND id = ?", [name, user_id, lander_id],
+            function(err, docs) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(false, {
+                  id: attr.id
+                });
+              }
+              connection.release();
+            });
+        }
+      });
     },
 
     updateLanderModifiedData: function(user, attr, callback) {

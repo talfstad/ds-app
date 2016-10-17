@@ -3,6 +3,7 @@
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       <div>
+        <span class="measure-width" style="display:none; font-weight: 600; font-size: 15px"><%= name %></span>
         <input class='editable-lander-name' type='text' value='<%= name %>'/>
       </div>
     </div>
@@ -11,7 +12,7 @@
         <ul class="nav nav-list nav-list-topbar mb0 pull-left">
           <li role="presentation" class="active">
             <a href="#aws" aria-controls="aws" role="tab" data-toggle="tab"><span class="fa fa-file-code-o pr5"></span> JS Snippets</a>
-          </li> 
+          </li>
         </ul>
       </div>
     </header>

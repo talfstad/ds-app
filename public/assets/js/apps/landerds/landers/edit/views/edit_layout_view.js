@@ -37,7 +37,7 @@ define(["app",
 
           var newLanderName = $(e.currentTarget).val();
 
-          if (newLanderName != "" && newLanderName != this.model.get("name")) {
+          if (newLanderName != "" && newLanderName != this.model.get("name") && /.*[a-zA-Z0-9]+.*/.test(newLanderName)) {
             this.trigger("saveLanderName", newLanderName);
           } else {
             $(e.currentTarget).val(this.model.get("name"));

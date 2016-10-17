@@ -136,7 +136,10 @@ define(["app",
           var letterToAdd = e.key; //just care about this chars length
           var textInput = $(e.currentTarget);
           var measureWidth = textInput.parent().find(".measure-width");
-          var text = textInput.val() + letterToAdd;
+          var text = textInput.val();
+          if (letterToAdd.length == 1) {
+            text += letterToAdd;
+          }
           //get 1 or more spaces, filter to only more than 1 space
           var spacesCount = 0;
           if ((/\S\s$/).test(text)) {

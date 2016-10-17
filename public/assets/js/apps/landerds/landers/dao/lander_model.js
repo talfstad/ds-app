@@ -12,13 +12,21 @@ define(["app",
       urlRoot: "/api/landers",
 
       landerNotesModel: null,
+      landerNameModel: null,
 
       initialize: function() {
         var landerNotesModelClass = Backbone.Model.extend({
           urlRoot: "/api/landers/notes"
         });
+        var landerNameModelClass = Backbone.Model.extend({
+          urlRoot: "/api/landers/name"
+        });
 
         this.landerNotesModel = new landerNotesModelClass({
+          id: this.get("id")
+        });
+
+        this.landerNameModel = new landerNameModelClass({
           id: this.get("id")
         });
 
@@ -215,9 +223,7 @@ define(["app",
                   }
                 });
               });
-
             }
-
           });
         };
 
@@ -232,6 +238,17 @@ define(["app",
         });
 
         this.setDeployStatus();
+      },
+
+      saveName: function(callback) {
+        var me = this;
+        var newLanderName = this.get("name");
+        this.landerNameModel.set("name", newLanderName);
+        this.landerNameModel.save({}, {
+          success: function(model) {
+            if (typeof callback == 'function') callback();
+          }
+        });
       },
 
       saveNotes: function(callback) {

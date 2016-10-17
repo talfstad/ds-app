@@ -24,15 +24,27 @@ define(["app",
           "saveLanderName": "saveLanderName"
         },
 
-        saveLanderName: function(childView, landerName) {
+        saveLanderName: function(childView, landerName, e) {
+          var me = this;
           var landerModel = childView.model;
-          //save this lander name to the DB
           landerModel.set("name", landerName);
-          landerModel.save({}, {
-            success: function(model, two, three) {
-              //when the landername changes change the name, resort, goto page, open
-              landerModel.trigger("resortAndExpandModelView");
-            }
+          var landerNameInput;
+          if (e) {
+            landerNameInput = $(e.currentTarget);
+          } else {
+            landerNameInput = childView.$el.find("input.editable-lander-name");
+          }
+          
+          landerModel.saveName(function() {
+            //flash success check next to button
+            var successEl = $("<i class='fa fa-check-circle text-success'></i>");
+            landerNameInput.after(successEl);
+            successEl.fadeOut('slow', function() {
+              successEl.remove();
+              //resort
+              me.triggerSort();
+              me.trigger("showPageWithModel", landerModel);
+            });
           });
         },
 

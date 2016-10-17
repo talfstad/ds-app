@@ -28,12 +28,39 @@ define(["app",
         emptyView: DeployedListEmptyView,
         childViewContainer: "table.deployed-domains-region",
 
+        regions: {
+          'deploy_status_region': '.deploy-status-region',
+          'deployed_domains_region': '.deployed-domains-region',
+          'group_tab_handle_region': '.group-tab-handle-region',
+          'active_groups_region': '.active-groups-region'
+        },
+
         events: {
           "click button.deploy-to-domain": "showDeployLanderToDomain",
           "click button.add-to-group": "showAddToGroup",
           "blur .editable-lander-name": "saveEditedLanderName",
           "click .editable-lander-name": "stopPropagationIfReadonly",
           "keydown .editable-lander-name": "updateNameInputWidth"
+        },
+
+        modelEvents: {
+          "change:deploy_status": "alertDeployStatus",
+          "resortAndExpandModelView": "renderAndShowThisViewsPage",
+          "landerFinishAdded": "renderAndShowThisViewsPage",
+          "setNotesInEditor": "setNotesInEditor",
+          "change:name": "updateNameInGui",
+          "saveEditedLanderName": "saveEditedLanderName",
+          "updateNameInputWidth": "updateNameInputWidth",
+        },
+
+        updateNameInGui: function() {
+          var nameInputEl = this.$el.find("input.editable-lander-name");
+          var isAlreadyUpdated = (nameInputEl.val() == this.model.get("name"));
+          if (!isAlreadyUpdated) {
+            var newLanderName = this.model.get("name");
+            nameInputEl.val(newLanderName);
+            this.updateInputWidth();
+          }
         },
 
         showCancelLander: function(e) {
@@ -67,26 +94,12 @@ define(["app",
 
           var newLanderName = $(e.currentTarget).val();
 
-          if (newLanderName != "" && newLanderName != this.model.get("name")) {
-            this.trigger("saveLanderName", newLanderName);
+          if (newLanderName != "" && newLanderName != this.model.get("name") && /.*[a-zA-Z0-9]+.*/.test(newLanderName)) {
+            this.trigger("saveLanderName", newLanderName, e);
           } else {
             $(e.currentTarget).val(this.model.get("name"));
             this.updateInputWidth();
           }
-        },
-
-        modelEvents: {
-          "change:deploy_status": "alertDeployStatus",
-          "resortAndExpandModelView": "renderAndShowThisViewsPage",
-          "landerFinishAdded": "renderAndShowThisViewsPage",
-          "setNotesInEditor": "setNotesInEditor"
-        },
-
-        regions: {
-          'deploy_status_region': '.deploy-status-region',
-          'deployed_domains_region': '.deployed-domains-region',
-          'group_tab_handle_region': '.group-tab-handle-region',
-          'active_groups_region': '.active-groups-region'
         },
 
         alertDeployStatus: function() {

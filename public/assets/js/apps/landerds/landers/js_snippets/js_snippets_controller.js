@@ -28,16 +28,10 @@ define(["app",
             model: landerModel
           });
 
-          jsSnippetsLayoutView.on("saveLanderName", function(landerName) {
-
-            //save this lander name to the DB
-            this.model.set("name", landerName);
-            this.model.save({}, {
-              success: function(model, two, three) {
-                //when the landername changes change the name, resort, goto page, open
-                landerModel.trigger("resortAndExpandModelView");
-              }
-            });
+          jsSnippetsLayoutView.on("saveLanderName", function(e) {
+            var layoutView = this;
+            var landerModel = layoutView.model;
+            landerModel.trigger("saveEditedLanderName", e);
           });
 
           //set to global

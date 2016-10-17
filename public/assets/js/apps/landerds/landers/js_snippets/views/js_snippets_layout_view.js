@@ -29,20 +29,16 @@ define(["app",
 
         events: {
           "blur .editable-lander-name": "saveEditedLanderName",
-          "click .create-snippet-button": "showCreateNewSnippetView"
+          "click .create-snippet-button": "showCreateNewSnippetView",
+          "keydown .editable-lander-name": "updateNameInputWidth"
+        },
+
+        updateNameInputWidth: function(e) {
+          this.model.trigger("updateNameInputWidth", e);
         },
 
         saveEditedLanderName: function(e) {
-          if (e) e.preventDefault();
-          var me = this;
-
-          var newLanderName = $(e.currentTarget).val();
-
-          if (newLanderName != "" && newLanderName != this.model.get("name")) {
-            this.trigger("saveLanderName", newLanderName);
-          } else {
-            $(e.currentTarget).val(this.model.get("name"));
-          }
+          this.trigger("saveLanderName", e);
         },
 
         showCreateNewSnippetView: function(e) {
@@ -72,9 +68,7 @@ define(["app",
 
             me.$el.find('.modal-dialog').css('height', modalHeight);
             me.$el.find('.modal-dialog').css('width', modalWidth);
-
-
-
+            me.$el.find('input.editable-lander-name').css("width", modalWidth - 100);
           });
 
 

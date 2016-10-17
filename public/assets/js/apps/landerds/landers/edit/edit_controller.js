@@ -31,15 +31,9 @@ define(["app",
           this.jsSnippetsLayoutView = jsSnippetsLayoutView;
 
           jsSnippetsLayoutView.on("saveLanderName", function(landerName) {
-
-            //save this lander name to the DB
-            this.model.set("name", landerName);
-            this.model.save({}, {
-              success: function(model, two, three) {
-                //when the landername changes change the name, resort, goto page, open
-                landerModel.trigger("resortAndExpandModelView");
-              }
-            });
+            var landerModel = this.model;
+            landerModel.set("name", landerName);
+            landerModel.saveName();
           });
 
           jsSnippetsLayoutView.render();

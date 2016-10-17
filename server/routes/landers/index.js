@@ -188,4 +188,18 @@ module.exports = function(app, passport) {
       res.json({});
     });
   });
+
+  app.put('/api/landers/name/:id', passport.isAuthenticated(), function(req, res) {
+    var user = req.user;
+    var landerData = req.body;
+    var name = landerData.name;
+    if (/.*[a-zA-Z0-9]+.*/.test(name)) {
+      //save lander data
+      db.landers.updateName(user, landerData, function(err) {
+        res.json({});
+      });
+    } else {
+      res.json({ error: { code: "CouldNotUpdateName" } })
+    }
+  });
 }
