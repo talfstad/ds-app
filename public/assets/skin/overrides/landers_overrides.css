@@ -330,7 +330,7 @@ input.list-search {
 }
 
 .topbar-left .right-stats div {
-    display: inline;
+    display: inline-block;
     margin-right: 10px;
 }
 

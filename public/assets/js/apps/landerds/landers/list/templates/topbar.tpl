@@ -9,23 +9,13 @@
 
   <div class="right-stats">
 
-       <div class="total-deleting filter-landers" style="display: none;">
-        <div class="checkbox-custom checkbox-danger mb5" style="display: none;">
-          <input id="filter-deleting-checkbox" type="checkbox">
-          <label class="topbar-filter" for="filter-deleting-checkbox"></label>
-        </div>
-        <span class="deleting-checkbox-label">
-        <span class="total-deleting-badge badge-alert badge">0</span> <span class="deleting-lander-text">Landers</span> Deleting
-        </span>
-      </div>
-
       <div class="total-working filter-landers" style="display: none;">
         <div class="checkbox-custom checkbox-alert mb5" style="display: none;">
           <input type="checkbox" id="filter-working-checkbox">
           <label class="topbar-filter" for="filter-landers-checkbox"></label>
         </div>
         <span class="working-checkbox-label">
-        <span class="total-working-badge badge-alert badge">0</span> <span class="working-lander-text">Landers</span> Working
+        <span class="total-working-badge badge-alert badge">0</span> <span class="total-working-text"></span> Working
         </span>
       </div>
 
@@ -35,12 +25,12 @@
           <label class="topbar-filter" for="filter-modified-checkbox"></label>
         </div>
         <span class="modified-checkbox-label">
-        <span class="total-modified-badge badge-warning badge">0</span> <span class="total-modified-lander-text">Landers</span> Modified
+        <span class="total-modified-badge badge-warning badge">0</span> <span class="total-modified-text"></span> Modified
         </span>
       </div>
 
-    <div class="total-landers">
-      <span class="total-landers-badge badge-light badge">0</span> Total <span class="total-lander-text">Landers</span>
+    <div class="total">
+      <span class="total-badge badge-light badge">0</span> Total <span class="total-text"></span>
     </div>
   </div>
 </div>

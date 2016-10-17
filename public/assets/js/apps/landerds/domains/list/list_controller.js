@@ -131,6 +131,21 @@ define(["app",
               model: me.filteredCollection.state.gui
             });
 
+            var filterCollection = function() {
+              var filterVal = $(".list-search").val() || "";
+              me.filteredCollection.filter(filterVal);
+            };
+
+            topbarView.on("preFilter", function(filter) {
+              me.filteredCollection.addPreFilter(filter);
+              filterCollection();
+            });
+
+            topbarView.on("removePreFilter", function(filter) {
+              me.filteredCollection.removePreFilter(filter);
+              filterCollection();
+            });
+
             //on child expanded save for re-open on reset
             domainsListView.on("childview:childExpanded", function(childView, data) {
               me.childExpandedId = childView.model.get("id");

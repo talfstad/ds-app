@@ -611,7 +611,8 @@ div.list-row-item:focus input {
     color: #ccc;
 }
 
-.filter-landers {
+.filter-landers,
+.filter-domains {
     cursor: pointer;
 }
 

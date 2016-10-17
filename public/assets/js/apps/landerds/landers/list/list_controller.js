@@ -142,12 +142,12 @@ define(["app",
               model: me.filteredCollection.state.gui
             });
 
-            topbarView.on("landers:preFilter", function(filter) {
+            topbarView.on("preFilter", function(filter) {
               me.filteredCollection.addPreFilter(filter);
               filterCollection();
             });
 
-            topbarView.on("landers:removePreFilter", function(filter) {
+            topbarView.on("removePreFilter", function(filter) {
               me.filteredCollection.removePreFilter(filter);
               filterCollection();
             });
