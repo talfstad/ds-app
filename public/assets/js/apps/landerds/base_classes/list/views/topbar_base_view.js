@@ -30,7 +30,7 @@ define(["app"],
       },
 
       updateTotalWorkingValue: function() {
-        var total_working = parseInt(this.model.get("total_undeploying")) + parseInt(this.model.get("total_deploying"));
+        var total_working = this.model.get("total_working");
         var totalText = this.baseTitle;
         if (total_working > 1 || total_working < 1) {
           totalText += "s";

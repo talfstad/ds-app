@@ -37,7 +37,7 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Cancel</button>
+      <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Close</button>
       <button type="submit" class="add-new-group-confirm btn btn-primary btn-clipboard">Add Group</button>
     </div>
   </div>

@@ -26,8 +26,7 @@ define(["app",
           "change:showing_total": "updateShowingTotalValue",
           "change:total": "updateTotalValue",
           "change:total_modified": "updateTotalModifiedValue",
-          "change:total_deploying": "updateTotalWorkingValue",
-          "change:total_undeploying": "updateTotalWorkingValue"
+          "change:total_working": "updateTotalWorkingValue"
         },
         
         filterWorkingInput: function(e) {

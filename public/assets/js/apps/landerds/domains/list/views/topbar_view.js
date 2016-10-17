@@ -15,9 +15,7 @@ define(["app",
           "mouseover .filter-domains": "mouseinFilter",
           "mouseout .filter-domains": "mouseoutFilter",
           "click .working-checkbox-label": "clickFilterLabelInput",
-          "change #filter-working-checkbox": "filterWorkingInput",
-          "click .modified-checkbox-label": "clickFilterLabelInput",
-          "change #filter-modified-checkbox": "filterModifiedInput",
+          "change #filter-working-checkbox": "filterWorkingInput"
         },
 
         modelEvents: {
@@ -26,8 +24,7 @@ define(["app",
           "change:showing_total": "updateShowingTotalValue",
           "change:total": "updateTotalValue",
           "change:total_modified": "updateTotalModifiedValue",
-          "change:total_deploying": "updateTotalWorkingValue",
-          "change:total_undeploying": "updateTotalWorkingValue"
+          "change:total_working": "updateTotalWorkingValue"
         },
 
         filterWorkingInput: function(e) {
@@ -38,17 +35,6 @@ define(["app",
             this.trigger("preFilter", "working");
           } else {
             this.trigger("removePreFilter", "working");
-          }
-        },
-
-        filterModifiedInput: function(e) {
-          //now trigger filter if its true
-          var currentTarget = $(e.currentTarget);
-
-          if (currentTarget.parent().parent().find("input").is(":checked")) {
-            this.trigger("preFilter", "modified");
-          } else {
-            this.trigger("removePreFilter", "modified");
           }
         },
 

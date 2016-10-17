@@ -16,7 +16,7 @@
       </div>
       <div class="panel panel-primary top mb35">
         <div class="panel-heading">
-          <span class="panel-title">Rip New Lander Information</span>
+          <span class="panel-title">Rip Lander Information</span>
         </div>
         <div class="panel-body bg-light dark">
           <div class="admin-form">
@@ -86,8 +86,8 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Cancel</button>
-      <button type="submit" class="rip-new-lander-confirm btn btn-primary btn-clipboard">Rip New Lander</button>
+      <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Close</button>
+      <button type="submit" class="rip-new-lander-confirm btn btn-primary btn-clipboard">Rip Lander</button>
     </div>
   </div>
 </div>

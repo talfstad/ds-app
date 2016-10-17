@@ -1,11 +1,11 @@
 define(["app",
     "assets/js/apps/landerds/base_classes/landers/cancel_lander/cancel_lander_base_view",
-    "tpl!assets/js/apps/landerds/landers/rip_lander/cancel_rip_lander/templates/rip_lander_layout.tpl",
+    "tpl!assets/js/apps/landerds/landers/rip_lander/cancel_rip_lander/templates/cancel_rip_lander_layout.tpl",
     "syphon"
   ],
   function(Landerds, CancelLanderBaseView, CancelRipLanderLayoutTpl) {
 
-    Landerds.module("LandersApp.Landers.RipNewLander.Cancel", function(Cancel, Landerds, Backbone, Marionette, $, _) {
+    Landerds.module("LandersApp.Landers.RipLander.Cancel", function(Cancel, Landerds, Backbone, Marionette, $, _) {
 
       Cancel.Layout = CancelLanderBaseView.extend({
 
@@ -31,7 +31,7 @@ define(["app",
 
           //only submit if not already confirmed
           if (!this.model.get("alertLoading")) {
-            this.trigger("ripLanderConfirmed");
+            this.trigger("cancelRipConfirmed");
           }
         },
 
@@ -43,5 +43,5 @@ define(["app",
 
       });
     });
-    return Landerds.LandersApp.Landers.RipNewLander.Cancel.Layout;
+    return Landerds.LandersApp.Landers.RipLander.Cancel.Layout;
   });

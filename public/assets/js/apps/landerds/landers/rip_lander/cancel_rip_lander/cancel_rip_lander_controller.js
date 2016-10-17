@@ -1,42 +1,25 @@
 define(["app",
-    "assets/js/apps/landerds/landers/rip_lander/views/rip_lander_layout_view",
+    "assets/js/apps/landerds/landers/rip_lander/cancel_rip_lander/views/cancel_rip_lander_layout_view",
     "assets/js/jobs/jobs_model",
   ],
   function(Landerds, RipNewLanderLayoutView, JobModel) {
-    Landerds.module("LandersApp.Landers.RipNewLander", function(RipNewLander, Landerds, Backbone, Marionette, $, _) {
+    Landerds.module("LandersApp.Landers.RipLander.Cancel", function(Cancel, Landerds, Backbone, Marionette, $, _) {
 
-      RipNewLander.Controller = {
+      Cancel.Controller = {
 
-        showRipNewLanderModal: function() {
-
-          var ripModel = new JobModel({
-            action: "ripLander",
-            deploy_status: "initializing:rip"
-          });
+        showCancelRipLander: function(landerModel) {
 
           var ripNewLanderLayout = new RipNewLanderLayoutView({
-            model: ripModel
+            model: landerModel
           });
 
-          ripNewLanderLayout.on("ripLanderConfirmed", function() {
+          ripNewLanderLayout.on("cancelRipConfirmed", function() {
 
-            ripModel.set("alertLoading", true);
+            landerModel.set("alertLoading", true);
 
-            ripModel.save({}, {
+            landerModel.destroy({
               success: function(registeredJobModel, responseObj) {
 
-                var error = registeredJobModel.get("error");
-                if (error) {
-                  ripModel.set({
-                    alertInvalidInputs: true,
-                    alertLoading: false
-                  });
-                  registeredJobModel.unset("error");
-                } else {
-                  //has lander_id in it
-                  ripNewLanderLayout.closeModal();
-                  Landerds.trigger("landers:list:createLanderFromJobAddToCollection", registeredJobModel);
-                }
               }
             });
           });
@@ -50,5 +33,5 @@ define(["app",
       }
     });
 
-    return Landerds.LandersApp.Landers.RipNewLander.Controller;
+    return Landerds.LandersApp.Landers.RipLander.Cancel.Controller;
   });

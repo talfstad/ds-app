@@ -15,7 +15,7 @@
 
 
     	<div class="modal-footer">
-            <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Cancel</button>
+            <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Close</button>
     		<button type="submit" class="<% if(saving_lander) { %> disabled <% } %> delete-lander-confirm btn btn-primary btn-clipboard">Delete</button>
     	</div> 
     </div>

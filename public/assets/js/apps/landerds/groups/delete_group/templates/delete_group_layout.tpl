@@ -11,7 +11,7 @@
             <p>Are you sure you want to delete group <strong><%= name %></strong>?</p>
         </div>
         <div class="modal-footer">
-            <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Cancel</button>
+            <button type="button" data-dismiss="modal" class="btn btn-default btn-clipboard">Close</button>
             <button type="button" data-dismiss="modal" class="remove-group-confirm btn btn-primary btn-clipboard">Delete</button>
         </div>
     </div> 

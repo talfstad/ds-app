@@ -242,7 +242,9 @@ define(["app",
 
             if (deployStatus === "not_deployed") {
               notDeployedTotal++;
-            } else if (deployStatus === "deploying") {
+            } 
+
+            if (deployStatus === "deploying") {
               deployingTotal++;
             } else if (deployStatus === "undeploying") {
               undeployingTotal++;
@@ -264,6 +266,7 @@ define(["app",
           filtered.state.gui.set("total_initializing", initializing);
           filtered.state.gui.set("total_deleting", deleting);
           filtered.state.gui.set("total_modified", modified);
+          filtered.state.gui.set("total_working", deleting + undeployingTotal + deployingTotal);
         }
 
         filtered.setPageSize = function(pageSize) {

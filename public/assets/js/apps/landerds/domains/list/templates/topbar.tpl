@@ -12,7 +12,7 @@
       <div class="total-working filter-domains" style="display: none;">
         <div class="checkbox-custom checkbox-alert mb5" style="display: none;">
           <input type="checkbox" id="filter-working-checkbox">
-          <label class="topbar-filter" for="filter-domains-checkbox"></label>
+          <label class="topbar-filter" for="filter-working-checkbox"></label>
         </div>
         <span class="working-checkbox-label">
         <span class="total-working-badge badge-alert badge">0</span> <span class="total-working-text"></span> Working
