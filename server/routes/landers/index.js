@@ -72,6 +72,25 @@ module.exports = function(app, passport) {
         }
       });
     }
+  });
+
+  //delete rip error/add error
+  app.delete('/api/landers/rip/error/:id', passport.isAuthenticated(), function(req, res) {
+    var user = req.user;
+    var lander_id = req.params['id'];
+
+  });
+
+  app.delete('/api/landers/add/error/:id', passport.isAuthenticated(), function(req, res) {
+    var user = req.user;
+    var lander_id = req.params['id'];
+
+  });
+
+  //delete if during add or rip
+  app.delete('/api/landers/:id/', passport.isAuthenticated(), function(req, res) {
+    var user = req.user;
+    var lander_id = req.params['id'];
 
   });
 

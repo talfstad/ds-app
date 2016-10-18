@@ -30,16 +30,15 @@ define(["app",
           e.preventDefault();
 
           //only submit if not already confirmed
-          if (!this.model.get("alertLoading")) {
-            this.trigger("cancelRipConfirmed");
-          }
+          var data = Backbone.Syphon.serialize(this);
+          this.trigger("cancelRipConfirmed", data.ripError);
+          this.$el.modal('hide');
         },
 
         onRender: function() {
           CancelLanderBaseView.prototype.initialize.apply(this);
           this.$el.modal('show');
         }
-
 
       });
     });

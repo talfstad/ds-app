@@ -9,7 +9,15 @@ define(["app",
     DeployedDomainsCollection, ActiveGroupCollection) {
     var LanderModel = JobsGuiBaseModel.extend({
 
-      urlRoot: "/api/landers",
+      urlRoot: function() {
+        if (this.get("ripError")) {
+          return "/api/landers/rip/error";
+        } else if (this.get("addError")) {
+          return "/api/landers/add/error";
+        } else {
+          return "/api/landers";
+        }
+      },
 
       landerNotesModel: null,
       landerNameModel: null,

@@ -13,15 +13,9 @@ define(["app",
             model: landerModel
           });
 
-          ripNewLanderLayout.on("cancelRipConfirmed", function() {
-
-            landerModel.set("alertLoading", true);
-
-            landerModel.destroy({
-              success: function(registeredJobModel, responseObj) {
-
-              }
-            });
+          ripNewLanderLayout.on("cancelRipConfirmed", function(ripError) {
+            landerModel.set("ripError", ripError);
+            landerModel.destroy();
           });
 
           ripNewLanderLayout.render();

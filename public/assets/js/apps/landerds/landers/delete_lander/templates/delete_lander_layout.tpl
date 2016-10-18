@@ -2,12 +2,10 @@
 	<div class=" modal-content">
     	<div class="modal-header">
     		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    		<h4 class="modal-title"><span class="fa fa-upload pr5"></span> Delete <%= name %></h4>
+    		<h4 class="modal-title"><i style="position: relative; top: 2px; display: inline-block;" class="mr5 glyphicon glyphicon-remove-sign"></i>  Delete <%= name %></h4>
     	</div>
 
-        
-
-    	<div class="group-list-region modal-body">
+        <div class="group-list-region modal-body">
 
             <p>Are you sure you want to delete <strong><%= name %></strong> permanently?</p>
                 

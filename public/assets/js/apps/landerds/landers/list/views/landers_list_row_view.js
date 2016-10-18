@@ -45,6 +45,7 @@ define(["app",
 
         modelEvents: {
           "change:deploy_status": "alertDeployStatus",
+          "change:modified": "updateModifiedInGui",
           "resortAndExpandModelView": "renderAndShowThisViewsPage",
           "landerFinishAdded": "renderAndShowThisViewsPage",
           "setNotesInEditor": "setNotesInEditor",
@@ -60,6 +61,19 @@ define(["app",
             var newLanderName = this.model.get("name");
             nameInputEl.val(newLanderName);
             this.updateInputWidth();
+          }
+        },
+
+        updateModifiedInGui: function() {
+          if ($("#filter-modified-checkbox").is(":checked")) {
+            this.renderAndShowThisViewsPage();
+          } else {
+            var modifiedEl = this.$el.find(".modified-circle");
+            if (this.model.get("modified")) {
+              modifiedEl.css("display", "inline-block");
+            } else {
+              modifiedEl.hide();
+            }
           }
         },
 

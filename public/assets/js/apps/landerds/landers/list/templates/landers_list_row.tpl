@@ -4,7 +4,7 @@
       <div class="list-row-item accordion-toggle accordion-icon link-unstyled" data-toggle="collapse" data-parent="#list-collection" href="#accord<%= id %>">
 
         <% if(modified) { %>
-        <span style="position: relative; bottom: 1px;" class="pl5">
+        <span style="position: relative; bottom: 1px;" class="modified-circle pl5">
           <i class="fa fa-circle text-warning fs12 pr5"></i>
         </span>
         <% } %>

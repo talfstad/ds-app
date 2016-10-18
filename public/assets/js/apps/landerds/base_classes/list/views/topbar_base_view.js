@@ -42,9 +42,10 @@ define(["app"],
 
         var container = this.$el.find(".total-working")
         if (total_working > 0) {
-          container.show();
+          container.css("display", "inline-block");
         } else {
           container.hide();
+          this.trigger("removePreFilter", "working");
         }
       },
 
@@ -61,9 +62,10 @@ define(["app"],
 
         var container = this.$el.find(".total-modified")
         if (total_modified > 0) {
-          container.show();
+          container.css("display", "inline-block");
         } else {
           container.hide();
+          this.trigger("removePreFilter", "modified");
         }
       },
 
