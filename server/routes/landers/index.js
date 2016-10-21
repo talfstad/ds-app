@@ -1,19 +1,15 @@
-module.exports = function(app, passport) {
+module.exports = function(app, passport, dbApi, controller) {
 
   var Puid = require('puid');
-  var db = require("../../db_api")(app);
   var validUrl = require("valid-url");
 
-
-  var ripLander = require("./rip_lander")(app, passport);
-  var copyLander = require("./copy_lander")(app, passport);
-  var addLander = require("./add_lander")(app, passport);
-  var downloadLander = require("./download_lander")(app, passport);
+  var copyLander = require("./copy_lander")(app, passport, dbApi, controller);
+  var downloadLander = require("./download_lander")(app, passport, dbApi, controller);
 
   app.get('/api/landers', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
 
-    db.landers.getAll(user, function(err, rows) {
+    dbApi.landers.getAll(user, function(err, rows) {
       if (err) {
         res.json({ error: err });
       } else {
@@ -22,43 +18,12 @@ module.exports = function(app, passport) {
     });
   });
 
-
   app.post('/api/landers', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
     var landerData = req.body;
     var source = landerData.source;
 
-    if (source == "add") {
-      landerData.files = req.files;
-
-      addLander.new(user, landerData, function(err, returnData) {
-        if (err) {
-          res.json({ err: err });
-        } else {
-          res.json(returnData);
-        }
-      });
-
-    } else if (source == "rip") {
-
-      //validate the name and url
-      var name = landerData.name;
-      var url = landerData.lander_url;
-
-      if (validUrl.isHttpUri(url) || validUrl.isHttpsUri(url)) {
-        ripLander.new(user, landerData, function(err, returnData) {
-          if (err) {
-            res.json({ err: err });
-          } else {
-            res.json(returnData);
-          }
-        });
-      } else {
-        res.json({ error: { code: "InvalidUrl" } });
-      }
-
-    } else if (source == "copy") {
-
+    if (source == "copy") {
       copyLander.new(user, landerData, function(err, returnData) {
         if (err) {
           res.json({ error: err });
@@ -75,22 +40,26 @@ module.exports = function(app, passport) {
   });
 
   //delete rip error/add error
-  app.delete('/api/landers/rip/error/:id', passport.isAuthenticated(), function(req, res) {
+  app.delete('/api/landers/error/:id', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
     var lander_id = req.params['id'];
 
-  });
-
-  app.delete('/api/landers/add/error/:id', passport.isAuthenticated(), function(req, res) {
-    var user = req.user;
-    var lander_id = req.params['id'];
-
+    //update job to userinterrupt and error = true;
+    dbApi.jobs.userReportedInterruptAllRunningJobsOnLander(user, lander_id, function(err) {
+      res.json({});
+    });
   });
 
   //delete if during add or rip
   app.delete('/api/landers/:id/', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
     var lander_id = req.params['id'];
+
+    //update job to userinterrupt and error = true;
+    dbApi.jobs.cancelAnyCurrentRunningJobsOnLander(user, lander_id, function(err) {
+      //return success
+      res.json({});
+    });
 
   });
 
@@ -104,7 +73,7 @@ module.exports = function(app, passport) {
     //update to not modified because we are updating
     modelAttributes.saveModified = false;
 
-    db.landers.updateAllLanderData(user, modelAttributes, function(err, returnModelAttributes) {
+    dbApi.landers.updateAllLanderData(user, modelAttributes, function(err, returnModelAttributes) {
       if (err) {
         if (err.code = "InvalidDeploymentFolderInput") {
           res.json(err);
@@ -119,9 +88,9 @@ module.exports = function(app, passport) {
           //optimize lander and return new numbers for pagespeed!!
 
           //create staging dir
-          db.common.createStagingArea(function(err, stagingPath, stagingDir) {
+          dbApi.common.createStagingArea(function(err, stagingPath, stagingDir) {
 
-            db.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
+            dbApi.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
               if (err) {
                 res.json({ error: { err } });
               } else {
@@ -137,12 +106,12 @@ module.exports = function(app, passport) {
                 }
 
                 //copy the data down from the old s3, then push it to the new
-                db.aws.s3.copyDirFromS3ToStaging(lander_id, stagingPath, credentials, username, baseBucketName, directory, function(err) {
+                controller.aws.s3.copyDirFromS3ToStaging(lander_id, stagingPath, credentials, username, baseBucketName, directory, function(err) {
                   if (err) {
                     res.json({ error: { err } });
                   } else {
                     var deleteStaging = true;
-                    db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, modelAttributes.s3_folder_name, modelAttributes, function(err, data) {
+                    controller.landers.add.optimizePushSave(deleteStaging, user, stagingPath, modelAttributes.s3_folder_name, modelAttributes, function(err, data) {
                       if (err) {
                         res.json({ error: { err } });
                       } else {
@@ -188,7 +157,7 @@ module.exports = function(app, passport) {
     var user = req.user;
     var lander_id = req.params['id'];
 
-    db.landers.getLanderNotes(user, lander_id, function(err, dbLanderNotes) {
+    dbApi.landers.getLanderNotes(user, lander_id, function(err, dbLanderNotes) {
       if (err) {
         res.json({ error: { code: "CouldNotGetNotes" } });
       } else {
@@ -203,7 +172,7 @@ module.exports = function(app, passport) {
     var notes = landerData.notes;
     var notes_search = landerData.notes_search;
     //save lander data
-    db.landers.updateNotes(user, landerData, function(err) {
+    dbApi.landers.updateNotes(user, landerData, function(err) {
       res.json({});
     });
   });
@@ -214,7 +183,7 @@ module.exports = function(app, passport) {
     var name = landerData.name;
     if (/.*[a-zA-Z0-9]+.*/.test(name)) {
       //save lander data
-      db.landers.updateName(user, landerData, function(err) {
+      dbApi.landers.updateName(user, landerData, function(err) {
         res.json({});
       });
     } else {

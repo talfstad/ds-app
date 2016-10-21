@@ -1,22 +1,26 @@
-module.exports = function(app, db) {
+module.exports = function(app, dbApi, controller) {
 
   var module = {};
 
-  module.validate = require('./validate')(app, db);
+  //initialize timeout check
+  var WorkerController = require("../../../workers")(app, dbApi, controller);
+  WorkerController.initializeJobTimeoutCheck();
 
-  module.deployLanderToDomain = require('./deploy_lander_to_domain')(app, db);
+  module.validate = require('./validate')(app, dbApi, WorkerController, controller);
 
-  module.undeployLanderFromDomain = require('./undeploy_lander_from_domain')(app, db);
+  module.deployLanderToDomain = require('./deploy_lander_to_domain')(app, dbApi, WorkerController, controller);
 
-  module.deleteLander = require('./delete_lander')(app, db);
+  module.undeployLanderFromDomain = require('./undeploy_lander_from_domain')(app, dbApi, WorkerController, controller);
 
-  module.deleteDomain = require('./delete_domain')(app, db);
+  module.deleteLander = require('./delete_lander')(app, dbApi, WorkerController, controller);
 
-  module.ripLander = require('./rip_lander')(app, db);
+  module.deleteDomain = require('./delete_domain')(app, dbApi, WorkerController, controller);
 
-  module.addLander = require('./add_lander')(app, db);
+  module.ripLander = require('./rip_lander')(app, dbApi, WorkerController, controller);
 
-  module.deleteGroup = require('./delete_group')(app, db);
+  module.addLander = require('./add_lander')(app, dbApi, WorkerController, controller);
+
+  module.deleteGroup = require('./delete_group')(app, dbApi, WorkerController, controller);
 
   return module;
 

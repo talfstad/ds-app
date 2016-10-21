@@ -1,5 +1,7 @@
-module.exports = function(app, passport) {
+module.exports = function(app, passport, dbApi) {
   var module = {};
+
+  var controller = require("../controller")(app, dbApi);
 
   var csrf = require('csurf');
   app.use(csrf({
@@ -14,16 +16,16 @@ module.exports = function(app, passport) {
     next();
   });
 
-  require('./login')(app, passport);
-  require('./landers/index')(app, passport);
-  require('./groups')(app, passport);
-  require('./domains')(app, passport);
-  require('./js_snippets')(app, passport);
-  require('./live_updater')(app, passport);
-  require('./jobs')(app, passport);
-  require('./user')(app, passport);
-  require('./deployed_domain')(app, passport);
-  require('./deployed_lander')(app, passport);
+  require('./login')(app, passport, dbApi, controller);
+  require('./landers/index')(app, passport, dbApi, controller);
+  require('./groups')(app, passport, dbApi, controller);
+  require('./domains')(app, passport, dbApi, controller);
+  require('./js_snippets')(app, passport, dbApi, controller);
+  require('./live_updater')(app, passport, dbApi, controller);
+  require('./jobs')(app, passport, dbApi, controller);
+  require('./user')(app, passport, dbApi, controller);
+  require('./deployed_domain')(app, passport, dbApi, controller);
+  require('./deployed_lander')(app, passport, dbApi, controller);
 
   app.get("*", function(req, res) {
     res.render('index', {

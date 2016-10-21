@@ -1,7 +1,6 @@
 //GLOBALS
 _ = require('underscore');
 
-
 //module dependencies
 var express = require("express");
 var http = require("http");
@@ -16,6 +15,7 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var methodOverride = require('method-override');
 var config = require("./config");
+var mysql = require("mysql");
 
 //config
 var env = 'prod';
@@ -30,14 +30,17 @@ app.config = config[env];
 var logger = require("./utils/debug_log")(app);
 app.log = logger;
 
-var db = require("./db_api")(app);
+
+var db = mysql.createPool(app.config.dbConnectionInfo);
+
+var dbApi = require("./db_api")(app, db);
 
 //gzip
 var compress = require('compression');
 app.use(compress());
 
 var login = require("./passport_login");
-login.initialize(app, db);
+login.initialize(app, dbApi);
 
 app.use(bodyParser.json({
   limit: '20mb'
@@ -60,7 +63,7 @@ app.engine('html', hbs.__express);
 
 app.use(express.static(__dirname + '/../public'));
 
-require("./routes")(app, login);
+require("./routes")(app, login, dbApi);
 
 http.globalAgent.maxSockets = 100
 
@@ -74,7 +77,7 @@ if (env != "dev") {
 
     console.log("FATAL ERROR: \n" + JSON.stringify(err));
 
-    db.log.fatal.error(err, function(err) {
+    dbApi.log.fatal.error(err, function(err) {
       if (err) {
         console.log("error logging fatal: " + JSON.stringify(err));
       }

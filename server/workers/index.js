@@ -1,18 +1,18 @@
-module.exports = function(app, db) {
-
-  var moment = require("moment");
+module.exports = function(app, dbApi, controller) {
 
   var module = {};
-  module.undeployLanderFromDomain = require('./undeploy_lander_from_domain')(app, db);
-  module.undeployDomainFromLander = require('./undeploy_lander_from_domain')(app, db);
-  module.deployLanderToDomain = require('./deploy_lander_to_domain/index')(app, db);
-  module.deleteLander = require('./delete_lander')(app, db);
-  module.deleteDomain = require('./delete_domain')(app, db);
-  module.deleteGroup = require('./delete_group')(app, db);
-  module.savingLander = require('./saving_lander')(app, db);
-  module.ripLander = require('./rip_lander')(app, db);
-  module.addLander = require('./add_lander')(app, db);
-  
+  module.undeployLanderFromDomain = require('./undeploy_lander_from_domain')(app, dbApi, controller);
+  module.undeployDomainFromLander = require('./undeploy_lander_from_domain')(app, dbApi, controller);
+  module.deployLanderToDomain = require('./deploy_lander_to_domain/index')(app, dbApi, controller);
+  module.deleteLander = require('./delete_lander')(app, dbApi, controller);
+  module.deleteDomain = require('./delete_domain')(app, dbApi, controller);
+  module.deleteGroup = require('./delete_group')(app, dbApi, controller);
+  module.savingLander = require('./saving_lander')(app, dbApi, controller);
+  module.ripLander = require('./rip_lander')(app, dbApi, controller);
+  module.addLander = require('./add_lander')(app, dbApi, controller);
+
+  module.timeoutInitialized = false;
+
   module.startJob = function(action, user, attr) {
 
     try {
@@ -20,12 +20,11 @@ module.exports = function(app, db) {
 
       module[action](user, attr, function(err, jobIdArr) {
         if (err) {
-          if (err.code == "ExternalInterrupt") {
+          if (err.code == "TimeoutInterrupt" || err.code == "ExternalInterrupt" || err.code == "UserReportedInterrupt") {
             if (err.staging_path) {
               var staging_path = err.staging_path;
               //delete the staging area
-              db.common.deleteStagingArea(staging_path, function(err) {
-                app.log("deleted the staging area from job error: " + staging_path, "debug");
+              dbApi.common.deleteStagingArea(staging_path, function(err) {
                 return;
               });
             } else {
@@ -34,10 +33,10 @@ module.exports = function(app, db) {
           } else {
             if (jobIdArr.length > 0) {
               //set error and be done
-              console.log("ERRORRRRR :  " + JSON.stringify(err));
-              
-              db.jobs.setErrorAndStop(err.code, jobIdArr[0], function() {
-                console.log("set error and stopped jobs: " + JSON.stringify(jobIdArr));
+              app.log("Non Interrupt Worker Error :  \n" + JSON.stringify(err), "debug");
+
+              dbApi.jobs.setErrorAndStop(err.code, jobIdArr[0], function() {
+                app.log("set error and stopped jobs: " + JSON.stringify(jobIdArr), "debug");
                 return;
               });
             }
@@ -45,7 +44,7 @@ module.exports = function(app, db) {
         } else {
           if (jobIdArr.length > 0) {
             //finish successfully
-            db.jobs.finishedJobSuccessfully(user, jobIdArr, function() {
+            dbApi.jobs.finishedJobSuccessfully(user, jobIdArr, function() {
               console.log("finished " + JSON.stringify(jobIdArr));
               return;
             });
@@ -55,7 +54,28 @@ module.exports = function(app, db) {
     } catch (e) {
       console.log("job worker method does not exist!!!! must implement it. " + action);
     }
+  };
 
+  module.initializeJobTimeoutCheck = function() {
+    if (module.timeoutInitialized) {
+      return;
+    }
+
+    module.timeoutInitialized = true;
+
+    var intervalLength = app.config.jobTimeoutLimit;
+
+    var poll = function() {
+      if (module.timeoutInitialized) {
+        setTimeout(function() {
+          dbApi.jobs.errorIfTimedOut(function() {
+            poll();
+          });
+        }, intervalLength);
+      }
+    };
+
+    poll();
   };
 
   return module;

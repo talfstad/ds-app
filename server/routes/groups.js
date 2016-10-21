@@ -1,8 +1,5 @@
-module.exports = function(app, passport) {
+module.exports = function(app, passport, dbApi, controller) {
   var module = {};
-
-  var db = require("../db_api")(app);
-
 
   ////ACTIVE CAMPS BELONGING TO A LANDER!
   app.post('/api/active_groups_on_lander', passport.isAuthenticated(), function(req, res) {
@@ -12,14 +9,13 @@ module.exports = function(app, passport) {
     var modelAttributes = req.body;
     var user = req.user;
 
-    db.groups.addActiveGroupToLander(user, modelAttributes, function(err, row) {
-      if(err){
-        json.res({error: err});
+    dbApi.groups.addActiveGroupToLander(user, modelAttributes, function(err, row) {
+      if (err) {
+        json.res({ error: err });
       } else {
         res.json(row);
       }
     });
-
   });
 
   //updates an active lander on group model
@@ -31,7 +27,7 @@ module.exports = function(app, passport) {
 
     //remove this by id from the landers with groups table
 
-    db.groups.removeFromLandersWithGroups(req.user, req.params.id, function() {
+    dbApi.groups.removeFromLandersWithGroups(req.user, req.params.id, function() {
       res.json({
         success: "true"
       });
@@ -43,7 +39,7 @@ module.exports = function(app, passport) {
   /////ACTIVE CAMPS BELONGING TO DOMAIN!
   app.delete('/api/active_groups_on_domain/:id', passport.isAuthenticated(), function(req, res) {
 
-    db.groups.removeFromGroupsWithDomains(req.user, req.params.id, function(err) {
+    dbApi.groups.removeFromGroupsWithDomains(req.user, req.params.id, function(err) {
       if (err) {
         res.json({
           code: "CouldNotDeleteGroupDb"
@@ -65,9 +61,9 @@ module.exports = function(app, passport) {
     var modelAttributes = req.body;
     var user = req.user;
 
-    db.groups.addActiveGroupToDomain(user, modelAttributes, function(err, row) {
-      if(err){
-        res.json({error: err});
+    dbApi.groups.addActiveGroupToDomain(user, modelAttributes, function(err, row) {
+      if (err) {
+        res.json({ error: err });
       } else {
         res.json(row);
       }
@@ -79,9 +75,9 @@ module.exports = function(app, passport) {
   ////CAMPAIGNS
   app.get('/api/groups', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
-    db.groups.getAll(user, function(err, rows) {
+    dbApi.groups.getAll(user, function(err, rows) {
       if (err) {
-        res.json({error: err});
+        res.json({ error: err });
       }
       res.json(rows);
     });
@@ -93,7 +89,7 @@ module.exports = function(app, passport) {
     var user = req.user;
     var newGroupData = req.body;
 
-    db.groups.addNewGroup(user, newGroupData, function(err, responseData) {
+    dbApi.groups.addNewGroup(user, newGroupData, function(err, responseData) {
       if (err) {
         res.json({
           error: err
@@ -110,9 +106,9 @@ module.exports = function(app, passport) {
   //update group name
   app.put('/api/groups/:id', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
-    
-    db.groups.updateGroupName(user, req.body, function(err, attributes){
-      if(err){
+
+    dbApi.groups.updateGroupName(user, req.body, function(err, attributes) {
+      if (err) {
         res.json({
           error: err
         });
@@ -123,7 +119,7 @@ module.exports = function(app, passport) {
   });
 
   app.delete('/api/groups/:id', passport.isAuthenticated(), function(req, res) {
-    db.groups.deleteGroup(req.user, req.params.id, function() {
+    dbApi.groups.deleteGroup(req.user, req.params.id, function() {
       res.json({
         success: "true"
       });
@@ -134,7 +130,7 @@ module.exports = function(app, passport) {
     var user = req.user;
     var domain_id = req.params['id'];
 
-    db.groups.getGroupNotes(user, domain_id, function(err, dbDomainNotes) {
+    dbApi.groups.getGroupNotes(user, domain_id, function(err, dbDomainNotes) {
       if (err) {
         res.json({ error: { code: "CouldNotGetNotes" } });
       } else {
@@ -149,7 +145,7 @@ module.exports = function(app, passport) {
     var notes = domainData.notes;
     var notes_search = domainData.notes_search;
     //save lander data
-    db.groups.updateNotes(user, domainData, function(err) {
+    dbApi.groups.updateNotes(user, domainData, function(err) {
       res.json({});
     });
   });

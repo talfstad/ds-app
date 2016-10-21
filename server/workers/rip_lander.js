@@ -1,4 +1,4 @@
-module.exports = function(app, db) {
+module.exports = function(app, dbApi, controller) {
 
   var module = {};
   var uuid = require("uuid");
@@ -29,30 +29,31 @@ module.exports = function(app, db) {
       depth: attr.depth
     };
 
-    var cleanupAndError = function(err) {
-      //delete the lander we were working on
-      db.landers.deleteLander(user, lander_id, function(deleteLanderErr) {
-        if (deleteLanderErr) {
-          callback(deleteLanderErr, [myJobId])
-        } else {
-          callback(err, [myJobId]);
-        }
-      });
-    };
-
     module.scrape(landerData, function(err, stagingPath, stagingDir, urlEndpoint) {
+      var cleanupAndError = function(err) {
+        dbApi.log.rip.error(err, user, stagingDir, landerData, function(err) {
+          dbApi.landers.deleteLander(user, lander_id, function(deleteLanderErr) {
+            if (deleteLanderErr) {
+              callback(deleteLanderErr, [myJobId])
+            } else {
+              callback(err, [myJobId]);
+            }
+          });
+        });
+      };
+      
       if (err) {
         cleanupAndError(err);
       } else {
 
-        db.jobs.updateDeployStatus(user, myJobId, 'initializing:rip_optimizing', function(err) {
+        dbApi.jobs.updateDeployStatus(user, myJobId, 'initializing:rip_optimizing', function(err) {
           if (err) {
             cleanupAndError(err);
           } else {
 
             app.log("staging: " + stagingDir + " " + stagingPath, "debug");
 
-            db.landers.addS3FolderDeploymentFolderToLander(user, lander_id, stagingDir, function(err) {
+            dbApi.landers.addS3FolderDeploymentFolderToLander(user, lander_id, stagingDir, function(err) {
               if (err) {
                 cleanupAndError(err);
               } else {
@@ -60,22 +61,26 @@ module.exports = function(app, db) {
                 var options = {
                   deleteStaging: true,
                   endpoint: urlEndpoint,
-                  depth: landerData.depth
+                  depth: landerData.depth,
+                  jobId: myJobId
                 };
 
                 //rip and add lander both call this to finish the add lander process           
-                db.landers.common.add_lander.addOptimizePushSave(options, user, stagingPath, stagingDir, landerData, function(err, data) {
+                controller.landers.add.optimizePushSave(options, user, stagingPath, stagingDir, landerData, function(err, data) {
                   if (err) {
-                    db.log.rip.error(err, user, stagingDir, landerData, function(err) {
-                      //callback to user that we logged the error and are going to help figure it out
-                      cleanupAndError(err);
-                    });
+                    cleanupAndError(err);
                   } else {
-                    db.jobs.updateDeployStatus(user, myJobId, 'not_deployed', function(err) {
+                    dbApi.jobs.updateDeployStatus(user, myJobId, 'not_deployed', function(err) {
                       if (err) {
                         cleanupAndError(err);
                       } else {
-                        callback(false, [myJobId]);
+                        dbApi.jobs.checkIfExternalInterrupt(user, myJobId, function(err, interruptCode) {
+                          if (interruptCode) {
+                            cleanupAndError(err);
+                          } else {
+                            callback(false, [myJobId]);
+                          }
+                        });
                       }
                     });
                   }
@@ -84,7 +89,6 @@ module.exports = function(app, db) {
             });
           }
         });
-
       }
     });
   };
@@ -310,7 +314,7 @@ module.exports = function(app, db) {
 
 
       // getResourcesInJs(function() {
-        callback(false, stagingPath, stagingDir, filename);
+      callback(false, stagingPath, stagingDir, filename);
       // });
 
 

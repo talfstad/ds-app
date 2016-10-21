@@ -1,4 +1,4 @@
-module.exports = function(app, db) {
+module.exports = function(app, dbApi, controller) {
 
   var module = {};
 
@@ -25,12 +25,12 @@ module.exports = function(app, db) {
       secretAccessKey: user.aws_secret_access_key
     };
 
-    db.landers.getAll(user, function(err, landers) {
+    dbApi.landers.getAll(user, function(err, landers) {
       if (err) {
         callback({ code: "CouldNotGetLanderFromDb" }, [myJobId]);
       } else {
 
-        db.domains.getSharedDomainInfo(domain_id, aws_root_bucket, function(err, domain) {
+        dbApi.domains.getSharedDomainInfo(domain_id, aws_root_bucket, function(err, domain) {
           if (err) {
             callback({ code: "CouldNotGetDomainInformation" }, [myJobId]);
           } else {
@@ -47,7 +47,7 @@ module.exports = function(app, db) {
             var deleteOldDeployedS3Dir = function(callback) {
               console.log("trying to delete path: " + folderPathToDelete);
 
-              db.aws.s3.deleteDir(credentials, aws_root_bucket, folderPathToDelete, function(err) {
+              controller.aws.s3.deleteDir(credentials, aws_root_bucket, folderPathToDelete, function(err) {
                 if (err) {
                   callback({ code: "CouldNotDeleteS3Folder" });
                 } else {
@@ -63,7 +63,7 @@ module.exports = function(app, db) {
               //- create invalidation for this undeployment
               var invalidationPath = "/" + currently_deployed_deployment_folder_name + "/*";
               console.log("invalidating the old deployed path because UNDEPLOY !: " + invalidationPath);
-              db.aws.cloudfront.createInvalidation(credentials, cloudfront_id, invalidationPath, function(err, invalidationData) {
+              controller.aws.cloudfront.createInvalidation(credentials, cloudfront_id, invalidationPath, function(err, invalidationData) {
                 if (err) {
                   callback({ code: "CouldNotCreateInvalidation" }, [myJobId]);
                 } else {
@@ -86,11 +86,11 @@ module.exports = function(app, db) {
                   if (err) {
                     callback(err, [myJobId]);
                   } else {
-                    db.jobs.updateDeployStatus(user, myJobId, "undeploy_invalidating", function(err) {
+                    dbApi.jobs.updateDeployStatus(user, myJobId, "undeploy_invalidating", function(err) {
                       if (err) {
                         callback(err, [myJobId]);
                       } else {
-                        db.aws.cloudfront.waitForInvalidationComplete(user, myJobId, credentials, cloudfront_id, invalidation_id, function(err) {
+                        controller.aws.cloudfront.waitForInvalidationComplete(user, myJobId, credentials, cloudfront_id, invalidation_id, function(err) {
                           if (err) {
                             if (err.code == "ExternalInterrupt") {
                               app.log("external interrupt undeploy lander T!! " + myJobId, "debug");
@@ -98,7 +98,7 @@ module.exports = function(app, db) {
                             callback(err, [myJobId]);
                           } else {
                             //delete the deployed lander
-                            db.deployed_domain.removeFromDeployedLanders(user, lander_id, domain_id, function(err) {
+                            dbApi.deployed_domain.removeFromDeployedLanders(user, lander_id, domain_id, function(err) {
                               if (err) {
                                 callback(err, [myJobId]);
                               } else {

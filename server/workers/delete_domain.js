@@ -1,4 +1,4 @@
-module.exports = function(app, db) {
+module.exports = function(app, dbApi, controller) {
 
   var deleteDomain = function(user, attr, callback) {
 
@@ -16,11 +16,11 @@ module.exports = function(app, db) {
 
     var undeployJobs = [];
 
-    db.domains.deleteFromGroupsWithSharedDomains(domain_id, function(err) {
+    dbApi.domains.deleteFromGroupsWithSharedDomains(domain_id, function(err) {
       if (err) {
         callback(err, [myJobId]);
       } else {
-        db.domains.getAllLandersDeployedOnSharedDomain(aws_root_bucket, domain_id, function(err, dbLanders) {
+        dbApi.domains.getAllLandersDeployedOnSharedDomain(aws_root_bucket, domain_id, function(err, dbLanders) {
           if (err) {
             callback(err, [myJobId]);
           } else {
@@ -44,7 +44,7 @@ module.exports = function(app, db) {
                   var dbLanderUser = {id: lander.user_id};
                   app.log("db lander user: " + dbLanderUser.id, "debug");
                   
-                  db.jobs.registerJob(dbLanderUser, job, function(err, registeredUndeployJob) {
+                  dbApi.jobs.registerJob(dbLanderUser, job, function(err, registeredUndeployJob) {
 
                     undeployJobs.push(registeredUndeployJob);
 
@@ -65,7 +65,7 @@ module.exports = function(app, db) {
               } else {
                 app.log("registered undeploy jobs for delete domain", "debug");
 
-                db.domains.getSharedDomainInfo(domain_id, aws_root_bucket, function(err, domain) {
+                dbApi.domains.getSharedDomainInfo(domain_id, aws_root_bucket, function(err, domain) {
                   if (err) {
                     callback(err, [myJobId]);
                   } else {
@@ -75,7 +75,7 @@ module.exports = function(app, db) {
                     var cloudfront_id = domain.cloudfront_id;
 
                     //  . delete the hosted zone for the domain
-                    db.aws.route53.deleteHostedZone(credentials, hostedZoneId, function(err) {
+                    controller.aws.route53.deleteHostedZone(credentials, hostedZoneId, function(err) {
 
                       app.log("deleted hosted zone for delete domain", "debug");
 
@@ -85,7 +85,7 @@ module.exports = function(app, db) {
 
                         app.log("Delete DOMAIN job : -- : trying to delete path: " + folderPathToDelete, "debug");
 
-                        db.aws.s3.deleteDir(credentials, aws_root_bucket, folderPathToDelete, function(err) {
+                        controller.aws.s3.deleteDir(credentials, aws_root_bucket, folderPathToDelete, function(err) {
                           if (err) {
                             callback({ code: "CouldNotDeleteS3Folder" });
                           } else {
@@ -100,15 +100,15 @@ module.exports = function(app, db) {
                         } else {
                           app.log("deleted domain s3 folder for delete domain", "debug");
 
-                          db.jobs.updateDeployStatusForJobs(user, undeployJobs, "undeploy_invalidating", function(err) {
+                          dbApi.jobs.updateDeployStatusForJobs(user, undeployJobs, "undeploy_invalidating", function(err) {
                             if (err) {
                               callback(err, [myJobId]);
                             } else {
-                              db.aws.cloudfront.deleteDistribution(credentials, cloudfront_id, function(err) {
+                              controller.aws.cloudfront.deleteDistribution(credentials, cloudfront_id, function(err) {
 
                                 app.log("deleted CF distro for delete domain " + cloudfront_id, "debug");
 
-                                db.domains.deleteSharedDomain(aws_root_bucket, domain_id, function(err) {
+                                dbApi.domains.deleteSharedDomain(aws_root_bucket, domain_id, function(err) {
                                   if (err) {
                                     callback(err, [myJobId]);
                                   } else {
@@ -117,7 +117,7 @@ module.exports = function(app, db) {
                                       undeployJobIds.push(undeployJob.id);
                                     });
 
-                                    db.jobs.finishedJobSuccessfully(user, undeployJobIds, function(err) {
+                                    dbApi.jobs.finishedJobSuccessfully(user, undeployJobIds, function(err) {
                                       if (err) {
                                         callback(err, [myJobId]);
                                       } else {

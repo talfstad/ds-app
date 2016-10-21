@@ -1,4 +1,4 @@
-module.exports = function(app, db) {
+module.exports = function(app, dbApi, controller) {
 
   var module = {};
 
@@ -19,23 +19,37 @@ module.exports = function(app, db) {
       created_on: attr.lander_created_on
     };
 
-    var cleanupAndError = function(err) {
-      //delete the lander we were working on
-      db.landers.deleteLander(user, lander_id, function(deleteLanderErr) {
-        if (deleteLanderErr) {
-          callback(deleteLanderErr, [myJobId])
-        } else {
-          callback(err, [myJobId]);
-        }
-      });
-    };
-
     var lander_file = attr.files[0];
 
     //get filename
     var stagingDir = lander_file.filename;
     var stagingPath = "staging/" + lander_file.filename;
     var sourcePathZip = stagingPath + ".zip";
+
+    var cleanupAndError = function(err) {
+      var finishOutCleanup = function(s3DownloadUrl) {
+        dbApi.log.add_lander.error(err, user, s3DownloadUrl, function(addLanderErr) {
+          dbApi.landers.deleteLander(user, lander_id, function(deleteLanderErr) {
+            if (deleteLanderErr) {
+              callback(deleteLanderErr, [myJobId]);
+            } else {
+              err.staging_path = stagingPath;
+              callback(err, [myJobId]);
+            }
+          });
+        });
+      };
+
+      if (err.code == "UserReportedInterrupt") {
+        //delete the lander we were working on
+        controller.log.add_lander.pushBadLanderToS3(user, sourcePathZip, function(pushLanderErr, s3DownloadUrl) {
+          finishOutCleanup(s3DownloadUrl);
+        });
+      } else {
+        finishOutCleanup("did not store lander");
+      }
+
+    };
 
     //rename it to .zip
     fs.rename(stagingPath, sourcePathZip, function(err) {
@@ -88,32 +102,44 @@ module.exports = function(app, db) {
                 }
               }
 
-              db.jobs.updateDeployStatus(user, myJobId, 'initializing:add_optimizing', function(err) {
+              dbApi.jobs.updateDeployStatus(user, myJobId, 'initializing:add_optimizing', function(err) {
                 if (err) {
                   cleanupAndError(err);
                 } else {
 
-                  db.landers.addS3FolderDeploymentFolderToLander(user, lander_id, stagingDir, function(err) {
+                  dbApi.landers.addS3FolderDeploymentFolderToLander(user, lander_id, stagingDir, function(err) {
                     if (err) {
                       cleanupAndError(err);
                     } else {
-                      var deleteStaging = false;
+
+                      var options = {
+                        deleteStaging: false,
+                        jobId: myJobId
+                      };
+
                       //rip and add lander both call this to finish the add lander process           
-                      db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, usingStagingPath, stagingDir, landerData, function(err, data) {
+                      controller.landers.add.optimizePushSave(options, user, usingStagingPath, stagingDir, landerData, function(err, data) {
                         if (err) {
                           cleanupAndError(err);
                         } else {
                           //delete the staging area ourselves since we may have used an inner folder.
                           //delete the whole staging dir, not just the inner folder
-                          db.common.deleteStagingArea(stagingPath, function(err) {
+                          dbApi.common.deleteStagingArea(stagingPath, function(err) {
                             if (err) {
                               cleanupAndError(err);
                             } else {
-                              db.jobs.updateDeployStatus(user, myJobId, 'not_deployed', function(err) {
+                              dbApi.jobs.updateDeployStatus(user, myJobId, 'not_deployed', function(err) {
                                 if (err) {
                                   cleanupAndError(err);
                                 } else {
-                                  callback(false, [myJobId]);
+                                  dbApi.jobs.checkIfExternalInterrupt(user, myJobId, function(err, interruptCode) {
+                                    if (interruptCode) {
+                                      err = err || { code: interruptCode };
+                                      cleanupAndError(err);
+                                    } else {
+                                      callback(false, [myJobId]);
+                                    }
+                                  });
                                 }
                               });
                             }

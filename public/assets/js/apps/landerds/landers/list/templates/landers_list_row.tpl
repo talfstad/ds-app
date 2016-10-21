@@ -22,7 +22,7 @@
           </div>
         </div>
         <div class="widget-menu domain-group-notification">
-          <span class="fs11" title="created on <%= created_on_gui %>"><%= created_on_gui %></span>
+          <span class="fs11" style="padding-right: 14px" title="created on <%= created_on_gui %>"><%= created_on_gui %></span>
         </div>
       </div>
       <div class="alert-working-badge widget-menu domain-group-notification" style="display: none; right: 140px; min-width: 100px">

@@ -1,8 +1,6 @@
-module.exports = function(app, passport) {
+module.exports = function(app, passport, dbApi, controller) {
 
   var Puid = require('puid');
-  var db = require("../../db_api")(app);
-
   var mkdirp = require("mkdirp");
   var rimraf = require("rimraf");
   var uuid = require("uuid");
@@ -14,7 +12,7 @@ module.exports = function(app, passport) {
       var me = this;
 
       //1. rip the lander and its resources into staging
-      db.common.createStagingArea(function(err, stagingPath, stagingDir) {
+      dbApi.common.createStagingArea(function(err, stagingPath, stagingDir) {
         if (err) {
           callback(err);
         } else {
@@ -22,7 +20,7 @@ module.exports = function(app, passport) {
           landerData.s3_folder_name = stagingDir;
           landerData.deployment_folder_name = stagingDir;
 
-          db.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
+          dbApi.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
             if (err) {
               callback(err);
             } else {
@@ -39,12 +37,12 @@ module.exports = function(app, passport) {
               }
 
               //copy the data down from the old s3, then push it to the new
-              db.aws.s3.copyDirFromS3ToStaging(false, stagingPath, credentials, username, baseBucketName, fromDirectory, function(err) {
+              controller.aws.s3.copyDirFromS3ToStaging(false, stagingPath, credentials, username, baseBucketName, fromDirectory, function(err) {
                 if (err) {
                   callback(err);
                 } else {
                   var deleteStaging = true;
-                  db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, stagingDir, landerData, function(err, data) {
+                  controller.landers.add.optimizePushSave(deleteStaging, user, stagingPath, stagingDir, landerData, function(err, data) {
                     if (err) {
                       callback(err);
                     } else {
@@ -57,10 +55,8 @@ module.exports = function(app, passport) {
             }
           });
         }
-
       });
     }
-
   };
 
   return module;

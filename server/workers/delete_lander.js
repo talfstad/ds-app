@@ -1,4 +1,4 @@
-module.exports = function(app, db) {
+module.exports = function(app, dbApi, controller) {
 
   var deleteLander = function(user, attr, callback) {
 
@@ -20,7 +20,7 @@ module.exports = function(app, db) {
 
     var undeployJobs = [];
 
-    db.landers.getAll(user, function(err, landers) {
+    dbApi.landers.getAll(user, function(err, landers) {
       if (err) {
         callback({ code: "CouldNotGetLanderFromDb" }, [myJobId]);
       } else {
@@ -33,7 +33,7 @@ module.exports = function(app, db) {
         var deleteS3Folder = function(folderPathToDelete, callback) {
           app.log("trying to delete path: " + folderPathToDelete, "debug");
 
-          db.aws.s3.deleteDir(credentials, aws_root_bucket, folderPathToDelete, function(err) {
+          controller.aws.s3.deleteDir(credentials, aws_root_bucket, folderPathToDelete, function(err) {
             callback(false);
           });
         };
@@ -41,7 +41,7 @@ module.exports = function(app, db) {
         // bucket / username / landers / <s3_folder_name /
         var landerS3FolderPath = username + "/landers/" + s3_folder_name + "/";
 
-        db.landers.deleteFromLandersWithGroups(user, lander_id, function(err) {
+        dbApi.landers.deleteFromLandersWithGroups(user, lander_id, function(err) {
           if (err) {
             callback(err, [myJobId]);
           } else {
@@ -51,7 +51,7 @@ module.exports = function(app, db) {
               } else {
                 app.log("deleted that folder: " + landerS3FolderPath, "debug");
 
-                db.landers.getAllDomainsLanderIsDeployedOn(user, lander_id, function(err, dbDomains) {
+                dbApi.landers.getAllDomainsLanderIsDeployedOn(user, lander_id, function(err, dbDomains) {
                   if (err) {
                     callback(err, [myJobId]);
                   } else {
@@ -72,7 +72,7 @@ module.exports = function(app, db) {
                             cloudfront_id: deployedDomain.cloudfront_id,
                             deploy_status: "undeploying"
                           };
-                          db.jobs.registerJob(user, job, function(err, registeredUndeployJob) {
+                          dbApi.jobs.registerJob(user, job, function(err, registeredUndeployJob) {
 
                             undeployJobs.push(registeredUndeployJob);
 
@@ -99,7 +99,7 @@ module.exports = function(app, db) {
 
                           //- create invalidation for this undeployment
                           var invalidationPath = "/" + currently_deployed_deployment_folder_name + "/*";
-                          db.aws.cloudfront.createInvalidation(credentials, cloudfront_id, invalidationPath, function(err, invalidationData) {
+                          controller.aws.cloudfront.createInvalidation(credentials, cloudfront_id, invalidationPath, function(err, invalidationData) {
                             if (err) {
                               callback({ code: "CouldNotCreateInvalidation" }, [myJobId]);
                             } else {
@@ -124,11 +124,11 @@ module.exports = function(app, db) {
                                 if (err) {
                                   callback(err);
                                 } else {
-                                  db.jobs.updateDeployStatus(user, undeployJob.id, "undeploy_invalidating", function(err) {
+                                  dbApi.jobs.updateDeployStatus(user, undeployJob.id, "undeploy_invalidating", function(err) {
                                     if (err) {
                                       callback(err);
                                     } else {
-                                      db.aws.cloudfront.waitForInvalidationComplete(user, myJobId, credentials, cloudfront_id, invalidation_id, function(err) {
+                                      controller.aws.cloudfront.waitForInvalidationComplete(user, myJobId, credentials, cloudfront_id, invalidation_id, function(err) {
                                         if (err) {
                                           callback(err);
                                         } else {
@@ -164,7 +164,7 @@ module.exports = function(app, db) {
 
                                   app.log("finishing undeploy job: id: " + JSON.stringify(undeployJob), "debug");
 
-                                  db.jobs.finishedJobSuccessfully(user, [undeployJob.id], function(err) {
+                                  dbApi.jobs.finishedJobSuccessfully(user, [undeployJob.id], function(err) {
                                     if (++asyncIndex == undeployJobs.length) {
                                       //this happens when all domains have been completely undeployed/invalidated
                                       callback(false);
@@ -183,7 +183,7 @@ module.exports = function(app, db) {
                           if (err) {
                             callback(err, [myJobId]);
                           } else {
-                            db.landers.deleteLander(user, lander_id, function(err) {
+                            dbApi.landers.deleteLander(user, lander_id, function(err) {
                               if (err) {
                                 callback(err, [myJobId]);
                               } else {

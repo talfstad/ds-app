@@ -20,6 +20,7 @@ module.exports = {
       pass: 'Wewillrockyou1986!',
       logErrors: false
     },
+    jobTimeoutLimit: 1000 * 60 * 30,
     resetPasswordCodeLifespanMinutes: 10,
     adminEmail: "trevor@buildcave.com",
     adminEmailPassword: "Wewillrockyou1986!",
@@ -30,6 +31,13 @@ module.exports = {
     workers: {
       checkOthersFinishedRate: 1000 * 30, // 30 seconds
       redeployCheckIfMasterReadyRate: 1000 * 10 // 5 seconds
+    },
+    aws: {
+      s3Credentials: {
+        accessKeyId: "AKIAIGEHZO373H6MTW6Q",
+        secretAccessKey: "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"
+      },
+      bucketName: "landerds-add-lander-errors"
     },
     cloudfront: {
       invalidationPollDuration: 1000 * 60 // 30 seconds
@@ -65,6 +73,7 @@ module.exports = {
       pass: 'Wewillrockyou1986!',
       logErrors: false
     },
+    jobTimeoutLimit: 1000 * 60 * 30,
     resetPasswordCodeLifespanMinutes: 10,
     adminEmail: "trevor@buildcave.com",
     adminEmailPassword: "Wewillrockyou1986!",
@@ -75,6 +84,13 @@ module.exports = {
     workers: {
       checkOthersFinishedRate: 1000 * 30, // 30 seconds
       redeployCheckIfMasterReadyRate: 1000 * 5 // 5 seconds
+    },
+    aws: {
+      s3Credentials: {
+        accessKeyId: "AKIAIGEHZO373H6MTW6Q",
+        secretAccessKey: "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"
+      },
+      bucketName: "landerds-add-lander-errors"
     },
     cloudfront: {
       invalidationPollDuration: 1000 * 30 // 30 seconds

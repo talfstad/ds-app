@@ -1,23 +1,20 @@
-module.exports = function(app) {
+module.exports = function(app, db) {
 
-  var module = {};
-  
-  var mysql = require("mysql");
+  var base = require("./base")(app, db);
 
-  var db = mysql.createPool(app.config.dbConnectionInfo);
+  var module = {
+    users: require('./users')(app, db, base),
+    landers: require('./landers')(app, db, base),
+    groups: require('./groups')(app, db, base),
+    domains: require('./domains')(app, db, base),
+    js_snippets: require('./js_snippets')(app, db, base),
+    updater: require('./updater')(app, db, base),
+    jobs: require('./jobs')(app, db, base),
+    aws: require('./aws')(app, db, base),
+    common: require('./common')(app, db, base),
+    log: require('./log')(app, db, base),
+    deployed_domain: require('./deployed_domain')(app, db, base)
+  };
 
-
-  module.users = require('./users')(app, db);
-  module.landers = require('./landers')(app, db);
-  module.groups = require('./groups')(app, db);
-  module.domains = require('./domains')(app, db);
-  module.js_snippets = require('./js_snippets')(app, db);
-  module.updater = require('./updater')(app, db);
-  module.jobs = require('./jobs')(app, db);
-  module.aws = require('./aws')(app, db);
-  module.common = require('./common')(app, db);
-  module.log = require('./log')(app, db);
-  module.deployed_domain = require('./deployed_domain')(app,db);
   return module;
-
 }

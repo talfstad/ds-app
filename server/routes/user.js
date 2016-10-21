@@ -1,8 +1,4 @@
-module.exports = function(app, passport) {
-  var module = {};
-
-  var db = require("../db_api")(app);
-
+module.exports = function(app, passport, dbApi, controller) {
 
   //update aws access keys for user
   app.post('/api/updateAccessKeys', passport.isAuthenticated(), function(req, res) {
@@ -17,7 +13,7 @@ module.exports = function(app, passport) {
     };
 
     //1. if not first time adding keys, back up user's landerDS user folder 
-    db.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
+    dbApi.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
 
       var oldCredentials = {
         accessKeyId: awsData.aws_access_key_id,
@@ -28,14 +24,14 @@ module.exports = function(app, passport) {
       if (oldCredentials.accessKeyId !== newCredentials.accessKeyId) {
         //adds user folder to new account &
         //makes sure new account is set up correctly
-        db.aws.s3.copyUserFolderToNewAccount(oldCredentials, newCredentials, currentRootBucket, user, function(err, newRootBucket) {
+        controller.aws.s3.copyUserFolderToNewAccount(oldCredentials, newCredentials, currentRootBucket, user, function(err, newRootBucket) {
           if (err) {
             res.json({
               error: err
             });
           } else {
             //update keys to new keys in db
-            db.aws.keys.updateAccessKeysAndRootBucket(user, newCredentials.accessKeyId, newCredentials.secretAccessKey, newRootBucket, function(err, result) {
+            dbApi.aws.keys.updateAccessKeysAndRootBucket(user, newCredentials.accessKeyId, newCredentials.secretAccessKey, newRootBucket, function(err, result) {
               if (err) {
                 res.json({
                   error: err
@@ -55,7 +51,6 @@ module.exports = function(app, passport) {
         })
       }
     });
-
   });
 
 
@@ -64,7 +59,7 @@ module.exports = function(app, passport) {
 
     var user = req.user;
 
-    db.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, response) {
+    dbApi.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, response) {
       if (err) {
         res.json({
           error: err
@@ -73,7 +68,5 @@ module.exports = function(app, passport) {
         res.json(response);
       }
     });
-
   });
-
 };

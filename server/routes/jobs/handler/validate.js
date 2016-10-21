@@ -1,4 +1,4 @@
-module.exports = function(app, db) {
+module.exports = function(app, dbApi, Worker, controller) {
   var module = {};
 
   module.allJobs = function(user, jobModelAttributes, callback) {
@@ -12,7 +12,6 @@ module.exports = function(app, db) {
 
     var list = jobModelAttributes.list;
     var action = jobModelAttributes.action;
-
 
     var doneValidating = function() {
       if (isError) {
@@ -41,11 +40,11 @@ module.exports = function(app, db) {
     } else if (action == "deleteDomain") {
 
       var list = jobModelAttributes.list;
-      
+
       if (list.length > 0) {
         var domain_id = list[0].domain_id;
 
-        db.domains.isDuplicateDeleteDomainJob(domain_id, function(err, isDuplicate) {
+        dbApi.domains.isDuplicateDeleteDomainJob(domain_id, function(err, isDuplicate) {
           if (err) {
             isError = true;
             errorResponse.code = "DbDuplicateDeleteDomainJobErr";
@@ -70,37 +69,7 @@ module.exports = function(app, db) {
     } else {
       doneValidating();
     }
-
-
-
-
-    // "addActiveGroupModel": false,
-    // "neverAddToUpdater": true,
-    // "processing": false,
-    // "lander_id": "",
-    // "group_id": "",
-    // "domain_id": "",
-    // "lander_url": "",
-    // "extra": {},
-    // "no_action_on_finish": false
-
-    //   "list": [{
-    //     "lander_id": 357,
-    //     "domain_id": "153",
-    //     "action": "deployLanderToDomain",
-    //     "deploy_status": "deploying",
-    //     "new": true
-    //   }, {
-    //     "lander_id": 357,
-    //     "domain_id": "143",
-    //     "action": "deployLanderToDomain",
-    //     "deploy_status": "deploying",
-    //     "new": true
-    //   }],
-
-
   };
-
 
   return module;
 };

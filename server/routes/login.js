@@ -1,9 +1,8 @@
-module.exports = function(app, passport) {
+module.exports = function(app, passport, dbApi, controller) {
   var hasher = require('wordpress-hash-node');
   var Puid = require('puid');
   var puid = new Puid(true);
   var validator = require('validator');
-  var db = require("../db_api")(app);
   var _ = require("underscore-node");
   var fs = require("fs");
   var sendEmail = require("../utils/send_email")(app);
@@ -11,7 +10,7 @@ module.exports = function(app, passport) {
   app.post("/api/login", passport.authenticate(), function(req, res) {
     //this is only executed if login succeeded
     var user = req.user;
-    db.users.getUserSettings(user, function(error, attr) {
+    dbApi.users.getUserSettings(user, function(error, attr) {
       if (error) {
         res.json({});
       } else {
@@ -36,7 +35,7 @@ module.exports = function(app, passport) {
     var attr = req.body;
     var user = req.user;
     //save the user settings and return
-    db.users.saveUserSettings(user, attr, function(err) {
+    dbApi.users.saveUserSettings(user, attr, function(err) {
       if (err) {
         res.json({error: true});
       } else {
@@ -49,7 +48,7 @@ module.exports = function(app, passport) {
     var user = req.user;
 
     if (req.user) {
-      db.users.getUserSettings(user, function(err, attr) {
+      dbApi.users.getUserSettings(user, function(err, attr) {
         if (err) {
           res.json({});
         } else {
@@ -76,7 +75,7 @@ module.exports = function(app, passport) {
 
   app.post("/api/login/request/reset", function(req, res) {
     var email = req.body.email;
-    db.users.requestResetPassword(email, function(err, code) {
+    dbApi.users.requestResetPassword(email, function(err, code) {
       if (err) {
         res.json({
           emailSent: false,
@@ -117,7 +116,7 @@ module.exports = function(app, passport) {
 
   app.post("/api/login/reset/check", function(req, res) {
     var code = req.body.code;
-    db.users.checkPasswordResetCode(code, app.config.resetPasswordCodeLifespanMinutes, function(error, isValid) {
+    dbApi.users.checkPasswordResetCode(code, app.config.resetPasswordCodeLifespanMinutes, function(error, isValid) {
       if (!isValid) {
         res.json({
           error: error,
@@ -140,7 +139,7 @@ module.exports = function(app, passport) {
     console.log("hash: " + hash + " pasword: " + password);
 
     //TODO: validate password length/complexity/same as old password
-    db.users.resetPassword(code, hash, function(error) {
+    dbApi.users.resetPassword(code, hash, function(error) {
       if (error) {
         res.json({
           error: error

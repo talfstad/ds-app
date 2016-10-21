@@ -1,4 +1,4 @@
-module.exports = function(app, db) {
+module.exports = function(app, dbApi, controller) {
 
   var module = {};
 
@@ -14,9 +14,9 @@ module.exports = function(app, db) {
     //optimize lander and return new numbers for pagespeed!!
 
     //create staging dir
-    db.common.createStagingArea(function(err, stagingPath, stagingDir) {
+    dbApi.common.createStagingArea(function(err, stagingPath, stagingDir) {
 
-      db.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
+      dbApi.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
         if (err) {
           callback(err, [myJobId]);
         } else {
@@ -32,16 +32,16 @@ module.exports = function(app, db) {
           }
 
           //copy the data down from the old s3, then push it to the new
-          db.aws.s3.copyDirFromS3ToStaging(lander_id, stagingPath, credentials, username, baseBucketName, directory, function(err) {
+          controller.aws.s3.copyDirFromS3ToStaging(lander_id, stagingPath, credentials, username, baseBucketName, directory, function(err) {
             if (err) {
               callback(err, [myJobId]);
             } else {
               var deleteStaging = false;
-              db.landers.common.add_lander.addOptimizePushSave(deleteStaging, user, stagingPath, landerData.s3_folder_name, landerData, function(err, data) {
+              controller.landers.add.optimizePushSave(deleteStaging, user, stagingPath, landerData.s3_folder_name, landerData, function(err, data) {
                 if (err) {
                   callback(err, [myJobId]);
                 } else {
-                  db.jobs.updateDeployStatus(user, myJobId, "deployed", function(err) {
+                  dbApi.jobs.updateDeployStatus(user, myJobId, "deployed", function(err) {
                     if (err) {
                       callback(err, [myJobId]);
                     } else {

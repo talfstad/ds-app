@@ -10,10 +10,8 @@ define(["app",
     var LanderModel = JobsGuiBaseModel.extend({
 
       urlRoot: function() {
-        if (this.get("ripError")) {
-          return "/api/landers/rip/error";
-        } else if (this.get("addError")) {
-          return "/api/landers/add/error";
+        if (this.get("ripError") || this.get("addError")) {
+          return "/api/landers/error";
         } else {
           return "/api/landers";
         }

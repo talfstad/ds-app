@@ -1,8 +1,6 @@
-module.exports = function(app, db) {
+module.exports = function(app,  dbApi, Worker, controller) {
 
   var deployLanderToDomain = function(user, jobModelAttributes, callback) {
-
-    var WorkerController = require("../../../workers")(app, db);
 
     var landerData = jobModelAttributes.model;
     var list = jobModelAttributes.list;
@@ -25,7 +23,7 @@ module.exports = function(app, db) {
 
     var activeGroupModelAttributes = jobModelAttributes.addActiveGroupModel
 
-    db.landers.updateAllLanderData(user, landerData, function(err) {
+    dbApi.landers.updateAllLanderData(user, landerData, function(err) {
       if (err) {
         callback({
           error: { code: "InvalidLanderInputs" },
@@ -35,7 +33,7 @@ module.exports = function(app, db) {
       } else {
         //if any of these jobs have the same action, domain_id and lander_id then we
         // update the current ones to error=1 and code = "ExternalInterrupt"
-        db.jobs.cancelAnyCurrentRunningDuplicateJobs(user, list, function(err) {
+        dbApi.jobs.cancelAnyCurrentRunningDuplicateJobs(user, list, function(err) {
           if (err) {
             callback(err);
           } else {
@@ -57,7 +55,7 @@ module.exports = function(app, db) {
                 };
 
                 var addActiveGroupToLandersWithGroups = function(callback) {
-                  db.groups.addActiveGroupToLander(user, activeGroupModelAttributes, function(err, active_group_id) {
+                  dbApi.groups.addActiveGroupToLander(user, activeGroupModelAttributes, function(err, active_group_id) {
                     if (err) {
                       callback(err);
                     } else {
@@ -67,7 +65,7 @@ module.exports = function(app, db) {
                 };
 
                 var addActiveGroupToGroupsWithDomains = function(callback) {
-                  db.groups.addActiveGroupToDomain(user, activeGroupModelAttributes, function(err, active_group_id) {
+                  dbApi.groups.addActiveGroupToDomain(user, activeGroupModelAttributes, function(err, active_group_id) {
                     if (err) {
                       callback(err);
                     } else {
@@ -106,7 +104,7 @@ module.exports = function(app, db) {
                 for (var i = 0; i < newLanders.length; i++) {
                   var newLander = newLanders[i];
 
-                  db.landers.addLanderToDeployedLanders(user, newLander, function(err, newLander) {
+                  dbApi.landers.addLanderToDeployedLanders(user, newLander, function(err, newLander) {
                     if (err) {
                       callback({ code: "CouldNotAddToDeployedLandersDb" });
                     } else {
@@ -148,12 +146,12 @@ module.exports = function(app, db) {
                       var finalList = [];
 
 
-                      db.jobs.registerJob(user, firstJobAttributes, function(err, registeredMasterJobAttributes) {
+                      dbApi.jobs.registerJob(user, firstJobAttributes, function(err, registeredMasterJobAttributes) {
 
                         //start the first job (master job)
                         registeredMasterJobAttributes.active_group_id = active_group_id;
 
-                        WorkerController.startJob(registeredMasterJobAttributes.action, user, registeredMasterJobAttributes);
+                        Worker.startJob(registeredMasterJobAttributes.action, user, registeredMasterJobAttributes);
 
                         finalList.push(registeredMasterJobAttributes);
                         var masterJobId = registeredMasterJobAttributes.id;
@@ -168,12 +166,12 @@ module.exports = function(app, db) {
                               list[i].master_job_id = masterJobId;
                             }
 
-                            db.jobs.registerJob(user, list[i], function(err, registeredSlaveJobAttributes) {
+                            dbApi.jobs.registerJob(user, list[i], function(err, registeredSlaveJobAttributes) {
 
                               finalList.push(registeredSlaveJobAttributes);
 
                               //start slave job
-                              WorkerController.startJob(registeredSlaveJobAttributes.action, user, registeredSlaveJobAttributes);
+                              Worker.startJob(registeredSlaveJobAttributes.action, user, registeredSlaveJobAttributes);
 
                               if (++asyncIndex == list.length) {
                                 callback(false, finalList);
@@ -195,9 +193,9 @@ module.exports = function(app, db) {
                           active_group_id: active_group_id
                         };
 
-                        db.jobs.registerJob(user, saveLanderJobAttributes, function(err, registeredJobAttributes) {
+                        dbApi.jobs.registerJob(user, saveLanderJobAttributes, function(err, registeredJobAttributes) {
                           callback(false, [registeredJobAttributes]);
-                          WorkerController.startJob(registeredJobAttributes.action, user, { job: registeredJobAttributes, lander: landerData });
+                          Worker.startJob(registeredJobAttributes.action, user, { job: registeredJobAttributes, lander: landerData });
                         });
 
                       } else {

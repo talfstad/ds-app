@@ -1,8 +1,6 @@
-module.exports = function(app, db) {
+module.exports = function(app, dbApi, Worker, controller) {
 
   var deleteDomain = function(user, jobModelAttributes, callback) {
-
-    var WorkerController = require("../../../workers")(app, db);
 
     //delete lander needs a job list of 1
     var job = jobModelAttributes.list[0];
@@ -14,10 +12,10 @@ module.exports = function(app, db) {
 
 
     //register the delete job
-    db.jobs.registerJob(user, job, function(err, registeredJobAttributes) {
+    dbApi.jobs.registerJob(user, job, function(err, registeredJobAttributes) {
 
       //start the job
-      WorkerController.startJob(registeredJobAttributes.action, user, registeredJobAttributes);
+      Worker.startJob(registeredJobAttributes.action, user, registeredJobAttributes);
 
       callback(false, [registeredJobAttributes]);
     });

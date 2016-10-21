@@ -1,7 +1,6 @@
-module.exports = function(app, passport) {
+module.exports = function(app, passport, dbApi, controller) {
   var module = {};
 
-  var db = require("../db_api")(app);
   var uuid = require('uuid');
 
 
@@ -10,9 +9,9 @@ module.exports = function(app, passport) {
     var user = req.user;
     var user_id = user.id;
 
-    db.users.findById(user_id, function(err, userData) {
+    dbApi.users.findById(user_id, function(err, userData) {
 
-      db.domains.getAll(user, user.aws_root_bucket, function(err, rows) {
+      dbApi.domains.getAll(user, user.aws_root_bucket, function(err, rows) {
         if (err) {
           res.json({
             error: {
@@ -60,7 +59,7 @@ module.exports = function(app, passport) {
 
 
       //0. get AWS credentials
-      db.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
+      dbApi.aws.keys.getAmazonApiKeysAndRootBucket(user, function(err, awsData) {
         if (err) {
           res.json({
             error: err
@@ -80,14 +79,14 @@ module.exports = function(app, passport) {
           var path = "domains/" + domain;
 
           //check if domain has already been added as a root domain. if so, add it as a subdomain
-          db.domains.checkIfSubdomain(rootBucket, domain, function(err, domainInformation) {
+          dbApi.domains.checkIfSubdomain(rootBucket, domain, function(err, domainInformation) {
             if (err) {
               res.json({
                 error: err
               });
             } else {
               //1. create domain folder in root landerDS bucket /domains/<domain_folder>
-              db.aws.s3.addNewDomainFolderToS3(credentials, rootBucket, path + "/", function(err) {
+              controller.aws.s3.addNewDomainFolderToS3(credentials, rootBucket, path + "/", function(err) {
                 if (err) {
                   res.json({
                     error: err
@@ -98,7 +97,7 @@ module.exports = function(app, passport) {
                   newDomainData.rootBucket = rootBucket;
 
                   //2. create a cloud front for domain
-                  db.aws.cloudfront.makeCloudfrontDistribution(credentials, domain, "/" + path, rootBucket, function(err, cloudfrontDomainName, cloudfrontId) {
+                  controller.aws.cloudfront.makeCloudfrontDistribution(credentials, domain, "/" + path, rootBucket, function(err, cloudfrontDomainName, cloudfrontId) {
                     if (err) {
                       res.json({
                         error: {
@@ -113,10 +112,10 @@ module.exports = function(app, passport) {
 
                       if (domainInformation.isSubdomain) {
                         //add A DNS record to the domain's hosted zone for this subdomain aliased to the new CF distribution :D
-                        db.aws.route53.addSubdomainRecord(credentials, domain, cloudfrontDomainName, domainInformation.hosted_zone_id, function(err, responseData) {
+                        controller.aws.route53.addSubdomainRecord(credentials, domain, cloudfrontDomainName, domainInformation.hosted_zone_id, function(err, responseData) {
                           if (err) {
                             //error so remove CF distro
-                            db.aws.cloudfront.deleteDistribution(credentials, cloudfrontId, function(err) {
+                            controller.aws.cloudfront.deleteDistribution(credentials, cloudfrontId, function(err) {
                               res.json({
                                 error: err
                               });
@@ -125,7 +124,7 @@ module.exports = function(app, passport) {
                             newDomainData.nameservers = domainInformation.nameservers.split(',');
                             newDomainData.hostedZoneId = domainInformation.hosted_zone_id;
 
-                            db.domains.addNewDomain(user, newDomainData, function(err, responseData) {
+                            dbApi.domains.addNewDomain(user, newDomainData, function(err, responseData) {
                               if (err) {
                                 res.json({
                                   error: err
@@ -139,10 +138,10 @@ module.exports = function(app, passport) {
                         });
                       } else {
                         //3. create the route 53 for that if not subdomain
-                        db.aws.route53.createHostedZone(credentials, domain, cloudfrontDomainName, function(err, nameservers, hostedZoneId) {
+                        controller.aws.route53.createHostedZone(credentials, domain, cloudfrontDomainName, function(err, nameservers, hostedZoneId) {
                           if (err) {
                             //error so remove CF distro
-                            db.aws.cloudfront.deleteDistribution(credentials, cloudfrontId, function(err) {
+                            controller.aws.cloudfront.deleteDistribution(credentials, cloudfrontId, function(err) {
                               res.json({
                                 error: err
                               });
@@ -152,7 +151,7 @@ module.exports = function(app, passport) {
                             newDomainData.hostedZoneId = hostedZoneId;
 
                             //4. save it all to db for reference
-                            db.domains.addNewDomain(user, newDomainData, function(err, responseData) {
+                            dbApi.domains.addNewDomain(user, newDomainData, function(err, responseData) {
                               if (err) {
                                 res.json({
                                   error: err
@@ -181,7 +180,7 @@ module.exports = function(app, passport) {
 
     var modelAtributes = req.body;
 
-    db.domains.saveDomain(user, modelAtributes, function() {
+    dbApi.domains.saveDomain(user, modelAtributes, function() {
       res.json(modelAtributes);
     });
 
@@ -191,7 +190,7 @@ module.exports = function(app, passport) {
     var user = req.user;
     var domain_id = req.params['id'];
 
-    db.domains.getDomainNotes(user.aws_root_bucket, domain_id, function(err, dbDomainNotes) {
+    dbApi.domains.getDomainNotes(user.aws_root_bucket, domain_id, function(err, dbDomainNotes) {
       if (err) {
         res.json({ error: { code: "CouldNotGetNotes" } });
       } else {
@@ -206,7 +205,7 @@ module.exports = function(app, passport) {
     var notes = domainData.notes;
     var notes_search = domainData.notes_search;
     //save lander data
-    db.domains.updateNotes(user.aws_root_bucket, domainData, function(err) {
+    dbApi.domains.updateNotes(user.aws_root_bucket, domainData, function(err) {
       res.json({});
     });
   });

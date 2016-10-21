@@ -1,9 +1,7 @@
-module.exports = function(app, passport) {
+module.exports = function(app, passport, dbApi, controller) {
   var module = {};
 
-  var db = require("../db_api")(app);
   var uuid = require('uuid');
-
 
   app.put('/api/deployed_lander', passport.isAuthenticated(), function(req, res) {
 
@@ -11,7 +9,7 @@ module.exports = function(app, passport) {
 
     var data = req.body;
 
-    db.deployed_domain.getLoadTimeForEndpoint(user, data, function(err, responseObj) {
+    dbApi.deployed_domain.getLoadTimeForEndpoint(user, data, function(err, responseObj) {
       if (err) {
         res.json(responseObj);
       } else {

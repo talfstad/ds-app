@@ -1,7 +1,6 @@
-module.exports = function(app, passport) {
+module.exports = function(app, passport, dbApi, controller) {
 
   var Puid = require('puid');
-  var db = require("../../db_api")(app);
   var path = require("path");
   var mkdirp = require("mkdirp");
   var rimraf = require("rimraf");
@@ -17,12 +16,12 @@ module.exports = function(app, passport) {
       var me = this;
       var username = user.user;
 
-      db.users.getUserSettings(user, function(err, attr) {
+      dbApi.users.getUserSettings(user, function(err, attr) {
         var aws_access_key_id = attr.aws_access_key_id;
         var aws_secret_access_key = attr.aws_secret_access_key;
         var aws_root_bucket = attr.aws_root_bucket;
 
-        db.landers.getAll(user, function(err, landers) {
+        dbApi.landers.getAll(user, function(err, landers) {
           if (err) {
             callback(err);
           } else {
@@ -37,18 +36,18 @@ module.exports = function(app, passport) {
               secretAccessKey: aws_secret_access_key
             };
 
-            db.common.createStagingArea(function(err, staging_path, staging_dir) {
+            dbApi.common.createStagingArea(function(err, staging_path, staging_dir) {
               if (err) {
                 callback(err);
               } else {
                 var directory = path.join('landers', s3_folder_name, 'optimized');
                 //1. download original from s3
-                db.aws.s3.copyDirFromS3ToStaging(lander_id, staging_path, credentials, username, aws_root_bucket, directory, function(err) {
+                controller.aws.s3.copyDirFromS3ToStaging(lander_id, staging_path, credentials, username, aws_root_bucket, directory, function(err) {
                   if (err) {
                     callback(err);
                   } else {
 
-                    db.landers.common.unGzipAllFilesInStaging(staging_path, function(err) {
+                    dbApi.landers.unGzipAllFilesInStaging(staging_path, function(err) {
                       if (err) {
                         callback(err);
                       } else {
@@ -62,7 +61,7 @@ module.exports = function(app, passport) {
                             //4. return path
                             callback(false, zippedPath, function() {
                               //5. delete staging
-                              db.common.deleteStagingArea(staging_path, function() {
+                              dbApi.common.deleteStagingArea(staging_path, function() {
                                 // deleted staging, sent download, do nothing. empty callback
                               });
                             });
@@ -84,12 +83,12 @@ module.exports = function(app, passport) {
       var me = this;
       var username = user.user;
 
-      db.users.getUserSettings(user, function(err, attr) {
+      dbApi.users.getUserSettings(user, function(err, attr) {
         var aws_access_key_id = attr.aws_access_key_id;
         var aws_secret_access_key = attr.aws_secret_access_key;
         var aws_root_bucket = attr.aws_root_bucket;
         
-        db.landers.getAll(user, function(err, landers) {
+        dbApi.landers.getAll(user, function(err, landers) {
           if (err) {
             callback(err);
           } else {
@@ -104,14 +103,14 @@ module.exports = function(app, passport) {
               secretAccessKey: aws_secret_access_key
             };
 
-            db.common.createStagingArea(function(err, staging_path, staging_dir) {
+            dbApi.common.createStagingArea(function(err, staging_path, staging_dir) {
               if (err) {
                 callback(err);
               } else {
                 var directory = path.join('landers', s3_folder_name, 'original');
 
                 //1. download original from s3
-                db.aws.s3.copyDirFromS3ToStaging(lander_id, staging_path, credentials, username, aws_root_bucket, directory, function(err) {
+                controller.aws.s3.copyDirFromS3ToStaging(lander_id, staging_path, credentials, username, aws_root_bucket, directory, function(err) {
                   if (err) {
                     callback(err);
                   } else {
@@ -125,7 +124,7 @@ module.exports = function(app, passport) {
                         //3. return path
                         callback(false, zippedPath, function() {
                           //4. delete staging
-                          db.common.deleteStagingArea(staging_path, function() {
+                          dbApi.common.deleteStagingArea(staging_path, function() {
                             //deleted staging, sent download, do nothing. empty callback
                           });
                         });

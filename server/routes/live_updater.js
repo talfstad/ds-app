@@ -1,9 +1,8 @@
-module.exports = function(app, passport) {
+module.exports = function(app, passport, dbApi, controller) {
   var module = {};
 
   var Puid = require('puid');
-  var db = require("../db_api")(app);
-
+  
   app.post('/api/updater', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
 
@@ -50,7 +49,7 @@ module.exports = function(app, passport) {
     };
 
     //active jobs have processing=true
-    db.updater.getActiveJobs(modelsAttributes, user, gotActiveJobsCallback);
+    dbApi.updater.getActiveJobs(modelsAttributes, user, gotActiveJobsCallback);
   });
 
   return module;

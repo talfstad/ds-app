@@ -1,9 +1,10 @@
-module.exports = function(app, db) {
+module.exports = function(app, db, base) {
 
   var module = {};
   
-  module.rip = require('./rip')(app, db);
-  module.fatal = require('./fatal')(app, db);
+  module.rip = require('./rip')(app, db, base);
+  module.add_lander = require('./add_lander')(app, db, base);
+  module.fatal = require('./fatal')(app, db, base);
   
   return module;
 

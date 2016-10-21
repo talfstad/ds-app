@@ -1,10 +1,7 @@
-module.exports = function(app, passport) {
+module.exports = function(app, passport, dbApi, controller) {
   var module = {};
 
-  var db = require("../../db_api")(app);
-  var WorkerController = require("../../workers")(app, db);
-
-  var handler = require('./handler')(app, db);
+  var handler = require('./handler')(app, dbApi, controller);
 
   //start a new job
   app.post('/api/jobs', passport.isAuthenticated(), function(req, res) {

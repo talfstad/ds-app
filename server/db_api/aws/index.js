@@ -1,13 +1,12 @@
-module.exports = function(app, db) {
+module.exports = function(app, db, base) {
 
-    var module = {};
+  var module = {
+    keys: require('./keys')(app, db, base),
+    s3: require('./s3')(app, db, base),
+    cloudfront: require('./cloudfront')(app, db, base),
+    route53: require('./route53')(app, db, base),
+    common: require('./common')(app, db, base)
+  };
 
-    module.keys = require('./keys')(app, db);
-    module.s3 = require('./s3')(app, db);
-    module.cloudfront = require('./cloudfront')(app, db);
-    module.route53 = require('./route53')(app, db);
-    module.common = require('./common')(app, db);
-    
-    return module;
-
+  return module;
 }

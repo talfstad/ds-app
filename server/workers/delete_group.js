@@ -1,4 +1,4 @@
-module.exports = function(app, db) {
+module.exports = function(app, dbApi, controller) {
 
   var module = {};
 
@@ -9,7 +9,7 @@ module.exports = function(app, db) {
 
     var setErrorAndStop = function(err) {
       var code = err.code || "UnkownError";
-      db.jobs.setErrorAndStop(code, myJobId, function(err) {
+      dbApi.jobs.setErrorAndStop(code, myJobId, function(err) {
         app.log("error occured during delete group: " + err, "debug");
       });
     };
@@ -19,7 +19,7 @@ module.exports = function(app, db) {
 
     var interval = setInterval(function() {
       //active jobs and wait until all undeploys are complete
-      db.jobs.getAllProcessingForGroup(user, group_id, function(err, dbActiveJobs) {
+      dbApi.jobs.getAllProcessingForGroup(user, group_id, function(err, dbActiveJobs) {
         if (err) {
           setErrorAndStop(err);
         } else {
@@ -27,7 +27,7 @@ module.exports = function(app, db) {
             //finish job success
             clearInterval(interval);
             var finishedJobs = [myJobId];
-            db.jobs.finishedJobSuccessfully(user, finishedJobs, function(err) {
+            dbApi.jobs.finishedJobSuccessfully(user, finishedJobs, function(err) {
               if (err) {
                 setErrorAndStop(err)
               } else {

@@ -38,6 +38,7 @@ define(["app"], function(Landerds) {
             if (modelAttributes.error) {
               actualJobModel.set("error", modelAttributes.error_code);
               actualJobModel.trigger("errorState", actualJobModel);
+              me.updateCollection.remove(actualJobModel);
             } else {
               actualJobModel.set("extra", modelAttributes.extra);
               actualJobModel.trigger("finishedState", actualJobModel, modelAttributes);

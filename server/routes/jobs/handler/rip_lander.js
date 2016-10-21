@@ -1,8 +1,7 @@
-module.exports = function(app, db) {
+module.exports = function(app, dbApi, Worker, controller) {
 
   var ripLander = function(user, jobModelAttributes, callback) {
 
-    var WorkerController = require("../../../workers")(app, db);
     var validUrl = require("valid-url");
 
     //validate the ripped input data
@@ -19,7 +18,7 @@ module.exports = function(app, db) {
         lander_url: url
       };
 
-      db.landers.saveNewLander(user, landerData, function(err) {
+      dbApi.landers.saveNewLander(user, landerData, function(err) {
         if (err) {
           callback({ error: { code: "CouldNotAddLander" } });
         } else {
@@ -28,12 +27,12 @@ module.exports = function(app, db) {
           jobModelAttributes.lander_created_on = landerData.created_on;
 
           //register the rip job
-          db.jobs.registerJob(user, jobModelAttributes, function(err, registeredJobAttributes) {
+          dbApi.jobs.registerJob(user, jobModelAttributes, function(err, registeredJobAttributes) {
 
             app.log("REGISTERED JOB: " + JSON.stringify(registeredJobAttributes), "debug");
 
             //start the job
-            WorkerController.startJob(registeredJobAttributes.action, user, registeredJobAttributes);
+            Worker.startJob(registeredJobAttributes.action, user, registeredJobAttributes);
 
             callback(false, registeredJobAttributes);
           });
