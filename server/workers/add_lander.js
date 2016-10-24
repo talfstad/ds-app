@@ -40,7 +40,7 @@ module.exports = function(app, dbApi, controller) {
         });
       };
 
-      if (err.code == "UserReportedInterrupt") {
+      if (err.code == "UserReportedInterrupt" || err.code == "TimeoutInterrupt") {
         //delete the lander we were working on
         controller.log.add_lander.pushBadLanderToS3(user, sourcePathZip, function(pushLanderErr, s3DownloadUrl) {
           finishOutCleanup(s3DownloadUrl);
@@ -48,8 +48,13 @@ module.exports = function(app, dbApi, controller) {
       } else {
         finishOutCleanup("did not store lander");
       }
-
+      //this return makes sure this job is stopped immediately when the callback is run
+      //TODO test this
+      return;
     };
+
+    controller.jobs.watchDog(user, myJobId);
+
 
     //rename it to .zip
     fs.rename(stagingPath, sourcePathZip, function(err) {

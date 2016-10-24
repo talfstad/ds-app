@@ -6,7 +6,8 @@ module.exports = function(app, dbApi) {
   var module = {
     aws: awsApi,
     landers: require('./landers')(app, dbApi, awsApi),
-    log: require("./log")(app, dbApi, awsApi)
+    log: require("./log")(app, dbApi, awsApi),
+    jobs: require('./jobs')(app, dbApi, awsApi)
   };
 
   return module;

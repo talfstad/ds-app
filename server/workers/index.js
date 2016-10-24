@@ -11,10 +11,10 @@ module.exports = function(app, dbApi, controller) {
   module.ripLander = require('./rip_lander')(app, dbApi, controller);
   module.addLander = require('./add_lander')(app, dbApi, controller);
 
-  module.timeoutInitialized = false;
+  // module.timeoutInitialized = false;
 
   module.startJob = function(action, user, attr) {
-
+   
     try {
       app.log("action: " + action, "debug");
 
@@ -25,9 +25,11 @@ module.exports = function(app, dbApi, controller) {
               var staging_path = err.staging_path;
               //delete the staging area
               dbApi.common.deleteStagingArea(staging_path, function(err) {
+                console.log("finished " + JSON.stringify(jobIdArr));
                 return;
               });
             } else {
+              console.log("finished " + JSON.stringify(jobIdArr));
               return;
             }
           } else {
@@ -54,28 +56,6 @@ module.exports = function(app, dbApi, controller) {
     } catch (e) {
       console.log("job worker method does not exist!!!! must implement it. " + action);
     }
-  };
-
-  module.initializeJobTimeoutCheck = function() {
-    if (module.timeoutInitialized) {
-      return;
-    }
-
-    module.timeoutInitialized = true;
-
-    var intervalLength = app.config.jobTimeoutLimit;
-
-    var poll = function() {
-      if (module.timeoutInitialized) {
-        setTimeout(function() {
-          dbApi.jobs.errorIfTimedOut(function() {
-            poll();
-          });
-        }, intervalLength);
-      }
-    };
-
-    poll();
   };
 
   return module;

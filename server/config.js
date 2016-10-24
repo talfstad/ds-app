@@ -20,7 +20,7 @@ module.exports = {
       pass: 'Wewillrockyou1986!',
       logErrors: false
     },
-    jobTimeoutLimit: 1000 * 60 * 30,
+    jobTimeoutLimit: 1000,
     resetPasswordCodeLifespanMinutes: 10,
     adminEmail: "trevor@buildcave.com",
     adminEmailPassword: "Wewillrockyou1986!",

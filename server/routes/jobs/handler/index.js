@@ -4,7 +4,6 @@ module.exports = function(app, dbApi, controller) {
 
   //initialize timeout check
   var WorkerController = require("../../../workers")(app, dbApi, controller);
-  WorkerController.initializeJobTimeoutCheck();
 
   module.validate = require('./validate')(app, dbApi, WorkerController, controller);
 

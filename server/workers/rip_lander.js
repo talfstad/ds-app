@@ -34,14 +34,19 @@ module.exports = function(app, dbApi, controller) {
         dbApi.log.rip.error(err, user, stagingDir, landerData, function(err) {
           dbApi.landers.deleteLander(user, lander_id, function(deleteLanderErr) {
             if (deleteLanderErr) {
-              callback(deleteLanderErr, [myJobId])
+              callback(deleteLanderErr, [myJobId]);
             } else {
               callback(err, [myJobId]);
             }
           });
         });
+        //this return makes sure this job is stopped immediately when the callback is run
+        //TODO test this
+        return;
       };
-      
+
+      controller.jobs.watchDog(user, myJobId);
+
       if (err) {
         cleanupAndError(err);
       } else {
