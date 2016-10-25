@@ -135,6 +135,7 @@ define(["app",
             this.$el.find(".alert-working-badge").hide();
             this.$el.find(".alert-deleting-badge").show();
             Landerds.trigger('landers:closesidebar');
+            me.$el.find(".row-deploy-status-button.add-lander").removeClass("add-lander");
             this.disableAccordionPermanently();
           }
 

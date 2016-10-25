@@ -1,6 +1,6 @@
 <button type="button" style="width: 85px;" class="disabled edit-button btn btn-default btn-gradient dark"><span class="fa fa-edit pr5"></span>Edit</button>
 
-<button type="button" style="width: 85px; padding: 9px 3px" class="<% if(saving_lander) { %>disabled<% } %> duplicate-lander-button btn btn-default btn-gradient dark"><span class="fa fa-copy pr5"></span>Copy</button>
+<button type="button" style="width: 85px; padding: 9px 3px" class="<% if(saving_lander) { %>disabled<% } %> duplicate-lander-button btn btn-default btn-gradient dark"><span class="fa fa-copy pr5"></span>Clone</button>
 
 <% if(showSaveButtonGui) { %>
 

@@ -27,8 +27,9 @@ module.exports = function(app, dbApi, controller) {
     var sourcePathZip = stagingPath + ".zip";
 
     var cleanupAndError = function(err) {
+
       var finishOutCleanup = function(s3DownloadUrl) {
-        dbApi.log.add_lander.error(err, user, s3DownloadUrl, function(addLanderErr) {
+        dbApi.log.add_lander.error(err, user, landerData.name, s3DownloadUrl, function(addLanderErr) {
           dbApi.landers.deleteLander(user, lander_id, function(deleteLanderErr) {
             if (deleteLanderErr) {
               callback(deleteLanderErr, [myJobId]);
@@ -43,14 +44,14 @@ module.exports = function(app, dbApi, controller) {
       if (err.code == "UserReportedInterrupt" || err.code == "TimeoutInterrupt") {
         //delete the lander we were working on
         controller.log.add_lander.pushBadLanderToS3(user, sourcePathZip, function(pushLanderErr, s3DownloadUrl) {
-          finishOutCleanup(s3DownloadUrl);
+          controller.intercom.messageAlertFixingLander(user, function(result) {
+            finishOutCleanup(s3DownloadUrl);
+          });
         });
+
       } else {
         finishOutCleanup("did not store lander");
       }
-      //this return makes sure this job is stopped immediately when the callback is run
-      //TODO test this
-      return;
     };
 
     controller.jobs.watchDog(user, myJobId);

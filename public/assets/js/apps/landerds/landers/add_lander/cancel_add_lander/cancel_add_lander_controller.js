@@ -13,8 +13,17 @@ define(["app",
           });
 
           addNewLanderLayout.on("cancelAddConfirmed", function(addError) {
-            landerModel.set("addError", addError);
-            landerModel.destroy();
+            landerModel.set("addError", { save: addError });
+
+            //instead of destroy it you want to get its add job and change deploy status
+            //destroy happens on cancel
+            // landerModel.destroy();
+            landerModel.save({}, {
+              success: function() {
+                landerModel.unset("addError");
+                landerModel.set("deploy_status", "deleting");
+              }
+            });
           });
 
           addNewLanderLayout.render();

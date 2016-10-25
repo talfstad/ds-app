@@ -41,9 +41,9 @@ module.exports = function(app, dbApi, controller) {
                     deploy_status: "undeploying"
                   };
 
-                  var dbLanderUser = {id: lander.user_id};
+                  var dbLanderUser = { id: lander.user_id };
                   app.log("db lander user: " + dbLanderUser.id, "debug");
-                  
+
                   dbApi.jobs.registerJob(dbLanderUser, job, function(err, registeredUndeployJob) {
 
                     undeployJobs.push(registeredUndeployJob);
@@ -95,42 +95,42 @@ module.exports = function(app, dbApi, controller) {
                       };
 
                       deleteDomainsS3Folder(function(err) {
-                        if (err) {
-                          callback(err, [myJobId]);
-                        } else {
-                          app.log("deleted domain s3 folder for delete domain", "debug");
+                        // if (err) {
+                        // callback(err, [myJobId]);
+                        // } else {
+                        app.log("deleted domain s3 folder for delete domain", "debug");
 
-                          dbApi.jobs.updateDeployStatusForJobs(user, undeployJobs, "undeploy_invalidating", function(err) {
-                            if (err) {
-                              callback(err, [myJobId]);
-                            } else {
-                              controller.aws.cloudfront.deleteDistribution(credentials, cloudfront_id, function(err) {
+                        dbApi.jobs.updateDeployStatusForJobs(user, undeployJobs, "undeploy_invalidating", function(err) {
+                          if (err) {
+                            callback(err, [myJobId]);
+                          } else {
+                            controller.aws.cloudfront.deleteDistribution(credentials, cloudfront_id, function(err) {
 
-                                app.log("deleted CF distro for delete domain " + cloudfront_id, "debug");
+                              app.log("deleted CF distro for delete domain " + cloudfront_id, "debug");
 
-                                dbApi.domains.deleteSharedDomain(aws_root_bucket, domain_id, function(err) {
-                                  if (err) {
-                                    callback(err, [myJobId]);
-                                  } else {
-                                    var undeployJobIds = [];
-                                    _.each(undeployJobs, function(undeployJob) {
-                                      undeployJobIds.push(undeployJob.id);
-                                    });
+                              dbApi.domains.deleteSharedDomain(aws_root_bucket, domain_id, function(err) {
+                                if (err) {
+                                  callback(err, [myJobId]);
+                                } else {
+                                  var undeployJobIds = [];
+                                  _.each(undeployJobs, function(undeployJob) {
+                                    undeployJobIds.push(undeployJob.id);
+                                  });
 
-                                    dbApi.jobs.finishedJobSuccessfully(user, undeployJobIds, function(err) {
-                                      if (err) {
-                                        callback(err, [myJobId]);
-                                      } else {
-                                        callback(false, [myJobId]);
-                                      }
-                                    });
-                                  }
-                                });
+                                  dbApi.jobs.finishedJobSuccessfully(user, undeployJobIds, function(err) {
+                                    if (err) {
+                                      callback(err, [myJobId]);
+                                    } else {
+                                      callback(false, [myJobId]);
+                                    }
+                                  });
+                                }
                               });
-                            }
-                          });
+                            });
+                          }
+                        });
 
-                        }
+                        // }
                       });
 
                     });

@@ -20,7 +20,12 @@ module.exports = {
       pass: 'Wewillrockyou1986!',
       logErrors: false
     },
-    jobTimeoutLimit: 1000,
+    intercom: {
+      appApiKey: "04f1d02b2516abefc75976e25118609ca21bf8de",
+      appId: "wgf4en1r",
+      admin: "411412"
+    },
+    jobTimeoutLimit: 1000 * 60 * 10,
     resetPasswordCodeLifespanMinutes: 10,
     adminEmail: "trevor@buildcave.com",
     adminEmailPassword: "Wewillrockyou1986!",
@@ -73,7 +78,12 @@ module.exports = {
       pass: 'Wewillrockyou1986!',
       logErrors: false
     },
-    jobTimeoutLimit: 1000 * 60 * 30,
+    intercom: {
+      appApiKey: "04f1d02b2516abefc75976e25118609ca21bf8de",
+      appId: "wgf4en1r",
+      admin: "411412"
+    },
+    jobTimeoutLimit: 1000 * 60 * 10,
     resetPasswordCodeLifespanMinutes: 10,
     adminEmail: "trevor@buildcave.com",
     adminEmailPassword: "Wewillrockyou1986!",

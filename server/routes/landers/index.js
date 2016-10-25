@@ -40,7 +40,7 @@ module.exports = function(app, passport, dbApi, controller) {
   });
 
   //delete rip error/add error
-  app.delete('/api/landers/error/:id', passport.isAuthenticated(), function(req, res) {
+  app.put('/api/landers/error/save/:id', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
     var lander_id = req.params['id'];
 
@@ -51,7 +51,7 @@ module.exports = function(app, passport, dbApi, controller) {
   });
 
   //delete if during add or rip
-  app.delete('/api/landers/:id/', passport.isAuthenticated(), function(req, res) {
+  app.put('/api/landers/error/:id', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
     var lander_id = req.params['id'];
 
@@ -69,6 +69,21 @@ module.exports = function(app, passport, dbApi, controller) {
     var modelAttributes = req.body;
     var no_optimize_on_save = modelAttributes.no_optimize_on_save;
     var lander_id = modelAttributes.id;
+
+
+    //make sure add error is not set on a put unless its time to delete the lander !
+    var addError = modelAttributes.addError;
+    if (addError) {
+      if (addError.delete) {
+        console.log("add error !!");
+        return;
+      } else {
+        console.log("not adding as error just canceling");
+        return;
+      }
+      res.json({});
+    }
+
 
     //update to not modified because we are updating
     modelAttributes.saveModified = false;

@@ -13,9 +13,18 @@ define(["app",
             model: landerModel
           });
 
-          ripNewLanderLayout.on("cancelRipConfirmed", function(ripError) {
-            landerModel.set("ripError", ripError);
-            landerModel.destroy();
+          ripNewLanderLayout.on("cancelRipConfirmed", function(addError) {
+            landerModel.set("addError", { save: addError });
+
+            //instead of destroy it you want to get its add job and change deploy status
+            //destroy happens on cancel
+            // landerModel.destroy();
+            landerModel.save({}, {
+              success: function() {
+                landerModel.unset("addError");
+                landerModel.set("deploy_status", "deleting");
+              }
+            });
           });
 
           ripNewLanderLayout.render();

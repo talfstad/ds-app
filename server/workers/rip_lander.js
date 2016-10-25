@@ -30,19 +30,30 @@ module.exports = function(app, dbApi, controller) {
     };
 
     module.scrape(landerData, function(err, stagingPath, stagingDir, urlEndpoint) {
+      
       var cleanupAndError = function(err) {
-        dbApi.log.rip.error(err, user, stagingDir, landerData, function(err) {
-          dbApi.landers.deleteLander(user, lander_id, function(deleteLanderErr) {
-            if (deleteLanderErr) {
-              callback(deleteLanderErr, [myJobId]);
-            } else {
-              callback(err, [myJobId]);
-            }
+
+        var intercomUserIfUserReportedOrTimeoutInterrupt = function(callback) {
+          if (err.code == "UserReportedInterrupt" || err.code == "TimeoutInterrupt") {
+            controller.intercom.messageAlertFixingRip(user, function(result) {
+              callback(false);
+            });
+          } else {
+            callback(false);
+          }
+        };
+
+        controller.log.rip.error(err, user, stagingDir, landerData, function(err) {
+          intercomUserIfUserReportedOrTimeoutInterrupt(function(err) {
+            dbApi.landers.deleteLander(user, lander_id, function(deleteLanderErr) {
+              if (deleteLanderErr) {
+                callback(deleteLanderErr, [myJobId]);
+              } else {
+                callback(err, [myJobId]);
+              }
+            });
           });
         });
-        //this return makes sure this job is stopped immediately when the callback is run
-        //TODO test this
-        return;
       };
 
       controller.jobs.watchDog(user, myJobId);

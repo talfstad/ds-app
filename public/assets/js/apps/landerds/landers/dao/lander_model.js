@@ -11,7 +11,12 @@ define(["app",
 
       urlRoot: function() {
         if (this.get("ripError") || this.get("addError")) {
-          return "/api/landers/error";
+          var addError = this.get("addError");
+          if (addError.save) {
+            return "/api/landers/error/save";
+          } else {
+            return "/api/landers/error";
+          }
         } else {
           return "/api/landers";
         }
@@ -129,6 +134,15 @@ define(["app",
                 me.set("deploy_status", "deploying");
               }
             });
+          }
+        });
+
+        activeJobCollection.on("errorState", function(jobModel, updaterResponse) {
+          if (jobModel.get("error") == "UserReportedInterrupt" ||
+            jobModel.get("error") == "TimeoutInterrupt" ||
+            jobModel.get("error") == "ExternalInterrupt") {
+            delete me.attributes.id;
+            me.destroy();
           }
         });
 

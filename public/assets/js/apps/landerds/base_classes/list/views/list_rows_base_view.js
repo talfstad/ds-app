@@ -222,7 +222,7 @@ define(["app",
       disableAccordionPermanently: function() {
         //disable tab links
         var me = this;
-
+        
         // first try collapsing it
         $("#list-collection .collapse").collapse("hide");
 

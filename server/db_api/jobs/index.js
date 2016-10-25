@@ -16,7 +16,7 @@ module.exports = function(app, db, base) {
             callback(err);
           } else {
             //select job, if we get anything it is timed out
-            connection.query("UPDATE jobs SET error = ?, error_code = ? WHERE created_on <= ? AND processing = ? AND error = ? AND done = ? AND id = ? AND user_id = ?", [true, "TimeoutInterrupt", currentTimeMinusTimeout, true, false, false, jobId, user_id],
+            connection.query("UPDATE jobs SET error = ?, error_code = ?, processing = ? WHERE created_on <= ? AND processing = ? AND error = ? AND done = ? AND id = ? AND user_id = ?", [true, "TimeoutInterrupt", false, currentTimeMinusTimeout, true, false, false, jobId, user_id],
               function(err, docs) {
                 if (err) {
                   callback(err);
