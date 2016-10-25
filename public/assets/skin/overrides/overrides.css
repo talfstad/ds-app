@@ -640,3 +640,11 @@ label.topbar-filter {
     border-bottom-right-radius: 3px;
     border-bottom-left-radius: 3px;
 }
+
+a.download-original-lander:hover,
+a.download-optimized-lander:hover {
+    text-decoration: none;
+}
+
+
+

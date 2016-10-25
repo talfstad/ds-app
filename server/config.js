@@ -23,7 +23,7 @@ module.exports = {
     intercom: {
       appApiKey: "04f1d02b2516abefc75976e25118609ca21bf8de",
       appId: "wgf4en1r",
-      admin: "411412"
+      admin: "411412" //this is lifen's admin id
     },
     jobTimeoutLimit: 1000 * 60 * 10,
     resetPasswordCodeLifespanMinutes: 10,

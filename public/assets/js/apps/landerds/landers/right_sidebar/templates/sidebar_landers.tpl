@@ -12,7 +12,7 @@
       <div class="url-endpoints-region"></div>
       <div class="pagespeed-region"></div>
       <h5 class="title-divider mt20 mb0">
-              Active Snippets 
+              Active Snippets
               
               <a class="add-snippet-button" style="float: right" title="Add a new snippet" href="#">
                 <i style="font-size: 18px !important" class="fa fa-plus text-info fs12 pl5 pr5"></i>
@@ -32,20 +32,25 @@
       <table class="optimizations-table table">
         <tr>
           <td>
-            Original Lander
-          </td>
-          <td align="right" style="width: 30px;">
-            <a class="download-original-lander" href="/api/landers/download?version=original&id=<%= id %>"><span class="fa fa-download"></span></a>
+            <a class="download-original-lander" href="/api/landers/download?version=original&id=<%= id %>">Original Lander <span style="float: right" class="mr5 mt5 fa fa-download"></span></a>
           </td>
         </tr>
         <tr>
           <td>
-            Optimized Lander
-          </td>
-          <td align="right" style="width: 30px;">
-            <a class="download-optimized-lander" href="/api/landers/download?version=optimized&id=<%= id %>"><span class="fa fa-download"></span></a>
+            <a class="download-optimized-lander" href="/api/landers/download?version=optimized&id=<%= id %>">Optimized Lander <span style="float: right" class="mt5 mr5 fa fa-download"></span></a></a>
           </td>
         </tr>
+      </table>
+    </div>
+    <div>
+      <table class="table">
+        <tbody>
+          <tr class="dark">
+            <td>
+              <a href="#"><span class="ml5">Report This Lander Broken <i style="float: right" class="mr10 mt5 text-danger fa fa-warning"></i></span></a>
+            </td>
+          </tr>
+        </tbody>
       </table>
     </div>
     <div class="panel-footer">

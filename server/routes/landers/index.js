@@ -4,7 +4,6 @@ module.exports = function(app, passport, dbApi, controller) {
   var validUrl = require("valid-url");
 
   var copyLander = require("./copy_lander")(app, passport, dbApi, controller);
-  var downloadLander = require("./download_lander")(app, passport, dbApi, controller);
 
   app.get('/api/landers', passport.isAuthenticated(), function(req, res) {
     var user = req.user;
@@ -48,6 +47,46 @@ module.exports = function(app, passport, dbApi, controller) {
     dbApi.jobs.userReportedInterruptAllRunningJobsOnLander(user, lander_id, function(err) {
       res.json({});
     });
+  });
+
+  app.put('/api/landers/error/report/:id', passport.isAuthenticated(), function(req, res) {
+    var user = req.user;
+    var lander_id = req.params['id'];
+
+    //get the lander from db check if rip, if not download the lander into staging and push it into our s3
+    //log it, message user
+    var landersToGet = [{
+      lander_id: lander_id
+    }];
+
+    dbApi.landers.getAll(user, function(err, landers) {
+      if (err) {
+        callback(err);
+      } else {
+        var landerData = landers[0];
+
+        if (landerData.ripped_from) {
+          app.log("ripped error reported", "debug");
+          controller.log.rip.error(err, user, stagingDir, landerData, function(err) {
+            controller.intercom.messageAlertFixingRip(user, function(result) {
+              res.json({});
+            });
+          });
+        } else {
+          app.log("add lander error reported", "debug");
+          controller.log.add_lander.getBadLanderFromS3(user, function(err, sourcePathZip) {
+            controller.log.add_lander.pushBadLanderToS3(user, sourcePathZip, function(pushLanderErr, s3DownloadUrl) {
+              controller.intercom.messageAlertFixingLander(user, function(result) {
+                dbApi.log.add_lander.error(err, user, landerData.name, s3DownloadUrl, function(addLanderErr) {
+                  res.json({});
+                });
+              });
+            });
+          });
+        }
+      }
+    }, landersToGet);
+
   });
 
   //delete if during add or rip
@@ -153,7 +192,7 @@ module.exports = function(app, passport, dbApi, controller) {
     var lander_id = req.query.id;
     if (version == 'optimized' || version == 'original') {
       if (lander_id) {
-        downloadLander[version](user, lander_id, function(err, fileName, callback) {
+        controller.landers.download[version](user, lander_id, function(err, fileName, callback) {
           if (err) {
             res.json({ error: err })
           } else {
