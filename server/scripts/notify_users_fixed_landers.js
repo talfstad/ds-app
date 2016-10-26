@@ -52,7 +52,7 @@ var runner = function(callback) {
     messageAlertFixedLander: function(user, lander, callback) {
       var username = user.user;
       var subject = "Your Lander is Fixed";
-      var message = "The rip issue you reported has been fixed. Your lander named \"" + lander.name + "\" created on " + lander.created_on + " should now work. Please try to re-add your lander.";
+      var message = "The add lander issue you reported has been fixed. Your lander named \"" + lander.name + "\" created on " + lander.created_on + " should now work. Please try to re-add your lander.";
       module.messageUser(username, subject, message, function(err) {
         if (err) {
           callback(err);

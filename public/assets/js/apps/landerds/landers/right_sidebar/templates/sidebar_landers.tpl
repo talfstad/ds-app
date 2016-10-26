@@ -35,23 +35,25 @@
         </tr>
         <tr>
           <td>
-            <a class="download-optimized-lander" href="/api/landers/download?version=optimized&id=<%= id %>">Optimized Lander <span style="float: right" class="mt5 mr5 fa fa-download"></span></a></a>
+            <a class="download-optimized-lander" href="/api/landers/download?version=optimized&id=<%= id %>">Optimized Lander <span style="float: right" class="mt5 mr5 text-success fa fa-download"></span></a></a>
           </td>
         </tr>
       </table>
     </div>
-    <div>
+    <div class="panel-body" style="padding-bottom: 25px; padding-left: 0; padding-right: 0">
       <table class="table">
         <tbody>
-          <tr class="dark">
+          <tr class="">
             <td>
-              <span class="report-broken-link report-lander-alert ml5">Report This Lander Broken <i style="float: right" class="mr10 mt5 text-danger fa fa-warning"></i></span>
+              <span class="report-broken-link report-lander-alert">Report This Lander Broken <i style="float: right" class="mr5 mt5 text-warning fa fa-warning"></i></span>
+            </td>
+          </tr>
+          <tr class="">
+            <td>
+              <a class="delete-lander-button" href="#">Delete Lander <span style="float: right" class="text-danger mt5 mr5 fa fa-trash"></span></a>
             </td>
           </tr>
         </tbody>
       </table>
-    </div>
-    <div class="panel-footer">
-      <button type="button" class="delete-lander-button btn btn-danger btn-gradient dark"><span class="fa fa-trash pr5"></span>Delete Lander</button>
     </div>
   </div>

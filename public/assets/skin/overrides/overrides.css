@@ -651,9 +651,14 @@ a.download-optimized-lander:hover {
 }
 
 .report-broken-link {
+    color: #3498db;
     cursor: pointer;
+}
+.report-broken-link:hover {
+    color: #1d6fa5;
 }
 
 .report-broken-link.reported {
+    color: inherit;
     cursor: default;
 }

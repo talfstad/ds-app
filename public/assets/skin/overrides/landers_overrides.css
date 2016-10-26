@@ -135,6 +135,11 @@ span.fancytree-icon-folder {
     display: block;
 }
 
+
+a.delete-lander-button:hover {
+    text-decoration: none;    
+}
+
 .snippets-container span.fancytree-node {
     padding: 5px 0 0px 0;
 }

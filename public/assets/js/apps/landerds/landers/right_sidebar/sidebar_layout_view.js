@@ -46,7 +46,7 @@ define(["app",
           var reportBroken = this.model.get("reported_broken");
           if (reportBroken) {
             this.$el.find(".report-broken-link").addClass("reported");
-            this.$el.find(".report-lander-alert > i").removeClass("fa-warning text-danger").addClass("fa-check text-success");
+            this.$el.find(".report-lander-alert > i").removeClass("fa-warning text-warning").addClass("fa-check");
           }
         },
 

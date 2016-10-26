@@ -63,7 +63,6 @@ module.exports = function(app, passport, dbApi, controller) {
       if (landerData.ripped_from) {
         controller.log.rip.error(err, user, landerData, function(err) {
           controller.intercom.messageAlertFixingRip(user, function(result) {
-          
             app.log("ripped error reported", "debug");
           });
         });
@@ -72,7 +71,6 @@ module.exports = function(app, passport, dbApi, controller) {
           controller.log.add_lander.pushBadLanderToS3(user, sourcePathZip, function(pushLanderErr, s3DownloadUrl) {
             controller.intercom.messageAlertFixingLander(user, function(result) {
               dbApi.log.add_lander.error(err, user, landerData.name, s3DownloadUrl, function(addLanderErr) {
-              
                 app.log("add lander error reported", "debug");
               });
             });
