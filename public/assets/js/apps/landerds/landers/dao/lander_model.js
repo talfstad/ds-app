@@ -17,6 +17,8 @@ define(["app",
           } else {
             return "/api/landers/error";
           }
+        } else if (this.get("reported_broken")) {
+          return "/api/landers/report"
         } else {
           return "/api/landers";
         }
@@ -376,11 +378,13 @@ define(["app",
         activeGroups: [],
         no_optimize_on_save: true,
         deploymentFolderInvalid: false,
+        reported_broken: false,
         //gui update attributes
         deploy_status: 'not_deployed',
         deploy_status_gui: 'Working',
         totalNumJsSnippets: 0,
         deployment_folder_name: "",
+        ripped_from: false,
         s3_folder_name: "",
         modified: false,
         deployed_domains_count: 0,

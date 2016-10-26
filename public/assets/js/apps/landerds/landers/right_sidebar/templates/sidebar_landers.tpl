@@ -13,11 +13,9 @@
       <div class="pagespeed-region"></div>
       <h5 class="title-divider mt20 mb0">
               Active Snippets
-              
               <a class="add-snippet-button" style="float: right" title="Add a new snippet" href="#">
-                <i style="font-size: 18px !important" class="fa fa-plus text-info fs12 pl5 pr5"></i>
+                <i style="font-size: 18px !important" class="fa fa-plus text-info fs12 pl5"></i>
               </a>
-
             </h5>
       <div id="jssnippets-tree-container" class="snippets-container fancytree-radio" style="margin-bottom: 20px;">
         <div id="jssnippets-tree" class="fancytree-radio ui-fancytree-source">
@@ -47,7 +45,7 @@
         <tbody>
           <tr class="dark">
             <td>
-              <a href="#"><span class="ml5">Report This Lander Broken <i style="float: right" class="mr10 mt5 text-danger fa fa-warning"></i></span></a>
+              <span class="report-broken-link report-lander-alert ml5">Report This Lander Broken <i style="float: right" class="mr10 mt5 text-danger fa fa-warning"></i></span>
             </td>
           </tr>
         </tbody>

@@ -11,11 +11,12 @@ define(["app",
     "assets/js/apps/landerds/landers/delete_lander/delete_lander_controller",
     "assets/js/apps/landerds/landers/duplicate_lander/duplicate_lander_controller",
     "assets/js/apps/landerds/landers/rip_lander/rip_lander_controller",
-    "assets/js/apps/landerds/landers/js_snippets/js_snippets_controller"
+    "assets/js/apps/landerds/landers/js_snippets/js_snippets_controller",
+    "assets/js/apps/landerds/landers/report_broken/report_broken_controller"
   ],
   function(Landerds, ListController, CommonLogin, SidemenuController, EditController, DeployToDomainController,
     AddNewGroupController, RemoveDomainController, RemoveGroupsController, AddNewLanderController, DeleteLanderController,
-    DuplicateLanderController, RipNewLanderController, JsSnippetsController) {
+    DuplicateLanderController, RipNewLanderController, JsSnippetsController, ReportBrokenController) {
     Landerds.module("LandersApp", function(LandersApp, Landerds, Backbone, Marionette, $, _) {
 
       var landersAppAPI = {
@@ -31,7 +32,9 @@ define(["app",
             Landerds.trigger("header:active", "landers");
           });
         },
-        
+        showReportBroken: function(model) {
+          ReportBrokenController.showReportBroken(model);
+        },
         showCancelRipLander: function(model) {
           RipNewLanderController.showCancelRipLander(model);
         },
@@ -186,6 +189,10 @@ define(["app",
 
       Landerds.on("landers:showDeleteLanderModal", function(model) {
         landersAppAPI.showDeleteLanderModal(model);
+      });
+
+      Landerds.on("landers:showReportBrokenModal", function(model) {
+        landersAppAPI.showReportBroken(model);
       });
 
       Landerds.on("landers:showUndeployDomainFromGroupDialog", function(attr) {

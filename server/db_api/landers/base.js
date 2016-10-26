@@ -8,9 +8,40 @@ module.exports = function(app, db) {
 
   var module = _.extend({
 
+
+    reportBroken: function(user, lander_id, callback) {
+      var user_id = user.id;
+
+      console.log("user: " + user_id + " lander_id: " + lander_id);
+      db.getConnection(function(err, connection) {
+        if (err) {
+          callback(err);
+        } else {
+          connection.query("UPDATE landers SET reported_broken = ? WHERE id = ? AND user_id = ?", [true, lander_id, user_id], function(err) {
+            if (err) {
+              callback(err);
+            } else {
+              connection.query("SELECT * FROM landers WHERE id = ? AND user_id = ?", [lander_id, user_id], function(err, docs) {
+                if (err) {
+                  callback(err);
+                } else {
+                  if (docs.length > 0) {
+                    callback(false, docs[0]);
+                  } else {
+                    callback({ code: "could not report lander broken" });
+                  }
+                }
+                connection.release();
+              });
+            }
+          });
+        }
+      });
+    },
+
     addUpdateEndpoint: function(user, endpoint, callback) {
       var user_id = user.id;
-      
+
       var lander_id = endpoint.lander_id;
       var filePath = endpoint.filePath;
       var originalPagespeed = endpoint.original_pagespeed;
@@ -641,7 +672,7 @@ module.exports = function(app, db) {
           if (err) {
             callback(err);
           } else {
-            connection.query("SELECT id,notes_search,name,modified,s3_folder_name,deploy_root,deployment_folder_name,old_deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
+            connection.query("SELECT id,reported_broken,notes_search,name,ripped_from,modified,s3_folder_name,deploy_root,deployment_folder_name,old_deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ?", [user_id], function(err, dblanders) {
               if (err) {
                 callback(err);
               } else {
@@ -679,7 +710,7 @@ module.exports = function(app, db) {
               }
             }
 
-            var queryString = "SELECT id,notes_search,name,modified,s3_folder_name,deploy_root,deployment_folder_name,old_deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ? " + queryIds;
+            var queryString = "SELECT id,reported_broken,notes_search,name,ripped_from,modified,s3_folder_name,deploy_root,deployment_folder_name,old_deployment_folder_name,DATE_FORMAT(created_on, '%b %e, %Y %l:%i:%s %p') AS created_on FROM landers WHERE user_id = ? " + queryIds;
 
             connection.query(queryString, [user_id], function(err, dblanders) {
               if (err) {

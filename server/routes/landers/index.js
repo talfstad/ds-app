@@ -49,44 +49,37 @@ module.exports = function(app, passport, dbApi, controller) {
     });
   });
 
-  app.put('/api/landers/error/report/:id', passport.isAuthenticated(), function(req, res) {
+  app.put('/api/landers/report/:id', passport.isAuthenticated(), function(req, res) {
+
     var user = req.user;
     var lander_id = req.params['id'];
 
+
     //get the lander from db check if rip, if not download the lander into staging and push it into our s3
     //log it, message user
-    var landersToGet = [{
-      lander_id: lander_id
-    }];
+    dbApi.landers.reportBroken(user, lander_id, function(err, landerData) {
+      res.json({}); //return here don't need to show user we're working, gui is all updated.
 
-    dbApi.landers.getAll(user, function(err, landers) {
-      if (err) {
-        callback(err);
-      } else {
-        var landerData = landers[0];
-
-        if (landerData.ripped_from) {
-          app.log("ripped error reported", "debug");
-          controller.log.rip.error(err, user, stagingDir, landerData, function(err) {
-            controller.intercom.messageAlertFixingRip(user, function(result) {
-              res.json({});
-            });
+      if (landerData.ripped_from) {
+        controller.log.rip.error(err, user, landerData, function(err) {
+          controller.intercom.messageAlertFixingRip(user, function(result) {
+          
+            app.log("ripped error reported", "debug");
           });
-        } else {
-          app.log("add lander error reported", "debug");
-          controller.log.add_lander.getBadLanderFromS3(user, function(err, sourcePathZip) {
-            controller.log.add_lander.pushBadLanderToS3(user, sourcePathZip, function(pushLanderErr, s3DownloadUrl) {
-              controller.intercom.messageAlertFixingLander(user, function(result) {
-                dbApi.log.add_lander.error(err, user, landerData.name, s3DownloadUrl, function(addLanderErr) {
-                  res.json({});
-                });
+        });
+      } else {
+        controller.log.add_lander.getBadLanderFromS3(user, lander_id, function(err, sourcePathZip) {
+          controller.log.add_lander.pushBadLanderToS3(user, sourcePathZip, function(pushLanderErr, s3DownloadUrl) {
+            controller.intercom.messageAlertFixingLander(user, function(result) {
+              dbApi.log.add_lander.error(err, user, landerData.name, s3DownloadUrl, function(addLanderErr) {
+              
+                app.log("add lander error reported", "debug");
               });
             });
           });
-        }
+        });
       }
-    }, landersToGet);
-
+    });
   });
 
   //delete if during add or rip

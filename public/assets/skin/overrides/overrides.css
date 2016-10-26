@@ -646,5 +646,14 @@ a.download-optimized-lander:hover {
     text-decoration: none;
 }
 
+#modal-region p {
+    font-size: 14px !important;
+}
 
+.report-broken-link {
+    cursor: pointer;
+}
 
+.report-broken-link.reported {
+    cursor: default;
+}

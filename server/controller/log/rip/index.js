@@ -7,9 +7,9 @@ module.exports = function(app, dbApi, awsApi) {
 
   var module = _.extend({
 
-    error: function(err, user, stagingDir, landerData, callback) {
+    error: function(err, user, landerData, callback) {
 
-      dbApi.log.rip.error(err, user, stagingDir, landerData, function(err) {
+      dbApi.log.rip.error(err, user, landerData, function(err) {
         if (err) {
           callback(err);
         } else {

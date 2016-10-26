@@ -28,16 +28,26 @@ define(["app",
           "click .duplicate-lander-button": "showDuplicateLanderModal",
           "click .add-snippet-button": "showJsSnippetsModal",
           "click .download-original-lander": "onDownloadOriginal",
-          "click .download-optimized-lander": "onDownloadOptimized"
+          "click .download-optimized-lander": "onDownloadOptimized",
+          "click .report-broken-link": "showReportBrokenModal"
         },
 
         modelEvents: {
-          "change:deploy_status": "showAlerts"
+          "change:reported_broken": "updateReportBrokenGui"
         },
 
-        //show modified alert if 
-        showAlerts: function() {
+        showReportBrokenModal: function(e) {
+          if (!this.model.get("reported_broken")) {
+            Landerds.trigger("landers:showReportBrokenModal", this.model);
+          }
+        },
 
+        updateReportBrokenGui: function() {
+          var reportBroken = this.model.get("reported_broken");
+          if (reportBroken) {
+            this.$el.find(".report-broken-link").addClass("reported");
+            this.$el.find(".report-lander-alert > i").removeClass("fa-warning text-danger").addClass("fa-check text-success");
+          }
         },
 
         showJsSnippetsModal: function(e) {
@@ -112,6 +122,10 @@ define(["app",
           if (!Body.hasClass('sb-r-c')) {
             Body.addClass('sb-r-c').removeClass("sb-r-o");
           }
+        },
+
+        onRender: function() {
+          this.updateReportBrokenGui();
         }
 
       });

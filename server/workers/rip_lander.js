@@ -43,7 +43,7 @@ module.exports = function(app, dbApi, controller) {
           }
         };
 
-        controller.log.rip.error(err, user, stagingDir, landerData, function(err) {
+        controller.log.rip.error(err, user, landerData, function(err) {
           intercomUserIfUserReportedOrTimeoutInterrupt(function(err) {
             dbApi.landers.deleteLander(user, lander_id, function(deleteLanderErr) {
               if (deleteLanderErr) {

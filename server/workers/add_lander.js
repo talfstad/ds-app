@@ -130,17 +130,17 @@ module.exports = function(app, dbApi, controller) {
                         } else {
                           //delete the staging area ourselves since we may have used an inner folder.
                           //delete the whole staging dir, not just the inner folder
-                          dbApi.common.deleteStagingArea(stagingPath, function(err) {
+                          dbApi.jobs.updateDeployStatus(user, myJobId, 'not_deployed', function(err) {
                             if (err) {
                               cleanupAndError(err);
                             } else {
-                              dbApi.jobs.updateDeployStatus(user, myJobId, 'not_deployed', function(err) {
-                                if (err) {
+                              dbApi.jobs.checkIfExternalInterrupt(user, myJobId, function(err, interruptCode) {
+                                if (interruptCode) {
+                                  err = err || { code: interruptCode };
                                   cleanupAndError(err);
                                 } else {
-                                  dbApi.jobs.checkIfExternalInterrupt(user, myJobId, function(err, interruptCode) {
-                                    if (interruptCode) {
-                                      err = err || { code: interruptCode };
+                                  dbApi.common.deleteStagingArea(stagingPath, function(err) {
+                                    if (err) {
                                       cleanupAndError(err);
                                     } else {
                                       callback(false, [myJobId]);
@@ -150,6 +150,7 @@ module.exports = function(app, dbApi, controller) {
                               });
                             }
                           });
+
                         }
                       });
                     }
