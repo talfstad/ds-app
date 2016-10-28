@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="alert alert-micro alert-border-left alert-default new-lander-info-alert">
-        <i class="fa fa-info pr10"></i> To rip a new lander enter it's URL and give it a name. Have questions? <a href="#" class="alert-link">Check out this step by step guide.</a>
+        <i class="fa fa-info pr10"></i> To rip a new lander enter it's URL and give it a name. <a href="#" class="text-primary">Check out our step by step guide.</a>
       </div>
       <div class="panel panel-primary top mb35">
         <div class="panel-heading">

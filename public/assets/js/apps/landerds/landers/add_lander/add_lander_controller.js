@@ -23,6 +23,11 @@ define(["app",
             model: newModel
           });
 
+          addNewLanderLayout.on("showAddLanderHelp", function() {
+            Landerds.trigger("landers:showAddLanderHelp");
+            addNewLanderLayout.close();
+          });
+
           addNewLanderLayout.on("addLanderConfirmed", function() {
 
 

@@ -8,7 +8,10 @@ define(["app",
     var BaseListController = {
 
       childExpandedId: null,
-
+      
+      listView: null,
+      listLayout: null,
+      
       filteredCollection: null,
 
       BaseClassInitialize: function() {

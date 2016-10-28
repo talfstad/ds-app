@@ -1,6 +1,6 @@
 <h5 class="title-divider mt20 mb10"><span style="">Deployment Folder Name</span>
               <a style="float: right" href="#">
-                <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
+                <i style="font-size: 18px !important" class="deployment-folder-help fa fa-question-circle text-info fs12 pl5 pr5"></i>
               </a>
             </h5>
 <div class="clearfix">

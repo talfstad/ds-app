@@ -28,7 +28,7 @@ define(["app",
           "change:total_modified": "updateTotalModifiedValue",
           "change:total_working": "updateTotalWorkingValue"
         },
-        
+
         filterWorkingInput: function(e) {
           //now trigger filter if its true
           var currentTarget = $(e.currentTarget);

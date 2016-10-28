@@ -15,7 +15,7 @@
 
           <div class="alert alert-micro alert-border-left alert-default new-lander-info-alert">
             <i class="fa fa-info pr10"></i>
-            To add a new lander select a new lander name and upload your lander. <a href="#" class="alert-link">How should I format my zip file for upload?</a>
+            To add a new lander select a new lander name and upload your lander. <a href="#" class="show-add-lander-help text-primary">How should I format my zip file for upload?</a>
           </div>
 
           <div class="panel panel-primary top mb5">

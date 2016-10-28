@@ -22,6 +22,7 @@ define(["app",
         },
 
         events: {
+          "click .deployment-folder-help": "showDeploymentFolderHelp",
           "keyup #deploy-folder-edit": "deploymentFolderNameChanged"
         },
 
@@ -32,6 +33,10 @@ define(["app",
           } else {
             return false;
           }
+        },
+
+        showDeploymentFolderHelp: function() {
+          this.trigger("showDeploymentFolderHelp");
         },
 
         updateDeploymentFolderValue: function() {

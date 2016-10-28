@@ -32,6 +32,12 @@ define(["app",
             Landerds.trigger("header:active", "landers");
           });
         },
+        showAddLanderHelp: function() {
+          ListController.showAddLanderHelp();
+        },
+        showDeploymentFolderHelp: function() {
+          ListController.showDeploymentFolderHelp();
+        },
         showReportBroken: function(model) {
           ReportBrokenController.showReportBroken(model);
         },
@@ -190,7 +196,12 @@ define(["app",
       Landerds.on("landers:showDeleteLanderModal", function(model) {
         landersAppAPI.showDeleteLanderModal(model);
       });
-
+      Landerds.on("landers:showDeploymentFolderHelp", function() {
+        landersAppAPI.showDeploymentFolderHelp();
+      });
+      Landerds.on("landers:showAddLanderHelp", function() {
+        landersAppAPI.showAddLanderHelp();
+      });
       Landerds.on("landers:showReportBrokenModal", function(model) {
         landersAppAPI.showReportBroken(model);
       });

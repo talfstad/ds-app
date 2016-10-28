@@ -61,6 +61,10 @@ define(["app",
             model: model
           });
 
+          deploymentOptionsView.on("showDeploymentFolderHelp", function() {
+            Landerds.trigger("landers:showDeploymentFolderHelp");
+          });
+
           //when optimizations modified save them and set correct deploy status
           //when changing deploy status must start with the deployed locations status
           //it will propogate up to the lander model

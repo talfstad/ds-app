@@ -25,7 +25,12 @@ define(["app",
 
         events: {
           "click .add-new-lander-confirm": "confirmedAddNewLander",
+          "click .show-add-lander-help": "showAddLanderHelp",
           "keyup input": "ifEnterSubmit"
+        },
+
+        showAddLanderHelp: function() {
+          this.trigger("showAddLanderHelp");
         },
 
         ifEnterSubmit: function(e) {

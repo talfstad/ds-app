@@ -2,10 +2,10 @@
       <header id="first-topbar" class="alt">
         
       </header>
-      <header id="topbar" class="ph10">
+      <header id="topbar" class="">
         
-        <div class="admin-form dropdown pull-left">
-          <button data-toggle="dropdown" role="button" aria-expanded="false" type="button" class="rows-per-page ml10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
+        <div class="hide-for-documentation admin-form dropdown pull-left">
+          <button data-toggle="dropdown" role="button" aria-expanded="false" type="button" class="rows-per-page pl10 pt5 pb5 btn btn-default btn-gradient dark">
             <span class="fa fa-caret-down"></span>
             <span><span class="rows-per-page-number">10</span> Rows Per Page</span>
           </button>
@@ -34,7 +34,7 @@
           </ul>
         </div>
 
-        <div class="admin-form dropdown pull-left">
+        <div class="hide-for-documentation admin-form dropdown pull-left">
           <button data-toggle="dropdown" style="text-align: left" role="button" aria-expanded="false" type="button" class="ml10 w210 pl10 pt5 pb5 btn btn-default btn-gradient dark">
             <span class="fa fa-caret-down pr5"></span>
             Sort By: 
@@ -69,7 +69,7 @@
           </ul>
         </div>
         
-        <ul class="nav nav-list nav-list-topbar pull-left">
+        <ul class="hide-for-documentation nav nav-list nav-list-topbar pull-left">
           <form class="admin-form navbar-form navbar-search pull-left mtn mbn" role="search">
             <div class="search-dropdown dropdown pull-left mt10 form-group">
               <input data-toggle="dropdown" aria-expanded="false" type="text" class="list-search w250 form-control" placeholder="Search Landers..." value="">
@@ -97,11 +97,7 @@
 
         <div class="topbar-right hidden-xs hidden-sm">
         
-          <button type="button" class="toggle-help-info btn btn-default btn-gradient dark pl10 pt5 pb5">
-            <i class="fa fa-info-circle"></i>
-          </button>
-
-           <div class="bs-component btn-group ml5">
+           <div class="hide-for-documentation bs-component btn-group">
 
             <button type="button" class="rip-and-deploy-button pl10 pt5 pb5 btn btn-default btn-gradient dark">
               <span class="fa fa-cloud-download pr5"></span>Rip Lander
@@ -111,20 +107,22 @@
             </button>
           </div>
 
-          
+          <button type="button" class="toggle-help-info btn btn-default btn-gradient dark pl10 pt5 pb5">
+            <i class="fa fa-info-circle"></i>
+          </button>
 
         </div>
       </header>
       <!-- End: Topbar -->
       <!-- Begin: Content -->
       <section id="content" class="landers-list-content">
-        <div style="position: absolute; width: 100%; font-size: 11px; font-weight: 600">
+        <div class="hide-for-documentation" style="position: absolute; width: 100%; font-size: 11px; font-weight: 600">
         
         <div style="float: left; margin-left: 15px; margin-bottom: 10px">Landing Page Name</div>
         <div style="float: right; margin-right: 95px; margin-bottom: 10px">Deployed Domains</div>
         <div style="float: right; margin-right: 50px; margin-bottom: 10px">Groups on Lander</div>
         <div style="float: right; margin-right: 75px; margin-bottom: 10px">Notes</div>
-        <div style="float: right; margin-right: 78px; margin-bottom: 10px">Created On</div>
+        <div style="float: right; margin-right: 80px; margin-bottom: 10px">Created On</div>
         
 
         </div>
@@ -133,7 +131,7 @@
         </div>
       </section>
 
-      <section class="footer">
+      <section class="hide-for-documentation footer">
         <div id="footer-region" class="footer-container">
         </div>
       </section>

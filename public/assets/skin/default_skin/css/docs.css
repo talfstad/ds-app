@@ -1,0 +1,426 @@
+.docs-container {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+    border: 1px solid #D9D9D9;
+    border-radius: 2px;
+    margin-bottom: 150px;
+    background-color: #FFF;
+    position: relative;
+}
+
+
+/*===============================================
+   Left Column
+================================================= */
+
+.left-col {
+    vertical-align: top !important;
+    padding: 15px;
+    background: #fbfbfb;
+    border-right: 1px solid #dadada;
+}
+
+
+/* left col - minimized */
+
+body.left-col-hidden .left-col {
+    width: 20px;
+    overflow: hidden;
+    background-color: #f7f7f7;
+}
+
+body.left-col-hidden .left-col ul,
+body.left-col-hidden .left-col .sidebar-title {
+    display: none;
+}
+
+
+/*adjust center column when left minimized*/
+
+body.left-col-hidden .center-col {
+    width: 100%;
+}
+
+
+/* left col - responsive styles */
+
+@media (max-width: 1400px) {
+    .left-col {
+        padding: 20px;
+    }
+    body.left-col-hidden #left-col-toggle {
+        right: 9px;
+    }
+}
+
+@media (max-width: 940px) {
+    .left-col {
+        border-right: 0;
+    }
+    body.left-col-hidden #left-col-toggle {
+        top: 9px;
+    }
+}
+
+
+/* changelog left col - responsive styles */
+
+@media (max-width: 940px) {
+    /* left col border */
+    .changelog-row .left-col {
+        border-top: 1px solid #DDD !important;
+        border-bottom: 0 !important;
+        padding: 10px 25px;
+    }
+    /* left col content */
+    body.left-col-hidden .changelog-row .left-col ul,
+    body.left-col-hidden .changelog-row .left-col .sidebar-title {
+        display: block;
+    }
+}
+
+
+/* left column toggle button */
+
+#left-col-toggle {
+    z-index: 5;
+    cursor: pointer;
+    position: absolute;
+    right: 14px;
+    top: 15px;
+    width: 20px;
+    height: 20px;
+    color: #AAA;
+    font-size: 21px;
+    -webkit-transition: color 0.2s ease;
+    transition: color 0.2s ease;
+}
+
+#left-col-toggle:hover {
+    color: #666;
+}
+
+
+/* left col minimized toggle button */
+
+body.left-col-hidden #left-col-toggle {
+    color: #666;
+    right: 14px;
+}
+
+
+/*===============================================
+   Center Column
+================================================= */
+
+.center-col {
+    padding: 30px 35px;
+}
+
+.changelog-row .center-col {
+    padding: 30px 25px;
+}
+
+
+/*content styles*/
+
+
+/* CENTER COLUMN RESPONSIVE SETTINGS */
+
+@media (max-width: 1400px) {
+    .center-col {
+        padding: 30px 25px;
+    }
+}
+
+
+/*list group styles*/
+
+.left-col .list-group .list-group-item,
+.left-col .list-group-accordion .list-group-item {
+    border-color: #DDD;
+}
+
+.left-col .list-group .list-group-header,
+.left-col .list-group-accordion .list-group-header {
+    padding: 10px 15px 10px 2px;
+    padding-bottom: 13px;
+    color: #444;
+    font-weight: 600;
+    background-color: transparent;
+}
+
+.bs-example {
+    position: relative;
+    margin: 0;
+    padding: 50px 15px 15px;
+    background-color: #fdfdfd;
+    border: 1px solid #DDD;
+    border-radius: 4px 4px 0 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.bs-example:after {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #959595;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    content: "Example";
+}
+
+
+/* active state*/
+
+.list-group-accordion .list-group-item.active .sign-toggle {
+    color: #666;
+    font-weight: 600;
+}
+
+.list-group-accordion .list-group-item.active .sign-toggle:after {
+    color: #666;
+    content: "\f068";
+}
+
+
+/*list group submenu - links */
+
+.list-group-accordion .list-group-item > ul > li > a {
+    list-style: none;
+    color: #AAA;
+    padding: 4px 0;
+    display: block;
+    text-decoration: none;
+}
+
+
+/*list group submenu - :hover */
+
+.list-group-accordion .list-group-item > ul > li > a:hover {
+    color: #555;
+}
+
+
+/*list group submenu - .active link */
+
+.list-group-accordion .list-group-item > ul > li.active > a,
+.list-group-accordion .list-group-item > ul > li.active > a:hover {
+    color: #4a89dc;
+    font-weight: 600;
+}
+
+
+/*list group item toggle icon*/
+
+.list-group-accordion .list-group-item .sign-toggle {
+    cursor: pointer;
+    display: block;
+    color: #AAA;
+}
+
+.list-group-accordion .list-group-item .sign-toggle:after {
+    right: 10px;
+    top: 12px;
+    position: absolute;
+    content: "\f067";
+    font-family: "FontAwesome";
+    color: #AAA;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    -webkit-font-smoothing: antialiased;
+}
+
+
+/* list group item states */
+
+.list-group-accordion .list-group-item.active,
+.list-group-accordion .list-group-item.active:hover,
+.list-group-accordion .list-group-item.active:focus {
+    color: #666;
+    position: relative;
+    border-color: #ddd;
+}
+
+
+/* list group item active border*/
+
+.list-group-accordion .list-group-item.active:after {
+    content: "";
+    position: absolute;
+    display: block;
+    left: 0;
+    top: -1px;
+    height: 3px;
+    width: 100%;
+    background-color: #4a89dc;
+}
+
+.list-group-accordion .list-group-item:nth-child(2):after {
+    display: none !important;
+}
+
+
+/*list group item active submenu */
+
+.list-group-accordion .list-group-item.active ul.collapse {
+    display: block !important;
+}
+
+
+/*list group submenu */
+
+.list-group-accordion .list-group-item > ul {
+    padding-left: 48px;
+    padding-bottom: 12px;
+}
+
+
+/*list group submenu - items */
+
+.list-group-accordion .list-group-item > ul > li {
+    padding: 0;
+    list-style-type: decimal;
+}
+
+
+/* list group item  */
+
+.list-group-accordion .list-group-item {
+    -ms-user-select: none;
+    /* IE 10+ */
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    padding: 0;
+}
+
+
+/* list group item - .active */
+
+.list-group-accordion .list-group-item.active {
+    background-color: #fafafa;
+}
+
+
+/*list group item links */
+
+.list-group-accordion .list-group-item > a {
+    color: #AAA;
+    display: block;
+    text-decoration: none;
+    padding: 10px 15px;
+}
+
+.page-header {
+    font-size: 18px;
+    margin-top: 5px;
+    margin-bottom: 25px;
+}
+
+
+/* :hover :focus */
+
+.list-group-accordion .list-group-item .sign-toggle:hover,
+.list-group-accordion .list-group-item .sign-toggle:focus,
+.list-group-accordion .list-group-item .sign-toggle:hover:after,
+.list-group-accordion .list-group-item .sign-toggle:focus:after {
+    color: #555;
+}
+
+#documentation p {
+    font-size: 15px;
+    color: #666;
+    line-height: 24px;
+    margin-bottom: 25px;
+}
+
+#documentation ul li {
+    font-size: 14px;
+}
+
+.bs-docs-section h2 {
+    border-top: 1px dashed #CCC;
+    border-top-width: 1px;
+    border-top-style: dashed;
+    border-top-color: rgb(204, 204, 204);
+    border-bottom: 0;
+    border-bottom-width: 0px;
+    border-bottom-style: initial;
+    border-bottom-color: initial;
+    padding-top: 35px;
+    margin-top: 30px;
+}
+
+.bs-docs-section h2 {
+    border-top: 1px dashed #CCC;
+    border-bottom: 0;
+    padding-top: 35px;
+    margin-top: 30px;
+}
+
+.bs-docs-section h2 + .bs-example {
+    margin-top: 20px;
+}
+
+.bs-docs-section h2:first-child,
+.bs-docs-section .page-header + h2 {
+    border: 0;
+    margin: 15px 0 15px;
+    padding: 0;
+}
+
+
+/* end of content button */
+
+.return-top {
+    display: block;
+    width: 100%;
+    height: 42px;
+    text-align: center;
+    color: #999;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 40px;
+    border: 1px solid #DDD;
+    margin-top: 50px;
+}
+
+.return-top:hover {
+    color: #666;
+    text-decoration: none;
+    background: #fafafa;
+}
+
+#documentation .container {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#documentation {
+    color: rgb(68, 68, 68);
+    position: relative;
+    bottom: 25px;
+}
+
+.top-wrapper {
+    background: #fbfbfb;
+    border-top: 1px solid #e5e5e5;
+    padding: 8px 35px;
+    margin-top: 70px;
+    margin-bottom: -30px;
+    margin-left: -35px;
+    margin-right: -35px;
+}
+
+.top-wrapper a {
+    border: 0;
+    margin-top: 0px;
+}
+
+

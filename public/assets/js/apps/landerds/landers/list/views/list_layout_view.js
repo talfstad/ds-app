@@ -29,6 +29,16 @@ define(["app",
           "click input.search-filter-option": "updateSearchOptions",
         },
 
+        showDocumentationMode: function() {
+          this.$el.find(".hide-for-documentation").hide();
+          this.$el.find(".show-for-documentation").show();
+        },
+
+        showListViewMode: function() {
+          this.$el.find(".hide-for-documentation").show();
+          this.$el.find(".show-for-documentation").hide();
+        },
+
         updateSearchOptions: function(e) {
           var me = this;
           ListLayoutView.prototype.updateSearchOptions.apply(this, [e]);
@@ -54,8 +64,14 @@ define(["app",
 
         triggerToggleHelpInfo: function(e) {
           if (e) e.preventDefault();
-
-          this.trigger("toggleInfo", this.toggle);
+          var toggle = this.toggleHelpInfo();
+          if (toggle) {
+            this.showDocumentationMode();
+            this.trigger("showDocumentation");
+          } else {
+            this.showListViewMode();
+            this.trigger("showListView");
+          }
         },
 
         showRipNewLander: function(e) {

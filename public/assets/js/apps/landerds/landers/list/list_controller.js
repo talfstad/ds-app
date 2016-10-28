@@ -17,13 +17,15 @@ define(["app",
     "assets/js/common/notification",
     "assets/js/apps/landerds/base_classes/list/list_controller_base",
     "assets/js/apps/landerds/landers/dao/deployed_domain_model",
+    "assets/js/apps/landerds/landers/list/documentation/views/documentation_view",
     "assets/js/apps/help/help_app",
     "assets/js/apps/landerds/landers/list/views/list_layout_view"
   ],
   function(Landerds, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
     PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, GroupsTabHandleView,
     DeployedDomainsView, DeployedDomainsCollection, ActiveGroupsView,
-    JobModel, LanderModel, ActiveGroupModel, Notification, BaseListController, DeployedDomainModel) {
+    JobModel, LanderModel, ActiveGroupModel, Notification, BaseListController, DeployedDomainModel,
+    DocumentationView) {
     Landerds.module("LandersApp.Landers.List", function(List, Landerds, Backbone, Marionette, $, _) {
 
       List.Controller = _.extend({ //BaseListController
@@ -43,20 +45,48 @@ define(["app",
 
           //make layout for landers
           var me = this;
-          var landersListLayout = new List.Layout();
-          landersListLayout.render();
+          this.listLayout = new List.Layout();
+          this.listLayout.render();
 
-          Landerds.rootRegion.currentView.mainContentRegion.show(landersListLayout);
+          Landerds.rootRegion.currentView.mainContentRegion.show(this.listLayout);
 
           var loadingView = new LoadingView();
-          landersListLayout.landersCollectionRegion.show(loadingView);
+          this.listLayout.landersCollectionRegion.show(loadingView);
 
           //set initial topbar view crap reloads when data loads
           var topbarView = new TopbarView({
             model: new PaginatedModel
           });
 
-          landersListLayout.topbarRegion.show(topbarView);
+          this.listLayout.on("destroy", function() {
+            //manually destroy our list view when layout view is destroyed.
+            //we do this so we dont have to keep recreating our list view if we
+            //toggle documentation, etc.
+            me.listView.destroy();
+          });
+
+          this.listLayout.on("showDocumentation", function() {
+            if (me.listLayout.isRendered) {
+              me.showDocumentation();
+            }
+          });
+
+          this.listLayout.on("showListView", function(isNotUserTriggered) {
+            //if not user triggered and showing documentation then don't show listView
+            if (!isNotUserTriggered || me.listLayout.landersCollectionRegion.currentView.id != "documentation") {
+
+              if (me.listView) {
+                me.listLayout.landersCollectionRegion.show(me.listView);
+                if (!isNotUserTriggered) {
+                  me.filteredCollection.trigger("reset");
+                }
+              } else {
+                me.listLayout.landersCollectionRegion.show(loadingView);
+              }
+            }
+          });
+
+          this.listLayout.topbarRegion.show(topbarView);
 
           //request landers collection
           var deferredLandersCollection = Landerds.request("landers:landersCollection");
@@ -72,7 +102,7 @@ define(["app",
               filterFunction: defaultSearchFilter
             });
 
-            landersListLayout.on("updateSearchFunction", function(searchCriteria, two, three) {
+            me.listLayout.on("updateSearchFunction", function(searchCriteria, two, three) {
               if (searchCriteria.searchName && searchCriteria.searchNotes) {
                 me.filteredCollection.filterFunction = me.nameAndNotesFilter;
               } else if (searchCriteria.searchNotes) {
@@ -92,44 +122,29 @@ define(["app",
             });
 
             //make landers view and display data
-            var landersListView = new ListView({
+            me.listView = new ListView({
               collection: me.filteredCollection
             });
-            landersListView.trigger("landers:sort");
+            me.listView.trigger("landers:sort");
 
-            landersListView.on("childview:showAwsTutorial", function() {
+            me.listView.on("childview:showAwsTutorial", function() {
               Landerds.trigger("help:showAwsTutorial");
             });
 
-            landersListLayout.on("landers:filterList", function(filterVal) {
+            me.listLayout.on("landers:filterList", function(filterVal) {
               me.filteredCollection.filter(filterVal);
             });
 
-            landersListLayout.on("landers:sort", function() {
-              landersListView.trigger("landers:sort");
+            me.listLayout.on("landers:sort", function() {
+              me.listView.trigger("landers:sort");
             });
 
-            landersListLayout.on("landers:changepagesize", function(pageSize) {
+            me.listLayout.on("landers:changepagesize", function(pageSize) {
               me.filteredCollection.setPageSize(pageSize);
             });
 
-            landersListLayout.on("toggleInfo", function() {
-              if (me.filteredCollection) {
-                var toggle = this.toggleHelpInfo();
-
-                if (toggle) {
-                  //show empty view
-                  me.filteredCollection.showEmpty(true);
-                } else {
-                  //show landersListView
-                  me.filteredCollection.showEmpty(false);
-                }
-              }
-            });
-
-            if (landersListLayout.isRendered) {
-              landersListLayout.landersCollectionRegion.show(landersListView);
-            }
+            var isNotUserTriggered = true;
+            me.listLayout.trigger("showListView", isNotUserTriggered);
 
             var filterCollection = function() {
               var filterVal = $(".list-search").val() || "";
@@ -152,17 +167,18 @@ define(["app",
             });
 
             //on child expanded save for re-open on reset
-            landersListView.on("childview:childExpanded", function(childView, data) {
+            me.listView.on("childview:childExpanded", function(childView, data) {
               me.childExpandedId = childView.model.get("id");
             });
             //on child collapse if is current expanded then reset to null
-            landersListView.on("childview:childCollapsed", function(childView, data) {
+            me.listView.on("childview:childCollapsed", function(childView, data) {
               var childCollapsedModel = childView.model;
               if (me.childExpandedId == childCollapsedModel.get("id")) {
                 me.childExpandedId = null;
               }
             });
-            landersListView.on("showPageWithModel", function(model) {
+
+            me.listView.on("showPageWithModel", function(model) {
               if (me.filteredCollection) {
                 me.filteredCollection.showPageWithModel(model);
               }
@@ -178,7 +194,7 @@ define(["app",
 
               if (this.length > 0) {
 
-                landersListView.children.each(function(landerView) {
+                me.listView.children.each(function(landerView) {
 
                   var domainTabHandleView = new DeployStatusView({
                     model: landerView.model
@@ -300,9 +316,9 @@ define(["app",
               me.filteredCollection.gotoPage(page);
             });
 
-            if (landersListLayout.isRendered) {
-              landersListLayout.footerRegion.show(paginatedButtonView);
-              landersListLayout.topbarRegion.show(topbarView);
+            if (me.listLayout.isRendered) {
+              me.listLayout.footerRegion.show(paginatedButtonView);
+              me.listLayout.topbarRegion.show(topbarView);
             }
 
             var filterVal = $(".list-search").val() || "";
@@ -315,6 +331,17 @@ define(["app",
               }
             }
           });
+        },
+
+        showDocumentation: function(itemToSelect) {
+          Landerds.trigger("landers:closesidebar");
+          var documentationView = new DocumentationView({ itemToSelect: itemToSelect });
+          this.listLayout.landersCollectionRegion.show(documentationView, { preventDestroy: true });
+        },
+
+        showDeploymentFolderHelp: function() {
+          this.listLayout.toggleHelpInfo();
+          this.showDocumentation("#other-right-hand-panel-actions");
         },
 
         undeployLanderFromDomains: function(undeployAttr) {
