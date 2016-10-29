@@ -1,8 +1,8 @@
 .docs-container {
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
-    border: 1px solid #D9D9D9;
-    border-radius: 2px;
-    margin-bottom: 150px;
+    /*box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);*/
+    /*border: 1px solid #D9D9D9;*/
+    /*border-radius: 2px;*/
+    /*margin-bottom: 150px;*/
     background-color: #FFF;
     position: relative;
 }
@@ -34,49 +34,6 @@ body.left-col-hidden .left-col .sidebar-title {
 }
 
 
-/*adjust center column when left minimized*/
-
-body.left-col-hidden .center-col {
-    width: 100%;
-}
-
-
-/* left col - responsive styles */
-
-@media (max-width: 1400px) {
-    .left-col {
-        padding: 20px;
-    }
-    body.left-col-hidden #left-col-toggle {
-        right: 9px;
-    }
-}
-
-@media (max-width: 940px) {
-    .left-col {
-        border-right: 0;
-    }
-    body.left-col-hidden #left-col-toggle {
-        top: 9px;
-    }
-}
-
-
-/* changelog left col - responsive styles */
-
-@media (max-width: 940px) {
-    /* left col border */
-    .changelog-row .left-col {
-        border-top: 1px solid #DDD !important;
-        border-bottom: 0 !important;
-        padding: 10px 25px;
-    }
-    /* left col content */
-    body.left-col-hidden .changelog-row .left-col ul,
-    body.left-col-hidden .changelog-row .left-col .sidebar-title {
-        display: block;
-    }
-}
 
 
 /* left column toggle button */
@@ -113,7 +70,7 @@ body.left-col-hidden #left-col-toggle {
 ================================================= */
 
 .center-col {
-    padding: 30px 35px;
+    padding: 30px 25px 30px 25px;
 }
 
 .changelog-row .center-col {
@@ -128,7 +85,7 @@ body.left-col-hidden #left-col-toggle {
 
 @media (max-width: 1400px) {
     .center-col {
-        padding: 30px 25px;
+        /*padding: 30px 25px;*/
     }
 }
 
@@ -339,7 +296,7 @@ body.left-col-hidden #left-col-toggle {
     margin-bottom: 25px;
 }
 
-#documentation ul li {
+#documentation .fs15 ul li {
     font-size: 14px;
 }
 
@@ -390,7 +347,8 @@ body.left-col-hidden #left-col-toggle {
     margin-top: 50px;
 }
 
-.return-top:hover {
+.return-top:hover,
+.return-top:focus {
     color: #666;
     text-decoration: none;
     background: #fafafa;
@@ -405,7 +363,6 @@ body.left-col-hidden #left-col-toggle {
 #documentation {
     color: rgb(68, 68, 68);
     position: relative;
-    bottom: 25px;
 }
 
 .top-wrapper {
@@ -423,4 +380,16 @@ body.left-col-hidden #left-col-toggle {
     margin-top: 0px;
 }
 
+#documentation #sidebar_left {
+    padding-top: 0px;
+}
 
+#left-table-of-contents.tray-left {
+    border-right: none;
+     background: inherit;
+}
+
+ul.tray-nav {
+    border-right: none;
+    margin: 15px -16px 15px -15px;
+}

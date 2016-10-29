@@ -34,7 +34,7 @@ define(["app",
           } else {
             landerNameInput = childView.$el.find("input.editable-lander-name");
           }
-          
+
           landerModel.saveName(function() {
             //flash success check next to button
             var successEl = $("<i class='fa fa-check-circle text-success'></i>");
@@ -118,7 +118,13 @@ define(["app",
 
         },
 
+        onRender: function() {
+          
+        },
+
         onDomRefresh: function() {
+
+
 
           $(".collapse").collapse({
             toggle: false,

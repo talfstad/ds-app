@@ -9,7 +9,7 @@ body {
 
 #topbar {
     min-height: 41px;
-    padding: 5px 32px;
+    padding: 5px 22px;
 }
 
 #nestable-contextual {
@@ -73,7 +73,7 @@ body.sb-l-o #topbar.affix,
 }
 
 #first-topbar.alt {
-    padding: 17px 35px !important;
+    padding: 17px 25px !important;
     background: #e7e7e7;
     border-bottom: 1px solid #ddd;
 }
@@ -220,7 +220,7 @@ body.sb-l-o #topbar.affix,
 }
 
 #sidebar_left {
-    background-color: #232323;
+    background-color: #282828;
 }
 
 .domain-controls {
@@ -654,6 +654,7 @@ a.download-optimized-lander:hover {
     color: #3498db;
     cursor: pointer;
 }
+
 .report-broken-link:hover {
     color: #1d6fa5;
 }
@@ -664,5 +665,43 @@ a.download-optimized-lander:hover {
 }
 
 .navbar-branding .navbar-brand {
-    padding-left: 32px;
+    padding-left: 22px;
 }
+
+#sidebar_left.affix {
+    margin-top: 103px;
+}
+
+body.onload-check #sidebar_left {
+    -webkit-transition: none;
+    transition: none;
+}
+
+#left-table-of-contents.affix {
+    position: fixed;
+    top: 118px;
+}
+
+
+.col-left-documentation {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+    width: 511px;
+}
+
+.col-right-documentation {
+    /*position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;*/
+    width: 100%;
+}
+
+
+
+
+
+
+

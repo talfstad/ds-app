@@ -35,6 +35,8 @@ define(["app",
         },
 
         showListViewMode: function() {
+          this.$el.find("#topbar").off();
+
           this.$el.find(".hide-for-documentation").show();
           this.$el.find(".show-for-documentation").hide();
         },

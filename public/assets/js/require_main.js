@@ -31,9 +31,13 @@ requirejs.config({
     highcharts: "vendor/bower_installed/highcharts/highcharts",
     "highcharts-more": "vendor/bower_installed/highcharts/highcharts-more",
     "solid-gauge": "vendor/bower_installed/highcharts/modules/solid-gauge",
-    "summernote": "vendor/bower_installed/summernote/dist/summernote.min"
+    "summernote": "vendor/bower_installed/summernote/dist/summernote.min",
+    "smoothscroll": "vendor/bower_installed/jquery-smooth-scrolling/jquery.smoothscroll"
   },
   shim: {
+    smoothscroll: {
+      deps: ['jquery']
+    },
     highcharts: {
       deps: ['jquery']
     },

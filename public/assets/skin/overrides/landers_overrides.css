@@ -325,8 +325,12 @@ input.list-search {
     padding-right: 2px
 }
 
-.landers-list-content {
+.list-content {
     padding: 20px 20px 35px 21px !important;
+}
+
+.list-content.documentation-content {
+    padding: 0 !important;
 }
 
 .topbar-left .right-stats {

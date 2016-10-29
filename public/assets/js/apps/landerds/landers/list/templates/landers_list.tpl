@@ -115,18 +115,18 @@
       </header>
       <!-- End: Topbar -->
       <!-- Begin: Content -->
-      <section id="content" class="landers-list-content">
+      <section id="content" class="list-content">
         <div class="hide-for-documentation" style="position: absolute; width: 100%; font-size: 11px; font-weight: 600">
         
         <div style="float: left; margin-left: 15px; margin-bottom: 10px">Landing Page Name</div>
         <div style="float: right; margin-right: 95px; margin-bottom: 10px">Deployed Domains</div>
         <div style="float: right; margin-right: 50px; margin-bottom: 10px">Groups on Lander</div>
         <div style="float: right; margin-right: 75px; margin-bottom: 10px">Notes</div>
-        <div style="float: right; margin-right: 80px; margin-bottom: 10px">Created On</div>
+        <div style="float: right; margin-right: 72px; margin-bottom: 10px">Created On</div>
         
 
         </div>
-        <div id="landers-region" style="margin-top: 25px" class="ph10 landers-list-items">
+        <div id="landers-region" class="landers-list-items">
           
         </div>
       </section>

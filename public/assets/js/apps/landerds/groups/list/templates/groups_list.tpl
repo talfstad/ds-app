@@ -108,7 +108,7 @@
       </header>
       <!-- End: Topbar -->
       <!-- Begin: Content -->
-      <section id="content" class="landers-list-content">
+      <section id="content" class="list-content">
         <div style="position: absolute; width: 100%; font-size: 11px; font-weight: 600">
         
         <div style="float: left; margin-left: 15px; margin-bottom: 10px">Group Name</div>
