@@ -114,6 +114,7 @@
         <div style="float: left; margin-left: 15px; margin-bottom: 10px">Group Name</div>
         <div style="float: right; margin-right: 150px; margin-bottom: 10px">Landers</div>
         <div style="float: right; margin-right: 99px; margin-bottom: 10px">Domains</div>
+        <div style="float: right; margin-right: 73px; margin-bottom: 10px">Notes</div>
         <div style="float: right; margin-right: 83px; margin-bottom: 10px">Created On</div>
         
 

@@ -56,9 +56,11 @@ define(["app",
 
           if (this.toggle) {
             this.$el.find(".toggle-help-info").addClass("btn-gradient").removeClass("active");
+            this.$el.find(".toggle-help-info i").removeClass("fa-close").addClass("fa-info-circle");
             this.toggle = false;
           } else {
             this.$el.find(".toggle-help-info").removeClass("btn-gradient").addClass("active");
+            this.$el.find(".toggle-help-info i").removeClass("fa-info-circle").addClass("fa-close");
             this.toggle = true;
           }
           return this.toggle;

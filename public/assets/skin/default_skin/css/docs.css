@@ -34,8 +34,6 @@ body.left-col-hidden .left-col .sidebar-title {
 }
 
 
-
-
 /* left column toggle button */
 
 #left-col-toggle {
@@ -70,7 +68,7 @@ body.left-col-hidden #left-col-toggle {
 ================================================= */
 
 .center-col {
-    padding: 30px 25px 30px 25px;
+    padding: 30px 25px 30px 0px;
 }
 
 .changelog-row .center-col {
@@ -275,7 +273,7 @@ body.left-col-hidden #left-col-toggle {
 
 .page-header {
     font-size: 18px;
-    margin-top: 5px;
+    margin-top: 25px;
     margin-bottom: 25px;
 }
 
@@ -384,12 +382,42 @@ body.left-col-hidden #left-col-toggle {
     padding-top: 0px;
 }
 
-#left-table-of-contents.tray-left {
+.left-table-of-contents {
+    position: absolute;
     border-right: none;
-     background: inherit;
+    border-right: 1px solid #DDD;
+    top: 0;
+    height: 100%;
+    background: #f5f5f5;
+}
+
+.left-table-of-contents aside {
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 300px;
 }
 
 ul.tray-nav {
     border-right: none;
     margin: 15px -16px 15px -15px;
+}
+
+#docs-content tray-left {
+    margin-left: 315px;
+}
+
+.col-right-documentation {
+    background: #fff;
+    padding-top: 0;
+}
+
+section.bs-docs-section {
+    /*background: #fff;*/
+}
+
+#docs-content .tab-pane {
+}
+
+.documentation-content-text-container {
+    margin-left: 315px;
 }

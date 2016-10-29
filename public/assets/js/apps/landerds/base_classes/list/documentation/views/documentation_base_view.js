@@ -1,6 +1,5 @@
 define(["app",
     "tpl!assets/js/apps/landerds/base_classes/list/documentation/templates/documentation_base.tpl",
-    "smoothscroll"
   ],
   function(Landerds, DocumentationTpl) {
     var DocumentationBaseView = Marionette.LayoutView.extend({
@@ -23,6 +22,40 @@ define(["app",
 
       onRender: function() {
 
+        var offset = 130;
+
+        $("body").scrollspy({
+          target: ".nav-spy",
+          offset: offset
+        });
+
+        // Add smooth scrolling on all links inside the navbar
+        this.$el.find(".nav-spy a").on('click', function(event) {
+
+          // Make sure this.hash has a value before overriding default behavior
+          if (this.hash !== "") {
+
+            // Prevent default anchor click behavior
+            event.preventDefault();
+
+            // Store hash
+            var hash = this.hash;
+            var titleOffset = 118;
+            // Using jQuery's animate() method to add smooth page scroll
+            // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
+            $('html, body').animate({
+              scrollTop: ($(hash).offset().top - titleOffset)
+            }, 800, function() {
+
+              // Add hash (#) to URL when done scrolling (default click behavior)
+              // window.location.hash = hash;
+            });
+
+          }
+
+        });
+
+
         var scrollReset = function() {
           $("html, body").addClass('scrolling').animate({
             scrollTop: 0
@@ -38,7 +71,7 @@ define(["app",
           }
         });
 
-        this.$el.find('#left-table-of-contents').affix({
+        this.$el.find('.left-table-of-contents').affix({
           offset: {
             top: 60
           }
@@ -46,38 +79,16 @@ define(["app",
 
         //listen to affix event
         $("#topbar").on("affix.bs.affix", function() {
-
-
-
+          $(this).find(".topbar-documentation-title").fadeIn("fast");
         });
 
         $("#topbar").on("affix-top.bs.affix", function() {
-
-
-
+          $(this).find(".topbar-documentation-title").hide();
         });
 
         this.$el.find('.return-top').on('click', function(e) {
           e.preventDefault();
           scrollReset();
-        });
-
-        // list-group-accordion functionality
-        var listAccordion = this.$el.find('.list-group-accordion');
-        var accordionItems = listAccordion.find('.list-group-item');
-        var accordionLink = listAccordion.find('.sign-toggle');
-
-        accordionLink.on('click', function() {
-
-          var accordionEl = $(this);
-          var parent = accordionEl.parent();
-          var children = parent.find("ul > li");
-
-          if (!parent.hasClass("active")) {
-            children.removeClass("active");
-            children.first().addClass("active");
-          }
-
         });
 
 

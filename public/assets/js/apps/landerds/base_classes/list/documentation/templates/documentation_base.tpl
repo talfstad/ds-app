@@ -17,16 +17,16 @@
                 </a>
                 <ul class="nav sub-nav">
                   <li>
-                    <a href="admin_plugins-panels.html">
-                      <span class="glyphicon glyphicon-book"></span> Admin Panels </a>
+                    <a data-toggle="tab" href="#introduction">
+                      <span class="glyphicon glyphicon-equalizer"></span> General </a>
                   </li>
                   <li>
-                    <a href="admin_plugins-modals.html">
-                      <span class="glyphicon glyphicon-modal-window"></span> Admin Modals </a>
+                    <a data-toggle="tab" href="#rip-and-add-lander">
+                      <span class="glyphicon glyphicon-book"></span> Rip And Add Lander </a>
                   </li>
                   <li>
-                    <a href="admin_plugins-dock.html">
-                      <span class="glyphicon glyphicon-equalizer"></span> Admin Dock </a>
+                    <a href="#optimization" data-toggle="tab">
+                      <span class="glyphicon glyphicon-modal-window"></span> Optimization </a>
                   </li>
                 </ul>
               </li>
@@ -117,81 +117,80 @@
           </div>
           <!-- End: Sidebar Left Content -->
         </aside>
-        <!-- Navspy wrapper -->
-        <div id="nav-spy" class="fs15 posr" style="margin-left: 230px">
-          <aside id="left-table-of-contents" class="tray tray-left" style="padding: 0">
-            <div id="nav-spy">
-              <ul class="nav tray-nav tray-nav-border" data-smoothscroll="-145">
-                <li class="active">
-                  <a href="#amazon-web-services">
-                  Amazon Web Services</a>
-                </li>
-                <li class="">
-                  <a href="#navigation">
-                  Navigation</a>
-                </li>
-                <li class="">
-                  <a href="#password-reset">
-                  Password Reset</a>
-                </li>
-                <li class="">
-                  <a href="#search-and-sort">
-                  Search and Sort</a>
-                </li>
-              </ul>
-            </div>
-          </aside>
-        </div>
       </div>
       <!-- Documentation Content -->
       <div class="fs15 col-right-documentation center-col va-t">
         <div id="docs-content" class="tab-content pn">
           <!-- GENERAL -->
-          <div class="tab-pane fade active in" id="introduction" role="tabpanel">
-            <!-- intro -->
+          <div class="tab-pane fade" id="introduction" role="tabpanel">
             <section class="bs-docs-section">
-              <button data-toggle="modal" data-target="#timeline-modal" class="hidden btn btn-default btn-gradient btn-sm pull-right posr" type="button" style="top: -10px;">Requested Features</button>
-              <h1 class="page-header">Lander DS </h1>
-              <h2 id="amazon-web-services">Amazon Web Services</h2>
-              <h3>Upon logging in for the first time:</h3>
-              <p>Create an AWS account if you don't already have one. Follow the instructions provided on the panel to establish your credentials. You will not be able to proceed until you have set up your AWS account.
-                <br>
-              </p>
-              <div class="bs-example">
-                <img src="/assets/img/documentation/aws.png" alt="AWS" style="width:640px;height:360px;">
+              <div id="nav-spy" class="fs15 left-table-of-contents " style="">
+                <aside class="" style="">
+                  <div class="nav-spy">
+                    <ul class="nav tray-nav tray-nav-border">
+                      <li class="active">
+                        <a href="#amazon-web-services">
+                  Amazon Web Services</a>
+                      </li>
+                      <li class="">
+                        <a href="#navigation">
+                  Navigation</a>
+                      </li>
+                      <li class="">
+                        <a href="#password-reset">
+                  Password Reset</a>
+                      </li>
+                      <li class="">
+                        <a href="#search-and-sort">
+                  Search and Sort</a>
+                      </li>
+                    </ul>
+                  </div>
+                </aside>
               </div>
-              <h2 id="navigation">Navigation</h2>
-              <div class="bs-example">
-                <p> On the top left of the panel, you will find that you can navigate between Landing Pages, Groups, and Domains. The sorting, paging, and search also show up on the top left corner of the panel for all three items.</p>
-                <img src="/assets/img/documentation/navigation.png" alt="Navigation" style="width:640px;height:360px;">
-                <br>
-                <br>
-                <p> The top right of the panel displays your log in. This is where you can log out of Lander DS or update your AWS credentials. On Landing pages, the rip and add funtions show up here. For domains and groups, the add function is displayed in this area. The illustrations show the columns that are displayed for each item.</p>
-                <img src="/assets/img/documentation/navigation1.png" alt="Navigation" style="width:640px;height:360px;">
-                <br>
-                <br>
-                <p> On the bottom right corner of the Lander DS panel, you'll find a blue speech bubble. Click on this to message Lifen or Trevor directly! We will respond within 24 hours.</p>
-                <img src="/assets/img/documentation/navigation2.png" alt="Navigation" style="width:640px;height:360px;">
-              </div>
-              <h2 id="password-reset">Password Reset</h2>
-              <h3>How do I reset my password?</h3>
-              <p> 1. Click on "Forgot Password" on the top right corner of the log-in page.
-                <br>2. Enter the email which you use to log in with.
-                <br>3. Check your email for a message from "Trevor" from Lander DS.
-                <br>4. Choose a new password and confirm it.
-                <br>5. Click the blue "Reset Password" button on the bottom right corner.</p>
-              <div class="bs-example">
-                <img src="/assets/img/documentation/select.password.png" alt="Select Password" style="width:640px;height:360px;">
-              </div>
-              <h2 id="search-and-sort">Seach and Sort</h2>
-              <h3>How do I search for a landing page, note, or domain?</h3>
-              <p>1. Go to the panel of the item you'd like to search: landing pages, groups, or domains.
-                <br>2. Type in the key words that you'd like to search.
-                <br>3. Choose whether you'd like to search just the item, if you would like to search within the notes, or both.</p>
-              <h3>Sorting</h3>
-              <p>You can sort your landing pages, groups, and domains in groups of 10 per page, 20 per page, or 50 per page. You can also sort them by name in alpha-numerical order or by the "created on" date both in either ascending or descending order. You can also use the search option to sort whatever items you wish to work on.</p>
-              <div class="bs-example">
-                <img src="/assets/img/documentation/search.png" alt="Select Password" style="width:640px;height:360px;">
+              <div class="documentation-content-text-container">
+                <h1 class="page-header">Lander DS </h1>
+                <h2 id="amazon-web-services">Amazon Web Services</h2>
+                <h3>Upon logging in for the first time:</h3>
+                <p>Create an AWS account if you don't already have one. Follow the instructions provided on the panel to establish your credentials. You will not be able to proceed until you have set up your AWS account.
+                  <br>
+                </p>
+                <div class="bs-example">
+                  <img src="/assets/img/documentation/aws.png" alt="AWS" style="width:640px;height:360px;">
+                </div>
+                <h2 id="navigation">Navigation</h2>
+                <div class="bs-example">
+                  <p> On the top left of the panel, you will find that you can navigate between Landing Pages, Groups, and Domains. The sorting, paging, and search also show up on the top left corner of the panel for all three items.</p>
+                  <img src="/assets/img/documentation/navigation.png" alt="Navigation" style="width:640px;height:360px;">
+                  <br>
+                  <br>
+                  <p> The top right of the panel displays your log in. This is where you can log out of Lander DS or update your AWS credentials. On Landing pages, the rip and add funtions show up here. For domains and groups, the add function is displayed in this area. The illustrations show the columns that are displayed for each item.</p>
+                  <img src="/assets/img/documentation/navigation1.png" alt="Navigation" style="width:640px;height:360px;">
+                  <br>
+                  <br>
+                  <p> On the bottom right corner of the Lander DS panel, you'll find a blue speech bubble. Click on this to message Lifen or Trevor directly! We will respond within 24 hours.</p>
+                  <img src="/assets/img/documentation/navigation2.png" alt="Navigation" style="width:640px;height:360px;">
+                </div>
+                <h2 id="password-reset">Password Reset</h2>
+                <h3>How do I reset my password?</h3>
+                <p> 1. Click on "Forgot Password" on the top right corner of the log-in page.
+                  <br>2. Enter the email which you use to log in with.
+                  <br>3. Check your email for a message from "Trevor" from Lander DS.
+                  <br>4. Choose a new password and confirm it.
+                  <br>5. Click the blue "Reset Password" button on the bottom right corner.</p>
+                <div class="bs-example">
+                  <img src="/assets/img/documentation/select.password.png" alt="Select Password" style="width:640px;height:360px;">
+                </div>
+                <h2 id="search-and-sort">Seach and Sort</h2>
+                <h3>How do I search for a landing page, note, or domain?</h3>
+                <p>1. Go to the panel of the item you'd like to search: landing pages, groups, or domains.
+                  <br>2. Type in the key words that you'd like to search.
+                  <br>3. Choose whether you'd like to search just the item, if you would like to search within the notes, or both.</p>
+                <h3>Sorting</h3>
+                <p>You can sort your landing pages, groups, and domains in groups of 10 per page, 20 per page, or 50 per page. You can also sort them by name in alpha-numerical order or by the "created on" date both in either ascending or descending order. You can also use the search option to sort whatever items you wish to work on.</p>
+                <div class="bs-example">
+                  <img src="/assets/img/documentation/search.png" alt="Select Password" style="width:640px;height:360px;">
+                </div>
               </div>
             </section>
           </div>
@@ -556,7 +555,7 @@
             <h3>Coming Soon! If you have questions, please contact <a href="mailto:lifen.sophia@buildcave.com?subject=Lander DS Inquiry">Leaf</a>.</h3>
           </div>
           <!-- RETURN TO TOP BUTTON -->
-          <div class="top-wrapper clearfix">
+          <div style="margin-left: 300px" class="top-wrapper clearfix">
             <a href="#" class="return-top">Return to Top</a>
           </div>
         </div>

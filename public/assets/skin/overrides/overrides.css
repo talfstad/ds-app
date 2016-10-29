@@ -677,9 +677,9 @@ body.onload-check #sidebar_left {
     transition: none;
 }
 
-#left-table-of-contents.affix {
+.left-table-of-contents.affix {
     position: fixed;
-    top: 118px;
+    top: 103px;
 }
 
 
@@ -688,7 +688,7 @@ body.onload-check #sidebar_left {
     min-height: 1px;
     padding-right: 15px;
     padding-left: 15px;
-    width: 511px;
+    width: 230px;
 }
 
 .col-right-documentation {
@@ -700,7 +700,13 @@ body.onload-check #sidebar_left {
 }
 
 
+.list-content.documentation-content .landers-list-items {
+    margin-top: 0;
+}
 
+.list-content .landers-list-items {
+    margin-top: 25px;
+}
 
 
 
