@@ -17,7 +17,7 @@
       <span class="fa fa-caret-down"></span>
       <span><span class="rows-per-page-number">10</span> Rows Per Page</span>
     </button>
-    <ul class="page-size-dropdown dropdown-menu dropdown-menu-left pt5" role="menu">
+    <ul class="topbar page-size-dropdown dropdown-menu dropdown-menu-left pt5" role="menu">
       <li>
         <label for="10-pages-radio" class="block option option-primary" style="line-height: 40px; margin-right: 0">
           <input value="10" id="10-pages-radio" type="radio" name="pages-radio">
@@ -73,11 +73,11 @@
     </ul>
   </div>
   <ul class="hide-for-documentation nav nav-list nav-list-topbar pull-left">
-    <form class="admin-form navbar-form navbar-search pull-left mtn mbn" role="search">
+    <form class="admin-form theme-primary navbar-form navbar-search pull-left mtn mbn" role="search">
       <div class="search-dropdown dropdown pull-left mt10 form-group">
-        <input data-toggle="dropdown" aria-expanded="false" type="text" class="list-search w250 form-control" placeholder="Search Landers..." value="">
+        <input data-toggle="dropdown" aria-expanded="false" type="text" class="gui-input list-search w250 form-control" placeholder="Search Landers..." value="">
         <span class="searchclear glyphicon glyphicon-remove-circle"></span>
-        <ul class="search-dropdown-menu dropdown-menu dropdown-menu-left pt5" role="menu">
+        <ul class="topbar search-dropdown-menu dropdown-menu dropdown-menu-left pt5" role="menu">
           <li style="width: 100%;">
             <label for="search-lander-name" class="block option option-primary" style="line-height: 40px; margin-right: 0">
               <input checked type="checkbox" class="search-filter-option" name="searchName" id="search-lander-name">
@@ -115,10 +115,10 @@
 <section id="content" class="list-content">
   <div class="hide-for-documentation" style="position: absolute; width: 100%; font-size: 11px; font-weight: 600">
     <div style="float: left; margin-left: 15px; margin-bottom: 10px">Landing Page Name</div>
-    <div style="float: right; margin-right: 95px; margin-bottom: 10px">Deployed Domains</div>
+    <div style="float: right; margin-right: 88px; margin-bottom: 10px">Deployed Domains</div>
     <div style="float: right; margin-right: 50px; margin-bottom: 10px">Groups on Lander</div>
-    <div style="float: right; margin-right: 75px; margin-bottom: 10px">Notes</div>
-    <div style="float: right; margin-right: 72px; margin-bottom: 10px">Created On</div>
+    <div style="float: right; margin-right: 74px; margin-bottom: 10px">Notes</div>
+    <div style="float: right; margin-right: 79px; margin-bottom: 10px">Created On</div>
   </div>
   <div id="landers-region" class="landers-list-items">
   </div>

@@ -415,9 +415,12 @@ section.bs-docs-section {
     /*background: #fff;*/
 }
 
-#docs-content .tab-pane {
-}
+#docs-content .tab-pane {}
 
 .documentation-content-text-container {
     margin-left: 315px;
+}
+
+.ohidden {
+    overflow: hidden !important;
 }

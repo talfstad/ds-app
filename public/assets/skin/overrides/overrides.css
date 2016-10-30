@@ -711,3 +711,26 @@ body.onload-check #sidebar_left {
 
 
 
+.gui-input:focus {
+    border: none;
+}
+
+#topbar .admin-form.theme-primary .gui-input {
+    outline: none;
+    border-radius: 20px;
+}
+
+
+#intercom-container .intercom-launcher-button {
+    background-size: 17px 17px !important;
+    width: 30px !important;
+    height: 30px !important;
+    opacity: .7 !important;
+}
+#intercom-container .intercom-launcher-button:hover {
+    opacity: 1 !important;
+}
+
+.sidebar-right-content  > .panel {
+    margin-bottom: 60px;
+}

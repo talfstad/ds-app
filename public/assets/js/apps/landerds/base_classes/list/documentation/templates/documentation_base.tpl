@@ -7,7 +7,7 @@
           <!-- Start: Sidebar Left Content -->
           <div class="sidebar-left-content nano-content">
             <!-- Start: Sidebar Menu -->
-            <ul class="nav sidebar-menu">
+            <ul class="ohidden nav sidebar-menu">
               <li class="sidebar-label pt20">Account</li>
               <li>
                 <a class="accordion-toggle" href="#">
