@@ -4,7 +4,7 @@ define(["app"], function(Landerds) {
 
     isLoaded: false,
 
-    boot: function() {
+    boot: function(callback) {
       var me = this;
       if (!this.isLoaded) {
         var millis = new Date();
@@ -19,6 +19,25 @@ define(["app"], function(Landerds) {
             activator: '#IntercomDefaultWidget'
           }
         });
+
+        var retries = 25; //5 seconds @ 200 millis
+        var retryCount = 0;
+
+        var pollForIntercomLoaded = function() {
+          setTimeout(function() {
+            if ($("#intercom-container").length) {
+              callback();
+            } else {
+              if (retryCount < retries) {
+                pollForIntercomLoaded();
+              } else {
+                callback();
+              }
+              retryCount++;
+            }
+          }, 200);
+        };
+        pollForIntercomLoaded();
 
         this.isLoaded = true;
       }

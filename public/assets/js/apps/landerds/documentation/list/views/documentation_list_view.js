@@ -1,8 +1,8 @@
 define(["app",
-    "tpl!assets/js/apps/landerds/base_classes/list/documentation/templates/documentation_base.tpl",
+    "tpl!assets/js/apps/landerds/documentation/list/templates/documentation_list.tpl",
   ],
   function(Landerds, DocumentationTpl) {
-    var DocumentationBaseView = Marionette.LayoutView.extend({
+    var DocumentationContentView = Marionette.LayoutView.extend({
 
       id: "documentation",
 
@@ -136,5 +136,5 @@ define(["app",
 
       }
     });
-    return DocumentationBaseView;
+    return DocumentationContentView;
   });

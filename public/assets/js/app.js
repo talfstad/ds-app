@@ -36,6 +36,7 @@ define(["marionette"],
 
       require([
           "assets/js/apps/intercom/intercom_app",
+          "assets/js/apps/landerds/documentation/documentation_app",
           "assets/js/apps/landerds/user/user_app",
           "assets/js/apps/landerds/entry_point/entry_app",
           "assets/js/apps/landerds/live_updater/updater",

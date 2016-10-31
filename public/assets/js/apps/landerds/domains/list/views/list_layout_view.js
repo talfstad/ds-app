@@ -24,7 +24,6 @@ define(["app",
 
         events: {
           "click .add-new-domain-button": "showAddNewDomain",
-          "click .toggle-help-info": "triggerToggleHelpInfo",
           "click input.search-filter-option": "updateSearchOptions"
         },
 
@@ -38,18 +37,6 @@ define(["app",
           this.filterDomains(searchVal || "");
         },
 
-        toggleHelpInfo: function(e) {
-          if (e) e.preventDefault();
-
-          if (this.toggle) {
-            this.$el.find(".toggle-help-info").addClass("btn-gradient").removeClass("active");
-            this.toggle = false;
-          } else {
-            this.$el.find(".toggle-help-info").removeClass("btn-gradient").addClass("active");
-            this.toggle = true;
-          }
-          return this.toggle;
-        },
 
         triggerToggleHelpInfo: function(e) {
           if (e) e.preventDefault();

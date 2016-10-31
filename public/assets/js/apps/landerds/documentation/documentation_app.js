@@ -2,7 +2,8 @@ define(["app",
     "assets/js/apps/landerds/documentation/list/documentation_list_controller"
   ],
   function(Landerds, ListController) {
-    Landerds.module("DocumentationApp", function(DocumentationApp, Landerds, Backbone, Marionette, $, _) {
+
+    var initializeEvents = function() {
 
       var documentationAppAPI = {
         showDocumentation: function() {
@@ -10,10 +11,19 @@ define(["app",
         }
       };
 
+
       Landerds.on("documentation:show", function() {
         documentationAppAPI.showDocumentation();
       });
-    });
+    };
 
-    return Landerds.DocumentationApp;
+
+    Landerds.documentation = {
+      boot: function() {
+        initializeEvents();
+        ListController.boot();
+      }
+    };
+
+    return Landerds.documentation;
   });

@@ -1,9 +1,9 @@
 <!-- Start: Topbar -->
 <header id="first-topbar" class="alt">
 </header>
-<header id="topbar" class="ph10">
+<header id="topbar">
   <div class="admin-form dropdown pull-left">
-    <button data-toggle="dropdown" role="button" aria-expanded="false" type="button" class="rows-per-page ml10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
+    <button data-toggle="dropdown" role="button" aria-expanded="false" type="button" class="rows-per-page pl10 pt5 pb5 btn btn-default btn-gradient dark">
       <span class="fa fa-caret-down"></span>
       <span><span class="rows-per-page-number">10</span> Rows Per Page</span>
     </button>
@@ -33,7 +33,7 @@
   </div>
   <div class="admin-form dropdown pull-left">
     <button data-toggle="dropdown" style="text-align: left" role="button" aria-expanded="false" type="button" class="ml10 w210 pl10 pt5 pb5 btn btn-default btn-gradient dark">
-      <span class="fa fa-caret-down pr5"></span> Sort By:
+      <span class="fa fa-caret-down"></span> Sort:
       <span class="sortbyname">Domain Name</span>
       <span class="sortbyorder">Asc</span>
     </button>
@@ -87,9 +87,6 @@
     </form>
   </ul>
   <div class="topbar-right hidden-xs hidden-sm">
-    <button type="button" class="toggle-help-info btn btn-default btn-gradient dark pl10 pt5 pb5">
-      <i class="fa fa-info-circle"></i>
-    </button>
     <div class="bs-component btn-group ml5">
       <button type="button" class="add-new-domain-button pl10 pt5 pb5 btn btn-default btn-gradient dark">
         <span class="fa fa-plus pr5"></span>New Domain
@@ -107,7 +104,7 @@
     <div style="float: right; margin-right: 75px; margin-bottom: 10px">Notes</div>
     <div style="float: right; margin-right: 90px; margin-bottom: 10px">Created On</div>
   </div>
-  <div id="domains-region" style="margin-top: 25px" class="ph10 landers-list-items">
+  <div id="domains-region" class="landers-list-items">
   </div>
 </section>
 <section class="footer">

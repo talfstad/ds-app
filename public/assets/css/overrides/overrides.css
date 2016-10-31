@@ -20,7 +20,7 @@ body {
     margin-top: 10px;
     border-top-color: #3498db !important;
     border-top: 3px solid transparent;
-    padding: 0;
+    /*padding: 0;*/
 }
 
 .topbar.dropdown-menu:after {
@@ -732,4 +732,55 @@ body.onload-check #sidebar_left {
 
 .sidebar-right-content > .panel {
     margin-bottom: 60px;
+}
+
+#docs-button {
+    position: fixed;
+    bottom: 60px;
+    right: 115px;
+}
+
+#documentation-button > .documentation-button-container {
+    border: 1px solid #999;
+    background-position: 50% 50%;
+    bottom: 0px;
+    box-shadow: rgba(0, 0, 0, 0.227451) 0px 6px 13px 0px;
+    color: #666666;    
+    cursor: pointer;
+    height: 42px;
+    width: 42px;
+    opacity: 0.7;
+    left: -2px;
+    position: absolute;
+    right: 0px;
+    text-size-adjust: 100%;
+    top: -2px;
+    z-index: 0;
+    column-rule-color: rgb(102, 102, 102);
+    perspective-origin: 21px 21px;
+    transform-origin: 21px 21px;
+    alignment-baseline: baseline;
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 10%, rgba(255, 255, 255, 0.3) 100%);
+    /*border: 1px solid transparent;*/
+    /*border-color: rgba(0, 0, 0, 0.07) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.09);*/
+    border-radius: 50% 50% 50% 50%;
+    font: normal normal normal normal 13px / 19.37px "Helvetica Neue", Helvetica, Arial, sans-serif;
+    outline: rgb(102, 102, 102) none 0px;
+}
+
+#documentation-button > .documentation-button-container:hover {
+    opacity: 1;
+    background-color: #e1e1e1;
+}
+
+
+#documentation-button > .documentation-button-container > .documentation-button {
+    position: relative;
+    top: 11px;
+    left: 17px;
+    font-size: 14px;
+}
+
+.page-size-dropdown {
+    /*padding-bottom: 5px;*/
 }

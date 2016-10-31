@@ -33,7 +33,7 @@
   </div>
   <div class="admin-form dropdown pull-left">
     <button data-toggle="dropdown" style="text-align: left" role="button" aria-expanded="false" type="button" class="ml10 w210 pl10 pt5 pb5 btn btn-default btn-gradient dark">
-      <span class="fa fa-caret-down pr5"></span> Sort By:
+      <span class="fa fa-caret-down"></span> Sort:
       <span class="sortbyname">Lander Name</span>
       <span class="sortbyorder">Asc</span>
     </button>
@@ -91,13 +91,10 @@
       <button type="button" class="rip-and-deploy-button pl10 pt5 pb5 btn btn-default btn-gradient dark">
         <span class="fa fa-cloud-download pr5"></span>Rip Lander
       </button>
-      <button type="button" class="add-new-lander-button mr10 pl10 pt5 pb5 btn btn-default btn-gradient dark">
+      <button type="button" class="add-new-lander-button pl10 pt5 pb5 btn btn-default btn-gradient dark">
         <span class="fa fa-plus pr5"></span>New Lander
       </button>
     </div>
-    <button type="button" class="toggle-help-info btn btn-default btn-gradient dark pl10 pt5 pb5">
-      <i class="fa fa-info-circle"></i>
-    </button>
   </div>
 </header>
 <!-- End: Topbar -->

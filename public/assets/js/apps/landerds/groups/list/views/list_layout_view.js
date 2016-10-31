@@ -22,7 +22,6 @@ define(["app",
 
         events: {
           "click .add-new-group-button": "showAddNewGroup",
-          "click .toggle-help-info": "triggerToggleHelpInfo",
           "click input.search-filter-option": "updateSearchOptions"
         },
 
@@ -34,25 +33,6 @@ define(["app",
           this.trigger("updateSearchFunction", searchCriteria);
           var searchVal = this.$el.find("input.list-search").val();
           this.filterGroups(searchVal || "");
-        },
-
-        toggleHelpInfo: function(e) {
-          if (e) e.preventDefault();
-
-          if (this.toggle) {
-            this.$el.find(".toggle-help-info").addClass("btn-gradient").removeClass("active");
-            this.toggle = false;
-          } else {
-            this.$el.find(".toggle-help-info").removeClass("btn-gradient").addClass("active");
-            this.toggle = true;
-          }
-          return this.toggle;
-        },
-
-        triggerToggleHelpInfo: function(e) {
-          if (e) e.preventDefault();
-
-          this.trigger("toggleInfo", this.toggle);
         },
 
         showAddNewGroup: function(e) {

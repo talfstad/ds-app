@@ -14,10 +14,14 @@ define(["app",
           success: function(userObject) {
 
             if (userObject.get("logged_in")) {
+
               Landerds.loginModel.set(userObject.attributes);
-              Landerds.intercom.boot();
+              Landerds.intercom.boot(function() {
+                Landerds.documentation.boot();
+              });
               cb(args);
             } else {
+
               Landerds.execute("show:login");
             }
           }
