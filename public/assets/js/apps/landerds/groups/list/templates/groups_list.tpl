@@ -9,7 +9,7 @@
             <span class="fa fa-caret-down"></span>
             <span><span class="rows-per-page-number">10</span> Rows Per Page</span>
           </button>
-          <ul class="page-size-dropdown dropdown-menu dropdown-menu-left pt5" role="menu">
+          <ul class="topbar page-size-dropdown dropdown-menu dropdown-menu-left pt5" role="menu">
             <li>
               <label for="10-pages-radio" class="block option option-primary" style="line-height: 40px; margin-right: 0">
                 <input value="10" id="10-pages-radio" type="radio" name="pages-radio">
@@ -70,12 +70,12 @@
         </div>
 
         <ul class="nav nav-list nav-list-topbar pull-left">
-          <form class="admin-form navbar-form navbar-search pull-left mtn mbn" role="search">
+          <form class="admin-form theme-primary navbar-form navbar-search pull-left mtn mbn" role="search">
             <div class="search-dropdown dropdown pull-left mt10 form-group">
-              <input data-toggle="dropdown" aria-expanded="false" type="text" class="list-search w250 form-control" placeholder="Search Groups..." value="">
+              <input data-toggle="dropdown" aria-expanded="false" type="text" class="gui-input list-search w250 form-control" placeholder="Search Groups..." value="">
               <span class="searchclear glyphicon glyphicon-remove-circle"></span>
               
-              <ul class="search-dropdown-menu dropdown-menu dropdown-menu-left pt5" role="menu">
+              <ul class="topbar search-dropdown-menu dropdown-menu dropdown-menu-left pt5" role="menu">
                 <li style="width: 100%;">
                   <label for="search-name" class="block option option-primary" style="line-height: 40px; margin-right: 0">
                     <input checked type="checkbox" class="search-filter-option" name="searchName" id="search-name">

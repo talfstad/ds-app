@@ -1,6 +1,6 @@
 define(["app",
     "assets/js/apps/landerds/domains/list/list_controller",
-    "assets/js/common/login/common_login",
+    "assets/js/apps/landerds/common/login/common_login",
     "assets/js/apps/landerds/domains/right_sidebar/sidebar_controller",
     "assets/js/apps/landerds/domains/add_new_domain/add_new_domain_controller",
     "assets/js/apps/landerds/domains/deploy_new_lander/deploy_new_lander_controller",

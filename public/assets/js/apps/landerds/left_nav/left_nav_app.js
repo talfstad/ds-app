@@ -1,6 +1,6 @@
 define(["app", 
         "/assets/js/apps/landerds/left_nav/list/list_controller.js",
-        "/assets/js/common/login/common_login.js"], function(Landerds, ListController, CommonLogin){
+        "/assets/js/apps/landerds/common/login/common_login.js"], function(Landerds, ListController, CommonLogin){
   Landerds.module("LeftNavApp", function(LeftNavApp, Landerds, Backbone, Marionette, $, _){
     
     var leftNavAPI = {

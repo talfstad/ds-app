@@ -1,8 +1,8 @@
 define(["app",
     "assets/js/apps/landerds/domains/dao/deployed_lander_collection",
     "assets/js/apps/landerds/groups/dao/domain_list_collection",
-    "assets/js/jobs/jobs_base_gui_model",
-    "assets/js/jobs/jobs_model"
+    "assets/js/apps/landerds/jobs/jobs_base_gui_model",
+    "assets/js/apps/landerds/jobs/jobs_model"
   ],
   function(Landerds, DeployedLanderCollection, DomainListCollection, JobsGuiBaseModel, JobModel) {
     var GroupModel = JobsGuiBaseModel.extend({

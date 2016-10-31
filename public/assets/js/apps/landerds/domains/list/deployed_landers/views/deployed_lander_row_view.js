@@ -1,7 +1,7 @@
 define(["app",
     "tpl!assets/js/apps/landerds/domains/list/deployed_landers/templates/deployed_lander_row.tpl",
     "assets/js/apps/landerds/base_classes/deployed_rows/views/deployed_row_base_view",
-    "assets/js/common/notification",
+    "assets/js/apps/landerds/common/notification",
     "select2"
   ],
   function(Landerds, DeployedDomainRowTpl, DeployedRowBaseView, Notification) {

@@ -4,13 +4,10 @@
       <span style="position: relative; top: 1px" class="icon-landers_icon"></span>
       <span>Landing Pages</span>
     </li>
-    <li class="hide-for-documentation crumb-trail">Showing <span class="showing-low">0</span>-<span class="showing-high">0</span> of <span class="showing-total">0</span></li>
-    <li class="show-for-documentation crumb-trail">
-      Documentation
-    </li>
+    <li class="crumb-trail">Showing <span class="showing-low">0</span>-<span class="showing-high">0</span> of <span class="showing-total">0</span></li>
   </ol>
 
-  <div class="hide-for-documentation right-stats">
+  <div class="right-stats">
       <div class="total-working filter-landers" style="display: none;">
         <div class="checkbox-custom checkbox-alert mb5" style="display: none;">
           <input id="filter-working-checkbox" type="checkbox">

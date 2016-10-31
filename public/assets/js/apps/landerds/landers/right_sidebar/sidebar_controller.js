@@ -7,7 +7,7 @@ define(["app",
     "assets/js/apps/landerds/landers/right_sidebar/js_snippets/views/active_snippets_list_view",
     "assets/js/apps/landerds/landers/right_sidebar/menu_buttons_view",
     "assets/js/apps/landerds/landers/right_sidebar/lander_modified_view",
-    "assets/js/common/notification",
+    "assets/js/apps/landerds/common/notification",
   ],
   function(Landerds, SidebarLayoutView, DeploymentOptionsView, UrlEndpointsView, PagespeedView, SidebarModel, ActiveJsSnippetsListView,
     SidebarMenuButtonsView, LanderModifiedView, Notification) {

@@ -1,6 +1,6 @@
 define(["app",
     "tpl!assets/js/apps/landerds/domains/deploy_new_lander/templates/deploy_new_lander_layout.tpl",
-    "assets/js/common/notification"
+    "assets/js/apps/landerds/common/notification"
   ],
   function(Landerds, DeployToDomainLayout, Notification) {
 

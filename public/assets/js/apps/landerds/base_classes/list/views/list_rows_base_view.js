@@ -1,5 +1,5 @@
 define(["app",
-    "assets/js/common/notification",
+    "assets/js/apps/landerds/common/notification",
     "moment-timezone",
     "jstz"
   ],

@@ -1,6 +1,6 @@
 define(["app",
-    "assets/js/common/notification",
-    "assets/js/jobs/jobs_model",
+    "assets/js/apps/landerds/common/notification",
+    "assets/js/apps/landerds/jobs/jobs_model",
     "assets/js/apps/landerds/landers/dao/deployed_domain_model"
   ],
   function(Landerds, Notification, JobModel, DeployedDomainModel) {

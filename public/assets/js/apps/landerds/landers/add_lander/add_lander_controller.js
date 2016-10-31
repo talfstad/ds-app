@@ -1,7 +1,7 @@
 define(["app",
     "assets/js/apps/landerds/landers/add_lander/views/add_lander_layout_view",
     "assets/js/apps/landerds/landers/add_lander/cancel_add_lander/cancel_add_lander_controller",
-    "assets/js/jobs/jobs_model"
+    "assets/js/apps/landerds/jobs/jobs_model"
   ],
   function(Landerds, AddNewLanderLayoutView, CancelAddLanderController, JobModel) {
     Landerds.module("LandersApp.Landers.AddNewLander", function(AddNewLander, Landerds, Backbone, Marionette, $, _) {

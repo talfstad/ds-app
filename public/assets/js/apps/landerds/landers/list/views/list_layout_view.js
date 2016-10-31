@@ -25,20 +25,8 @@ define(["app",
         events: {
           "click .add-new-lander-button": "showAddNewLander",
           "click .rip-and-deploy-button": "showRipNewLander",
-          "click .toggle-help-info": "triggerToggleHelpInfo",
           "click input.search-filter-option": "updateSearchOptions",
-        },
-
-        showDocumentationMode: function() {
-          this.$el.find(".hide-for-documentation").hide();
-          this.$el.find(".show-for-documentation").show();
-        },
-
-        showListViewMode: function() {
-          this.$el.find("#topbar").off();
-
-          this.$el.find(".hide-for-documentation").show();
-          this.$el.find(".show-for-documentation").hide();
+          "click .toggle-help-info": "toggleHelpInfo"
         },
 
         updateSearchOptions: function(e) {
@@ -64,18 +52,6 @@ define(["app",
             this.toggle = true;
           }
           return this.toggle;
-        },
-
-        triggerToggleHelpInfo: function(e) {
-          if (e) e.preventDefault();
-          var toggle = this.toggleHelpInfo();
-          if (toggle) {
-            this.showDocumentationMode();
-            this.trigger("showDocumentation");
-          } else {
-            this.showListViewMode();
-            this.trigger("showListView");
-          }
         },
 
         showRipNewLander: function(e) {

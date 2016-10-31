@@ -10,7 +10,7 @@
       <li class="sidebar-label pt20">Menu</li>
       <li id="domains-left-nav">
         <a href="/domains">
-          <img class="domains-nav-item" style="margin-left: 15px; width: 20px" src="/assets/img/logos/domains_icon_white.png"/>
+          <img class="domains-nav-item" style="margin-left: 15px; width: 20px" src="/assets/images/logos/domains_icon_white.png"/>
           <span class="sidebar-title">Domains</span>
         </a>
       </li>
@@ -22,7 +22,7 @@
       </li>
       <li id="landers-left-nav">
         <a href="/landers">
-          <img class="landers-nav-item" style="margin-left: 15px; width: 20px" src="/assets/img/logos/landers_icon_white.png"/>
+          <img class="landers-nav-item" style="margin-left: 15px; width: 20px" src="/assets/images/logos/landers_icon_white.png"/>
           <span class="sidebar-title">Landing Pages</span>
         </a>
       </li>

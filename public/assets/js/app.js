@@ -35,11 +35,11 @@ define(["marionette"],
     Landerds.on("start", function() {
 
       require([
-          "assets/js/intercom/intercom_app",
-          "assets/js/apps/user/user_app",
+          "assets/js/apps/intercom/intercom_app",
+          "assets/js/apps/landerds/user/user_app",
           "assets/js/apps/landerds/entry_point/entry_app",
-          "assets/js/live_updater/updater",
-          "assets/js/jobs/jobs_app"
+          "assets/js/apps/landerds/live_updater/updater",
+          "assets/js/apps/landerds/jobs/jobs_app"
         ],
         function() {
           if (Backbone.history) {

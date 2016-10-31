@@ -1,5 +1,5 @@
 define(["app",
-    "assets/js/common/notification",
+    "assets/js/apps/landerds/common/notification",
     "assets/js/apps/landerds/base_classes/deployed_rows/views/row_base_view"
   ],
   function(Landerds, Notification, RowBaseView) {

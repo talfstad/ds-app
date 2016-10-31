@@ -1,6 +1,6 @@
 define(["app",
     "assets/js/apps/landerds/landers/report_broken/views/report_broken_layout_view",
-    "assets/js/jobs/jobs_model",
+    "assets/js/apps/landerds/jobs/jobs_model",
   ],
   function(Landerds, ReportBrokenLayout, JobModel) {
     Landerds.module("LandersApp.Landers.ReportBroken", function(ReportBroken, Landerds, Backbone, Marionette, $, _) {

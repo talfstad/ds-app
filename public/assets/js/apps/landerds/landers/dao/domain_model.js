@@ -1,5 +1,5 @@
 define(["app",
-        "assets/js/jobs/jobs_base_gui_model"], 
+        "assets/js/apps/landerds/jobs/jobs_base_gui_model"], 
 function(Landerds, JobsGuiBaseModel){
   var DomainModel = JobsGuiBaseModel.extend({
   	urlRoot: '/api/domains',

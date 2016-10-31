@@ -1,6 +1,6 @@
 define(["app",
     "assets/js/apps/landerds/domains/add_new_domain/views/add_new_domain_layout_view",
-    "assets/js/jobs/jobs_model",
+    "assets/js/apps/landerds/jobs/jobs_model",
     "assets/js/apps/landerds/domains/dao/domain_model"
   ],
   function(Landerds, AddNewDomainLayoutView, JobModel, DomainModel) {

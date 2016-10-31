@@ -2,17 +2,7 @@
 <header id="first-topbar" class="alt">
 </header>
 <header id="topbar" class="">
-  <ol class="topbar-documentation-title breadcrumb" style="display: none">
-    <li class="crumb-active" style="font-size: 20px; color: #222">
-      <span style="position: relative; top: 1px" class="icon-landers_icon"></span>
-      <span>Landing Pages</span>
-    </li>
-    <li class="crumb-trail" style="display: none;">Showing <span class="showing-low">1</span>-<span class="showing-high">10</span> of <span class="showing-total">72</span></li>
-    <li class="crumb-trail" style="display: inline-block;">
-      Documentation
-    </li>
-  </ol>
-  <div class="hide-for-documentation admin-form dropdown pull-left">
+  <div class="admin-form dropdown pull-left">
     <button data-toggle="dropdown" role="button" aria-expanded="false" type="button" class="rows-per-page pl10 pt5 pb5 btn btn-default btn-gradient dark">
       <span class="fa fa-caret-down"></span>
       <span><span class="rows-per-page-number">10</span> Rows Per Page</span>
@@ -41,7 +31,7 @@
       </li>
     </ul>
   </div>
-  <div class="hide-for-documentation admin-form dropdown pull-left">
+  <div class="admin-form dropdown pull-left">
     <button data-toggle="dropdown" style="text-align: left" role="button" aria-expanded="false" type="button" class="ml10 w210 pl10 pt5 pb5 btn btn-default btn-gradient dark">
       <span class="fa fa-caret-down pr5"></span> Sort By:
       <span class="sortbyname">Lander Name</span>
@@ -72,7 +62,7 @@
       </div>
     </ul>
   </div>
-  <ul class="hide-for-documentation nav nav-list nav-list-topbar pull-left">
+  <ul class="nav nav-list nav-list-topbar pull-left">
     <form class="admin-form theme-primary navbar-form navbar-search pull-left mtn mbn" role="search">
       <div class="search-dropdown dropdown pull-left mt10 form-group">
         <input data-toggle="dropdown" aria-expanded="false" type="text" class="gui-input list-search w250 form-control" placeholder="Search Landers..." value="">
@@ -97,7 +87,7 @@
     </form>
   </ul>
   <div class="topbar-right hidden-xs hidden-sm">
-    <div class="hide-for-documentation bs-component btn-group">
+    <div class="bs-component btn-group">
       <button type="button" class="rip-and-deploy-button pl10 pt5 pb5 btn btn-default btn-gradient dark">
         <span class="fa fa-cloud-download pr5"></span>Rip Lander
       </button>
@@ -113,7 +103,7 @@
 <!-- End: Topbar -->
 <!-- Begin: Content -->
 <section id="content" class="list-content">
-  <div class="hide-for-documentation" style="position: absolute; width: 100%; font-size: 11px; font-weight: 600">
+  <div class="" style="position: absolute; width: 100%; font-size: 11px; font-weight: 600">
     <div style="float: left; margin-left: 15px; margin-bottom: 10px">Landing Page Name</div>
     <div style="float: right; margin-right: 88px; margin-bottom: 10px">Deployed Domains</div>
     <div style="float: right; margin-right: 50px; margin-bottom: 10px">Groups on Lander</div>
@@ -123,7 +113,7 @@
   <div id="landers-region" class="landers-list-items">
   </div>
 </section>
-<section class="hide-for-documentation footer">
+<section class="footer">
   <div id="footer-region" class="footer-container">
   </div>
 </section>

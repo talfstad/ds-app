@@ -1,6 +1,6 @@
 define(["app",
     "assets/js/apps/landerds/landers/undeploy_group/views/undeploy_group_layout_view",
-    "assets/js/jobs/jobs_model"
+    "assets/js/apps/landerds/jobs/jobs_model"
   ],
   function(Landerds, UndeployLayoutView, JobModel) {
     Landerds.module("LandersApp.Landers.List.Groups.Undeploy", function(Undeploy, Landerds, Backbone, Marionette, $, _) {

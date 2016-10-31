@@ -1,9 +1,9 @@
 define(["app",
     "assets/js/apps/landerds/landers/list/views/list_view",
     "assets/js/apps/landerds/landers/dao/lander_collection",
-    "assets/js/common/filtered_paginated/filtered_paginated_collection",
-    "assets/js/common/filtered_paginated/paginated_model",
-    "assets/js/common/filtered_paginated/paginated_button_view",
+    "assets/js/apps/landerds/common/filtered_paginated/filtered_paginated_collection",
+    "assets/js/apps/landerds/common/filtered_paginated/paginated_model",
+    "assets/js/apps/landerds/common/filtered_paginated/paginated_button_view",
     "assets/js/apps/landerds/landers/list/views/topbar_view",
     "assets/js/apps/landerds/landers/list/views/loading_view",
     "assets/js/apps/landerds/landers/list/views/domain_tab_handle_view",
@@ -11,21 +11,19 @@ define(["app",
     "assets/js/apps/landerds/landers/list/deployed_domains/views/deployed_domains_collection_view",
     "assets/js/apps/landerds/domains/dao/domain_collection",
     "assets/js/apps/landerds/landers/list/active_groups/views/active_groups_collection_view",
-    "assets/js/jobs/jobs_model",
+    "assets/js/apps/landerds/jobs/jobs_model",
     "assets/js/apps/landerds/landers/dao/lander_model",
     "assets/js/apps/landerds/landers/dao/active_group_model",
-    "assets/js/common/notification",
+    "assets/js/apps/landerds/common/notification",
     "assets/js/apps/landerds/base_classes/list/list_controller_base",
     "assets/js/apps/landerds/landers/dao/deployed_domain_model",
-    "assets/js/apps/landerds/landers/list/documentation/views/documentation_view",
-    "assets/js/apps/help/help_app",
+    "assets/js/apps/landerds/help/help_app",
     "assets/js/apps/landerds/landers/list/views/list_layout_view"
   ],
   function(Landerds, ListView, LanderCollection, FilteredPaginatedCollection, PaginatedModel,
     PaginatedButtonView, TopbarView, LoadingView, DeployStatusView, GroupsTabHandleView,
     DeployedDomainsView, DeployedDomainsCollection, ActiveGroupsView,
-    JobModel, LanderModel, ActiveGroupModel, Notification, BaseListController, DeployedDomainModel,
-    DocumentationView) {
+    JobModel, LanderModel, ActiveGroupModel, Notification, BaseListController, DeployedDomainModel) {
     Landerds.module("LandersApp.Landers.List", function(List, Landerds, Backbone, Marionette, $, _) {
 
       List.Controller = _.extend({ //BaseListController
@@ -56,34 +54,6 @@ define(["app",
           //set initial topbar view crap reloads when data loads
           var topbarView = new TopbarView({
             model: new PaginatedModel
-          });
-
-          this.listLayout.on("destroy", function() {
-            //manually destroy our list view when layout view is destroyed.
-            //we do this so we dont have to keep recreating our list view if we
-            //toggle documentation, etc.
-            me.listView.destroy();
-          });
-
-          this.listLayout.on("showDocumentation", function() {
-            if (me.listLayout.isRendered) {
-              me.showDocumentation();
-            }
-          });
-
-          this.listLayout.on("showListView", function(isNotUserTriggered) {
-            //if not user triggered and showing documentation then don't show listView
-            if (!isNotUserTriggered || me.listLayout.landersCollectionRegion.currentView.id != "documentation") {
-
-              if (me.listView) {
-                me.listLayout.landersCollectionRegion.show(me.listView);
-                if (!isNotUserTriggered) {
-                  me.filteredCollection.trigger("reset");
-                }
-              } else {
-                me.listLayout.landersCollectionRegion.show(loadingView);
-              }
-            }
           });
 
           this.listLayout.topbarRegion.show(topbarView);
@@ -143,8 +113,8 @@ define(["app",
               me.filteredCollection.setPageSize(pageSize);
             });
 
-            var isNotUserTriggered = true;
-            me.listLayout.trigger("showListView", isNotUserTriggered);
+            me.listLayout.landersCollectionRegion.show(me.listView);
+
 
             var filterCollection = function() {
               var filterVal = $(".list-search").val() || "";
@@ -331,17 +301,6 @@ define(["app",
               }
             }
           });
-        },
-
-        showDocumentation: function(itemToSelect) {
-          Landerds.trigger("landers:closesidebar");
-          var documentationView = new DocumentationView({ itemToSelect: itemToSelect });
-          this.listLayout.landersCollectionRegion.show(documentationView, { preventDestroy: true });
-        },
-
-        showDeploymentFolderHelp: function() {
-          this.listLayout.toggleHelpInfo();
-          this.showDocumentation("#other-right-hand-panel-actions");
         },
 
         undeployLanderFromDomains: function(undeployAttr) {

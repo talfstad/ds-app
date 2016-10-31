@@ -1,6 +1,6 @@
 define(["app",
     "assets/js/apps/landerds/groups/undeploy_domain/views/undeploy_domain_layout_view",
-    "assets/js/jobs/jobs_model"
+    "assets/js/apps/landerds/jobs/jobs_model"
   ],
   function(Landerds, RemoveDomainFromGroupsLayout, JobModel) {
     Landerds.module("GroupsApp.Groups.RemoveDomain", function(RemoveDomain, Landerds, Backbone, Marionette, $, _) {

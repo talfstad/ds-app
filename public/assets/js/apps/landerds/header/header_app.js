@@ -1,6 +1,6 @@
 define(["app",
     "assets/js/apps/landerds/header/list/list_controller",
-    "assets/js/common/login/common_login"
+    "assets/js/apps/landerds/common/login/common_login"
   ],
   function(Landerds, ListController, CommonLogin) {
     Landerds.module("HeaderApp", function(Header, Landerds, Backbone, Marionette, $, _) {

@@ -1,6 +1,6 @@
 define(["app",
     "tpl!assets/js/apps/landerds/landers/right_sidebar/templates/sidebar_landers.tpl",
-    "assets/js/common/notification"
+    "assets/js/apps/landerds/common/notification"
   ],
   function(Landerds, sidebarLanders, Notification) {
 

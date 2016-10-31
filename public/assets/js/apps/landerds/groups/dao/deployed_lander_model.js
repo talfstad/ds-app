@@ -1,6 +1,6 @@
 define(["app",
-    "assets/js/jobs/jobs_base_gui_model",
-    "assets/js/jobs/jobs_app"
+    "assets/js/apps/landerds/jobs/jobs_base_gui_model",
+    "assets/js/apps/landerds/jobs/jobs_app"
   ],
   function(Landerds, JobsGuiBaseModel) {
     var DeployedLanderModel = JobsGuiBaseModel.extend({

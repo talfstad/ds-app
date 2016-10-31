@@ -1,7 +1,7 @@
 define(["app",
     "assets/js/apps/landerds/landers/rip_lander/views/rip_lander_layout_view",
     "assets/js/apps/landerds/landers/rip_lander/cancel_rip_lander/cancel_rip_lander_controller",
-    "assets/js/jobs/jobs_model",
+    "assets/js/apps/landerds/jobs/jobs_model",
   ],
   function(Landerds, RipNewLanderLayoutView, CancelRipLanderController, JobModel) {
     Landerds.module("LandersApp.Landers.RipNewLander", function(RipNewLander, Landerds, Backbone, Marionette, $, _) {

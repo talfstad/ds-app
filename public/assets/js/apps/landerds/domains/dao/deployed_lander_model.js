@@ -1,10 +1,10 @@
 define(["app",
-    "assets/js/jobs/jobs_base_gui_model",
+    "assets/js/apps/landerds/jobs/jobs_base_gui_model",
     "assets/js/apps/landerds/domains/dao/active_group_collection",
     "assets/js/apps/landerds/base_classes/deployed_rows/models/deployed_row_base_model",
     "assets/js/apps/landerds/landers/dao/url_endpoint_collection",
     "assets/js/apps/landerds/landers/dao/deployed_domain_collection",
-    "assets/js/jobs/jobs_app"
+    "assets/js/apps/landerds/jobs/jobs_app"
   ],
   function(Landerds, JobsGuiBaseModel, ActiveGroupCollection, DeployedRowBaseModel,
     UrlEndpointCollection, DeployedDomainCollection) {

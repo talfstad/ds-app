@@ -1,6 +1,6 @@
 define(["app",
     "assets/js/apps/landerds/groups/add_new_group/views/add_new_group_layout_view",
-    "assets/js/jobs/jobs_model",
+    "assets/js/apps/landerds/jobs/jobs_model",
     "assets/js/apps/landerds/groups/dao/group_model"
   ],
   function(Landerds, AddNewGroupLayoutView, JobModel, GroupModel) {
