@@ -14,6 +14,7 @@
       <!-- Start: Sidebar Left Content -->
       <div class="sidebar-left-content nano-content">
         <!-- Start: Sidebar Menu -->
+    
         <ul class="nav sidebar-menu">
           <li class="sidebar-label pt20">Account</li>
           <li>
@@ -156,13 +157,10 @@
             </aside>
           </div>
           <div class="documentation-content-text-container">
-            <header id="topbar" class="">
-              <button type="button" class="toggle-help-info btn btn-default dark pl10 pt5 pb5 active">
-                <i class="fa fa-close"></i>
-              </button>
-            </header>
+            <button type="button" class="toggle-help-info btn btn-default dark pl10 pt5 pb5 active">
+              <i class="fa fa-close"></i>
+            </button>
             <section>
-              <h1 class="page-header">Lander DS </h1>
               <h2 id="amazon-web-services">Amazon Web Services</h2>
               <h3>Upon logging in for the first time:</h3>
               <p>Create an AWS account if you don't already have one. Follow the instructions provided on the panel to establish your credentials. You will not be able to proceed until you have set up your AWS account.

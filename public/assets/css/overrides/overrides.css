@@ -809,8 +809,10 @@ body.onload-check #sidebar_left {
 }
 
 .toggle-help-info {
-    position: absolute;
-    right: 25px;
+    position: fixed;
+    right: 20px;
+    margin-top: 5px;
+    z-index: 1;
 }
 
 .sidebar-left-content {
@@ -847,6 +849,6 @@ body.onload-check #sidebar_left {
 #docs .note-editor.note-frame {
     position: fixed;
     width: 100%;
-    margin-top: -5px;
+    margin-top: -8px;
     z-index: 3;
 }

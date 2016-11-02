@@ -8,6 +8,10 @@ define(["app",
 
       template: DocumentationTpl,
 
+      events: {
+        "click .toggle-help-info": "toggle"
+      },
+
       toggle: function() {
         this.$el.toggleClass("active");
 

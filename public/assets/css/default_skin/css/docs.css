@@ -395,7 +395,7 @@ body.left-col-hidden #left-col-toggle {
 
 ul.tray-nav {
     border-right: none;
-    margin: 15px -16px 15px -15px;
+    margin: 40px -16px 15px -15px;
 }
 
 #docs-content tray-left {
@@ -414,7 +414,7 @@ section.bs-docs-section {
 #docs-content .tab-pane {}
 
 .documentation-content-text-container > section {
-    padding: 15px;
+    padding: 3px 20px;
 }
 
 .documentation-content-text-container {
