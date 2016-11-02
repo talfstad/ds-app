@@ -1,30 +1,32 @@
-<div class="note-editor note-frame">
-  <div class="note-statusbar" style="display: block;">
-    <div class="note-resizebar">
-      <div class="note-icon-bar"></div>
-      <div class="note-icon-bar"></div>
-      <div class="note-icon-bar"></div>
+<div class="docs-resize">
+  <button type="button" class="toggle-help-info btn btn-default dark pl10 pt5 pb5 active">
+    <i class="fa fa-close"></i>
+  </button>
+  <div class="docs-statusbar">
+    <div class="docs-resizebar">
+      <div class="docs-icon-bar"></div>
+      <div class="docs-icon-bar"></div>
+      <div class="docs-icon-bar"></div>
     </div>
   </div>
 </div>
-<div class="row table-layout">
+<div class="row table-layout docs-target-resize">
   <!-- Documentation Nav -->
   <div class="col-left-documentation left-col">
     <aside id="sidebar_left" class="pt0 nano nano-light">
       <!-- Start: Sidebar Left Content -->
       <div class="sidebar-left-content nano-content">
         <!-- Start: Sidebar Menu -->
-    
-        <ul class="nav sidebar-menu">
+        <ul class="nav sidebar-menu" role="tablist">
           <li class="sidebar-label pt20">Account</li>
           <li>
-            <a class="accordion-toggle" href="#">
+            <a class="accordion-toggle menu-open" href="#">
               <span class="glyphicon glyphicon-fire"></span>
               <span class="sidebar-title">Setting up AWS</span>
               <span class="caret"></span>
             </a>
             <ul class="nav sub-nav">
-              <li>
+              <li class="active">
                 <a data-toggle="tab" href="#introduction">
                   <span class="glyphicon glyphicon-equalizer"></span> General </a>
               </li>
@@ -130,7 +132,7 @@
   <div class="fs15 col-right-documentation center-col va-t">
     <div id="docs-content" class="tab-content pn">
       <!-- GENERAL -->
-      <div class="tab-pane fade" id="introduction" role="tabpanel">
+      <div class="tab-pane fade in active" id="introduction" role="tabpanel">
         <section class="bs-docs-section">
           <div id="nav-spy" class="fs15 left-table-of-contents " style="">
             <aside class="ohidden" style="">
@@ -157,50 +159,55 @@
             </aside>
           </div>
           <div class="documentation-content-text-container">
-            <button type="button" class="toggle-help-info btn btn-default dark pl10 pt5 pb5 active">
-              <i class="fa fa-close"></i>
-            </button>
             <section>
-              <h2 id="amazon-web-services">Amazon Web Services</h2>
-              <h3>Upon logging in for the first time:</h3>
-              <p>Create an AWS account if you don't already have one. Follow the instructions provided on the panel to establish your credentials. You will not be able to proceed until you have set up your AWS account.
-                <br>
-              </p>
-              <div class="bs-example">
-                <img src="/assets/images/documentation/aws.png" alt="AWS" style="width:640px;height:360px;">
+              <div class="sub-section">
+                <h2 id="amazon-web-services">Amazon Web Services</h2>
+                <h3>Upon logging in for the first time:</h3>
+                <p>Create an AWS account if you don't already have one. Follow the instructions provided on the panel to establish your credentials. You will not be able to proceed until you have set up your AWS account.
+                  <br>
+                </p>
+                <div class="bs-example">
+                  <img src="/assets/images/documentation/aws.png" alt="AWS" style="width:640px;height:360px;">
+                </div>
               </div>
-              <h2 id="navigation">Navigation</h2>
-              <div class="bs-example">
-                <p> On the top left of the panel, you will find that you can navigate between Landing Pages, Groups, and Domains. The sorting, paging, and search also show up on the top left corner of the panel for all three items.</p>
-                <img src="/assets/images/documentation/navigation.png" alt="Navigation" style="width:640px;height:360px;">
-                <br>
-                <br>
-                <p> The top right of the panel displays your log in. This is where you can log out of Lander DS or update your AWS credentials. On Landing pages, the rip and add funtions show up here. For domains and groups, the add function is displayed in this area. The illustrations show the columns that are displayed for each item.</p>
-                <img src="/assets/images/documentation/navigation1.png" alt="Navigation" style="width:640px;height:360px;">
-                <br>
-                <br>
-                <p> On the bottom right corner of the Lander DS panel, you'll find a blue speech bubble. Click on this to message Lifen or Trevor directly! We will respond within 24 hours.</p>
-                <img src="/assets/images/documentation/navigation2.png" alt="Navigation" style="width:640px;height:360px;">
+              <div class="sub-section">
+                <h2 id="navigation">Navigation</h2>
+                <div class="bs-example">
+                  <p> On the top left of the panel, you will find that you can navigate between Landing Pages, Groups, and Domains. The sorting, paging, and search also show up on the top left corner of the panel for all three items.</p>
+                  <img src="/assets/images/documentation/navigation.png" alt="Navigation" style="width:640px;height:360px;">
+                  <br>
+                  <br>
+                  <p> The top right of the panel displays your log in. This is where you can log out of Lander DS or update your AWS credentials. On Landing pages, the rip and add funtions show up here. For domains and groups, the add function is displayed in this area. The illustrations show the columns that are displayed for each item.</p>
+                  <img src="/assets/images/documentation/navigation1.png" alt="Navigation" style="width:640px;height:360px;">
+                  <br>
+                  <br>
+                  <p> On the bottom right corner of the Lander DS panel, you'll find a blue speech bubble. Click on this to message Lifen or Trevor directly! We will respond within 24 hours.</p>
+                  <img src="/assets/images/documentation/navigation2.png" alt="Navigation" style="width:640px;height:360px;">
+                </div>
               </div>
-              <h2 id="password-reset">Password Reset</h2>
-              <h3>How do I reset my password?</h3>
-              <p> 1. Click on "Forgot Password" on the top right corner of the log-in page.
-                <br>2. Enter the email which you use to log in with.
-                <br>3. Check your email for a message from "Trevor" from Lander DS.
-                <br>4. Choose a new password and confirm it.
-                <br>5. Click the blue "Reset Password" button on the bottom right corner.</p>
-              <div class="bs-example">
-                <img src="/assets/images/documentation/select.password.png" alt="Select Password" style="width:640px;height:360px;">
+              <div class="sub-section">
+                <h2 id="password-reset">Password Reset</h2>
+                <h3>How do I reset my password?</h3>
+                <p> 1. Click on "Forgot Password" on the top right corner of the log-in page.
+                  <br>2. Enter the email which you use to log in with.
+                  <br>3. Check your email for a message from "Trevor" from Lander DS.
+                  <br>4. Choose a new password and confirm it.
+                  <br>5. Click the blue "Reset Password" button on the bottom right corner.</p>
+                <div class="bs-example">
+                  <img src="/assets/images/documentation/select.password.png" alt="Select Password" style="width:640px;height:360px;">
+                </div>
               </div>
-              <h2 id="search-and-sort">Seach and Sort</h2>
-              <h3>How do I search for a landing page, note, or domain?</h3>
-              <p>1. Go to the panel of the item you'd like to search: landing pages, groups, or domains.
-                <br>2. Type in the key words that you'd like to search.
-                <br>3. Choose whether you'd like to search just the item, if you would like to search within the notes, or both.</p>
-              <h3>Sorting</h3>
-              <p>You can sort your landing pages, groups, and domains in groups of 10 per page, 20 per page, or 50 per page. You can also sort them by name in alpha-numerical order or by the "created on" date both in either ascending or descending order. You can also use the search option to sort whatever items you wish to work on.</p>
-              <div class="bs-example">
-                <img src="/assets/images/documentation/search.png" alt="Select Password" style="width:640px;height:360px;">
+              <div class="sub-section">
+                <h2 id="search-and-sort">Seach and Sort</h2>
+                <h3>How do I search for a landing page, note, or domain?</h3>
+                <p>1. Go to the panel of the item you'd like to search: landing pages, groups, or domains.
+                  <br>2. Type in the key words that you'd like to search.
+                  <br>3. Choose whether you'd like to search just the item, if you would like to search within the notes, or both.</p>
+                <h3>Sorting</h3>
+                <p>You can sort your landing pages, groups, and domains in groups of 10 per page, 20 per page, or 50 per page. You can also sort them by name in alpha-numerical order or by the "created on" date both in either ascending or descending order. You can also use the search option to sort whatever items you wish to work on.</p>
+                <div class="bs-example">
+                  <img src="/assets/images/documentation/search.png" alt="Select Password" style="width:640px;height:360px;">
+                </div>
               </div>
             </section>
           </div>

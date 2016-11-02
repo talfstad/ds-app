@@ -1,7 +1,8 @@
 define(["app",
     "tpl!assets/js/apps/landerds/documentation/list/templates/documentation_list.tpl",
+    "interact"
   ],
-  function(Landerds, DocumentationTpl) {
+  function(Landerds, DocumentationTpl, interact) {
     var DocumentationContentView = Marionette.LayoutView.extend({
 
       id: "documentation-list",
@@ -12,13 +13,36 @@ define(["app",
         "click .toggle-help-info": "toggle"
       },
 
-      toggle: function() {
-        this.$el.toggleClass("active");
+      toggle: function(e) {
+        if (e) e.preventDefault();
 
-        if (this.$el.hasClass("active")) {
+        var target = $(".docs-container");
+        target.height($("body").height() * 0.5);
+        target.toggleClass("active");
+
+        if (target.hasClass("active")) {
+          //max and mins
+          var maxDocumentationHeight = $('html').outerHeight() - 170;
+          var minDocumentationHeight = 125;
+
+          var newHeight = target.height();
+          if (newHeight > maxDocumentationHeight) newHeight = maxDocumentationHeight;
+          if (newHeight < minDocumentationHeight) newHeight = minDocumentationHeight;
+          target.height(newHeight);
+
           $("#docs-button").hide();
+
+          //pad the content so we can still scroll it
+          $("#main").css("padding-bottom", newHeight + "px");
+          $(".sidebar-right-content > .panel").css("padding-bottom", newHeight + "px");
+
         } else {
           $("#docs-button").show();
+
+          //remove padding for documentation
+          $("#main").css("padding-bottom", "0px");
+          $(".sidebar-right-content > .panel").css("padding-bottom", "0px");
+
         }
       },
 
@@ -31,33 +55,75 @@ define(["app",
       },
 
       onDomRefresh: function() {
-        var offset = 0;
-
-        $("body").scrollspy({
+        $(".docs-container").scrollspy({
           target: ".nav-spy",
-          offset: offset
+          offset: 10
         });
+
       },
 
       onRender: function() {
         var me = this;
 
+        interact('.docs-container')
+          .resizable({
+            preserveAspectRatio: false,
+            edges: { left: false, right: false, bottom: false, top: true }
+          })
+          .on('resizemove', function(event) {
+            var target = event.target,
+              x = (parseFloat(target.getAttribute('data-x')) || 0),
+              y = (parseFloat(target.getAttribute('data-y')) || 0);
+
+            //max and mins
+            var maxDocumentationHeight = $('html').outerHeight() - 170;
+            var minDocumentationHeight = 125;
+
+            var newHeight = event.rect.height;
+            if (newHeight > maxDocumentationHeight) newHeight = maxDocumentationHeight;
+            if (newHeight < minDocumentationHeight) newHeight = minDocumentationHeight;
+
+            // update the element's style
+            target.style.width = event.rect.width + 'px';
+            target.style.height = newHeight + 'px';
+
+            // translate when resizing from top or left edges
+            x += event.deltaRect.left;
+            y += event.deltaRect.top;
+
+            target.setAttribute('data-x', x);
+            target.setAttribute('data-y', y);
+
+            //resize the left navbars
+            $(".documentation.nav-spy").css("max-height", newHeight + "px");
+            $("#documentation-list ul.nav.sidebar-menu").css("max-height", newHeight + "px");
+
+            //pad the content so we can still scroll it
+            $("#main").css("padding-bottom", newHeight + "px");
+            $(".sidebar-right-content > .panel").css("padding-bottom", newHeight + "px");
+
+          });
+
+
         // Add smooth scrolling on all links inside the navbar
-        this.$el.find(".nav-spy a").on('click', function(event) {
+        this.$el.find(".nav-spy a").on('click', function(e) {
 
           // Make sure this.hash has a value before overriding default behavior
           if (this.hash !== "") {
 
             // Prevent default anchor click behavior
-            event.preventDefault();
+            e.preventDefault();
 
-            // Store hash
+
+            //make relative to current scroll position
             var hash = this.hash;
-            var titleOffset = 118;
+            var currentScrollTop = $(".docs-container").scrollTop();
+            var scrollToVal = currentScrollTop + ($(hash).position().top + 0);
+
             // Using jQuery's animate() method to add smooth page scroll
             // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
             $(".docs-container").animate({
-              scrollTop: ($(hash).offset().top)
+              scrollTop: scrollToVal
             }, 800, function() {
 
               // Add hash (#) to URL when done scrolling (default click behavior)
@@ -78,14 +144,12 @@ define(["app",
           return false;
         };
 
-        //listen to affix event
-        // $("#topbar").on("affix.bs.affix", function() {
-        //   $(this).find(".topbar-documentation-title").fadeIn("fast");
-        // });
 
-        // $("#topbar").on("affix-top.bs.affix", function() {
-        //   $(this).find(".topbar-documentation-title").hide();
-        // });
+        this.$el.find(".nav.sidebar-menu .sub-nav a").on('show.bs.tab', function() {
+          //stop the left nav from refreshing (fade in) every time if div is scrolled (no idea why it refreshes w/o this)
+
+          $(".docs-container").scrollTop(0);
+        });
 
         this.$el.find('.return-top').on('click', function(e) {
           e.preventDefault();
@@ -130,10 +194,6 @@ define(["app",
           }
 
         });
-
-
-
-
 
       }
     });

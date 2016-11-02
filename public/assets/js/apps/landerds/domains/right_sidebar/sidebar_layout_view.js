@@ -21,7 +21,7 @@ define(["app",
           "click .delete-domain-button": "showDeleteDomainModal",
         },
 
-      
+
         showJsSnippetsModal: function(e) {
           Landerds.trigger("domains:showJsSnippetsModal", this.model);
         },
@@ -68,6 +68,12 @@ define(["app",
           var Body = $("body");
           if (!Body.hasClass('sb-r-o')) {
             Body.addClass('sb-r-o').removeClass("sb-r-c");
+          }
+
+          if ($(".docs-container.active").length) {
+            //set padding for documentation if it is open
+            var newHeight = $(".docs-container").height();
+            $(".sidebar-right-content > .panel").css("padding-bottom", newHeight + "px");
           }
         },
 

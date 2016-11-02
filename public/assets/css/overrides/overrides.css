@@ -740,7 +740,7 @@ body.onload-check #sidebar_left {
 }
 
 #docs-button {
-    z-index: 2147483000;
+    z-index: 2147482999;
     position: fixed;
 }
 
@@ -800,18 +800,14 @@ body.onload-check #sidebar_left {
     /*padding-bottom: 5px;*/
 }
 
-#documentation-list {
-    display: none;
-}
-
-#documentation-list.active {
+.docs-container.active {
     display: block;
 }
 
 .toggle-help-info {
     position: fixed;
     right: 20px;
-    margin-top: 5px;
+    margin-top: 15px;
     z-index: 1;
 }
 
@@ -833,6 +829,7 @@ body.onload-check #sidebar_left {
     bottom: 0;
     height: 300px;
     overflow: auto;
+    display: none;
 }
 
 .documentation.nav-spy {
@@ -841,14 +838,41 @@ body.onload-check #sidebar_left {
     padding-right: 16px;
 }
 
-#docs .note-editor.note-frame .note-statusbar .note-resizebar {
+#docs .docs-resize .docs-resizebar {
+    width: 100%;
+    height: 8px;
+    padding-top: 1px;
+    cursor: ns-resize;
     border-bottom: 1px solid #dedede;
 }
 
+#docs .docs-resize .docs-statusbar {
+    background-color: rgb(245, 245, 245);
+}
 
-#docs .note-editor.note-frame {
+#docs .docs-resize .docs-statusbar .docs-resizebar .docs-icon-bar {
+    width: 20px;
+    margin: 1px auto;
+    border-top: 1px solid rgb(169, 169, 169);
+}
+
+#docs .docs-resize {
     position: fixed;
     width: 100%;
     margin-top: -8px;
     z-index: 3;
+}
+
+#right-sidebar #sidebar_right.affix {
+    transform: initial;
+}
+
+.documentation-content-text-container h2 {
+    padding: 0;
+    margin: 15px 0 15px;
+    border: none;
+}
+
+.documentation-content-text-container .sub-section {
+    margin-bottom: 50px;
 }
