@@ -41,6 +41,11 @@ body {
 }
 
 #sidebar_left {
+    position: fixed;
+    top: initial;
+    left: initial;
+    right: initial;
+    bottom: initial;
     width: 230px;
 }
 
@@ -735,17 +740,22 @@ body.onload-check #sidebar_left {
 }
 
 #docs-button {
+    z-index: 2147483000;
+    position: fixed;
+}
+
+#documentation-button-container {
     position: fixed;
     bottom: 60px;
     right: 115px;
 }
 
-#documentation-button > .documentation-button-container {
+#documentation-button-container > .documentation-button {
     border: 1px solid #999;
     background-position: 50% 50%;
     bottom: 0px;
     box-shadow: rgba(0, 0, 0, 0.227451) 0px 6px 13px 0px;
-    color: #666666;    
+    color: #666666;
     cursor: pointer;
     height: 42px;
     width: 42px;
@@ -768,13 +778,18 @@ body.onload-check #sidebar_left {
     outline: rgb(102, 102, 102) none 0px;
 }
 
-#documentation-button > .documentation-button-container:hover {
+#documentation-region {
+    position: relative;
+    bottom: 0;
+    overflow: auto;
+}
+
+#documentation-button-container > .documentation-button:hover {
     opacity: 1;
     background-color: #e1e1e1;
 }
 
-
-#documentation-button > .documentation-button-container > .documentation-button {
+#documentation-button-container > .documentation-button > i {
     position: relative;
     top: 11px;
     left: 17px;
@@ -783,4 +798,55 @@ body.onload-check #sidebar_left {
 
 .page-size-dropdown {
     /*padding-bottom: 5px;*/
+}
+
+#documentation-list {
+    display: none;
+}
+
+#documentation-list.active {
+    display: block;
+}
+
+.toggle-help-info {
+    position: absolute;
+    right: 25px;
+}
+
+.sidebar-left-content {
+    overflow: hidden;
+}
+
+.sidebar-left-content ul.nav.sidebar-menu {
+    max-height: 290px;
+    overflow: auto;
+}
+
+.posfixed {
+    position: fixed !important;
+}
+
+.docs-container {
+    position: fixed;
+    bottom: 0;
+    height: 300px;
+    overflow: auto;
+}
+
+.documentation.nav-spy {
+    max-height: 300px;
+    overflow: auto;
+    padding-right: 16px;
+}
+
+#docs .note-editor.note-frame .note-statusbar .note-resizebar {
+    border-bottom: 1px solid #dedede;
+}
+
+
+#docs .note-editor.note-frame {
+    position: fixed;
+    width: 100%;
+    margin-top: -5px;
+    z-index: 3;
 }

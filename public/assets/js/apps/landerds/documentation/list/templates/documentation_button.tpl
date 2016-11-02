@@ -1,3 +1,3 @@
-<div class="documentation-button-container">
-  	<i class="documentation-button fa fa-info"></i>
+<div class="documentation-button">
+  	<i class="fa fa-info"></i>
 </div>

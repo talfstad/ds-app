@@ -4,30 +4,39 @@ define(["app",
   function(Landerds, DocumentationTpl) {
     var DocumentationContentView = Marionette.LayoutView.extend({
 
-      id: "documentation",
+      id: "documentation-list",
 
       template: DocumentationTpl,
 
+      toggle: function() {
+        this.$el.toggleClass("active");
+
+        if (this.$el.hasClass("active")) {
+          $("#docs-button").hide();
+        } else {
+          $("#docs-button").show();
+        }
+      },
+
       onBeforeRender: function() {
-        $(".list-content").addClass("documentation-content");
+        // $(".list-content").addClass("documentation-content");
       },
 
       onDestroy: function() {
-        $(".list-content").removeClass("documentation-content");
+        // $(".list-content").removeClass("documentation-content");
       },
 
       onDomRefresh: function() {
-
-      },
-
-      onRender: function() {
-
-        var offset = 130;
+        var offset = 0;
 
         $("body").scrollspy({
           target: ".nav-spy",
           offset: offset
         });
+      },
+
+      onRender: function() {
+        var me = this;
 
         // Add smooth scrolling on all links inside the navbar
         this.$el.find(".nav-spy a").on('click', function(event) {
@@ -43,8 +52,8 @@ define(["app",
             var titleOffset = 118;
             // Using jQuery's animate() method to add smooth page scroll
             // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
-            $('html, body').animate({
-              scrollTop: ($(hash).offset().top - titleOffset)
+            $(".docs-container").animate({
+              scrollTop: ($(hash).offset().top)
             }, 800, function() {
 
               // Add hash (#) to URL when done scrolling (default click behavior)
@@ -57,34 +66,22 @@ define(["app",
 
 
         var scrollReset = function() {
-          $("html, body").addClass('scrolling').animate({
+          $(".docs-container").addClass('scrolling').animate({
             scrollTop: 0
           }, 320, function() {
-            $("html, body").removeClass('scrolling')
+            $(".docs-container").removeClass('scrolling')
           });
           return false;
         };
 
-        this.$el.find('#sidebar_left').affix({
-          offset: {
-            top: 60
-          }
-        });
-
-        this.$el.find('.left-table-of-contents').affix({
-          offset: {
-            top: 60
-          }
-        });
-
         //listen to affix event
-        $("#topbar").on("affix.bs.affix", function() {
-          $(this).find(".topbar-documentation-title").fadeIn("fast");
-        });
+        // $("#topbar").on("affix.bs.affix", function() {
+        //   $(this).find(".topbar-documentation-title").fadeIn("fast");
+        // });
 
-        $("#topbar").on("affix-top.bs.affix", function() {
-          $(this).find(".topbar-documentation-title").hide();
-        });
+        // $("#topbar").on("affix-top.bs.affix", function() {
+        //   $(this).find(".topbar-documentation-title").hide();
+        // });
 
         this.$el.find('.return-top').on('click', function(e) {
           e.preventDefault();

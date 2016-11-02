@@ -64,6 +64,13 @@ define(["app",
         }
       };
 
+      Landerds.on("start:landerds", function() {
+        Landerds.intercom.boot(function() {
+          Landerds.documentation.boot();
+        });
+        landerdsRoutes.showLanders();
+      });
+
       Landerds.addInitializer(function() {
         new Landerds.Router({
           controller: landerdsRoutes

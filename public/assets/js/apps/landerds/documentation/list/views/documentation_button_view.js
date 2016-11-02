@@ -4,9 +4,17 @@ define(["app",
   function(Landerds, DocumentationButtonTpl) {
     var DocumentationButtonView = Marionette.ItemView.extend({
 
-      id: "documentation-button",
+      id: "documentation-button-container",
 
       template: DocumentationButtonTpl,
+
+      events: {
+        "click .documentation-button": "toggle"
+      },
+
+      toggle: function() {
+        this.trigger("toggle");
+      },
 
       onRender: function() {
 

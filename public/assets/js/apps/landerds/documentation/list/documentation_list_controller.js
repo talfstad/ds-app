@@ -8,35 +8,40 @@ define(["app",
     Landerds.module("Documentation", function(Documentation, RipManager, Backbone, Marionette, $, _) {
       Documentation.Controller = {
 
-        layout: null,
+        documentationLayoutView: null,
+        documentationListView: null,
 
-        showDocumentation: function() {
-          var DocumentationModel = Backbone.Model.extend();
+        toggle: function() {
+          if (!this.documentationListView) {
+            //load if first time
+            var DocumentationModel = Backbone.Model.extend();
+            this.documentationListView = new DocumentationListView({ model: new DocumentationModel });
+            if (this.documentationLayoutView) this.documentationLayoutView.documentationContentRegion.show(this.documentationListView);
+          }
 
-          var documentationListView = new DocumentationListView({
-            model: new DocumentationModel
-          });
-
-          if (this.layout) this.layout.documentationContentRegion.show(documentationListView);
+          this.documentationListView.toggle();
 
         },
 
         boot: function() {
-
+          var me = this;
           $("body").append('<div id="documentation-region"></div>');
 
           Landerds.addRegions({
             documentationRegion: "#documentation-region"
           });
 
-          this.layout = new DocumentationLayoutView;
+          this.documentationLayoutView = new DocumentationLayoutView;
 
-          Landerds.documentationRegion.show(this.layout);
+          Landerds.documentationRegion.show(this.documentationLayoutView);
 
           var documentationButtonView = new DocumentationButtonView;
-          
-          if (this.layout) this.layout.documentationButtonRegion.show(documentationButtonView);
 
+          documentationButtonView.on("toggle", function() {
+            me.toggle();
+          });
+
+          if (this.documentationLayoutView) this.documentationLayoutView.documentationButtonRegion.show(documentationButtonView);
         }
       }
 
