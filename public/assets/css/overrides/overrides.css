@@ -678,9 +678,11 @@ a.download-optimized-lander:hover {
 }
 
 body.onload-check #sidebar_left {
+    -webkit-transform: translateZ(0);
     -webkit-transition: none;
     transition: none;
 }
+
 
 .left-table-of-contents.affix {
     position: fixed;
@@ -815,9 +817,13 @@ body.onload-check #sidebar_left {
     overflow: hidden;
 }
 
-.sidebar-left-content ul.nav.sidebar-menu {
-    max-height: 290px;
+.sidebar-left-content {
+    /*height: 290px;*/
     overflow: auto;
+}
+
+.sidebar-left-content ul.nav.sidebar-menu {
+    height: 100%;
 }
 
 .posfixed {
@@ -828,12 +834,13 @@ body.onload-check #sidebar_left {
     position: fixed;
     bottom: 0;
     height: 300px;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     display: none;
 }
 
 .documentation.nav-spy {
-    max-height: 300px;
+    /*height: 300px;*/
     overflow: auto;
     padding-right: 16px;
 }
@@ -841,6 +848,7 @@ body.onload-check #sidebar_left {
 #docs .docs-resize .docs-resizebar {
     width: 100%;
     height: 8px;
+    -webkit-transform: translateZ(0);
     padding-top: 1px;
     cursor: ns-resize;
     border-bottom: 1px solid #dedede;
@@ -859,7 +867,7 @@ body.onload-check #sidebar_left {
 #docs .docs-resize {
     position: fixed;
     width: 100%;
-    margin-top: -8px;
+    margin-top: 0px;
     z-index: 3;
 }
 
@@ -873,6 +881,11 @@ body.onload-check #sidebar_left {
     border: none;
 }
 
+
 .documentation-content-text-container .sub-section {
     margin-bottom: 50px;
 }
+.documentation-content-text-container .sub-section:last-child {
+    margin-bottom: 0px;
+}
+

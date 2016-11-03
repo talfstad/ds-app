@@ -387,6 +387,7 @@ body.left-col-hidden #left-col-toggle {
     border-right: 1px solid #DDD;
     height: 100%;
     background: #f5f5f5;
+    -webkit-transform: translateZ(0);
 }
 
 .left-table-of-contents aside {
@@ -395,7 +396,7 @@ body.left-col-hidden #left-col-toggle {
 
 ul.tray-nav {
     border-right: none;
-    margin: 40px -16px 15px -15px;
+    margin: 48px -16px 58px -15px;
 }
 
 #docs-content tray-left {
@@ -414,7 +415,7 @@ section.bs-docs-section {
 #docs-content .tab-pane {}
 
 .documentation-content-text-container > section {
-    padding: 3px 20px;
+    padding: 10px 20px;
 }
 
 .documentation-content-text-container {

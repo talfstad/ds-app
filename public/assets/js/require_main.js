@@ -32,9 +32,13 @@ requirejs.config({
     "highcharts-more": "vendor/bower_installed/highcharts/highcharts-more",
     "solid-gauge": "vendor/bower_installed/highcharts/modules/solid-gauge",
     "summernote": "vendor/bower_installed/summernote/dist/summernote.min",
-    "interact": "vendor/bower_installed/interact/dist/interact"
+    "interact": "vendor/bower_installed/interact/dist/interact",
+    "nanoscroller": "vendor/bower_installed/nanoscroller/bin/javascripts/jquery.nanoscroller"
   },
   shim: {
+    nanoscroller: {
+      deps: ['jquery']
+    },
     highcharts: {
       deps: ['jquery']
     },

@@ -13,11 +13,11 @@
 <div class="row table-layout docs-target-resize">
   <!-- Documentation Nav -->
   <div class="col-left-documentation left-col">
-    <aside id="sidebar_left" class="pt0 nano nano-light">
+    <aside id="sidebar_left" class="pt0">
       <!-- Start: Sidebar Left Content -->
-      <div class="sidebar-left-content nano-content">
+      <div class="sidebar-left-content nano">
         <!-- Start: Sidebar Menu -->
-        <ul class="nav sidebar-menu" role="tablist">
+        <ul class="nav sidebar-menu nano-content" role="tablist">
           <li class="sidebar-label pt20">Account</li>
           <li>
             <a class="accordion-toggle menu-open" href="#">
@@ -134,7 +134,7 @@
       <!-- GENERAL -->
       <div class="tab-pane fade in active" id="introduction" role="tabpanel">
         <section class="bs-docs-section">
-          <div id="nav-spy" class="fs15 left-table-of-contents " style="">
+          <div class="fs15 left-table-of-contents" style="">
             <aside class="ohidden" style="">
               <div class="nav-spy documentation">
                 <ul class="nav tray-nav tray-nav-border">
@@ -574,7 +574,7 @@
         <h3>Coming Soon! If you have questions, please contact <a href="mailto:lifen.sophia@buildcave.com?subject=Lander DS Inquiry">Leaf</a>.</h3>
       </div>
       <!-- RETURN TO TOP BUTTON -->
-      <div style="margin-left: 300px" class="top-wrapper clearfix">
+      <div style="margin-left: 300px; margin-top: 15px;" class="top-wrapper clearfix">
         <a href="#" class="return-top">Return to Top</a>
       </div>
     </div>

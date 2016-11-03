@@ -1,6 +1,7 @@
 define(["app",
     "tpl!assets/js/apps/landerds/documentation/list/templates/documentation_list.tpl",
-    "interact"
+    "interact",
+    "nanoscroller"
   ],
   function(Landerds, DocumentationTpl, interact) {
     var DocumentationContentView = Marionette.LayoutView.extend({
@@ -29,6 +30,7 @@ define(["app",
           if (newHeight > maxDocumentationHeight) newHeight = maxDocumentationHeight;
           if (newHeight < minDocumentationHeight) newHeight = minDocumentationHeight;
           target.height(newHeight);
+          $(".sidebar-left-content").height(newHeight);
 
           $("#docs-button").hide();
 
@@ -60,10 +62,28 @@ define(["app",
           offset: 10
         });
 
+        setTimeout(function() {
+          $("#documentation-list .nano").nanoScroller();
+        }, 50);
+
       },
 
       onRender: function() {
         var me = this;
+
+        //steps left sidebar on scroll will scroll main content
+        var onMousewheel = function(e) {
+          //scroll the main content
+          var delta = e.originalEvent.wheelDelta;
+          var contentScrollTop = $(".docs-container").scrollTop();
+
+          var scrollTop = contentScrollTop - delta;
+          if (scrollTop < 0) scrollTop = 0;
+          $(".docs-container").scrollTop(scrollTop)
+        };
+
+        //covers chrome and firefox
+        this.$el.find(".left-table-of-contents").bind('DOMMouseScroll mousewheel', onMousewheel);
 
         interact('.docs-container')
           .resizable({
@@ -75,6 +95,9 @@ define(["app",
               x = (parseFloat(target.getAttribute('data-x')) || 0),
               y = (parseFloat(target.getAttribute('data-y')) || 0);
 
+            //if resized and fits the content dont show scroll bar
+            $("#documentation-list .nano").nanoScroller();
+
             //max and mins
             var maxDocumentationHeight = $('html').outerHeight() - 170;
             var minDocumentationHeight = 125;
@@ -84,23 +107,25 @@ define(["app",
             if (newHeight < minDocumentationHeight) newHeight = minDocumentationHeight;
 
             // update the element's style
-            target.style.width = event.rect.width + 'px';
+            // target.style.width = event.rect.width + 'px';
             target.style.height = newHeight + 'px';
 
             // translate when resizing from top or left edges
-            x += event.deltaRect.left;
+            // x += event.deltaRect.left;
             y += event.deltaRect.top;
 
-            target.setAttribute('data-x', x);
+            // target.setAttribute('data-x', x);
             target.setAttribute('data-y', y);
 
             //resize the left navbars
-            $(".documentation.nav-spy").css("max-height", newHeight + "px");
-            $("#documentation-list ul.nav.sidebar-menu").css("max-height", newHeight + "px");
+            $(".documentation.nav-spy").css("height", newHeight + "px");
+            $("#documentation-list .sidebar-left-content").css("height", newHeight + "px");
 
             //pad the content so we can still scroll it
             $("#main").css("padding-bottom", newHeight + "px");
             $(".sidebar-right-content > .panel").css("padding-bottom", newHeight + "px");
+
+
 
           });
 
@@ -118,7 +143,7 @@ define(["app",
             //make relative to current scroll position
             var hash = this.hash;
             var currentScrollTop = $(".docs-container").scrollTop();
-            var scrollToVal = currentScrollTop + ($(hash).position().top + 0);
+            var scrollToVal = currentScrollTop + ($(hash).position().top - 9);
 
             // Using jQuery's animate() method to add smooth page scroll
             // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
@@ -147,7 +172,6 @@ define(["app",
 
         this.$el.find(".nav.sidebar-menu .sub-nav a").on('show.bs.tab', function() {
           //stop the left nav from refreshing (fade in) every time if div is scrolled (no idea why it refreshes w/o this)
-
           $(".docs-container").scrollTop(0);
         });
 
@@ -169,6 +193,10 @@ define(["app",
 
             $('a.accordion-toggle.menu-open').next('ul').slideUp('fast', 'swing', function() {
               $(this).attr('style', '').prev().removeClass('menu-open');
+
+              //if resized and fits the content dont show scroll bar
+              $("#documentation-list .nano").nanoScroller();
+
             });
           }
           // If the clicked menu item is a dropdown inside of a dropdown (sublevel menu)
@@ -179,9 +207,17 @@ define(["app",
 
             activeMenu.slideUp('fast', 'swing', function() {
               $(this).attr('style', '').prev().removeClass('menu-open');
+
+              //if resized and fits the content dont show scroll bar
+              $("#documentation-list .nano").nanoScroller();
+
             });
             siblingMenu.slideUp('fast', 'swing', function() {
               $(this).attr('style', '').prev().removeClass('menu-open');
+
+              //if resized and fits the content dont show scroll bar
+              $("#documentation-list .nano").nanoScroller();
+
             });
           }
 
@@ -190,6 +226,9 @@ define(["app",
           if (!$(this).hasClass('menu-open')) {
             $(this).next('ul').slideToggle('fast', 'swing', function() {
               $(this).attr('style', '').prev().toggleClass('menu-open');
+
+              //if resized and fits the content dont show scroll bar
+              $("#documentation-list .nano").nanoScroller();
             });
           }
 
