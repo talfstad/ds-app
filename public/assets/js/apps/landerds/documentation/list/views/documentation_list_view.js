@@ -23,7 +23,7 @@ define(["app",
 
         if (target.hasClass("active")) {
           //max and mins
-          var maxDocumentationHeight = $('html').outerHeight() - 170;
+          var maxDocumentationHeight = $('html').outerHeight() - 165;
           var minDocumentationHeight = 125;
 
           var newHeight = target.height();
@@ -74,7 +74,9 @@ define(["app",
         var me = this;
 
         //steps left sidebar on scroll will scroll main content
-        var onMousewheel = function(e) {
+        var onMousewheelStepSidebar = function(e) {
+          e.preventDefault();
+
           //scroll the main content
           var delta = e.originalEvent.wheelDelta;
           var contentScrollTop = $(".docs-container").scrollTop();
@@ -84,9 +86,24 @@ define(["app",
           $(".docs-container").scrollTop(scrollTop)
         };
 
-        //covers chrome and firefox
-        this.$el.find(".left-table-of-contents").bind('DOMMouseScroll mousewheel', onMousewheel);
+        //steps left sidebar on scroll will scroll main content
+        var onMousewheelLeftSidebar = function(e) {
+          e.preventDefault();
 
+          //scroll the main content
+          var delta = e.originalEvent.wheelDelta;
+          var currentEl = $(e.currentTarget).find(".nano-content");
+          var contentScrollTop = currentEl.scrollTop();
+
+          var scrollTop = contentScrollTop - delta;
+          if (scrollTop < 0) scrollTop = 0;
+          currentEl.scrollTop(scrollTop);
+        };
+
+        //covers chrome and firefox
+        this.$el.find(".left-table-of-contents").bind('DOMMouseScroll mousewheel', onMousewheelStepSidebar);
+        this.$el.find("#sidebar_left").bind('DOMMouseScroll mousewheel', onMousewheelLeftSidebar);
+        this.$el.find(".documentation-content-text-container").bind('DOMMouseScroll mousewheel', onMousewheelStepSidebar);
         interact('.docs-container')
           .resizable({
             preserveAspectRatio: false,
@@ -101,7 +118,7 @@ define(["app",
             $("#documentation-list .sidebar-left-content.nano").nanoScroller();
 
             //max and mins
-            var maxDocumentationHeight = $('html').outerHeight() - 170;
+            var maxDocumentationHeight = $('html').outerHeight() - 165;
             var minDocumentationHeight = 125;
 
             var newHeight = event.rect.height;
