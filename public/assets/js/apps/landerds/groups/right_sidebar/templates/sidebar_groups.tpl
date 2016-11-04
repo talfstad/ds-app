@@ -1,5 +1,5 @@
 <!-- Start: Sidebar Right Content -->
-<div class="sidebar-right-content nano-content p10">
+<div class="sidebar-right-content">
   <div class="panel" style="margin-bottom: 0">
     <div class="panel-heading" style="border-bottom: none;">
       <span class="panel-title">Groups Information</span>

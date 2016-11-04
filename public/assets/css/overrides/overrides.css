@@ -722,6 +722,10 @@ body.onload-check #sidebar_left {
     border-radius: 20px;
 }
 
+.intercom-powered-by {
+    opacity: 0 !important;
+}
+
 #intercom-container .intercom-launcher,
 #intercom-container .intercom-launcher-button {
     width: 40px !important;
@@ -739,6 +743,11 @@ body.onload-check #sidebar_left {
 
 .sidebar-right-content > .panel {
     margin-bottom: 60px;
+}
+
+.sidebar-right-content {
+    margin-top: 60px;
+    padding: 10px 10px 80px 10px;
 }
 
 #docs-button {

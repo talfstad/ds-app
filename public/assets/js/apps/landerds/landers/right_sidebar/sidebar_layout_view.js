@@ -20,7 +20,7 @@ define(["app",
         template: sidebarLanders,
         tagName: "aside",
         id: "sidebar_right",
-        className: "nano affix",
+        className: "affix nano",
 
         events: {
           // "click button.lander-edit": "showEditLander",

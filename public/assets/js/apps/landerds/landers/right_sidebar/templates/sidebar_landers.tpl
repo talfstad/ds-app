@@ -1,5 +1,5 @@
 <!-- Start: Sidebar Right Content -->
-<div class="sidebar-right-content nano-content p10">
+<div class="sidebar-right-content nano-content">
   <div class="panel">
     <div class="panel-heading">
       <span class="panel-title">Lander Edit &amp; Optimization</span>
