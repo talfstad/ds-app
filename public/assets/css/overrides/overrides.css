@@ -840,9 +840,12 @@ body.onload-check #sidebar_left {
 }
 
 .documentation.nav-spy {
-    /*height: 300px;*/
     overflow: auto;
     padding-right: 16px;
+}
+
+.documentation.nav-spy.nano .nano-pane {
+    display: none;
 }
 
 #docs .docs-resize .docs-resizebar {
@@ -888,4 +891,3 @@ body.onload-check #sidebar_left {
 .documentation-content-text-container .sub-section:last-child {
     margin-bottom: 0px;
 }
-

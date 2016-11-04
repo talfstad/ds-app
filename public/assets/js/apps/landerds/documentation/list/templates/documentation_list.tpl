@@ -136,8 +136,8 @@
         <section class="bs-docs-section">
           <div class="fs15 left-table-of-contents" style="">
             <aside class="ohidden" style="">
-              <div class="nav-spy documentation">
-                <ul class="nav tray-nav tray-nav-border">
+              <div class="nav-spy documentation nano">
+                <ul class="nav tray-nav tray-nav-border nano-content">
                   <li class="active">
                     <a href="#amazon-web-services">
                   Amazon Web Services</a>

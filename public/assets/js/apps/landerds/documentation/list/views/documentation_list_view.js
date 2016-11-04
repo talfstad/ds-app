@@ -31,6 +31,7 @@ define(["app",
           if (newHeight < minDocumentationHeight) newHeight = minDocumentationHeight;
           target.height(newHeight);
           $(".sidebar-left-content").height(newHeight);
+          $(".documentation.nav-spy").height(newHeight);
 
           $("#docs-button").hide();
 
@@ -63,7 +64,8 @@ define(["app",
         });
 
         setTimeout(function() {
-          $("#documentation-list .nano").nanoScroller();
+          $("#documentation-list .sidebar-left-content.nano").nanoScroller();
+          $("#documentation-list .nav-spy.documentation.nano").nanoScroller({ stop: true });
         }, 50);
 
       },
@@ -96,7 +98,7 @@ define(["app",
               y = (parseFloat(target.getAttribute('data-y')) || 0);
 
             //if resized and fits the content dont show scroll bar
-            $("#documentation-list .nano").nanoScroller();
+            $("#documentation-list .sidebar-left-content.nano").nanoScroller();
 
             //max and mins
             var maxDocumentationHeight = $('html').outerHeight() - 170;
@@ -195,7 +197,7 @@ define(["app",
               $(this).attr('style', '').prev().removeClass('menu-open');
 
               //if resized and fits the content dont show scroll bar
-              $("#documentation-list .nano").nanoScroller();
+              $("#documentation-list .sidebar-left-content.nano").nanoScroller();
 
             });
           }
@@ -209,14 +211,14 @@ define(["app",
               $(this).attr('style', '').prev().removeClass('menu-open');
 
               //if resized and fits the content dont show scroll bar
-              $("#documentation-list .nano").nanoScroller();
+              $("#documentation-list .sidebar-left-content.nano").nanoScroller();
 
             });
             siblingMenu.slideUp('fast', 'swing', function() {
               $(this).attr('style', '').prev().removeClass('menu-open');
 
               //if resized and fits the content dont show scroll bar
-              $("#documentation-list .nano").nanoScroller();
+              $("#documentation-list .sidebar-left-content.nano").nanoScroller();
 
             });
           }
@@ -228,7 +230,7 @@ define(["app",
               $(this).attr('style', '').prev().toggleClass('menu-open');
 
               //if resized and fits the content dont show scroll bar
-              $("#documentation-list .nano").nanoScroller();
+              $("#documentation-list .sidebar-left-content.nano").nanoScroller();
             });
           }
 

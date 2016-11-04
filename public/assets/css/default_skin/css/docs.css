@@ -396,7 +396,8 @@ body.left-col-hidden #left-col-toggle {
 
 ul.tray-nav {
     border-right: none;
-    margin: 48px -16px 58px -15px;
+    margin: 0;
+    padding-top: 50px;
 }
 
 #docs-content tray-left {
