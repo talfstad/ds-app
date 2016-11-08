@@ -63,11 +63,15 @@ define(["app",
           offset: 10
         });
 
+        this.refreshScroller();
+
+      },
+
+      refreshScroller: function() {
         setTimeout(function() {
           $("#documentation-list .sidebar-left-content.nano").nanoScroller();
-          $("#documentation-list .nav-spy.documentation.nano").nanoScroller({ stop: true });
+          $("#documentation-list .nav-spy.documentation.nano").nanoScroller();
         }, 50);
-
       },
 
       onRender: function() {
@@ -84,6 +88,8 @@ define(["app",
           var scrollTop = contentScrollTop - delta;
           if (scrollTop < 0) scrollTop = 0;
           $(".docs-container").scrollTop(scrollTop)
+
+          $(this).find(".nano-content").scrollTop(scrollTop);
         };
 
         //steps left sidebar on scroll will scroll main content
@@ -115,7 +121,7 @@ define(["app",
               y = (parseFloat(target.getAttribute('data-y')) || 0);
 
             //if resized and fits the content dont show scroll bar
-            $("#documentation-list .sidebar-left-content.nano").nanoScroller();
+            me.refreshScroller();
 
             //max and mins
             var maxDocumentationHeight = $('html').outerHeight() - 165;
@@ -214,7 +220,7 @@ define(["app",
               $(this).attr('style', '').prev().removeClass('menu-open');
 
               //if resized and fits the content dont show scroll bar
-              $("#documentation-list .sidebar-left-content.nano").nanoScroller();
+              me.refreshScroller();
 
             });
           }
@@ -228,14 +234,14 @@ define(["app",
               $(this).attr('style', '').prev().removeClass('menu-open');
 
               //if resized and fits the content dont show scroll bar
-              $("#documentation-list .sidebar-left-content.nano").nanoScroller();
+              me.refreshScroller();
 
             });
             siblingMenu.slideUp('fast', 'swing', function() {
               $(this).attr('style', '').prev().removeClass('menu-open');
 
               //if resized and fits the content dont show scroll bar
-              $("#documentation-list .sidebar-left-content.nano").nanoScroller();
+              me.refreshScroller();
 
             });
           }
@@ -247,7 +253,7 @@ define(["app",
               $(this).attr('style', '').prev().toggleClass('menu-open');
 
               //if resized and fits the content dont show scroll bar
-              $("#documentation-list .sidebar-left-content.nano").nanoScroller();
+              me.refreshScroller();
             });
           }
 

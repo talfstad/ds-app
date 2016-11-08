@@ -19,7 +19,7 @@
                Click add snippet to get started, or <a href="#">learn how to use snippets here</a>.
               </p>
               <div style="float: left; width: 50%">
-                <button type="button" class="mt10 create-snippet-button btn btn-default btn-gradient dark"><span class="fa fa-plus pr5"></span>Create JS Snippet</button>
+                <button type="button" class="mt10 create-snippet-button btn btn-default btn-gradient dark"><span class="fa fa-plus pr5"></span>Create Snippet</button>
               </div>
             </div>
           </div>

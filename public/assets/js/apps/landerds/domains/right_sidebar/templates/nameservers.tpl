@@ -28,7 +28,7 @@
 </div>
 
 
-<h5 class="title-divider text-muted mt20 mb0"><span>Alternate DNS Records</span>
+<h5 class="title-divider text-muted mt20 mb0"><span>Alternate DNS CNAME Record</span>
               <a style="float: right" href="#">
                 <i style="font-size: 18px !important" class="fa fa-question-circle text-info fs12 pl5 pr5"></i>
               </a>
@@ -37,7 +37,6 @@
   <table class="optimizations-table table">
     
     <tr>
-      <td>A</td>
       <td class="absorbing-column"><%= cloudfront_domain %></td>
     </tr>
 

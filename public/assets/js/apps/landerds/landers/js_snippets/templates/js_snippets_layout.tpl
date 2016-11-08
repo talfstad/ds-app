@@ -11,7 +11,7 @@
       <div class="topbar-left">
         <ul class="nav nav-list nav-list-topbar mb0 pull-left">
           <li role="presentation" class="active">
-            <a href="#aws" aria-controls="aws" role="tab" data-toggle="tab"><span class="fa fa-file-code-o pr5"></span> JS Snippets</a>
+            <a href="#aws" aria-controls="aws" role="tab" data-toggle="tab"><span class="fa fa-file-code-o pr5"></span>Snippets</a>
           </li>
         </ul>
       </div>

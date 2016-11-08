@@ -10,7 +10,7 @@
       <div class="topbar-left">
         <ul class="nav nav-list nav-list-topbar mb0 pull-left">
           <li role="presentation" class="active">
-            <a href="#resources" aria-controls="resources" role="tab" data-toggle="tab"><span class="fa fa-file-code-o pr5"></span> JS Snippets</a>
+            <a href="#resources" aria-controls="resources" role="tab" data-toggle="tab"><span class="fa fa-file-code-o pr5"></span>Snippets</a>
           </li>
           <!-- <li role="presentation">
             <a href="#file-edit" aria-controls="file-edit" role="tab" data-toggle="tab"><span class="fa fa-folder-open pr5"></span> Resources</a>

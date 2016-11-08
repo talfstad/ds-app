@@ -398,6 +398,7 @@ ul.tray-nav {
     border-right: none;
     margin: 0;
     padding-top: 50px;
+    padding-bottom: 50px;
 }
 
 #docs-content tray-left {
