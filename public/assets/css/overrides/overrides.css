@@ -892,10 +892,22 @@ body.onload-check #sidebar_left {
     border: none;
 }
 
+.bg-white {
+    background-color: #fff !important;
+}
+
 
 .documentation-content-text-container .sub-section {
     margin-bottom: 50px;
 }
 .documentation-content-text-container .sub-section:last-child {
     margin-bottom: 0px;
+}
+
+.sidebar-right-content > .panel {
+    background: inherit;
+}
+
+.file-footer-buttons > button.kv-file-zoom {
+    display: none;
 }

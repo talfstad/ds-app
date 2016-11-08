@@ -22,7 +22,7 @@
         </div>
       </div>
     </div>
-    <div class="admin-form panel-body pn pb25" style="border-top: none; font-size: 13px">
+    <div class="admin-form panel-body pn pb25 bg-white" style="border-top: none; font-size: 13px">
       <div class="deployment-options-region"></div>
       <h5 class="title-divider mt20 mb0">
         Download
@@ -40,7 +40,7 @@
         </tr>
       </table>
     </div>
-    <div class="panel-body" style="padding-bottom: 25px; padding-left: 0; padding-right: 0">
+    <div class="panel-body bg-white" style="padding-bottom: 25px; padding-left: 0; padding-right: 0">
       <table class="table">
         <tbody>
           <tr class="">
