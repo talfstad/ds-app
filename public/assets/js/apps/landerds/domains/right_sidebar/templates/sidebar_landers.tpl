@@ -7,11 +7,19 @@
     </div>
     </div>
   
-    <div class="admin-form panel-body pn pb25" style="font-size: 13px">
+    <div class="admin-form panel-body bg-white pn pb25" style="font-size: 13px">
       <div class="name-and-optimizations-region">
       </div>
     </div>
-    <div class="panel-footer">
-      <button type="button" class="delete-domain-button btn btn-danger btn-gradient dark"><span class="fa fa-trash pr5"></span>Delete Domain</button>
+    <div class="panel-footer bg-white" style="padding: 15px 0">
+      <table class="table">
+        <tbody>
+          <tr class="">
+            <td>
+              <a class="delete-domain-button" href="#">Delete Domain <span style="float: right" class="text-danger mt5 mr5 fa fa-trash"></span></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>

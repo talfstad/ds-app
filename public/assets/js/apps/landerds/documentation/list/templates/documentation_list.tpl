@@ -26,9 +26,50 @@
               <span class="caret"></span>
             </a>
             <ul class="nav sub-nav">
-              <li class="active">
+              <li>
                 <a data-toggle="tab" href="#introduction">
                   <span class="glyphicon glyphicon-equalizer"></span> General </a>
+              </li>
+              <li>
+                <a class="accordion-toggle" href="#">
+                  <span class="fa fa fa-arrows-h"></span>
+                  Sidebars
+                  <span class="caret"></span>
+                </a>
+                <ul class="nav sub-nav">
+                  <li>
+                    <a href="layout_sidebar-left-static.html">
+                      Left Static </a>
+                  </li>
+                  <li>
+                    <a href="layout_sidebar-left-fixed.html">
+                      Left Fixed </a>
+                  </li>
+                  <li>
+                    <a href="layout_sidebar-left-widgets.html">
+                      Left Widgets </a>
+                  </li>
+                  <li>
+                    <a href="layout_sidebar-left-minified.html">
+                      Left Minified </a>
+                  </li>
+                  <li>
+                    <a href="layout_sidebar-left-light.html">
+                      Left White </a>
+                  </li>
+                  <li>
+                    <a href="layout_sidebar-right-static.html">
+                      Right Static </a>
+                  </li>
+                  <li>
+                    <a href="layout_sidebar-right-fixed.html">
+                      Right Fixed </a>
+                  </li>
+                  <li>
+                    <a href="layout_sidebar-right-menu.html">
+                      Right w/Menu </a>
+                  </li>
+                </ul>
               </li>
               <li>
                 <a data-toggle="tab" href="#rip-and-add-lander">

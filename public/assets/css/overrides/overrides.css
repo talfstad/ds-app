@@ -911,3 +911,12 @@ body.onload-check #sidebar_left {
 .file-footer-buttons > button.kv-file-zoom {
     display: none;
 }
+
+a.delete-domain-button:hover,
+a.remove-group-button:hover {
+    text-decoration: none;
+}
+
+.sidebar-left-content .sidebar-menu > li > ul {
+    width: inherit;
+}

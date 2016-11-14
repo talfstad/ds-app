@@ -11,33 +11,31 @@ define(["app",
 
         groupModel: null,
 
-        //whenever sidebar is open it has the real lander model as its model not a stupid sidebar model
-        //sidebar model is just a mock thing to make loading work
         openSidebar: function(model) {
           var me = this;
 
-          // this.groupModel = model;
+          this.groupModel = model;
 
-          // this.sidebarView = new SidebarLayoutView({
-          //   model: model
-          // });
+          this.sidebarView = new SidebarLayoutView({
+            model: model
+          });
 
-          // this.sidebarView.on("updateGroupsName", function() {
-          //   model.save({}, {
-          //     success: function() {
-          //       model.trigger("resortAndExpandModelView");
-          //     },
-          //     error: function() {
+          this.sidebarView.on("updateGroupsName", function() {
+            model.save({}, {
+              success: function() {
+                model.trigger("resortAndExpandModelView");
+              },
+              error: function() {
 
-          //     }
-          //   });
-          // });
+              }
+            });
+          });
 
-          // //show it
-          // Landerds.rootRegion.currentView.rightSidebarRegion.show(this.sidebarView);
+          //show it
+          Landerds.rootRegion.currentView.rightSidebarRegion.show(this.sidebarView);
 
-          // //open
-          // setTimeout(this.sidebarView.openSidebar, 20);
+          //open
+          setTimeout(this.sidebarView.openSidebar, 20);
         },
 
         closeSidebar: function() {
