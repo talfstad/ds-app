@@ -23,9 +23,34 @@ define(["app"], function(Landerds) {
         var retries = 25; //5 seconds @ 200 millis
         var retryCount = 0;
 
+        var resizeIntercomButton = function(intercomIsLoadedFlagEl) {
+
+          var iframeContents = intercomIsLoadedFlagEl.contents();
+
+          iframeContents.find("#intercom-container .intercom-launcher").css("width", "40px");
+          iframeContents.find("#intercom-container .intercom-launcher").css("border", "1px solid rgb(44,131,236)");
+          iframeContents.find("#intercom-container .intercom-launcher").css("opacity", "0.7");
+          iframeContents.find("#intercom-container .intercom-launcher").css("height", "40px");
+          iframeContents.find(".intercom-launcher-open-icon").css("background-size", "17px 18px");
+          iframeContents.find(".intercom-launcher-open-icon").css("background-position", "center 12px");
+
+          iframeContents.find("#intercom-container .intercom-launcher").hover(
+            function() {
+              $(this).css("opacity", "1.0");
+            },
+            function() {
+              $(this).css("opacity", "0.7");
+            });
+
+          $("style#intercom-stylesheet").remove();
+
+        };
+
         var pollForIntercomLoaded = function() {
+          var intercomIsLoadedFlagEl = $("#intercom-container iframe.intercom-launcher-frame");
           setTimeout(function() {
-            if ($("#intercom-container").length) {
+            if (intercomIsLoadedFlagEl.length) {
+              resizeIntercomButton(intercomIsLoadedFlagEl);
               callback();
             } else {
               if (retryCount < retries) {

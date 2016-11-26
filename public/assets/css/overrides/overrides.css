@@ -726,21 +726,6 @@ body.onload-check #sidebar_left {
     opacity: 0 !important;
 }
 
-#intercom-container .intercom-launcher,
-#intercom-container .intercom-launcher-button {
-    width: 40px !important;
-    height: 40px !important;
-}
-
-#intercom-container .intercom-launcher-button {
-    background-size: 17px 17px !important;
-    opacity: .7 !important;
-}
-
-#intercom-container .intercom-launcher-button:hover {
-    opacity: 1 !important;
-}
-
 .sidebar-right-content > .panel {
     margin-bottom: 60px;
 }
@@ -768,8 +753,8 @@ body.onload-check #sidebar_left {
     box-shadow: rgba(0, 0, 0, 0.227451) 0px 6px 13px 0px;
     color: #666666;
     cursor: pointer;
-    height: 42px;
-    width: 42px;
+    height: 43px;
+    width: 43px;
     opacity: 0.7;
     left: -2px;
     position: absolute;
