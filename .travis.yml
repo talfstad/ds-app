@@ -4,5 +4,6 @@ node_js:
 before_install:
   - chmod +x ./build_scripts/build.js
   - npm install
+  - bower install
 install: 
   - node ./build_scripts/build.js
