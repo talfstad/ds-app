@@ -4,4 +4,4 @@ node_js:
 before_install:
   - chmod +x ./build_scripts/build.js
 install: 
-  - ./build_scripts/build.js
+  - node ./build_scripts/build.js
