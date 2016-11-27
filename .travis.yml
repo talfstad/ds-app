@@ -1,4 +1,7 @@
 language: node_js
 node_js:
   - "4"
-install: ./build_scripts/build.js
+before_install:
+  - chmod +x ./build_scripts/build.js
+install: 
+  - ./build_scripts/build.js
